@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FreshPin</title>
+<style>
+:root{
+  --bg:#0b0e14; --panel:#121722; --panel2:#171d2a; --line:#252d3d; --text:#e7eaf0; --muted:#8d97ab;
+  --fresh:#45c99b; --check:#e8b650; --stale:#f06b6b; --accent:#7aa7ff; --gold:#e8c77a;
+  --radius:12px; --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px;padding:16px 24px;border-bottom:1px solid var(--line);background:#0e121b}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:20px;letter-spacing:.2px}
+.logo .pin{width:26px;height:26px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:linear-gradient(135deg,var(--gold),#c98f3c);display:grid;place-items:center}
+.logo .pin i{width:9px;height:9px;border-radius:50%;background:#0e121b;display:block}
+.tag{color:var(--muted);font-size:14px}
+.chips{margin-left:auto;display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:12px;padding:3px 9px;border-radius:999px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.chip.ok{color:var(--fresh);border-color:#245e4b}.chip.bad{color:var(--stale);border-color:#6a2a2a}.chip.warn{color:var(--check);border-color:#6a5422}
+.banner{background:#2a2312;color:var(--check);border-bottom:1px solid #4d3d17;padding:8px 24px;font-size:13px;display:none}
+main{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:20px;padding:20px 24px;max-width:1500px;margin:0 auto}
+@media (max-width:980px){main{grid-template-columns:minmax(0,1fr);padding:16px}header{padding:14px 16px}.chips{margin-left:0}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;margin-bottom:16px}
+h2{font-size:13px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin:0 0 12px;font-weight:600}
+.samples{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+button{font:inherit;cursor:pointer;border-radius:9px;border:1px solid var(--line);background:var(--panel2);color:var(--text);padding:8px 14px}
+button:hover{border-color:#3a4560}
+button.primary{background:var(--accent);color:#08101f;border-color:var(--accent);font-weight:650}
+button.primary:disabled{opacity:.55;cursor:wait}
+button.sample.active{border-color:var(--gold);color:var(--gold)}
+button.small{padding:5px 10px;font-size:13px}
+label{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px}
+textarea,input[type=text]{width:100%;background:#0d1119;border:1px solid var(--line);border-radius:9px;color:var(--text);padding:10px 12px;font:inherit}
+textarea{min-height:120px;resize:vertical}
+.row{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:12px}
+.toggle{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:14px;cursor:pointer}
+.toggle input{accent-color:var(--stale);width:16px;height:16px}
+.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px}
+.stat{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.stat b{display:block;font-size:22px;line-height:1.2}.stat span{font-size:12px;color:var(--muted)}
+.claim{border:1px solid var(--line);border-left:4px solid var(--muted);border-radius:10px;padding:14px;margin-top:12px;background:var(--panel2)}
+.claim.fresh{border-left-color:var(--fresh)}.claim.check{border-left-color:var(--check)}.claim.stale{border-left-color:var(--stale)}
+.claim-top{display:flex;gap:14px;align-items:flex-start}
+.claim-top>div:last-child{overflow-wrap:anywhere}
+.pin-row,.src p,.meta{overflow-wrap:anywhere}
+.ring{flex:0 0 54px;height:54px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:17px;position:relative}
+.ring::after{content:"";position:absolute;inset:5px;border-radius:50%;background:var(--panel2)}
+.ring span{position:relative;z-index:1}
+.badge{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;padding:2px 8px;border-radius:6px;margin-right:6px}
+.badge.fresh{background:#123a2e;color:var(--fresh)}.badge.check{background:#3a2f12;color:var(--check)}.badge.stale{background:#3d1717;color:var(--stale)}
+.meta{font-size:12px;color:var(--muted)}
+.now{margin-top:10px;padding:10px 12px;background:#0f1a16;border:1px solid #1f4a3b;border-radius:8px;font-size:14px}
+.now b{color:var(--fresh)}
+.expl{margin-top:8px;color:#c6ccd8;font-size:14px}
+details{margin-top:10px}summary{cursor:pointer;color:var(--accent);font-size:13px}
+.bars{display:grid;grid-template-columns:110px 1fr 40px;gap:6px 10px;align-items:center;font-size:12px;color:var(--muted);margin-top:8px}
+.bar{height:6px;background:#0d1119;border-radius:4px;overflow:hidden}.bar i{display:block;height:100%;background:var(--accent)}
+.src{display:flex;gap:8px;align-items:flex-start;padding:8px 0;border-top:1px dashed var(--line);font-size:13px}
+.src:first-child{border-top:0}
+.mark{flex:0 0 auto;font-size:11px;padding:1px 6px;border-radius:5px;background:#1c2232;color:var(--muted)}
+.mark.sup{background:#123a2e;color:var(--fresh)}.mark.con{background:#3d1717;color:var(--stale)}
+.src a{color:var(--text);text-decoration:none;font-weight:600}.src a:hover{text-decoration:underline}
+.src p{margin:2px 0 0;color:var(--muted)}
+.decision{border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-top:10px;background:var(--panel2)}
+.decision.reopened{border-color:#6a2a2a;background:#1a1214}
+.decision.at_risk{border-color:#6a5422}
+.dhead{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.status{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;padding:2px 8px;border-radius:6px;white-space:nowrap}
+.status.approved{background:#123a2e;color:var(--fresh)}.status.reopened{background:#3d1717;color:var(--stale)}.status.at_risk{background:#3a2f12;color:var(--check)}
+.pin-row{font-size:13px;margin-top:8px;padding:8px 10px;border-radius:8px;background:#0d1119}
+.old{color:#d08b8b;text-decoration:line-through;text-decoration-color:#9c4b4b}
+.new{color:#9be0c4}
+.approve-form{margin-top:10px;display:none}
+.approve-form.open{display:block}
+.check-line{display:flex;gap:8px;align-items:flex-start;font-size:13px;color:var(--muted);margin-top:8px}
+.events{max-height:320px;overflow:auto;font-size:13px}
+.ev{padding:7px 0;border-top:1px solid var(--line)}.ev:first-child{border-top:0}
+.ev code{font-family:var(--mono);font-size:11px;color:var(--gold)}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th,td{text-align:left;padding:6px 8px;border-top:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:600;border-top:0}
+td.err{color:var(--stale)}td.fb{color:var(--check)}
+.tablewrap{overflow-x:auto}
+.empty{color:var(--muted);font-size:14px;padding:6px 0}
+.err-box{background:#2a1416;border:1px solid #6a2a2a;color:#ffb3b3;border-radius:9px;padding:10px 12px;margin-top:12px;display:none}
+.skipped{font-size:13px;color:var(--muted);margin-top:10px}
+.howto{font-size:14px;color:#c6ccd8}.howto ol{margin:6px 0 0;padding-left:20px}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo"><div class="pin"><i></i></div>FreshPin</div>
+  <div class="tag">Finds stale facts in AI answers, and reopens the decisions that relied on them.</div>
+  <div class="chips" id="chips"></div>
+</header>
+<div class="banner" id="banner">Replay mode: recorded responses for offline testing. Start in live mode to check against the web today.</div>
+
+<main>
+  <section>
+    <div class="card">
+      <h2>1. Load a scenario</h2>
+      <div class="samples" id="samples"></div>
+      <div class="meta" id="sampleContext">Pick a scenario to load its approved decisions, or paste any AI answer below.</div>
+      <label for="answer">AI answer to check</label>
+      <textarea id="answer" placeholder="Paste an answer from any AI assistant..."></textarea>
+      <label for="context">Context (optional)</label>
+      <input type="text" id="context" placeholder="Who asked, and why">
+      <div class="row">
+        <button class="primary" id="run">Check freshness</button>
+        <label class="toggle" title="Bifrost is asked to use a model that fails first, so you can see the fallback"><input type="checkbox" id="outage"> Simulate primary model outage</label>
+      </div>
+      <div class="err-box" id="err"></div>
+    </div>
+
+    <div class="card" id="resultsCard" style="display:none">
+      <h2>2. Claims and freshness</h2>
+      <div class="summary" id="summary"></div>
+      <div id="claims"></div>
+      <div class="skipped" id="skipped"></div>
+      <div id="pinNew" style="display:none">
+        <details>
+          <summary>Save a new decision that relies on these facts</summary>
+          <label for="pinTitle">Decision</label><input type="text" id="pinTitle" placeholder="e.g. Q1 renewal letters to tenants">
+          <label for="pinBy">Approved by</label><input type="text" id="pinBy" placeholder="Your name">
+          <div id="pinKeys"></div>
+          <div class="row"><button class="small" id="pinSave">Approve and pin</button></div>
+        </details>
+      </div>
+    </div>
+
+    <div class="card" id="gatewayCard" style="display:none">
+      <h2>Bifrost gateway trace</h2>
+      <div class="meta" id="gatewayMeta"></div>
+      <div class="tablewrap"><table id="trace"></table></div>
+    </div>
+  </section>
+
+  <aside>
+    <div class="card">
+      <h2>3. What depends on these facts</h2>
+      <div id="decisions"><div class="empty">No decisions yet. Load a scenario.</div></div>
+    </div>
+    <div class="card">
+      <h2>Audit log</h2>
+      <div class="events" id="events"><div class="empty">Nothing yet.</div></div>
+    </div>
+    <div class="card howto">
+      <h2>How it works</h2>
+      <ol>
+        <li>An AI model (via <b>Bifrost</b>) splits the answer into time-sensitive claims.</li>
+        <li><b>Tavily</b> searches the live web for the current value of each claim.</li>
+        <li>A second model, via Bifrost, judges each claim using only those sources.</li>
+        <li>A fixed formula turns the evidence into a 0 to 100 freshness score.</li>
+        <li>Stale facts get a new version, and every decision pinned to the old one is reopened for a person to re-approve.</li>
+      </ol>
+    </div>
+  </aside>
+</main>
+
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let SAMPLES = {}, lastReport = null;
+
+async function api(path, body){
+  const r = await fetch(path, body ? {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)} : {});
+  const j = await r.json();
+  if(!r.ok) throw new Error(j.error || r.statusText);
+  return j;
+}
+function showErr(msg){ const e=$("#err"); e.textContent=msg; e.style.display = msg ? "block" : "none"; }
+
+async function init(){
+  const st = await api("/api/status");
+  const chips = [];
+  chips.push(`<span class="chip ${st.mode==="live"?"ok":"warn"}">${st.mode==="live"?"Live":"Replay"} mode</span>`);
+  if(st.mode==="live"){
+    chips.push(`<span class="chip ${st.bifrost_reachable?"ok":"bad"}">Bifrost ${st.bifrost_reachable?"connected":"not reachable"}</span>`);
+    chips.push(`<span class="chip ${st.tavily_key_set?"ok":"bad"}">Tavily ${st.tavily_key_set?"key set":"no key"}</span>`);
+  } else { $("#banner").style.display="block"; }
+  chips.push(`<span class="chip" title="claim extraction">${esc(st.extractor_models[0])}</span>`);
+  chips.push(`<span class="chip" title="verification">${esc(st.verifier_models[0])}</span>`);
+  chips.push(`<span class="chip">budget ${st.run_token_budget.toLocaleString()} tokens/run</span>`);
+  $("#chips").innerHTML = chips.join("");
+
+  SAMPLES = await api("/api/samples");
+  $("#samples").innerHTML = Object.entries(SAMPLES).map(([id,s]) =>
+    `<button class="sample" data-id="${id}">${esc(s.title)}</button>`).join("");
+  document.querySelectorAll("button.sample").forEach(b => b.onclick = () => loadSample(b.dataset.id));
+  renderLedger(await api("/api/ledger"));
+}
+
+async function loadSample(id){
+  showErr("");
+  document.querySelectorAll("button.sample").forEach(b => b.classList.toggle("active", b.dataset.id===id));
+  const s = SAMPLES[id];
+  $("#answer").value = s.answer; $("#context").value = s.context;
+  $("#sampleContext").textContent = s.context;
+  $("#resultsCard").style.display="none"; $("#gatewayCard").style.display="none";
+  renderLedger(await api("/api/load_sample", {id}));
+}
+
+$("#run").onclick = async () => {
+  showErr("");
+  const btn = $("#run"); btn.disabled = true; btn.textContent = "Checking…";
+  try{
+    const rep = await api("/api/check", {answer:$("#answer").value, context:$("#context").value, simulate_outage:$("#outage").checked});
+    lastReport = rep; renderReport(rep); renderLedger(rep.ledger);
+  }catch(e){ showErr(e.message); }
+  finally{ btn.disabled=false; btn.textContent="Check freshness"; }
+};
+
+function ring(score, band){
+  const col = {fresh:"var(--fresh)",check:"var(--check)",stale:"var(--stale)"}[band];
+  return `<div class="ring" style="background:conic-gradient(${col} ${score*3.6}deg,#0d1119 0)"><span>${score}</span></div>`;
+}
+const VERDICT = {current:"Still current", partly_current:"Partly current", stale:"Out of date", contradicted:"Contradicted", unverifiable:"Could not verify"};
+
+function renderReport(rep){
+  $("#resultsCard").style.display="block";
+  const s = rep.summary, g = rep.gateway;
+  $("#summary").innerHTML = [
+    [s.claims,"claims checked"],[s.fresh,"fresh"],[s.check,"need a look"],[s.stale,"stale"],
+    [s.decisions_reopened.length,"decisions reopened"],[`${g.tokens.toLocaleString()}`,`tokens of ${g.token_budget.toLocaleString()}`]
+  ].map(([b,t])=>`<div class="stat"><b>${esc(b)}</b><span>${t}</span></div>`).join("");
+  $("#claims").innerHTML = rep.claims.map(c => {
+    const f = c.freshness, sup = new Set(c.supporting_urls), con = new Set(c.contradicting_urls);
+    const changed = c.verdict==="stale"||c.verdict==="contradicted"||c.verdict==="partly_current";
+    const eff = c.ledger_effect || {};
+    return `<div class="claim ${f.band}">
+      <div class="claim-top">${ring(f.score,f.band)}
+        <div style="min-width:0">
+          <div><span class="badge ${f.band}">${f.band}</span><span class="meta">${VERDICT[c.verdict]||c.verdict} · ${esc(c.type.replace("_"," "))}${c.changed_on?` · changed ${esc(c.changed_on)}`:""}</span></div>
+          <div style="margin-top:4px">${esc(c.text)}</div>
+        </div></div>
+      ${changed?`<div class="now"><b>Now:</b> ${esc(c.current_statement)}</div>`:""}
+      <div class="expl">${esc(c.explanation)}</div>
+      ${!c.ai_available?`<div class="meta" style="color:var(--check)">AI verifier was unavailable. The ledger was not changed.</div>`:""}
+      ${eff.reopened&&eff.reopened.length?`<div class="meta" style="color:var(--stale);margin-top:6px">Reopened: ${eff.reopened.map(esc).join(", ")}</div>`:""}
+      ${eff.at_risk&&eff.at_risk.length?`<div class="meta" style="color:var(--check);margin-top:6px">At risk: ${eff.at_risk.map(esc).join(", ")}</div>`:""}
+      <details><summary>Why ${f.score}? Evidence from ${c.sources.length} live source${c.sources.length===1?"":"s"}</summary>
+        <div class="bars">
+          <span>Verdict (55%)</span><div class="bar"><i style="width:${f.verdict_points}%"></i></div><span>${f.verdict_points}</span>
+          <span>Recency (25%)</span><div class="bar"><i style="width:${f.recency_points}%"></i></div><span>${f.recency_points}</span>
+          <span>Agreement (20%)</span><div class="bar"><i style="width:${f.agreement_points}%"></i></div><span>${f.agreement_points}</span>
+        </div>
+        <div class="meta" style="margin:6px 0 8px">Half-life for ${esc(c.type.replace("_"," "))} facts: ${f.half_life_days} days${f.newest_source_age_days!=null?` · newest backing source ${f.newest_source_age_days} days old`:""}${f.capped_by?` · capped: ${esc(f.capped_by)}`:""}</div>
+        ${c.sources.map(src=>`<div class="src"><span class="mark ${sup.has(src.url)?"sup":con.has(src.url)?"con":""}">${sup.has(src.url)?"agrees":con.has(src.url)?"disagrees":"context"}</span>
+          <div style="min-width:0"><a href="${esc(src.url)}" target="_blank" rel="noopener">${esc(src.title)}</a> <span class="meta">${esc(src.published_date||"undated")}</span><p>${esc(src.snippet)}</p></div></div>`).join("") || `<div class="empty">No sources found.</div>`}
+      </details>
+    </div>`;
+  }).join("") || `<div class="empty">No time-sensitive claims found.</div>`;
+  $("#skipped").textContent = rep.skipped.length ? `Not checked (not time-sensitive): ${rep.skipped.map(x=>x.text).join(" · ")}` : "";
+  if(rep.degraded) showErr("Every AI model was unavailable, so claims were found with a simple rule instead. Nothing in the ledger was changed.");
+  if(rep.search_errors.length) showErr("Search problem: "+rep.search_errors.join("; "));
+
+  const keys = rep.claims.filter(c=>c.ai_available).map(c=>c.key);
+  $("#pinNew").style.display = keys.length ? "block" : "none";
+  $("#pinKeys").innerHTML = rep.claims.filter(c=>c.ai_available).map(c=>`<label class="check-line"><input type="checkbox" value="${esc(c.key)}" checked> ${esc(c.verdict==="stale"||c.verdict==="contradicted"?c.current_statement:c.text)}</label>`).join("");
+
+  $("#gatewayCard").style.display="block";
+  $("#gatewayMeta").textContent = `${g.calls} calls · ${g.failed_attempts} failed attempts · ${g.fallbacks_used} served by a fallback · ${rep.tavily_searches} Tavily searches · ${(rep.elapsed_ms/1000).toFixed(1)}s`;
+  $("#trace").innerHTML = `<tr><th>Step</th><th>Asked for</th><th>Served by</th><th>Tokens</th><th>ms</th><th>Result</th></tr>` +
+    g.traces.map(t=>`<tr><td>${esc(t.step)}</td><td>${esc(t.requested_model)}</td><td class="${t.fallback_used||t.client_failover?"fb":""}">${esc(t.served_by||"–")}${t.fallback_used?" (fallback)":""}${t.client_failover?" (client failover)":""}</td>
+      <td>${t.prompt_tokens+t.completion_tokens}</td><td>${t.latency_ms}</td><td class="${t.ok?"":"err"}">${t.ok?"ok":esc(t.error)}</td></tr>`).join("");
+}
+
+$("#pinSave").onclick = async () => {
+  showErr("");
+  const keys=[...document.querySelectorAll("#pinKeys input:checked")].map(i=>i.value);
+  try{ renderLedger(await api("/api/decisions",{title:$("#pinTitle").value, by:$("#pinBy").value, owner:"Me", keys})); $("#pinTitle").value=""; }
+  catch(e){ showErr(e.message); }
+};
+
+function renderLedger(st){
+  const STATUS = {approved:"Approved", reopened:"Reopened: needs a person", at_risk:"At risk"};
+  $("#decisions").innerHTML = st.decisions.map(d => `
+    <div class="decision ${d.status}" id="dec-${esc(d.id)}">
+      <div class="dhead"><div><b>${esc(d.id)}</b> · ${esc(d.title)}<div class="meta">${esc(d.kind)} · ${esc(d.owner)} · approved by ${esc(d.approved_by)} ${esc((d.approved_at||"").slice(0,10))}</div></div>
+        <span class="status ${d.status}">${STATUS[d.status]||d.status}</span></div>
+      ${d.pins.map(p=>`<div class="pin-row">${p.outdated
+          ? `<div class="old">v${p.pinned_version}: ${esc(p.pinned_statement)}</div><div class="new">v${p.current_version}: ${esc(p.current_statement)}</div>`
+          : `<div>v${p.pinned_version}: ${esc(p.pinned_statement)}</div>`}</div>`).join("")}
+      ${d.status!=="approved"?`
+        <div class="row"><button class="small" onclick="this.closest('.decision').querySelector('.approve-form').classList.toggle('open')">Review and re-approve</button></div>
+        <div class="approve-form">
+          <label class="check-line"><input type="checkbox" class="ack"> I have read the new facts and their sources.</label>
+          <label>Your name</label><input type="text" class="by" placeholder="Name">
+          <label>Note (what you changed)</label><input type="text" class="note" placeholder="e.g. Added certificate cost to budget">
+          <div class="row"><button class="small primary" onclick="approve('${esc(d.id)}', this)">Approve on current facts</button></div>
+        </div>`:""}
+    </div>`).join("") || `<div class="empty">No decisions yet. Load a scenario.</div>`;
+  const LABEL = {fact_added:"Fact added", fact_changed:"Fact changed", fact_rechecked:"Fact rechecked", decision_reopened:"Decision reopened", decision_at_risk:"Decision at risk", decision_approved:"Approved"};
+  $("#events").innerHTML = st.events.map(e => {
+    const d=e.detail||{}; let txt="";
+    if(e.kind==="fact_changed") txt=`v${d.from_version??"?"} → v${d.to_version}: ${esc(d.new_statement)}`;
+    else if(e.kind==="decision_reopened") txt=esc(d.reason);
+    else if(e.kind==="decision_approved") txt=`by ${esc(d.by)}${d.note?` · “${esc(d.note)}”`:""}${d.seeded?" (sample data)":""}`;
+    else if(e.kind==="fact_rechecked") txt=`${esc(d.band)} · score ${d.score}`;
+    else if(e.kind==="decision_at_risk") txt=esc(d.reason);
+    else txt=esc(d.statement||"");
+    return `<div class="ev"><code>${esc(e.ts.slice(11,19))}</code> <b>${LABEL[e.kind]||e.kind}</b> ${e.decision_id?esc(e.decision_id):""} ${e.fact_key?`<span class="meta">${esc(e.fact_key)}</span>`:""}<div class="meta">${txt}</div></div>`;
+  }).join("") || `<div class="empty">Nothing yet.</div>`;
+}
+
+window.approve = async (id, btn) => {
+  showErr("");
+  const box = btn.closest(".approve-form");
+  if(!box.querySelector(".ack").checked){ showErr("Tick the box to confirm you've read the new facts first."); return; }
+  try{ renderLedger(await api("/api/approve",{id, by:box.querySelector(".by").value, note:box.querySelector(".note").value})); }
+  catch(e){ showErr(e.message); }
+};
+init().catch(e=>showErr(e.message));
+</script>
+</body>
+</html>

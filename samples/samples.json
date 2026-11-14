@@ -1,0 +1,54 @@
+{
+  "dubai_building_law": {
+    "title": "Dubai building rules (a law changed in 2026)",
+    "context": "A property manager asked an AI assistant what an older Dubai building needs before renewing leases. The assistant's knowledge predates Dubai Law No. 3 of 2026.",
+    "answer": "Dubai does not require owners of older buildings to obtain a periodic building quality or safety certificate; the main recurring check is the Civil Defence fire safety inspection. Leases for flats in these buildings can be attested on Ejari without any building safety certificate. Dubai Municipality is the authority that issues building permits in Dubai.",
+    "seed": {
+      "facts": [
+        {"key": "dubai.old_buildings.safety_certificate_required", "type": "regulation",
+         "statement": "Dubai does not require owners of older buildings to hold a periodic building quality and safety certificate."},
+        {"key": "dubai.ejari.attestation_needs_building_certificate", "type": "regulation",
+         "statement": "Ejari lease attestation does not depend on any building safety certificate."},
+        {"key": "dubai.building_permits.issuing_authority", "type": "regulation",
+         "statement": "Dubai Municipality issues building permits in Dubai."}
+      ],
+      "decisions": [
+        {"id": "Q-112", "kind": "quote", "owner": "Property management",
+         "title": "Annual maintenance budget, Al Noor Tower (sample building, completed 2004)",
+         "approved_by": "R. Menon", "approved_at": "2026-01-20T09:00:00Z",
+         "pins": ["dubai.old_buildings.safety_certificate_required"]},
+        {"id": "PB-LEASE-3", "kind": "playbook", "owner": "Leasing team",
+         "title": "Lease renewal checklist for buildings over 20 years old",
+         "approved_by": "S. Haddad", "approved_at": "2025-11-02T09:00:00Z",
+         "pins": ["dubai.ejari.attestation_needs_building_certificate", "dubai.old_buildings.safety_certificate_required"]},
+        {"id": "GUIDE-7", "kind": "guide", "owner": "Projects",
+         "title": "Where to apply for a building permit (client FAQ)",
+         "approved_by": "A. Saifee", "approved_at": "2026-02-01T09:00:00Z",
+         "pins": ["dubai.building_permits.issuing_authority"]}
+      ]
+    }
+  },
+  "ai_vendor_register": {
+    "title": "AI vendor register (company facts)",
+    "context": "A procurement team asked an AI assistant to fill in its vendor risk register for AI infrastructure suppliers.",
+    "answer": "Tavily is an independent web search API startup with no parent company. Bifrost is an open-source AI gateway built by Maxim AI.",
+    "seed": {
+      "facts": [
+        {"key": "tavily.ownership", "type": "company",
+         "statement": "Tavily is an independent company with no parent company."},
+        {"key": "bifrost.maker_and_license", "type": "company",
+         "statement": "Bifrost is an open-source AI gateway built by Maxim AI."}
+      ],
+      "decisions": [
+        {"id": "VR-07", "kind": "vendor review", "owner": "Procurement",
+         "title": "Vendor risk review: web search API supplier",
+         "approved_by": "L. Kapoor", "approved_at": "2025-09-15T09:00:00Z",
+         "pins": ["tavily.ownership"]},
+        {"id": "VR-09", "kind": "vendor review", "owner": "Procurement",
+         "title": "Vendor risk review: AI gateway",
+         "approved_by": "L. Kapoor", "approved_at": "2026-04-03T09:00:00Z",
+         "pins": ["bifrost.maker_and_license"]}
+      ]
+    }
+  }
+}
