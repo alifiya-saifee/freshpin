@@ -235,7 +235,7 @@ def heuristic_claims(answer: str) -> list[dict[str, Any]]:
     return out[:8]
 
 
-_HEDGES = re.compile(r"not (?:been |yet )?confirmed|unconfirmed|unverified|such as|reportedly|rumou?red|"
+_HEDGES = re.compile(r"not (?:been |yet )?confirmed|unconfirmed|unverified|reportedly|rumou?red|"
                      r"it is unclear|(?:i|we) (?:do not|don't) know", re.I)
 
 
@@ -421,7 +421,8 @@ def run_check(answer: str, *, chat: ChatBackend, search: SearchBackend, ledger: 
             q = context.strip()[:300]
         seen = {s["url"] for s in all_sources[i]}
         try:
-            return [s.as_dict() for s in search.search(q, c["type"], max_sources) if s.url not in seen]
+            # Recheck search: basic depth (1 credit). Every claim is still rechecked; 2 credits a claim in total.
+            return [s.as_dict() for s in search.search(q, c["type"], max_sources, depth="basic") if s.url not in seen]
         except SearchUnavailable as exc:
             search_errors.append(f"{c['key']} (recheck): {exc}")
             return []

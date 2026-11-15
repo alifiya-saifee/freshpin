@@ -101,33 +101,53 @@ def watch_cmd(args: list[str]) -> int:
 
 def arena_cmd(a, s, app, client, questions, models, check) -> int:
     """Agent arena: the same model as several agent configurations, graded against gold answers."""
+    import functools
+    import json as _json
     import time as _time
     from datetime import date
 
     from . import bench
     from .benchbuild import make_gold_judge
     from .llm import RunBudget
+    from .pipeline import model_family
+
+    log = functools.partial(print, flush=True)  # progress shows up live even when output goes to a file
     arms = [x.strip() for x in a.arms.split(",") if x.strip() in bench.ARMS]
     check_arms = tuple(x.strip() for x in a.check_arms.split(",") if x.strip())
     if "repair" in arms and "bare" not in arms:
         arms.insert(0, "bare")
     today = date.today().isoformat()
-    print(f"Arena: {len(questions)} question(s) x {len(models)} model(s) x arms {arms}; FreshPin checks on {check_arms}.")
+    gold_url = {q["question"]: q.get("source_url") for q in questions}
+    search = app.search
+    log(f"Arena: {len(questions)} question(s) x {len(models)} model(s) x arms {arms}; FreshPin checks on {check_arms}.")
 
-    def sources_text(g: dict) -> str:
-        if not g["sources"]:
-            return "(no recent sources found)"
-        return "\n".join(f"[{i}] {x['title']} ({x.get('published_date') or 'undated'}) {x['url']}\n    {x['snippet'][:400]}"
-                         for i, x in enumerate(g["sources"], 1)) + f"\nAdvice: {g['advice']}"
+    def credits() -> int:
+        return getattr(search, "credits", 0)
+
+    def fresh_cache() -> None:  # no arm gets another arm's searches for free
+        if hasattr(search, "clear"):
+            search.clear()
+
+    def sources_text(sources: list, question: str, advice: str = "") -> tuple[str, int]:
+        # The gold answer's own article is left out, so grounding can't simply copy the answer key.
+        leak = gold_url.get(question)
+        kept = [x for x in sources if not leak or x.get("url") != leak]
+        if not kept:
+            return "(no recent sources found)", len(sources) - len(kept)
+        text = "\n".join(f"[{i}] {x.get('title')} ({x.get('published_date') or 'undated'}) {x.get('url')}\n"
+                         f"    {(x.get('snippet') or '')[:400]}" for i, x in enumerate(kept, 1))
+        return text + (f"\nAdvice: {advice}" if advice else ""), len(sources) - len(kept)
 
     def timed(fn):
         def run(model: str, question: str) -> dict:
-            budget, misses, t0 = RunBudget(30000), getattr(app.search, "misses", 0), _time.monotonic()
+            fresh_cache()
+            budget, c0, t0 = RunBudget(40000), credits(), _time.monotonic()
             res = fn(model, question, budget)
-            res.update(tokens=budget.used_tokens, searches=getattr(app.search, "misses", 0) - misses,
-                       latency_s=round(_time.monotonic() - t0, 1))
-            print(f"  {model.split('/')[-1]} [{fn.__name__}] {question[:60]} -> {len(res.get('tool_calls') or [])} tool call(s)")
+            res.update(tokens=budget.used_tokens, credits=credits() - c0, latency_s=round(_time.monotonic() - t0, 1))
+            log(f"  {model.split('/')[-1]} [{fn.__name__}] {question[:60]} -> "
+                f"{len(res.get('tool_calls') or [])} tool call(s), {res.get('tool_errors', 0)} tool error(s)")
             return res
+        run.__name__ = fn.__name__
         return run
 
     @timed
@@ -137,16 +157,19 @@ def arena_cmd(a, s, app, client, questions, models, check) -> int:
     @timed
     def grounded(model, question, budget):
         g = app.ground(question, depth="basic")
-        user = f"QUESTION: {question}\n\nSOURCES:\n{sources_text(g)}"
+        budget.charge(g.get("tokens", 0))  # the grounding classifier's tokens belong to this arm
+        text, leaked = sources_text(g["sources"], question, g.get("advice", ""))
+        user = f"QUESTION: {question}\n\nSOURCES:\n{text}"
         return {"answer": client.chat_text(model, bench.GROUNDED_SYSTEM.format(today=today), user, budget),
-                "tool_calls": [{"name": "ground_question", "args": {"question": question}}]}
+                "tool_calls": [{"name": "ground_question", "args": {"question": question}}], "gold_source_removed": leaked}
 
     @timed
     def agent(model, question, budget):
         def run_tool(name: str, args: dict) -> str:
-            if name != "search_web":
-                return "unknown tool"
-            return sources_text(app.ground(str(args.get("query") or question), depth="basic"))
+            # The agent's own search goes straight to Tavily: no classifier can veto a search the agent chose.
+            query = str(args.get("query") or question)
+            found = [x.as_dict() for x in search.search(query, "other", 5, depth="basic")]
+            return sources_text(found, question)[0]
         return client.chat_tools(model, bench.AGENT_SYSTEM.format(today=today), question, bench.SEARCH_TOOL,
                                  run_tool, budget)
 
@@ -155,11 +178,25 @@ def arena_cmd(a, s, app, client, questions, models, check) -> int:
         ans = client.chat_text(model, bench.ASK_SYSTEM.format(today=today), feedback, budget, step="repair")
         return {"answer": ans, "tool_calls": [], "tokens": budget.used_tokens, "latency_s": round(_time.monotonic() - t0, 1)}
 
+    def check_counted(answer: str, question: str) -> dict:
+        fresh_cache()
+        c0 = credits()
+        rep = check(answer, question)
+        rep["_credits"] = credits() - c0
+        return rep
+
     base = {"extractor": list(s.extractor_models), "verifier": list(s.verifier_models), "checker": list(s.checker_models)}
-    pool = base["checker"] + base["verifier"] + base["extractor"]
+    pool = list(dict.fromkeys(base["checker"] + base["verifier"] + base["extractor"]))
+    # ONE gold grader for every model in this run, from a family none of them belongs to (a fair comparison).
+    contestant_families = {model_family(m) for m in models}
+    shared = [m for m in pool if model_family(m) not in contestant_families]
+    if shared:
+        log(f"Gold grader for all models: {shared[0]} (family {model_family(shared[0])}).")
+    else:
+        log("  warning: no grader family outside all contestants; each model gets its own independent grader.")
 
     def set_model(model: str) -> bool:
-        # FreshPin's own judges and the gold grader must not share the agent's model family (self-preference).
+        # FreshPin's own judges must not share the agent's model family (self-preference).
         ok = True
         for role, attr in (("extractor", "extractor_models"), ("verifier", "verifier_models"), ("checker", "checker_models")):
             chosen, indep = bench.independent_models(model, base[role])
@@ -168,23 +205,30 @@ def arena_cmd(a, s, app, client, questions, models, check) -> int:
             setattr(app.s, attr, chosen)
             ok = ok and indep
         if not ok:
-            print(f"  warning: no checker from a different model family than {model}")
+            log(f"  warning: no checker from a different model family than {model}")
         return ok
 
     def judge_for(model: str):
-        judges, _ = bench.independent_models(model, pool)
+        judges = shared or bench.independent_models(model, pool)[0]
         return make_gold_judge(app.chat, judges, bench.admits_live_limits)
 
+    path = bench.RESULTS_DIR / f"bench-{_time.strftime('%Y%m%d-%H%M%S')}.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+
+    def save_partial(res: dict) -> None:
+        res["gold_grader"] = shared[0] if shared else "per-model"
+        path.write_text(_json.dumps(res, indent=2, ensure_ascii=False), encoding="utf-8")
+        path.with_suffix(".md").write_text(bench.arena_markdown(res), encoding="utf-8")
+        log(f"  saved after {len(res['models'])} model(s): {path}")
+
     result = bench.run_arena(questions, models, arms, {"bare": bare, "grounded": grounded, "agent": agent},
-                             judge_for, check=check, check_arms=check_arms, repair=repair_fn, set_model=set_model)
+                             judge_for, check=check_counted, check_arms=check_arms, repair=repair_fn,
+                             set_model=set_model, on_model_done=save_partial)
     for role, attr in (("extractor", "extractor_models"), ("verifier", "verifier_models"), ("checker", "checker_models")):
         setattr(app.s, attr, base[role])
-    path = bench.save(result)
-    md = path.with_suffix(".md")
-    md.write_text(bench.arena_markdown(result), encoding="utf-8")
-    print()
-    print(bench.arena_markdown(result))
-    print(f"Saved: {path}\n       {md}")
+    save_partial(result)
+    log()
+    log(bench.arena_markdown(result))
     return 0
 
 

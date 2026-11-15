@@ -646,7 +646,7 @@ class EventSearchTests(unittest.TestCase):
                       extractor_models=["a"], verifier_models=["b"], token_budget=10**6, today=TODAY,
                       context="Which company had a major outage on Friday 14 November affecting 11,500 companies?")
         self.assertEqual(search.calls[1][0], "Which company had a major outage on Friday 14 November affecting 11,500 companies?")
-        self.assertEqual(search.depths, ["basic", "advanced"])  # cheap first search, thorough recheck
+        self.assertEqual(search.depths, ["basic", "basic"])  # every claim rechecked, with a 1-credit search
 
 
 class GroundTests(unittest.TestCase):
@@ -838,26 +838,26 @@ class FreshBenchTests(unittest.TestCase):
             return {"title": f"T {url}", "url": url, "snippet": snippet, "published_date": published, "relevance": 1}
 
         art = "Outlook was down for six hours on Friday after a faulty update, Microsoft said."
-        rows = {"major service outage": [row("https://news.example.com/a", art),
-                                         row("https://news.example.com/old", "Old story.", "2026-09-01")],
-                "product launch announced": [row("https://news.example.com/a", art),  # duplicate URL
-                                             row("https://news.example.com/b", "A gadget launched.")],
-                "acquisition announced": [row("https://news.example.com/c", "Opinion piece about deals.")]}
+        rows = {"major service outage": [row("https://news.example.com/2026/11/14/outlook-outage", art),
+                                         row("https://news.example.com/2026/09/01/old-story", "Old story.", "2026-09-01")],
+                "product launch announced": [row("https://news.example.com/2026/11/14/outlook-outage", art),  # duplicate URL
+                                             row("https://news.example.com/2026/11/13/gadget-launch", "A gadget launched.")],
+                "acquisition announced": [row("https://news.example.com/2026/11/12/deals-opinion", "Opinion piece about deals.")]}
 
         class Chat:
             def chat_json(self, step, models, system, user, budget, simulate_outage=False):
-                if "news.example.com/a" in user:
+                if "outlook-outage" in user:
                     return {"usable": True, "question": "What happened to Outlook on Friday 13 Nov 2026?",
                             "gold_answer": "Outlook was down for six hours after a faulty update.",
                             "evidence_quote": "Outlook was down for six hours on Friday after a faulty update"}
-                if "news.example.com/b" in user:  # made-up quote: must be dropped
+                if "gadget-launch" in user:  # made-up quote: must be dropped
                     return {"usable": True, "question": "q", "gold_answer": "g",
                             "evidence_quote": "The gadget sold a million units in an hour"}
                 return {"usable": False}
 
         data = build_fresh_set(StubSearch(rows), Chat(), ["m"], TODAY, n=5,
                                queries=list(rows))
-        self.assertEqual([q["source_url"] for q in data["questions"]], ["https://news.example.com/a"])
+        self.assertEqual([q["source_url"] for q in data["questions"]], ["https://news.example.com/2026/11/14/outlook-outage"])
         q = data["questions"][0]
         self.assertEqual((q["category"], q["review"]), ("event", "auto"))
         self.assertEqual(data["skipped"]["quote_not_found"], 1)
@@ -882,7 +882,7 @@ class FreshBenchTests(unittest.TestCase):
         self.assertEqual(judge("It is Workday. I do not have confirmed information linking any other company.", q)
                          ["result"], "correct")
         self.assertEqual(judge("There was a flood in Paris.", q)["result"], "wrong")
-        self.assertEqual(judge("   ", q)["result"], "admitted_unknown")
+        self.assertEqual(judge("   ", q)["result"], "not_graded")  # empty/cut-off is not "said unknown"
         self.assertEqual(Chat.calls, 2)
 
     def test_repair_loop_tells_the_model_and_scores_the_fix(self):
@@ -1219,6 +1219,102 @@ class ArenaTests(unittest.TestCase):
         self.assertEqual(out["answer"], "Workday.")
         self.assertEqual(got, [{"query": "outage friday"}])
         self.assertEqual(len(out["tool_calls"]), 1)
+
+
+class GoldSetRuleTests(unittest.TestCase):
+    def test_item_rules_from_the_judges_review(self):
+        from freshpin.benchbuild import item_problem
+
+        def it(q, g, url="https://news.example.com/2026/11/14/workday-outage-hits-companies", quote="Workday was down."):
+            return {"question": q, "gold_answer": g, "source_url": url, "evidence_quote": quote}
+        self.assertEqual(item_problem(it("Which deal closed?", "Diamond bought a park.",
+                                         url="https://www.businesswire.com/newsroom/subject/merger-acquisition"),
+                                      "x", []), "index_page")
+        self.assertEqual(item_problem(it("What was the price move of JUP?", "JUP moved 3.11 percentage points."),
+                                      "x", []), "live_value")
+        cut = "a" * 700 + " is best explained by a cluster of Jupite"
+        self.assertEqual(item_problem(it("What explains the move?", "A cluster of updates.",
+                                         quote="is best explained by a cluster of Jupite"), cut, []), "quote_cut_off")
+        ms = [{"question": "Which Microsoft services were down in the outage?",
+               "gold_answer": "Microsoft Outlook, Teams and Copilot were down in the outage."}] * 2
+        self.assertEqual(item_problem(it("Which Microsoft services went down during the outage?",
+                                         "Outlook, Teams and Copilot went down during the Microsoft outage."), "x", ms),
+                         "same_event")
+        self.assertIsNone(item_problem(it("Which outage hit BBC readers?", "Outlook went down.",
+                                          url="https://www.bbc.com/news/articles/c5gm3g9ldz8xo"), "x", []))
+        self.assertIsNone(item_problem(it("Which software company had a major outage on Friday?",
+                                          "Workday had a major outage."), "x", ms))
+
+
+class ArenaFixTests(unittest.TestCase):
+    """Fixes from the round-3 judge: a stricter backstop, honest costs, robust tool use."""
+
+    def test_key_terms_skip_filler_dates_and_years(self):
+        from freshpin.bench import key_terms, string_match
+        self.assertEqual(key_terms("More than 100,000 users reported problems.", "How many users reported problems?"),
+                         {"100,000"})
+        self.assertEqual(key_terms("Apple HomeView went on sale on Friday, November 13, 2026.",
+                                   "When did Apple HomeView go on sale?"), {"13"})
+        terms = key_terms("Workday suffered a major outage affecting 11,500 companies.", "Which company had an outage?")
+        self.assertEqual(terms, {"Workday", "11,500"})
+        self.assertTrue(string_match("It was Workday.", terms))
+        self.assertTrue(string_match("About 11500 firms were hit.", terms))
+        self.assertFalse(string_match("It happened in 2025 to ServiceNow.", {"25"}))   # '25' is not '2025'
+        self.assertFalse(string_match("Workdays were lost.", {"Workday"}))             # whole words only
+
+    def test_tool_error_is_retried_then_answered_without_tools(self):
+        from freshpin.llm import BifrostClient as BC
+        import io
+
+        class Fake(BC):
+            def __init__(self):
+                super().__init__("http://x")
+                self.payloads = []
+
+            def _post(self, payload):
+                self.payloads.append(payload)
+                if "tools" in payload:  # the model keeps inventing a tool name
+                    raise urllib.error.HTTPError("u", 400, "bad", {}, io.BytesIO(b'{"error":{"code":"tool_use_failed"}}'))
+                return {"model": "m", "choices": [{"message": {"content": "Workday."}, "finish_reason": "stop"}]}
+
+        import urllib.error
+        f = Fake()
+        out = f.chat_tools("m", "s", "q", [{"type": "function", "function": {"name": "search_web"}}],
+                           lambda n, a: "", RunBudget(1000))
+        self.assertEqual(out["answer"], "Workday.")
+        self.assertEqual(out["tool_errors"], 2)                    # first try + the one retry
+        self.assertNotIn("tools", f.payloads[-1])                  # the final turn offers no tools
+        self.assertIn("Only these tools exist: search_web", f.payloads[1]["messages"][-1]["content"])
+
+    def test_credits_counted_by_depth_and_cache_clears(self):
+        from freshpin.search import CachedSearch
+        c = CachedSearch(StubSearch({}))
+        c.search("a", "event", depth="basic")
+        c.search("b", "event", depth="advanced")
+        c.search("a", "event", depth="basic")   # cache hit: free
+        self.assertEqual((c.credits, c.hits), (3, 1))
+        c.clear()
+        c.search("a", "event", depth="basic")
+        self.assertEqual(c.credits, 4)
+
+    def test_repair_pays_for_its_check_and_results_save_per_model(self):
+        from freshpin import bench
+        qs = [{"id": "q", "question": "Which company?", "category": "event", "gold_answer": "Workday."}]
+        saved = []
+
+        def check(ans, q):
+            return {"claims": [], "corrections": [{"claim": ans, "now": "Workday.", "reference": {}}], "unconfirmed": [],
+                    "gateway": {"tokens": 5000}, "_credits": 6}
+        res = bench.run_arena(qs, ["m1", "m2"], ["bare", "repair"],
+                              {"bare": lambda m, q: {"answer": "ServiceNow.", "tool_calls": [], "tokens": 100}},
+                              lambda m: (lambda a, q: {"result": "correct" if "Workday" in a else "wrong", "reason": ""}),
+                              check=check, check_arms=("bare",),
+                              repair=lambda m, fb: {"answer": "Workday.", "tool_calls": [], "tokens": 50},
+                              on_model_done=lambda r: saved.append(len(r["models"])))
+        rep = res["models"]["m1"]["rows"]["repair"][0]
+        self.assertEqual((rep["tokens"], rep["credits"]), (5050, 6))
+        self.assertEqual(saved, [1, 2])
+        self.assertEqual(res["models"]["m1"]["scorecard"]["repair"]["tokens_per_correct"], 5050)
 
 
 class McpTests(unittest.TestCase):

@@ -12,6 +12,7 @@ should read the set before it is used for anything that matters.
 from __future__ import annotations
 
 import json
+import re
 from datetime import date
 from pathlib import Path
 from typing import Any, Callable
@@ -48,6 +49,30 @@ Return ONLY JSON: {"result": "correct"|"partly"|"wrong"|"admitted_unknown", "rea
 reason: one sentence."""
 
 
+_INDEX_PATH = re.compile(r"/(?:tag|tags|topic|topics|category|categories|subject|section|newsroom/subject|search)/", re.I)
+_LIVE_VALUE = re.compile(r"\b(price|percentage points?|per cent|percent|stock|shares? (?:rose|fell)|token|coin|"
+                         r"crypto|exchange rate|yield)\b", re.I)
+
+
+def item_problem(item: dict[str, Any], snippet: str, kept: list[dict[str, Any]], max_per_event: int = 2) -> str | None:
+    """Fixed rules for a usable benchmark item. Returns why it is rejected, or None."""
+    from urllib.parse import urlparse
+    path = urlparse(item.get("source_url", "")).path
+    if _INDEX_PATH.search(path) or path.strip("/") == "" or (path.count("/") <= 1 and "-" not in path):
+        return "index_page"  # a list or tag page, not one article
+    if _LIVE_VALUE.search(item["question"] + " " + item["gold_answer"]):
+        return "live_value"  # prices move by the minute: not a stable gold answer
+    q = item.get("evidence_quote", "").strip()
+    if len(snippet) >= 650 and snippet.rstrip().endswith(q[-20:]) and q[-1:] not in ".!?\"'”":
+        return "quote_cut_off"  # the snippet was truncated in the middle of the quote
+    words = lambda s: set(re.findall(r"[^\W_]{4,}", s.casefold()))  # noqa: E731
+    mine = words(item["question"] + " " + item["gold_answer"])
+    same = [k for k in kept if mine and len(mine & words(k["question"] + " " + k["gold_answer"])) / len(mine) >= 0.35]
+    if len(same) >= max_per_event:
+        return "same_event"  # keep the set from being one story asked five ways
+    return None
+
+
 def estimate_build_credits(queries: list[str] = NEWS_QUERIES) -> int:
     return len(queries) * CREDITS_PER_SEARCH
 
@@ -71,7 +96,8 @@ def build_fresh_set(search: SearchBackend, chat: ChatBackend, models: list[str],
             candidates.append(s)
 
     items: list[dict[str, Any]] = []
-    skipped = {"not_usable": 0, "quote_not_found": 0, "model_error": 0}
+    skipped = {"not_usable": 0, "quote_not_found": 0, "model_error": 0, "index_page": 0, "live_value": 0,
+               "quote_cut_off": 0, "same_event": 0}
     for s in candidates:
         if len(items) >= n:
             break
@@ -89,10 +115,15 @@ def build_fresh_set(search: SearchBackend, chat: ChatBackend, models: list[str],
         if find_quote(out.get("evidence_quote", ""), [src]) is None:  # no quote, no item
             skipped["quote_not_found"] += 1
             continue
-        items.append({"id": f"fresh-{len(items) + 1}", "category": "event", "question": out["question"].strip(),
-                      "gold_answer": out["gold_answer"].strip(), "evidence_quote": out["evidence_quote"].strip(),
-                      "source_url": s.url, "source_title": s.title, "published_date": s.published_date,
-                      "as_of": today.isoformat(), "review": "auto"})
+        item = {"id": f"fresh-{len(items) + 1}", "category": "event", "question": out["question"].strip(),
+                "gold_answer": out["gold_answer"].strip(), "evidence_quote": out["evidence_quote"].strip(),
+                "source_url": s.url, "source_title": s.title, "published_date": s.published_date,
+                "as_of": today.isoformat(), "review": "auto"}
+        why = item_problem(item, s.snippet, items)
+        if why:
+            skipped[why] += 1
+            continue
+        items.append(item)
     return {"_note": "Auto-built from news by FreshPin. Each gold answer has a quote found word for word in its source. "
                      "Read and correct before relying on it (review: auto).",
             "built_on": today.isoformat(), "candidates": len(candidates), "skipped": skipped, "questions": items}
@@ -111,7 +142,7 @@ def make_gold_judge(chat: ChatBackend, models: list[str], admits: Callable[[str]
     enough here. Empty answers count as admitted unknown without a call."""
     def judge(answer: str, q: dict[str, Any]) -> dict[str, Any]:
         if not answer.strip():
-            return {"result": "admitted_unknown", "reason": "Empty answer."}
+            return {"result": "not_graded", "reason": "Empty or cut-off answer (not counted as 'said unknown')."}
         user = (f"QUESTION: {q['question']}\nGOLD ANSWER (from {q.get('source_url', 'a dated source')}, "
                 f"{q.get('published_date') or 'recent'}): {q['gold_answer']}\nMODEL ANSWER: {answer}")
         try:

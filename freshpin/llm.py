@@ -205,13 +205,24 @@ class BifrostClient:
     def chat_tools(self, model: str, system: str, user: str, tools: list[dict[str, Any]],
                    run_tool: Any, budget: RunBudget, max_calls: int = 2, step: str = "agent") -> dict[str, Any]:
         """A small agent loop for ONE model (no fallbacks: we test that exact model). The model decides whether to
-        call a tool; run_tool(name, args) returns text. Returns {"answer", "tool_calls": [...]}."""
+        call a tool; run_tool(name, args) returns text. Returns {"answer", "tool_calls", "tool_errors"}.
+        Harness rules: if the provider rejects a malformed tool call (some models invent tool names), the turn is
+        retried once with a reminder; the final turn offers no tools at all and asks for the answer."""
         messages: list[dict[str, Any]] = [{"role": "system", "content": system}, {"role": "user", "content": user}]
         calls: list[dict[str, Any]] = []
-        for turn in range(max_calls + 1):
+        tool_errors = 0
+        names = {t.get("function", {}).get("name") for t in tools}
+        turn = 0
+        retried = False
+        while True:
             budget.check()
-            payload: dict[str, Any] = {"model": model, "messages": messages, "tools": tools,
-                                       "tool_choice": "auto" if turn < max_calls else "none"}
+            final = turn >= max_calls
+            payload: dict[str, Any] = {"model": model, "messages": messages}
+            if final:
+                payload["messages"] = messages + [{"role": "user", "content": "Now give your final answer, without "
+                                                   "calling any tools."}]
+            else:
+                payload["tools"], payload["tool_choice"] = tools, "auto"
             if not self._no_temperature(model):
                 payload["temperature"] = 0
             trace = CallTrace(step=f"{step}:{turn}", requested_model=model)
@@ -224,28 +235,46 @@ class BifrostClient:
                 trace.served_by = data.get("model") or model
                 budget.charge(trace.prompt_tokens + trace.completion_tokens)
                 msg = data["choices"][0]["message"]
-            except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError, KeyError, IndexError, TypeError,
-                    AttributeError, ValueError) as exc:
-                trace.ok, trace.error = False, _describe(exc)
-                raise LLMUnavailable(trace.error) from exc
-            finally:
+            except urllib.error.HTTPError as exc:
+                body = _describe(exc)
+                trace.ok, trace.error = False, body
                 trace.latency_ms = int((time.monotonic() - t0) * 1000)
                 budget.log(trace)
-            tool_calls = msg.get("tool_calls") or []
-            if not tool_calls or turn >= max_calls:
-                return {"answer": message_text(msg.get("content")).strip(), "tool_calls": calls}
-            messages.append({"role": "assistant", "content": message_text(msg.get("content")) or None,
-                             "tool_calls": tool_calls})
+                if exc.code == 400 and "tool" in body.lower():
+                    tool_errors += 1
+                    if not retried and not final:  # one retry with a reminder of the real tool names
+                        retried = True
+                        messages = messages + [{"role": "user", "content": "Only these tools exist: "
+                                                f"{', '.join(sorted(n for n in names if n))}. Call one of them, or answer."}]
+                        continue
+                    if not final:  # still failing: go straight to the final, tool-free turn
+                        turn = max_calls
+                        continue
+                raise LLMUnavailable(body) from exc
+            except (urllib.error.URLError, TimeoutError, KeyError, IndexError, TypeError, AttributeError,
+                    ValueError) as exc:
+                trace.ok, trace.error = False, _describe(exc)
+                trace.latency_ms = int((time.monotonic() - t0) * 1000)
+                budget.log(trace)
+                raise LLMUnavailable(trace.error) from exc
+            trace.latency_ms = int((time.monotonic() - t0) * 1000)
+            budget.log(trace)
+            tool_calls = [] if final else (msg.get("tool_calls") or [])
+            if not tool_calls:
+                return {"answer": message_text(msg.get("content")).strip(), "tool_calls": calls,
+                        "tool_errors": tool_errors, "finish_reason": data["choices"][0].get("finish_reason")}
+            messages = messages + [{"role": "assistant", "content": message_text(msg.get("content")) or None,
+                                    "tool_calls": tool_calls}]
             for tc in tool_calls:
                 fn = tc.get("function") or {}
                 try:
                     args = json.loads(fn.get("arguments") or "{}")
                 except json.JSONDecodeError:
                     args = {}
-                result = run_tool(fn.get("name", ""), args)
+                result = run_tool(fn.get("name", ""), args) if fn.get("name") in names else "unknown tool"
                 calls.append({"name": fn.get("name"), "args": args})
                 messages.append({"role": "tool", "tool_call_id": tc.get("id", ""), "content": result})
-        return {"answer": "", "tool_calls": calls}
+            turn += 1
 
     def _no_temperature(self, model: str) -> bool:
         return any(model.startswith(p) for p in self.no_temperature_prefixes)

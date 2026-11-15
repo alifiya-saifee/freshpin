@@ -168,6 +168,9 @@ def claim_detail(c: dict[str, Any]) -> dict[str, Any]:
     elif c["verdict"] in ("unverifiable", "disputed"):
         why = rc.get("reason") if c["verdict"] == "disputed" else (c.get("explanation") or rc.get("second_explanation") or "")
     return {"text": c["text"], "type": c["type"], "verdict": c["verdict"], "score": c["freshness"]["score"],
+            # Both judges' raw verdicts, so we can later measure which claim types the recheck actually changes.
+            "first_verdict": c.get("first_verdict"), "checker_verdict": rc.get("checker_verdict"),
+            "recheck_status": rc.get("status"),
             "needs_live_feed": c.get("needs_live_feed", False), "now": now or None, "now_label": label,
             "why": (why or "").strip() or None,
             "reference": rc.get("best_reference"), "quote": rc.get("evidence_quote")}
@@ -366,20 +369,45 @@ def sign_test(b: int, c: int) -> float:
     return min(1.0, 2 * tail)
 
 
+_GENERIC = {
+    "the", "this", "that", "these", "those", "on", "in", "and", "for", "with", "after", "before", "its", "it", "more",
+    "over", "under", "about", "around", "nearly", "almost", "some", "many", "most", "all", "both", "according", "also",
+    "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday", "today", "yesterday", "week",
+    "january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november",
+    "december", "jan", "feb", "mar", "apr", "jun", "jul", "aug", "sep", "sept", "oct", "nov", "dec",
+    "users", "company", "service", "services", "reported", "report", "reports", "outage", "launch", "launched",
+    "announced", "new", "news", "inc", "ltd", "llc", "corp",
+}
+
+
 def key_terms(gold: str, question: str) -> set[str]:
-    """Names and numbers in the gold answer that the question doesn't already give away (e.g. 'Workday')."""
-    q = (question or "").casefold()
-    terms = set(re.findall(r"\b[A-Z][A-Za-z0-9&.-]{2,}\b|\b\d[\d,.]*\b", gold or ""))
-    stop = {"The", "This", "That", "On", "In", "And", "For", "With", "After", "Before", "Its", "It"}
-    return {t.rstrip(".,") for t in terms if t not in stop and t.casefold().rstrip(".,") not in q}
+    """The distinguishing names and numbers in a gold answer (e.g. 'Workday', '11,500'): capitalised words and
+    numbers the question doesn't already contain, minus filler ('More', 'Over'), dates (weekdays, months) and
+    years. Used for a whole-word backstop next to the LLM grader."""
+    qwords = set(re.findall(r"\w+", (question or "").casefold()))
+    out = set()
+    for t in re.findall(r"\b[A-Z][\w&.'-]{2,}\b|\b\d[\d,.]*\d\b|\b\d\b", gold or ""):
+        t = t.rstrip(".,'")
+        low = t.casefold()
+        if low in _GENERIC or low in qwords:
+            continue
+        if re.fullmatch(r"(19|20)\d\d", t):  # a year is too common to identify an answer
+            continue
+        out.add(t)
+    return out
 
 
 def string_match(answer: str, terms: set[str]) -> bool | None:
-    """Backstop next to the LLM grader: a 'correct' answer must contain at least one gold key term."""
+    """Backstop next to the LLM grader: a 'correct' answer must contain at least one gold key term as a whole
+    word or number ('25' does not match '2025'; '11,500' matches '11500')."""
     if not terms:
         return None
-    a = (answer or "").casefold().replace(",", "")
-    return any(t.casefold().replace(",", "") in a for t in terms)
+    a = (answer or "").replace(",", "")
+    for t in terms:
+        pat = re.escape(t.replace(",", ""))
+        if re.search(rf"(?<![\w.]){pat}(?![\w])", a, re.I):
+            return True
+    return False
 
 
 def _pct(xs: list[float], p: float) -> float | None:
@@ -403,7 +431,8 @@ def run_arena(questions: list[dict[str, Any]], models: list[str], arms: list[str
               gold_judge_for: Callable[[str], Callable[[str, dict[str, Any]], dict[str, Any]]],
               check: Callable[[str, str], dict[str, Any]] | None = None, check_arms: tuple[str, ...] = (),
               repair: Callable[[str, str], dict[str, Any]] | None = None,
-              set_model: Callable[[str], Any] | None = None) -> dict[str, Any]:
+              set_model: Callable[[str], Any] | None = None,
+              on_model_done: Callable[[dict[str, Any]], Any] | None = None) -> dict[str, Any]:
     """runners[arm](model, question) -> {"answer", "tool_calls": [...], "tokens", "searches", "latency_s"}.
     set_model(model) lets the caller point FreshPin's checkers at a different model family first."""
     out: dict[str, Any] = {"run_on": date.today().isoformat(), "arms": arms, "models": {}}
@@ -423,6 +452,9 @@ def run_arena(questions: list[dict[str, Any]], models: list[str], arms: list[str
                         fb = feedback_message(q["question"], bare_row["answer"], rep)
                         res = repair(model, fb) if fb else {"answer": bare_row["answer"], "tool_calls": []}
                         res["told_what_was_wrong"] = bool(fb)
+                        # The repair arm pays for the check that produced its feedback.
+                        res["tokens"] = res.get("tokens", 0) + rep.get("gateway", {}).get("tokens", 0)
+                        res["credits"] = res.get("credits", 0) + rep.get("_credits", 0)
                     else:
                         res = runners[arm](model, q["question"])
                     row.update({k: v for k, v in res.items() if k != "_report"})
@@ -448,6 +480,8 @@ def run_arena(questions: list[dict[str, Any]], models: list[str], arms: list[str
                 r.pop("_report", None)
         out["models"][model] = {"rows": rows, "scorecard": {a: arena_scorecard(rows[a]) for a in arms},
                                 "paired": paired_tests(rows, arms), "graders_independent": independent}
+        if on_model_done:
+            on_model_done(out)  # save after each model, so a crash later doesn't lose finished work
     return out
 
 
@@ -468,6 +502,9 @@ def arena_scorecard(rows: list[dict[str, Any]]) -> dict[str, Any]:
         "grader_disagrees": sum(bool(r.get("grader_disagrees")) for r in graded),
         "chose_to_search": (sum(bool(r["chose_to_search"]) for r in agent_rows) if agent_rows else None),
         "tool_calls": sum(len(r.get("tool_calls") or []) for r in rows),
+        "tool_errors": sum(r.get("tool_errors", 0) for r in rows),
+        "tavily_credits": sum(r.get("credits", 0) for r in rows),
+        "tokens_per_correct": (round(sum(r.get("tokens", 0) for r in rows) / correct) if correct else None),
         "tokens_mean": round(sum(r.get("tokens", 0) for r in rows) / len(rows)) if rows else 0,
         "tavily_searches": sum(r.get("searches", 0) for r in rows),
         "latency_p50_s": _pct(lat, 0.5), "latency_p95_s": _pct(lat, 0.95),
@@ -496,13 +533,14 @@ def arena_markdown(result: dict[str, Any]) -> str:
              "so read differences with the paired test below.", ""]
     for model, m in result["models"].items():
         lines += [f"## {model}", "", "| arm | n | correct | accuracy (95% CI) | partly | wrong | said unknown | "
-                  "chose to search | tool calls | tokens/answer | Tavily searches | p50 / p95 s |",
-                  "|---|---|---|---|---|---|---|---|---|---|---|---|"]
+                  "chose to search | tool calls (errors) | tokens/answer | tokens/correct | Tavily credits | p50 / p95 s |",
+                  "|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
         for arm, s in m["scorecard"].items():
             acc = "-" if s["accuracy"] is None else f"{s['accuracy']:.0%} ({s['accuracy_ci95'][0]:.0%}–{s['accuracy_ci95'][1]:.0%})"
             cts = "-" if s["chose_to_search"] is None else f"{s['chose_to_search']}/{s['n']}"
             lines.append(f"| {arm} | {s['n']} | {s['correct']} | {acc} | {s['partly']} | {s['wrong']} | {s['abstain']} | "
-                         f"{cts} | {s['tool_calls']} | {s['tokens_mean']} | {s['tavily_searches']} | "
+                         f"{cts} | {s['tool_calls']} ({s.get('tool_errors', 0)}) | {s['tokens_mean']} | "
+                         f"{s.get('tokens_per_correct') or '-'} | {s.get('tavily_credits', 0)} | "
                          f"{s['latency_p50_s']} / {s['latency_p95_s']} |")
         lines += ["", "| A vs B | items | B fixed | B broke | sign test p |", "|---|---|---|---|---|"]
         for p in m["paired"]:

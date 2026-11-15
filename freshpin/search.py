@@ -90,6 +90,7 @@ class CachedSearch:
         self.clock = clock
         self.hits = 0
         self.misses = 0
+        self.credits = 0  # Tavily credits actually spent: basic 1, advanced 2
         self._store: dict[tuple[str, str, int], tuple[float, list[Source]]] = {}
         self._lock = threading.Lock()
 
@@ -105,5 +106,11 @@ class CachedSearch:
         result = self.inner.search(query, claim_type, max_results, depth=depth)
         with self._lock:
             self.misses += 1
+            self.credits += 1 if depth == "basic" else 2
             self._store[key] = (now, list(result))
         return result
+
+    def clear(self) -> None:
+        """Drop cached results (the arena clears it per answer, so no arm gets another arm's searches free)."""
+        with self._lock:
+            self._store.clear()
