@@ -90,6 +90,23 @@ python -m freshpin bench --models groq/openai/gpt-oss-120b,gemini/gemini-2.5-fla
 - **Scorecard per model:** claims checked, % fresh / stale / disputed / unverified, average score, and **honest on live data**: for price and news questions, the answer either checks out or says plainly that the model can't know live values.
 - The bench prints a Tavily credit estimate first and needs `--yes` above 40 credits. `--no-recheck` halves the cost. Results are saved to `bench/results/` and never touch the pin ledger.
 
+### Fresh-events benchmark ("what happened on Friday?")
+
+Models fail most on things that happened after their training. `bench-build` makes a dated question set from this week's news, with a gold answer for each question and a quote that must appear word for word in the article (otherwise the item is dropped):
+
+```bash
+python -m freshpin bench-build --n 8                                   # ~14 Tavily credits -> bench/fresh-<date>.json
+python -m freshpin bench --questions bench/fresh-<date>.json --models groq/openai/gpt-oss-120b --repair --yes
+python -m freshpin bench --questions bench/fresh-<date>.json --models x --self-test --yes
+```
+
+- **Gold scoring:** a judge model compares each answer with the gold answer: correct, partly, wrong, or admitted it doesn't know.
+- **`--repair`: tell the model it's wrong.** FreshPin sends the model its answer, the confirmed corrections with sources, and the evidence it found for anything unverified, then re-checks the rewrite. The scorecard shows how many answers were fixed after feedback.
+- **`--self-test`: how often is FreshPin itself right?** Each gold answer should pass; a deliberately wrong version (a changed number or year) should fail. It reports the counts, not a guess.
+- Auto-built sets are marked `review: auto` and git-ignored until a person has read them (`git add -f` after review).
+
+**Live result, 15 Nov 2026.** The set found Friday's real events: a Workday outage affecting 11,500 companies (New York Post, Fox Business) and the Microsoft Outlook/Teams/Copilot outage (BBC, Reuters, NYT). Asked which company had Friday's outage, `gpt-oss-120b` answered "ServiceNow": **wrong** against gold. Told what FreshPin found, it rewrote its answer to "Workday": **correct**. That run also exposed four FreshPin bugs, all fixed with tests: an honesty rule that misread "users unable to access email" as the model admitting ignorance; a question that leaked its answer; event searches that used the model's wrong guess ("ServiceNow outage") instead of the event; and feedback without evidence.
+
 First live run (15 Nov 2026, 3 questions): `gpt-oss-120b` on Groq said the latest Python is 3.15.0 (confirmed current), said honestly that it has no real-time gold price, and described the Dubai rule as applying to buildings "10 years or older" (the law says 20), which FreshPin flagged. Gemini's free daily quota had run out, so its rows show the 429 error instead of a score.
 
 ## Choosing the judge models
@@ -211,7 +228,11 @@ The header chips show whether Bifrost is reachable and the Tavily key is set.
 ```bash
 python -m freshpin sample dubai_building_law      # load a scenario, check it, print a summary
 python -m freshpin check "The latest Python release is 3.11."
+python -m freshpin watch            # re-check pinned facts past their half-life; alert on reopened / at-risk decisions
+python -m freshpin watch --all      # re-check every pinned fact now
 ```
+
+**Alerts.** Set `FRESHPIN_WEBHOOK_URL` (a Slack-style incoming webhook) and `watch` posts one message when a decision reopens or goes at risk. Run it from cron, e.g. every 6 hours. The message holds only decision titles, owners and status. Live test: `watch --all` on the Dubai demo re-checked 3 pinned facts and posted "Q-112 … AT RISK, PB-LEASE-3 … AT RISK".
 
 ### From an AI assistant (MCP)
 
@@ -220,6 +241,7 @@ python -m freshpin check "The latest Python release is 3.11."
 | Tool | What it does |
 |---|---|
 | `check_answer` | `answer` (and optional `context`) → each claim with its verdict, score, today's statement and sources, plus any decisions it reopened. Unverified claims are labelled UNVERIFIED, never "stale". |
+| `ground_question` | Call **before** answering a question whose answer may have changed (news, live prices, laws, versions). Returns dated sources ranked by authority, plus advice; for a live value with no source dated today: "don't state a number". Answering from current facts first saves the tokens of answering wrong and then fixing it. |
 | `get_ledger` | Read-only: facts and versions, decisions and their status, recent audit events. |
 
 There is **no approve tool, on purpose**: an assistant can check facts and reopen decisions, but only a named person can re-approve, in the web app.
@@ -277,7 +299,9 @@ freshpin/
   app.py        wiring for the UI and CLI
   server.py     standard-library HTTP server + JSON API
   mcp.py        MCP server (stdio) for AI assistants
-  bench.py      model test bench and scorecard
+  bench.py      model test bench, gold scoring, repair loop, scorecard
+  benchbuild.py fresh-events question builder (gold answers + quotes), self-test
+  watch.py      scheduled re-checks and webhook alerts
 bench/          bench questions (results/ is git-ignored)
 web/index.html  the UI (no build step, no external assets)
 samples/        demo scenarios and their seeded decisions
@@ -293,6 +317,8 @@ tests/          unittest suite
 - No market data feed: live prices and rates can only be confirmed when a page dated today states them. A production version would add a feed (for example a commodities or FX API) as another evidence source.
 - Free tiers run out: Gemini's free daily quota can be used up during heavy testing. Bifrost then falls back to the next provider; add a third provider for more headroom.
 - Bifrost runs next to FreshPin (locally or on a server you control), so there is no hosted demo link: run it locally in three steps, or use replay mode with no keys.
+- Search coverage: FreshPin sees what Tavily's index returns (with news and finance topics). Very new or regional news can be missing; then it says "unverified" rather than guessing. A second search provider is a possible addition.
+- Auto-built benchmark sets need a person to read them; the quote rule removes made-up gold answers but not every badly worded question.
 - The demo ledger is a local SQLite file. A production version would sit next to the systems where decisions live (CRM, ERP, document approvals).
 
 ## Beyond text answers: robots and other models
@@ -307,6 +333,29 @@ The FreshPin loop is general: **claim → fresh evidence → independent second 
 | Agents using tools | "email sent", "file uploaded" | the tool's log or API status | reading it back from the system | the next steps in the workflow |
 
 The freshness rule carries over: evidence has a half-life (seconds for a robot's view of the world, days for news, months for laws), and no evidence means no verdict. These are design notes, not built here.
+
+**How it would plug in:** an `EvidenceSource` with the same shape as the Tavily client (`search(query, type) -> dated items with text`). A camera adapter returns frames with timestamps and a vision model's caption; a sensor adapter returns readings. The judges, the quote rule (here: a frame ID and a reading must back the verdict), the two-judge agreement and the pin ledger stay the same. This is the plan for Site Witness ("a repair closes only when the camera sees it").
+
+## Every scenario, and what FreshPin does
+
+| Scenario | What happens |
+|---|---|
+| A claim is out of date | STALE / WRONG with "Real now", the official source, the quote and why; decisions pinned to it **reopen**; a person re-approves |
+| Two judges disagree or there's no quote | DISPUTED: decisions go **at risk**, never reopen; "one check only" facts are shown and labelled |
+| The web says nothing either way | UNVERIFIED ("silence is not proof"), never "fresh" |
+| A live price or rate | Current only if a source dated today states it; otherwise "needs a live data feed" |
+| A recent event the model never saw | `ground_question` gives dated news *before* it answers; `check_answer` searches the event, not the model's guess |
+| The model is wrong | Corrections list for the assistant; in the bench, `--repair` tells the model and re-checks |
+| Facts change later | `watch` re-checks pinned facts by half-life and posts alerts |
+| A provider is down or rate-limited | Bifrost fallbacks, client failover, one retry after a 429, at most 2 model calls at a time; if every model is down, nothing in the ledger changes |
+| Choosing or launching a model | `bench` scorecards: fresh/stale/disputed, honest on live data, gold accuracy, fixed after feedback |
+| Is FreshPin itself right? | `bench --self-test`: gold answers should pass, wrong versions should fail |
+
+## A guardrail on the model's thinking: what is and isn't possible
+
+- **Closed models** (Claude, GPT, Gemini) don't expose their raw thinking, so nobody can inspect it before the answer. The token-saving move is to **ground first** (`ground_question`), so the model answers from current facts instead of answering wrong and being fixed.
+- **Some open models** return their reasoning (NVIDIA's Nemotron returns a reasoning field). A next step is to stream it, extract claims from the draft, and stop early when a stale claim appears. Not built yet.
+- **For FreshPin's own judges**, thinking is switched off: Nemotron Super went from 1.9 s and 261 tokens to 0.4 s and 35 tokens, with the same verdict and quote.
 
 ## Built during the hackathon, and use of AI tools
 
