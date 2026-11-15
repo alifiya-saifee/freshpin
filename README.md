@@ -4,6 +4,8 @@
 
 FreshPin checks an AI-generated answer claim by claim against the live web (Tavily), scores how fresh each claim is, and, when a fact has changed, **reopens every decision that was approved on the old version** so a person can review it. All model calls go through the Bifrost gateway, with fallbacks across providers and a spend limit on every run.
 
+**Four ways in:** a web app for people, an **MCP tool** so AI assistants (Claude Code, Claude Desktop, Cursor) can check their own answer before they reply, a command line, and a JSON API for other apps.
+
 Built for the Geek Room AI Global Hackathon 2026, for the **"Build a Stale-Answer Detector for AI Applications"** problem statement (Tavily + Bifrost).
 
 ![FreshPin screenshot](docs/screenshot.png)
@@ -39,6 +41,8 @@ Most stale-answer checkers stop at a score for each claim. FreshPin adds a **pin
 1. **Gateway fallback:** Bifrost retries on the next provider in `fallbacks`.
 2. **Client failover:** if Bifrost returns an error for the whole request, FreshPin tries the next model in its own list.
 3. **Graceful degradation:** if every model is down, FreshPin still returns the Tavily evidence, marks claims "AI verifier unavailable", and **changes nothing in the ledger**. It never reopens or approves anything on guesswork.
+
+This is not theoretical: in a live run on Groq's free tier, one of four parallel verifier calls hit Groq's rate limit (HTTP 429) and Bifrost answered it from Gemini instead. The run finished normally and the trace showed one fallback.
 
 The **Simulate primary model outage** switch in the UI puts a model that will fail at the front of the chain, so you can watch the fallback happen live.
 
@@ -77,10 +81,16 @@ FreshPin needs **Python 3.10+** and nothing else: no `pip install`.
 ### 1. Start Bifrost
 
 ```bash
-npx -y @maximhq/bifrost        # or: docker run -p 8080:8080 maximhq/bifrost
+npx -y @maximhq/bifrost -app-dir ./bifrost-data    # or: docker run -p 8080:8080 maximhq/bifrost
 ```
 
-Open http://localhost:8080, add your provider keys (for example OpenAI and Anthropic, or a local model through Ollama), and note the model names you enabled. See the [Bifrost repository](https://github.com/maximhq/bifrost) for details.
+Then open http://localhost:8080. With Bifrost v2.5:
+
+1. **Admin account.** The first time, Bifrost asks for a setup token. Start it with `BIFROST_SETUP_TOKEN=<any long random string>` set, enter that token in the browser, then create an admin username and password.
+2. **Providers.** Under **Models → Model Providers**, add a key for two providers. Two free options: **Gemini** (key from aistudio.google.com) and **Groq** (key from console.groq.com; Groq, not Grok). Any providers Bifrost supports will work.
+3. **Virtual key.** Under **Governance → Virtual Keys**, create a key, allow both providers **and the models you will use**, and copy it (`sk-bf-...`). If "Enforce Virtual Keys on Inference" is on, calls without it get HTTP 401.
+
+The model names FreshPin uses by default (`gemini/gemini-2.5-flash`, `groq/openai/gpt-oss-120b`) worked on 15 Nov 2026. Providers retire models, so check the names in Bifrost's model list. See the [Bifrost docs](https://docs.getbifrost.ai) for details.
 
 ### 2. Get a Tavily key
 
@@ -89,7 +99,7 @@ Sign up at [app.tavily.com](https://app.tavily.com).
 ### 3. Configure and start
 
 ```bash
-cp .env.example .env           # add TAVILY_API_KEY and the Bifrost model names you enabled
+cp .env.example .env           # add TAVILY_API_KEY, BIFROST_VIRTUAL_KEY and your model names
 python -m freshpin serve       # http://127.0.0.1:8787
 ```
 
@@ -109,6 +119,33 @@ python -m freshpin sample dubai_building_law      # load a scenario, check it, p
 python -m freshpin check "The latest Python release is 3.11."
 ```
 
+### From an AI assistant (MCP)
+
+`python -m freshpin mcp` runs FreshPin as an [MCP](https://modelcontextprotocol.io) server over stdio (standard library only). An assistant can then check an answer before giving it to a person.
+
+| Tool | What it does |
+|---|---|
+| `check_answer` | `answer` (and optional `context`) → each claim with its verdict, score, today's statement and sources, plus any decisions it reopened. Unverified claims are labelled UNVERIFIED, never "stale". |
+| `get_ledger` | Read-only: facts and versions, decisions and their status, recent audit events. |
+
+There is **no approve tool, on purpose**: an assistant can check facts and reopen decisions, but only a named person can re-approve, in the web app.
+
+Add it to Claude Code (use the full path to this folder):
+
+```bash
+claude mcp add freshpin -s user -e PYTHONPATH=/path/to/freshpin -- python3 -m freshpin mcp
+```
+
+For Claude Desktop or Cursor, add the same command to the app's MCP settings:
+
+```json
+{ "mcpServers": { "freshpin": {
+    "command": "python3", "args": ["-m", "freshpin", "mcp"],
+    "env": { "PYTHONPATH": "/path/to/freshpin" } } } }
+```
+
+Then ask, for example: *"Check this answer with freshpin before you use it: Dubai does not require older buildings to have a safety certificate."* The MCP tool uses the same `.env` settings and the same ledger as the web app, so a decision it reopens shows up there for a person to review.
+
 ### Offline replay mode and tests
 
 `FRESHPIN_MODE=replay` uses recorded responses from `fixtures/replay.json` (real source URLs, short summarised snippets) so the UI and tests run without keys or internet. The UI shows a banner whenever replay mode is on. Live mode is the real product.
@@ -117,7 +154,7 @@ python -m freshpin check "The latest Python release is 3.11."
 python -m unittest discover -s tests -v
 ```
 
-The tests cover the scoring formula, the ledger's reopen and re-approve rules, the full pipeline in replay mode, outage handling and degradation, and the Bifrost client against a fake gateway (fallback detection, failure and budget).
+The tests cover the scoring formula, the ledger's reopen and re-approve rules, the full pipeline in replay mode, outage handling and degradation, the Bifrost client against a fake gateway (fallback detection, including model names that contain a slash, failure and budget), and the MCP server (tool list, a full check that reopens decisions, unverified labels, and errors that don't crash it).
 
 ## JSON API
 
@@ -144,6 +181,7 @@ freshpin/
   replay.py     offline backends for tests
   app.py        wiring for the UI and CLI
   server.py     standard-library HTTP server + JSON API
+  mcp.py        MCP server (stdio) for AI assistants
 web/index.html  the UI (no build step, no external assets)
 samples/        demo scenarios and their seeded decisions
 fixtures/       recorded responses for replay mode
@@ -154,6 +192,8 @@ tests/          unittest suite
 
 - Verdicts depend on what Tavily finds. When sources are thin or undated, FreshPin says so (the "check" band, "unverifiable") rather than guessing, and it never reopens a decision on unclear evidence.
 - Claim keys are produced by the extractor model and matched to known facts; two different wordings of the same fact can occasionally get different keys.
+- Free provider tiers have rate limits. Bifrost's fallbacks cover short bursts; heavy use needs paid keys or more providers.
+- Bifrost runs next to FreshPin (locally or on a server you control), so there is no hosted demo link: run it locally in three steps, or use replay mode with no keys.
 - The demo ledger is a local SQLite file. A production version would sit next to the systems where decisions live (CRM, ERP, document approvals).
 
 ## Built during the hackathon, and use of AI tools

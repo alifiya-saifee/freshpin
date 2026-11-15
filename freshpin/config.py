@@ -38,11 +38,11 @@ class Settings:
 
     # Models use Bifrost's "provider/model" naming. The first is primary; the rest are fallbacks.
     extractor_models: list[str] = field(default_factory=lambda: _list(
-        "FRESHPIN_EXTRACTOR_MODELS", "openai/gpt-4o-mini,anthropic/claude-3-5-haiku-latest"))
+        "FRESHPIN_EXTRACTOR_MODELS", "gemini/gemini-2.5-flash,groq/openai/gpt-oss-120b"))
     verifier_models: list[str] = field(default_factory=lambda: _list(
-        "FRESHPIN_VERIFIER_MODELS", "anthropic/claude-3-5-haiku-latest,openai/gpt-4o-mini"))
+        "FRESHPIN_VERIFIER_MODELS", "groq/openai/gpt-oss-120b,gemini/gemini-2.5-flash"))
     # Used by the "simulate outage" switch: a model that will fail, so Bifrost must fall back.
-    outage_model: str = field(default_factory=lambda: os.environ.get("FRESHPIN_OUTAGE_MODEL", "openai/model-that-does-not-exist"))
+    outage_model: str = field(default_factory=lambda: os.environ.get("FRESHPIN_OUTAGE_MODEL", "groq/model-that-does-not-exist"))
 
     # Spend guard for a single check run (tokens across all LLM calls).
     run_token_budget: int = field(default_factory=lambda: int(os.environ.get("FRESHPIN_RUN_TOKEN_BUDGET", "60000")))
