@@ -6,6 +6,7 @@ import sys
 
 from .app import FreshPin
 from .config import settings
+from .bench import claim_detail as bench_detail
 from .server import serve
 
 USAGE = """usage:
@@ -43,16 +44,15 @@ def main(argv: list[str]) -> int:
             f = c["freshness"]
             label = {"unverifiable": "UNVER", "disputed": "DISPU"}.get(c["verdict"], f["band"].upper())
             print(f"[{label:5}] {f['score']:3}  {c['text']}")
-            if c["verdict"] in ("stale", "contradicted"):
-                print(f"         now: {c['current_statement']}")
-            if c.get("needs_live_feed"):
-                print("         needs a live data feed: no source dated today states this value")
+            d = bench_detail(c)
+            if d["now"]:
+                print(f"         now: {d['now']}")
             r = c.get("recheck") or {}
             if r.get("status") not in (None, "skipped"):
                 ref = r.get("best_reference") or {}
                 print(f"         recheck: {r['status']} | best ref: {ref.get('authority', '-')} {ref.get('url', '-')}")
-                if r.get("why_outdated") and c["verdict"] != "current":
-                    print(f"         why old: {r['why_outdated']}")
+            if d["why"]:
+                print(f"         why: {d['why']}")
         print("reopened:", rep["summary"]["decisions_reopened"] or "none")
         g = rep["gateway"]
         s = rep["summary"]
@@ -73,12 +73,21 @@ def bench_cmd(args: list[str]) -> int:
     from .llm import BifrostClient, RunBudget
 
     ap = argparse.ArgumentParser(prog="python -m freshpin bench")
-    ap.add_argument("--models", required=True, help="comma-separated Bifrost provider/model names to test")
+    ap.add_argument("--models", help="comma-separated Bifrost provider/model names to test")
+    ap.add_argument("--show", metavar="FILE", help="print a saved result (bench/results/...) again; no credits used")
     ap.add_argument("--questions", default=str(bench.QUESTIONS))
     ap.add_argument("--max", type=int, default=6, help="use only the first N questions")
     ap.add_argument("--no-recheck", action="store_true", help="skip the recheck layer (half the Tavily credits)")
     ap.add_argument("--yes", action="store_true", help="run even if the estimate is above 40 Tavily credits")
     a = ap.parse_args(args)
+    if a.show:
+        import json as _json
+        saved = bench.rescore(_json.loads(Path(a.show).read_text(encoding="utf-8")))
+        bench.print_table(saved)
+        bench.print_details(saved)
+        return 0
+    if not a.models:
+        ap.error("--models is required (or use --show FILE)")
 
     s = settings()
     if s.mode != "live":
@@ -109,6 +118,7 @@ def bench_cmd(args: list[str]) -> int:
     result = bench.run_bench(questions, models, ask, check)
     print()
     bench.print_table(result)
+    bench.print_details(result)
     print(f"\nSaved: {bench.save(result)}")
     if hasattr(app.search, "hits"):
         print(f"Tavily searches: {app.search.misses} made, {app.search.hits} reused from cache")

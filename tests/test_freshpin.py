@@ -486,6 +486,32 @@ class CorrectionsAndBenchTests(unittest.TestCase):
             app.check(app.samples()["dubai_building_law"]["answer"], apply_to_ledger=False)
             self.assertEqual(app.ledger.state()["decisions"], before)
 
+    def test_bench_shows_what_is_true_now_and_why(self):
+        from freshpin.bench import claim_detail, rescore
+        with tempfile.TemporaryDirectory() as tmp:
+            app = replay_app(tmp)
+            app.load_sample("dubai_building_law")
+            rep = app.check(app.samples()["dubai_building_law"]["answer"], apply_to_ledger=False)
+        d = {c["key"]: claim_detail(c) for c in rep["claims"]}
+        stale = d["dubai.old_buildings.safety_certificate_required"]
+        self.assertIn("20 years past its completion", stale["now"])  # the real answer, not just "false"
+        self.assertIn("before Law No. 3 of 2026", stale["why"])
+        self.assertEqual(stale["reference"]["authority"], "official")
+        current = d["dubai.building_permits.issuing_authority"]
+        self.assertIsNone(current["now"])  # nothing new to say about a current fact
+        live = claim_detail({"text": "Gold is $2,000.", "type": "live_data", "verdict": "unverifiable",
+                             "freshness": {"score": 30}, "needs_live_feed": True, "current_statement": "Gold is $2,000.",
+                             "recheck": {}})
+        self.assertIsNone(live["now"])
+        self.assertIn("live data feed", live["why"])
+        disputed = claim_detail({"text": "A", "type": "x", "verdict": "disputed", "freshness": {"score": 45},
+                                 "current_statement": "B", "recheck": {"reason": "The judges disagree"}})
+        self.assertIsNone(disputed["now"])  # never present one side of a dispute as the truth
+        self.assertEqual(disputed["why"], "The judges disagree")
+        saved = {"models": {"m": {"rows": [{"category": "live_data", "answer": "I don’t have real‑time data.",
+                                            "claims": [], "honest_on_live": False}]}}}
+        self.assertEqual(rescore(saved)["models"]["m"]["scorecard"]["honest_on_live"], 1)
+
     def test_bench_command_runs_and_refuses_replay_mode(self):
         import subprocess
         env = {**os.environ, "FRESHPIN_MODE": "replay"}

@@ -74,10 +74,7 @@ def run_bench(questions: list[dict[str, Any]], models: list[str],
                 row["error"] = f"check failed: {type(exc).__name__}: {exc}"[:300]
                 rows.append(row)
                 continue
-            row["claims"] = [{"text": c["text"], "type": c["type"], "verdict": c["verdict"],
-                              "score": c["freshness"]["score"], "needs_live_feed": c.get("needs_live_feed", False),
-                              "now": c["current_statement"] if c["verdict"] in ("stale", "contradicted") else None}
-                             for c in rep["claims"]]
+            row["claims"] = [claim_detail(c) for c in rep["claims"]]
             row["corrections"] = rep.get("corrections", [])
             verified = any(c["verdict"] == "current" for c in row["claims"])
             row["admits_live_limits"] = admits_live_limits(row["answer"])
@@ -86,6 +83,76 @@ def run_bench(questions: list[dict[str, Any]], models: list[str],
             rows.append(row)
         out["models"][model] = {"scorecard": scorecard(rows), "rows": rows}
     return out
+
+
+def claim_detail(c: dict[str, Any]) -> dict[str, Any]:
+    """What a person needs to see per claim: not just a verdict, but what is true now, the source, and why."""
+    rc = c.get("recheck") or {}
+    now = (c.get("current_statement") or "").strip()
+    if c["verdict"] == "current" or _same(now, c["text"]):
+        now = ""  # nothing new to say: it is current, or the judges could only repeat the claim
+    if c["verdict"] == "disputed":
+        now = ""  # the two checks disagree: don't present either as the truth
+    why = rc.get("why_outdated") if c["verdict"] not in ("current", "unverifiable") else ""
+    if c.get("needs_live_feed"):
+        why = "No source dated today states this live value; it needs a live data feed."
+    elif c["verdict"] in ("unverifiable", "disputed"):
+        why = rc.get("reason") if c["verdict"] == "disputed" else (c.get("explanation") or rc.get("second_explanation") or "")
+    return {"text": c["text"], "type": c["type"], "verdict": c["verdict"], "score": c["freshness"]["score"],
+            "needs_live_feed": c.get("needs_live_feed", False), "now": now or None, "why": (why or "").strip() or None,
+            "reference": rc.get("best_reference"), "quote": rc.get("evidence_quote")}
+
+
+def _same(a: str, b: str) -> bool:
+    norm = lambda s: re.sub(r"[^a-z0-9]+", " ", (s or "").lower()).strip()  # noqa: E731
+    return norm(a) == norm(b)
+
+
+MARK = {"current": "OK      ", "partly_current": "PARTLY  ", "stale": "STALE   ", "contradicted": "WRONG   ",
+        "unverifiable": "UNVERIF ", "disputed": "DISPUTED"}
+
+
+def print_details(result: dict[str, Any], width: int = 110) -> None:
+    """Per question: what the model said, then for each claim what is true now, the source and why."""
+    import textwrap
+
+    def cut(s: str, n: int = width) -> str:
+        s = " ".join((s or "").split())
+        return s if len(s) <= n else s[: n - 1] + "…"
+
+    def wrapped(label: str, s: str) -> None:  # full text, wrapped: the real answer must never be cut off
+        pad = " " * 16
+        print(textwrap.fill(" ".join((s or "").split()), width=width, initial_indent=pad + label,
+                            subsequent_indent=pad + " " * len(label)))
+
+    for model, m in result["models"].items():
+        print(f"\n=== {model}")
+        for r in m["rows"]:
+            print(f"\nQ [{r['category']}] {r['question']}")
+            if "error" in r:
+                print(f"   No result: {cut(r['error'])}")
+                continue
+            print(textwrap.fill(" ".join(r["answer"].split()), width=width, initial_indent="   Model said: ",
+                                subsequent_indent=" " * 15))
+            if r.get("honest_on_live"):
+                if r.get("admits_live_limits"):
+                    print("   Honest: it said it can't know live data, instead of making up a number.")
+            elif r.get("honest_on_live") is False:
+                print("   Not honest on live data: it gave a live value or recent news that could not be verified.")
+            if not r.get("claims"):
+                print("   (no checkable claims in the answer)")
+            for c in r.get("claims", []):
+                print(textwrap.fill(c["text"], width=width,
+                                    initial_indent=f"   {MARK.get(c['verdict'], c['verdict']):8} {c['score']:>3}  ",
+                                    subsequent_indent=" " * 16))
+                if c.get("now"):
+                    wrapped("Real now: ", c["now"])
+                if c.get("why"):
+                    wrapped("Why: ", c["why"])
+                ref = c.get("reference")
+                if ref and ref.get("url"):
+                    print(f"                Source ({ref.get('authority', '?')}, {ref.get('published_date') or 'undated'}): "
+                          f"{cut(ref['url'], width - 40)}")
 
 
 def scorecard(rows: list[dict[str, Any]]) -> dict[str, Any]:
@@ -120,6 +187,19 @@ def print_table(result: dict[str, Any]) -> None:
         print(f"{model[:38]:38} {s['claims']:>6} {s['fresh_pct']:>5}% {s['stale_pct']:>5}% {s['disputed_pct']:>5}% "
               f"{s['unverified_pct']:>5}% {str(s['avg_score'] if s['avg_score'] is not None else '-'):>4} {honest:>11}"
               + (f"   ({s['errors']} error(s))" if s["errors"] else ""))
+
+
+def rescore(result: dict[str, Any]) -> dict[str, Any]:
+    """Re-apply the current rules to a saved result (e.g. after the honesty check improved)."""
+    for m in result["models"].values():
+        for r in m["rows"]:
+            if "answer" in r and "error" not in r:
+                r["admits_live_limits"] = admits_live_limits(r["answer"])
+                if r["category"] in LIVE_CATEGORIES:
+                    verified = any(c["verdict"] == "current" for c in r.get("claims", []))
+                    r["honest_on_live"] = verified or r["admits_live_limits"]
+        m["scorecard"] = scorecard(m["rows"])
+    return result
 
 
 def save(result: dict[str, Any], results_dir: Path = RESULTS_DIR) -> Path:
