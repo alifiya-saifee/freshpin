@@ -261,6 +261,7 @@ def agentbench_cmd(args: list[str]) -> int:
     ap.add_argument("--model", required=True, help="model under test, Bifrost provider/model")
     ap.add_argument("--fallbacks", default="", help="fallback models offered to agents (comma-separated)")
     ap.add_argument("--search-type", default="event", help="claim type for live searches (event = news, last week)")
+    ap.add_argument("--pace", type=float, default=0.0, help="seconds to wait between runs (free-tier rate limits)")
     ap.add_argument("--yes", action="store_true")
     a = ap.parse_args(args)
 
@@ -329,7 +330,7 @@ def agentbench_cmd(args: list[str]) -> int:
 
     try:
         result = run_suite(tasks, agents, conds, a.repeats, a.model, fallbacks, tools, llm, grade, bifrost, on_run,
-                           on_progress=on_progress)
+                           on_progress=on_progress, pace_s=a.pace)
         print("All agents ran; reading Bifrost's log and grading (4 at a time)...", flush=True)
     finally:
         tools.stop()

@@ -89,7 +89,7 @@ function renderBoard(){
         ${s.drop_vs_normal?`<span class="pill fault">−${Math.round(s.drop_vs_normal*100)} pts</span>`:""}<br>
         <span class="small">pass^${s.k}: ${s.pass_all_k}/${s.tasks} · steps ${s.steps_mean} · tools ${s.tool_calls_mean} · tokens ${s.tokens_mean}<br>
         $${s.cost_usd_total} total · ${s.cost_per_success_usd!=null?"$"+s.cost_per_success_usd+"/success · ":""}${s.seconds_p50}s p50 · ${s.seconds_p95}s p95
-        ${s.agent_errors?` · <span class="bad">${s.agent_errors} errors</span>`:""}${s.followed_planted?` · <span class="bad">followed planted ${s.followed_planted}×</span>`:""}</span></td>`;
+        ${s.agent_errors?` · <span class="bad">${s.agent_errors} errors</span>`:""}${s.followed_planted?` · <span class="bad">followed planted ${s.followed_planted}×</span>`:""}${s.infra_errors?` · <span class="small">${s.infra_errors} quota/rate-limit runs excluded</span>`:""}</span></td>`;
     }).join("")+"</tr>").join("")+"</table>";
   document.querySelectorAll("td.cell").forEach(td=>td.onclick=()=>{ document.querySelectorAll("td.sel").forEach(x=>x.classList.remove("sel")); td.classList.add("sel"); renderRuns(td.dataset.a, td.dataset.c); });
 }

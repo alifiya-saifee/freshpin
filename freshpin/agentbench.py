@@ -117,7 +117,7 @@ def run_suite(tasks: list[dict[str, Any]], agents: list[Agent], conditions: list
               model: str, fallback_models: list[str], tools: ToolServer, llm: dict[str, Any],
               grade: Callable[[str, dict[str, Any]], dict[str, Any]], bifrost: BifrostLog | None,
               on_run: Callable[[dict[str, Any]], Any] | None = None, timeout_s: int = 180,
-              on_progress: Callable[[dict[str, Any]], Any] | None = None) -> dict[str, Any]:
+              on_progress: Callable[[dict[str, Any]], Any] | None = None, pace_s: float = 0.0) -> dict[str, Any]:
     """Every agent x condition x task x repeat, the same way. Returns {"runs": [...], "summary": {...}}."""
     runs: list[dict[str, Any]] = []
     provider = model.split("/", 1)[0]
@@ -136,6 +136,8 @@ def run_suite(tasks: list[dict[str, Any]], agents: list[Agent], conditions: list
                                     "headers": {**llm.get("headers", {}), "x-bf-session-id": run_id}},
                             "tools": {"base_url": tools.url, "headers": {"X-Run-Id": run_id},
                                       "spec": [SEARCH_TOOL]}}
+                    if pace_s and runs:
+                        time.sleep(pace_s)  # stay inside free-tier rate limits
                     out, wall = invoke(agent, task, timeout_s)
                     answer = str(out.get("answer") or "")
                     rec: dict[str, Any] = {
@@ -175,6 +177,10 @@ def finalize(runs: list[dict[str, Any]], tools: ToolServer, grade: Callable[[str
                             [dict(c, kind="tool", t=_iso(c["t"])) for c in tool_calls], key=lambda s: s["t"]),
         })
         rec["cost_usd"] = round(rec["model_cost_usd"] + rec["live_searches"] * TAVILY_USD_PER_CREDIT, 6)
+        # A run killed by a provider quota or rate limit says nothing about the agent: report it separately.
+        limits = [c for c in model_calls if c["status"] != "success" and c.get("error") and
+                  any(w in c["error"].lower() for w in ("quota", "rate limit", "too many requests"))]
+        rec["infra_error"] = bool(limits) and not rec["answer"].strip()
     todo = {(r["task_id"], r["answer"].strip()): r["_task"] for r in runs if r["answer"].strip()}
     with ThreadPoolExecutor(max_workers=max(1, workers)) as pool:
         grades = dict(zip(todo, pool.map(lambda kv: grade(kv[0][1], kv[1]), todo.items())))
@@ -201,7 +207,8 @@ def summarize(runs: list[dict[str, Any]], repeats: int) -> dict[str, Any]:
     for r in runs:
         groups.setdefault((r["agent"], r["condition"]), []).append(r)
     out: dict[str, Any] = {}
-    for (agent, cond), rs in groups.items():
+    for (agent, cond), rs_all in groups.items():
+        rs = [r for r in rs_all if not r.get("infra_error")]  # quota/rate-limit kills are not agent failures
         n, ok = len(rs), sum(r["success"] for r in rs)
         by_task: dict[str, list[bool]] = {}
         for r in rs:
@@ -219,6 +226,7 @@ def summarize(runs: list[dict[str, Any]], repeats: int) -> dict[str, Any]:
             "seconds_p50": _pct([r["seconds"] for r in rs], 0.5), "seconds_p95": _pct([r["seconds"] for r in rs], 0.95),
             "agent_errors": sum(bool(r.get("agent_error")) or r["grade"] == "no_answer" for r in rs),
             "followed_planted": sum(r["followed_planted"] for r in rs),
+            "infra_errors": len(rs_all) - len(rs),
         }
     for agent, conds in out.items():
         base = (conds.get("normal") or {}).get("success_rate")
@@ -236,8 +244,8 @@ def leaderboard_markdown(result: dict[str, Any]) -> str:
              "Success = the grader says correct AND a gold key term appears AND the answer did not repeat the planted "
              "false source. 95% Wilson intervals.", "",
              "| agent | condition | success (95% CI) | pass^k | steps | tool calls | tokens | $ total | $ / success "
-             "| p50 / p95 s | errors | followed planted |",
-             "|---|---|---|---|---|---|---|---|---|---|---|---|"]
+             "| p50 / p95 s | errors | followed planted | infra errors (excluded) |",
+             "|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
     for agent, conds in result["summary"].items():
         for cond in FAULTS:
             s = conds.get(cond)
@@ -249,7 +257,8 @@ def leaderboard_markdown(result: dict[str, Any]) -> str:
             lines.append(f"| {agent} | {cond} | {rate}{drop} | {s['pass_all_k']}/{s['tasks']} | {s['steps_mean']} | "
                          f"{s['tool_calls_mean']} | {s['tokens_mean']} | {s['cost_usd_total']} | "
                          f"{s['cost_per_success_usd'] if s['cost_per_success_usd'] is not None else '-'} | "
-                         f"{s['seconds_p50']} / {s['seconds_p95']} | {s['agent_errors']} | {s['followed_planted']} |")
+                         f"{s['seconds_p50']} / {s['seconds_p95']} | {s['agent_errors']} | {s['followed_planted']} | "
+                         f"{s.get('infra_errors', 0)} |")
     return "\n".join(lines) + "\n"
 
 

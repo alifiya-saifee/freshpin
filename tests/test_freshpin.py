@@ -1456,6 +1456,11 @@ class AgentBenchTests(unittest.TestCase):
         self.assertGreater(r["cost_usd"], 0)
         self.assertTrue(any(st["kind"] == "tool" for st in r["trace"]))
         self.assertEqual(s["tool_agent"]["tool_error"]["drop_vs_normal"], 1.0)
+        from freshpin.agentbench import summarize
+        dead = dict(res["runs"][0], answer="", success=False, infra_error=True, condition="normal", agent="tool_agent")
+        s2 = summarize(res["runs"] + [dead], 2)
+        self.assertEqual(s2["tool_agent"]["normal"]["infra_errors"], 1)          # reported...
+        self.assertEqual(s2["tool_agent"]["normal"]["runs"], s["tool_agent"]["normal"]["runs"])  # ...not counted
 
     def test_bifrost_log_reader_and_result_file_guard(self):
         import sqlite3 as _sq
