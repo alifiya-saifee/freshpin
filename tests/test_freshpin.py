@@ -1317,6 +1317,153 @@ class ArenaFixTests(unittest.TestCase):
         self.assertEqual(res["models"]["m1"]["scorecard"]["repair"]["tokens_per_correct"], 5050)
 
 
+class FakeGateway(BaseHTTPRequestHandler):
+    """An OpenAI-compatible model gateway for agent tests: a model named '*does-not-exist*' fails; otherwise it calls
+    search_web once when tools are offered and nothing was searched yet, then answers from what the tool said."""
+    def log_message(self, *a):
+        pass
+
+    def do_POST(self):  # noqa: N802
+        body = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
+        if "does-not-exist" in body["model"]:
+            self.send_response(404)
+            self.end_headers()
+            self.wfile.write(b'{"error":"no such model"}')
+            return
+        msgs = body["messages"]
+        tool_msgs = [m for m in msgs if m.get("role") == "tool"]
+        if body.get("tools") and not tool_msgs:
+            msg = {"content": None, "tool_calls": [{"id": "c1", "function": {"name": "search_web",
+                                                                              "arguments": '{"query": "outage"}'}}]}
+        else:
+            seen = " ".join(str(m.get("content")) for m in msgs)
+            msg = {"content": "It was Workday." if "Workday" in seen else "I am not sure."}
+        data = json.dumps({"model": body["model"], "choices": [{"message": msg}]}).encode()
+        self.send_response(200)
+        self.send_header("Content-Length", str(len(data)))
+        self.end_headers()
+        self.wfile.write(data)
+
+
+class AgentBenchTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.gw = ThreadingHTTPServer(("127.0.0.1", 0), FakeGateway)
+        threading.Thread(target=cls.gw.serve_forever, daemon=True).start()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.gw.shutdown()
+        cls.gw.server_close()
+
+    def tools(self, tmp):
+        from freshpin.toolserver import ToolServer
+        self.live = []
+
+        def search(q):
+            self.live.append(q)
+            return [{"title": "Workday outage hits 11,500 companies", "url": "https://news.example.com/2026/11/13/workday-outage",
+                     "published_date": "2026-11-13", "snippet": "Workday suffered a major outage on Friday."}]
+        return ToolServer(search, cache_path=Path(tmp) / "cache.json").start()
+
+    def task(self, ts, run_id, model="m/good", fallbacks=()):
+        ts.set_run(run_id)
+        from freshpin.toolserver import SEARCH_TOOL
+        return {"task_id": "t1", "run_id": run_id, "question": "Which company had the outage on Friday?",
+                "today": "2026-11-15", "model": model, "fallback_models": list(fallbacks),
+                "llm": {"base_url": f"http://127.0.0.1:{self.gw.server_port}/v1", "headers": {}},
+                "tools": {"base_url": ts.url, "headers": {"X-Run-Id": run_id}, "spec": [SEARCH_TOOL]}}
+
+    def test_tool_server_records_once_replays_and_injects_failures(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            ts = self.tools(tmp)
+            try:
+                for rid, fault in (("a", "normal"), ("b", "normal"), ("c", "tool_error"), ("d", "misleading")):
+                    ts.set_run(rid, fault)
+                codes = [ts.handle_search(r, "Workday outage")[0] for r in "abcd"]
+                self.assertEqual(codes, [200, 200, 503, 200])
+                self.assertEqual(len(self.live), 1)                                # searched live once, then replayed
+                self.assertEqual([c["source"] for c in ts.calls("b")], ["replay"])
+                top = ts.handle_search("d", "Workday outage")[1]["results"][0]
+                self.assertIn("Contoso Dynamics", top["snippet"])                 # the planted source comes first
+                self.assertEqual(ts.calls("c")[0]["fault"], "tool_error")
+            finally:
+                ts.stop()
+            self.assertTrue((Path(tmp) / "cache.json").exists())               # the recording is kept for repeats
+
+    def test_builtin_agents_follow_the_contract_and_fall_back(self):
+        from freshpin import agents
+        with tempfile.TemporaryDirectory() as tmp:
+            ts = self.tools(tmp)
+            try:
+                self.assertEqual(agents.bare(self.task(ts, "r1"))["answer"], "I am not sure.")
+                self.assertEqual(agents.search_first(self.task(ts, "r2"))["answer"], "It was Workday.")
+                self.assertEqual(agents.tool_agent(self.task(ts, "r3"))["answer"], "It was Workday.")
+                out = agents.tool_agent(self.task(ts, "r4", model="m/model-that-does-not-exist", fallbacks=["m/good"]))
+                self.assertEqual(out["answer"], "It was Workday.")                # recovered from the dead model
+                self.assertIn("trying the next model", out["notes"][0])
+                ts.set_run("r5", "tool_error")
+                t5 = self.task(ts, "r5")
+                ts.set_run("r5", "tool_error")
+                self.assertEqual(agents.search_first(t5)["answer"], "I am not sure.")  # broken tool, no crash
+            finally:
+                ts.stop()
+
+    def test_suite_runs_any_agent_and_summarises(self):
+        import sys as _sys
+        from freshpin.agentbench import Agent, run_suite
+        root = Path(__file__).resolve().parent.parent
+
+        class FakeLog:
+            def calls(self, run_id):
+                return [{"t": "2026-11-15 10:00:00", "kind": "model", "model": "m/good", "status": "success", "ms": 5,
+                         "tokens_in": 100, "tokens_out": 20, "cost_usd": 0.001, "fallback_index": 0, "error": None}]
+        tasks = [{"id": "t1", "question": "Which company had the outage on Friday?", "gold_answer": "Workday."}]
+        agents_ = [Agent("tool_agent", [_sys.executable, "-m", "freshpin.agents", "tool_agent"], env={"PYTHONPATH": str(root)}),
+                   Agent("outside", [_sys.executable, str(root / "examples" / "agents" / "reflect_agent.py")])]
+        with tempfile.TemporaryDirectory() as tmp:
+            ts = self.tools(tmp)
+            try:
+                res = run_suite(tasks, agents_, ["normal", "model_outage", "tool_error", "misleading"], 2, "m/good", [],
+                                ts, {"base_url": f"http://127.0.0.1:{self.gw.server_port}/v1"},
+                                lambda ans, t: {"result": "correct" if "Workday" in ans else "wrong", "reason": ""},
+                                FakeLog())
+            finally:
+                ts.stop()
+        self.assertEqual(len(res["runs"]), 2 * 4 * 1 * 2)
+        s = res["summary"]
+        self.assertEqual(s["tool_agent"]["normal"]["success"], 2)
+        self.assertEqual(s["tool_agent"]["normal"]["pass_all_k"], 1)
+        self.assertEqual(s["tool_agent"]["model_outage"]["success"], 2)        # tool_agent falls back to m/good
+        self.assertEqual(s["outside"]["model_outage"]["success"], 0)           # the outside agent has no fallback
+        self.assertEqual(s["tool_agent"]["tool_error"]["success"], 0)
+        self.assertEqual(s["outside"]["normal"]["success"], 2)                 # an agent FreshPin never saw, unchanged
+        r = res["runs"][0]
+        self.assertEqual((r["model_calls"], r["tokens"], r["steps"] >= 2), (1, 120, True))
+        self.assertGreater(r["cost_usd"], 0)
+        self.assertTrue(any(st["kind"] == "tool" for st in r["trace"]))
+        self.assertEqual(s["tool_agent"]["tool_error"]["drop_vs_normal"], 1.0)
+
+    def test_bifrost_log_reader_and_result_file_guard(self):
+        import sqlite3 as _sq
+        from freshpin.agentbench import BifrostLog
+        from freshpin.server import bench_file
+        with tempfile.TemporaryDirectory() as tmp:
+            db = Path(tmp) / "logs.db"
+            con = _sq.connect(db)
+            con.execute("CREATE TABLE logs (timestamp, provider, model, status, latency, token_usage, cost, "
+                        "fallback_index, error_details, session_id)")
+            con.execute("INSERT INTO logs VALUES ('2026-11-15', 'groq', 'openai/gpt-oss-120b', 'success', 550.2, "
+                        "'{\"prompt_tokens\": 73, \"completion_tokens\": 38}', 3.4e-05, 0, NULL, 'run-1')")
+            con.commit()
+            con.close()
+            calls = BifrostLog(db).calls("run-1", settle_s=2)
+        self.assertEqual(calls[0]["model"], "groq/openai/gpt-oss-120b")
+        self.assertEqual((calls[0]["tokens_in"], calls[0]["tokens_out"]), (73, 38))
+        for bad in ("../.env", "agentbench-1.json/../../x", "bench-1.json", "/etc/passwd"):
+            self.assertIsNone(bench_file(bad))
+
+
 class McpTests(unittest.TestCase):
     """The MCP server, driven the way an AI assistant drives it: JSON lines in, JSON lines out."""
 

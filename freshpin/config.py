@@ -62,6 +62,9 @@ class Settings:
     # Reasoning models that reject a temperature setting (OpenAI o-series, GPT-5 class).
     no_temperature_prefixes: list[str] = field(default_factory=lambda: _list(
         "FRESHPIN_NO_TEMPERATURE_PREFIXES", "openai/o1,openai/o3,openai/o4,openai/gpt-5"))
+    # Bifrost's request log (sqlite, in Bifrost's app dir). The agent benchmark reads each agent's model calls,
+    # tokens and $ cost from it, tagged by run id (x-bf-session-id).
+    bifrost_logs_db: str = field(default_factory=lambda: os.environ.get("FRESHPIN_BIFROST_LOGS_DB", ""))
     # Model calls at the same time. Free tiers limit tokens per minute, so keep this low.
     model_concurrency: int = field(default_factory=lambda: int(os.environ.get("FRESHPIN_MODEL_CONCURRENCY", "2")))
     # Used by the "simulate outage" switch: a model that will fail, so Bifrost must fall back.

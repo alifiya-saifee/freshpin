@@ -14,6 +14,8 @@ USAGE = """usage:
   python -m freshpin mcp                   run as an MCP server (stdio) for AI assistants
   python -m freshpin bench --models a,b [--max N] [--questions file] [--no-recheck] [--yes]
                                            test models on facts that change; print a freshness scorecard
+  python -m freshpin agentbench [...]      benchmark AGENTS (any framework) on a task suite: repeats, failure
+                                           conditions, steps/tools/tokens/$/time, step-by-step traces (see --help)
   python -m freshpin bench-build [--n 8]   build a fresh-events question set (gold answers + quotes) from this week's news
   python -m freshpin watch [--all]         re-check pinned facts past their half-life; alert on reopened decisions
   python -m freshpin check "answer text"   check an answer and print the JSON report
@@ -37,6 +39,8 @@ def main(argv: list[str]) -> int:
         return bench_cmd(argv[1:])
     if cmd == "bench-build":
         return bench_build_cmd(argv[1:])
+    if cmd == "agentbench":
+        return agentbench_cmd(argv[1:])
     if cmd == "watch":
         return watch_cmd(argv[1:])
     app = FreshPin(settings())
@@ -230,6 +234,110 @@ def arena_cmd(a, s, app, client, questions, models, check) -> int:
     log()
     log(bench.arena_markdown(result))
     return 0
+
+
+def agentbench_cmd(args: list[str]) -> int:
+    import argparse
+    import json as _json
+    import shlex
+    import time as _time
+    from pathlib import Path
+
+    from . import bench
+    from .agentbench import Agent, BifrostLog, builtin_agents, leaderboard_markdown, run_suite, summarize
+    from .benchbuild import make_gold_judge
+    from .toolserver import FAULTS, ToolServer
+
+    ap = argparse.ArgumentParser(prog="python -m freshpin agentbench",
+                                 description="Benchmark AI agents (any framework) on research tasks that changed recently.")
+    ap.add_argument("--questions", required=True, help="task suite JSON with gold answers (bench-build makes one)")
+    ap.add_argument("--max", type=int, default=5)
+    ap.add_argument("--repeats", type=int, default=2, help="runs per task, to measure reliability")
+    ap.add_argument("--conditions", default=",".join(FAULTS), help="normal,model_outage,tool_error,misleading")
+    ap.add_argument("--agents", default="all", help="built-in names (bare,search_first,tool_agent,reflect) or all")
+    ap.add_argument("--agent", action="append", default=[], metavar="NAME=COMMAND",
+                    help="add an outside agent run as a command, e.g. --agent 'mine=python3 my_agent.py'")
+    ap.add_argument("--agent-url", action="append", default=[], metavar="NAME=URL", help="add an outside agent over HTTP")
+    ap.add_argument("--model", required=True, help="model under test, Bifrost provider/model")
+    ap.add_argument("--fallbacks", default="", help="fallback models offered to agents (comma-separated)")
+    ap.add_argument("--search-type", default="event", help="claim type for live searches (event = news, last week)")
+    ap.add_argument("--yes", action="store_true")
+    a = ap.parse_args(args)
+
+    s = settings()
+    if s.mode != "live":
+        print("agentbench runs real agents, so it needs FRESHPIN_MODE=live (Bifrost + Tavily).")
+        return 2
+    conds = [c for c in a.conditions.split(",") if c in FAULTS]
+    pool = builtin_agents()
+    wanted = {x.strip() for x in a.agents.split(",")} if a.agents != "all" else None
+    agents = [ag for ag in pool if wanted is None or ag.name.split(" ")[0] in wanted]
+    for spec in a.agent:
+        name, _, cmd = spec.partition("=")
+        agents.append(Agent(name.strip(), shlex.split(cmd), description="outside agent (command)"))
+    for spec in a.agent_url:
+        name, _, url = spec.partition("=")
+        agents.append(Agent(name.strip(), url=url.strip(), description="outside agent (HTTP)"))
+    tasks = [q for q in bench.load_questions(Path(a.questions)) if q.get("gold_answer")][: max(1, a.max)]
+    n_runs = len(agents) * len(conds) * len(tasks) * a.repeats
+    print(f"{len(agents)} agent(s) x {len(conds)} condition(s) x {len(tasks)} task(s) x {a.repeats} repeat(s) = "
+          f"{n_runs} runs. Searches are recorded once and replayed, so Tavily credits are spent only on new queries.",
+          flush=True)
+    if n_runs > 60 and not a.yes:
+        print("More than 60 runs: add --yes to go ahead.")
+        return 2
+
+    app = FreshPin(s)
+    fallbacks = [m.strip() for m in a.fallbacks.split(",") if m.strip()]
+    judges, independent = bench.independent_models(a.model, list(dict.fromkeys(
+        s.checker_models + s.verifier_models + s.extractor_models)))
+    grade = make_gold_judge(app.chat, judges, bench.admits_live_limits)
+    if not s.bifrost_logs_db:
+        print("warning: FRESHPIN_BIFROST_LOGS_DB is not set, so model calls, tokens and $ can't be read from Bifrost.")
+    bifrost = BifrostLog(s.bifrost_logs_db) if s.bifrost_logs_db else None
+
+    def search(q: str) -> list:
+        return [x.as_dict() for x in app.search.search(q, a.search_type, 5, depth="basic")]
+
+    cache = bench.RESULTS_DIR.parent / f"toolcache-{Path(a.questions).stem}.json"
+    tools = ToolServer(search, cache_path=cache).start()
+    headers = {"x-bf-vk": s.bifrost_virtual_key} if s.bifrost_virtual_key else {}
+    llm = {"base_url": s.bifrost_url.rstrip("/") + "/v1", "headers": headers}
+    path = bench.RESULTS_DIR / f"agentbench-{_time.strftime('%Y%m%d-%H%M%S')}.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    meta = {"run_on": date_today(), "model": a.model, "fallbacks": fallbacks, "tasks": len(tasks),
+            "repeats": a.repeats, "conditions": conds, "grader": judges[0], "grader_independent": independent,
+            "agents": [{"name": ag.name, "description": ag.description,
+                        "how": "command" if ag.command else "http"} for ag in agents],
+            "questions_file": Path(a.questions).name}
+    done: list = []
+
+    def on_run(rec: dict) -> None:
+        done.append(rec)
+        mark = "ok " if rec["success"] else "-- "
+        print(f"  {mark}{rec['agent'][:22]:22} {rec['condition']:13} {rec['task_id']:9} r{rec['repeat']} "
+              f"steps={rec['steps']} tools={rec['tool_calls']} tokens={rec['tokens']} ${rec['cost_usd']:.4f} "
+              f"{rec['seconds']}s {rec['grade']}", flush=True)
+        if len(done) % 5 == 0:  # save as we go
+            partial = {"meta": meta, "runs": done, "summary": summarize(done, a.repeats)}
+            path.write_text(_json.dumps(partial, indent=1, ensure_ascii=False), encoding="utf-8")
+
+    try:
+        result = run_suite(tasks, agents, conds, a.repeats, a.model, fallbacks, tools, llm, grade, bifrost, on_run)
+    finally:
+        tools.stop()
+    result["meta"] = dict(meta, live_searches=tools.live_searches)
+    path.write_text(_json.dumps(result, indent=1, ensure_ascii=False), encoding="utf-8")
+    path.with_suffix(".md").write_text(leaderboard_markdown(result), encoding="utf-8")
+    print()
+    print(leaderboard_markdown(result))
+    print(f"Saved: {path}\nOpen the comparison page: python -m freshpin serve, then http://127.0.0.1:{s.port}/bench")
+    return 0
+
+
+def date_today() -> str:
+    from datetime import date
+    return date.today().isoformat()
 
 
 def bench_build_cmd(args: list[str]) -> int:

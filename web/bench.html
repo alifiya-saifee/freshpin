@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FreshPin agent benchmark</title>
+<style>
+:root{--bg:#0b0e14;--panel:#121722;--panel2:#171d2a;--line:#252d3d;--text:#e7eaf0;--muted:#8d97ab;
+  --ok:#45c99b;--warn:#e8b650;--bad:#f06b6b;--accent:#7aa7ff;--radius:12px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;padding:14px 24px;border-bottom:1px solid var(--line);background:#0e121b}
+header b{font-size:18px}header a{color:var(--accent);text-decoration:none}
+main{padding:18px 24px;max-width:1400px;margin:0 auto}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;margin-bottom:16px;overflow-x:auto}
+h2{font-size:13px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin:0 0 10px;font-weight:600}
+.meta{color:var(--muted);font-size:13px}
+select{background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:6px 8px;font:inherit}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{border-bottom:1px solid var(--line);padding:7px 8px;text-align:left;vertical-align:top}
+th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.5px}
+td.cell{cursor:pointer}td.cell:hover{background:var(--panel2)}
+td.sel{outline:2px solid var(--accent);outline-offset:-2px}
+.rate{font-weight:700;font-size:16px}.ok{color:var(--ok)}.warn{color:var(--warn)}.bad{color:var(--bad)}
+.small{font-size:12px;color:var(--muted)}
+tr.run{cursor:pointer}tr.run:hover{background:var(--panel2)}tr.run.sel{background:#1b2333}
+.step{display:grid;grid-template-columns:28px 1fr;gap:8px;padding:8px 0;border-bottom:1px dashed var(--line)}
+.dot{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+.dot.model{background:#1d2a45;color:var(--accent)}.dot.tool{background:#203a32;color:var(--ok)}.dot.err{background:#3d1717;color:var(--bad)}
+.answer{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:10px 12px;white-space:pre-wrap}
+.pill{display:inline-block;font-size:11px;font-weight:700;padding:1px 7px;border-radius:6px;background:#1b2230;color:var(--muted);margin-left:4px}
+.pill.fault{background:#3a2f12;color:var(--warn)}
+.empty{color:var(--muted);padding:10px 0}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:16px}
+@media (max-width:1000px){.grid2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><b>FreshPin agent benchmark</b><span class="meta">AI agents, not just models · same tasks, same tools, same failures</span>
+  <a href="/">← stale-answer detector</a>
+  <span style="margin-left:auto"><select id="file"></select></span></header>
+<main>
+  <div class="card"><h2>Run</h2><div id="meta" class="meta">Loading…</div></div>
+  <div class="card"><h2>Leaderboard: success by agent and condition (click a cell)</h2><div id="board" class="empty">No results yet. Run <code>python -m freshpin agentbench …</code></div></div>
+  <div class="grid2">
+    <div class="card"><h2>Runs</h2><div id="runs" class="empty">Pick a cell in the leaderboard.</div></div>
+    <div class="card"><h2>Step-by-step trace</h2><div id="trace" class="empty">Pick a run.</div></div>
+  </div>
+</main>
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const safeUrl = u => /^https?:\/\//i.test(u||"") ? u : "#";
+const CONDS = ["normal","model_outage","tool_error","misleading"];
+const CLABEL = {normal:"normal", model_outage:"model unavailable", tool_error:"broken tool", misleading:"misleading source"};
+let DATA = null, SEL = null;
+function token(){ try{ return sessionStorage.getItem("freshpin_token")||""; }catch(e){ return ""; } }
+async function get(path){
+  const h = token() ? {"X-FreshPin-Token": token()} : {};
+  let r = await fetch(path, {headers:h});
+  if(r.status===401){ const t=prompt("FreshPin API token"); if(t){ try{sessionStorage.setItem("freshpin_token",t);}catch(e){} r = await fetch(path,{headers:{"X-FreshPin-Token":t}}); } }
+  const j = await r.json(); if(!r.ok) throw new Error(j.error||r.statusText); return j;
+}
+function cls(rate){ return rate==null ? "" : rate>=0.7 ? "ok" : rate>=0.4 ? "warn" : "bad"; }
+async function init(){
+  const list = await get("/api/bench/list");
+  if(!list.files.length){ $("#meta").textContent = "No agent benchmark results yet."; return; }
+  $("#file").innerHTML = list.files.map(f=>`<option value="${esc(f.name)}">${esc(f.label)}</option>`).join("");
+  $("#file").onchange = () => load($("#file").value);
+  load(list.files[0].name);
+}
+async function load(name){
+  DATA = await get("/api/bench/result?file="+encodeURIComponent(name));
+  const m = DATA.meta||{};
+  $("#meta").innerHTML = `Model under test <b>${esc(m.model)}</b>${m.fallbacks&&m.fallbacks.length?` (fallbacks offered: ${esc(m.fallbacks.join(", "))})`:""} · ${esc(m.tasks)} tasks × ${esc(m.repeats)} repeats · grader <b>${esc(m.grader)}</b>${m.grader_independent===false?' <span class="bad">(same family as the model!)</span>':""} · ${DATA.runs.length} runs · ${esc(m.run_on||"")}<br>`+
+    (m.agents||[]).map(a=>`<b>${esc(a.name)}</b> <span class="small">${esc(a.description)} (${esc(a.how)})</span>`).join(" · ")+
+    `<br><span class="small">Success = the grader says correct AND a gold key term appears AND the answer didn't repeat the planted false source. Searches are recorded once and replayed, so every agent and repeat sees the same evidence.</span>`;
+  renderBoard(); $("#runs").innerHTML='<div class="empty">Pick a cell in the leaderboard.</div>'; $("#trace").innerHTML='<div class="empty">Pick a run.</div>';
+}
+function renderBoard(){
+  const S = DATA.summary||{}; const conds = CONDS.filter(c=>Object.values(S).some(a=>a[c]));
+  $("#board").innerHTML = `<table><tr><th>agent</th>${conds.map(c=>`<th>${esc(CLABEL[c])}</th>`).join("")}</tr>`+
+    Object.entries(S).map(([agent,cs])=>`<tr><td><b>${esc(agent)}</b></td>`+conds.map(c=>{
+      const s=cs[c]; if(!s) return "<td>-</td>";
+      const pct = s.success_rate==null?"-":Math.round(s.success_rate*100)+"%";
+      return `<td class="cell" data-a="${esc(agent)}" data-c="${esc(c)}"><span class="rate ${cls(s.success_rate)}">${pct}</span>
+        <span class="small">(${Math.round(s.success_ci95[0]*100)}–${Math.round(s.success_ci95[1]*100)}%)</span>
+        ${s.drop_vs_normal?`<span class="pill fault">−${Math.round(s.drop_vs_normal*100)} pts</span>`:""}<br>
+        <span class="small">pass^${s.k}: ${s.pass_all_k}/${s.tasks} · steps ${s.steps_mean} · tools ${s.tool_calls_mean} · tokens ${s.tokens_mean}<br>
+        $${s.cost_usd_total} total · ${s.cost_per_success_usd!=null?"$"+s.cost_per_success_usd+"/success · ":""}${s.seconds_p50}s p50 · ${s.seconds_p95}s p95
+        ${s.agent_errors?` · <span class="bad">${s.agent_errors} errors</span>`:""}${s.followed_planted?` · <span class="bad">followed planted ${s.followed_planted}×</span>`:""}</span></td>`;
+    }).join("")+"</tr>").join("")+"</table>";
+  document.querySelectorAll("td.cell").forEach(td=>td.onclick=()=>{ document.querySelectorAll("td.sel").forEach(x=>x.classList.remove("sel")); td.classList.add("sel"); renderRuns(td.dataset.a, td.dataset.c); });
+}
+function renderRuns(agent, cond){
+  const rs = DATA.runs.filter(r=>r.agent===agent && r.condition===cond);
+  $("#runs").innerHTML = `<div class="meta" style="margin-bottom:6px"><b>${esc(agent)}</b> · ${esc(CLABEL[cond])}</div><table><tr><th>task</th><th>rep</th><th>result</th><th>steps</th><th>tools</th><th>tokens</th><th>$</th><th>s</th></tr>`+
+    rs.map((r,i)=>`<tr class="run" data-i="${DATA.runs.indexOf(r)}"><td>${esc(r.task_id)}</td><td>${r.repeat}</td>
+      <td class="${r.success?"ok":"bad"}">${r.success?"✓ correct":esc(r.grade||"fail")}${r.followed_planted?' <span class="pill fault">planted</span>':""}</td>
+      <td>${r.steps}</td><td>${r.tool_calls}</td><td>${r.tokens}</td><td>${r.cost_usd}</td><td>${r.seconds}</td></tr>`).join("")+"</table>";
+  document.querySelectorAll("tr.run").forEach(tr=>tr.onclick=()=>{ document.querySelectorAll("tr.run.sel").forEach(x=>x.classList.remove("sel")); tr.classList.add("sel"); renderTrace(DATA.runs[+tr.dataset.i]); });
+}
+function renderTrace(r){
+  const steps = (r.trace||[]).map((s,i)=>{
+    if(s.kind==="model"){
+      const err = s.status!=="success";
+      return `<div class="step"><div class="dot ${err?"err":"model"}">${i+1}</div><div><b>model call</b> <span class="small">${esc(s.model)}</span>
+        ${s.fallback_index?`<span class="pill fault">fallback #${s.fallback_index}</span>`:""}<br>
+        <span class="small">${esc(s.status)} · ${s.tokens_in} in / ${s.tokens_out} out tokens · ${s.ms} ms · $${s.cost_usd}</span>
+        ${s.error?`<br><span class="bad small">${esc(s.error)}</span>`:""}</div></div>`;
+    }
+    const err = s.status!==200;
+    return `<div class="step"><div class="dot ${err?"err":"tool"}">${i+1}</div><div><b>tool call: ${esc(s.tool)}</b>
+      ${s.fault?`<span class="pill fault">${esc(s.fault==="tool_error"?"broken tool":"planted source")}</span>`:""}
+      <span class="pill">${esc(s.source||"")}</span><br><span class="small">query: “${esc(s.query)}” · HTTP ${s.status} · ${s.ms} ms</span>
+      ${(s.results||[]).length?"<br>"+s.results.map(x=>`<span class="small">· <a href="${esc(safeUrl(x.url))}" target="_blank" rel="noopener">${esc(x.title)}</a></span>`).join("<br>"):""}</div></div>`;
+  }).join("") || '<div class="empty">No steps recorded (the agent made no tagged model or tool calls).</div>';
+  $("#trace").innerHTML = `<div class="meta"><b>${esc(r.agent)}</b> · ${esc(CLABEL[r.condition])} · ${esc(r.task_id)} · repeat ${r.repeat} · run <code>${esc(r.run_id)}</code></div>
+    <p><b>Question:</b> ${esc(r.question)}</p>${steps}
+    <p><b>Answer</b> <span class="${r.success?"ok":"bad"}">${r.success?"✓ correct":"✗ "+esc(r.grade)}</span></p><div class="answer">${esc(r.answer||"(no answer)")}</div>
+    ${r.grade_reason?`<p class="small">Grader: ${esc(r.grade_reason)}</p>`:""}
+    ${r.agent_error?`<p class="bad small">Agent error: ${esc(r.agent_error)}</p>`:""}
+    ${(r.agent_notes||[]).length?`<p class="small">Agent notes: ${r.agent_notes.map(esc).join(" · ")}</p>`:""}`;
+}
+init().catch(e=>{ $("#meta").textContent = "Error: "+e.message; });
+</script>
+</body>
+</html>

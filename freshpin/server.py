@@ -13,6 +13,32 @@ from .config import ROOT, settings
 WEB = ROOT / "web"
 
 
+RESULTS = ROOT / "bench" / "results"
+
+
+def bench_files() -> list[dict[str, str]]:
+    """Agent-benchmark result files, newest first."""
+    import json as _json
+    out = []
+    for f in sorted(RESULTS.glob("agentbench-*.json"), reverse=True):
+        try:
+            meta = _json.loads(f.read_text(encoding="utf-8")).get("meta", {})
+        except (OSError, ValueError):
+            continue
+        out.append({"name": f.name, "label": f"{f.stem[11:]} · {meta.get('model', '?')} · "
+                                             f"{len(meta.get('agents', []))} agents"})
+    return out
+
+
+def bench_file(name: str):
+    """Only plain agentbench-*.json names inside bench/results (no paths, no traversal)."""
+    import re as _re
+    if not _re.fullmatch(r"agentbench-[0-9-]+\.json", name or ""):
+        return None
+    f = RESULTS / name
+    return f if f.is_file() else None
+
+
 def make_handler(app: FreshPin):
     class Handler(BaseHTTPRequestHandler):
         server_version = "FreshPin/1.0"
@@ -58,6 +84,18 @@ def make_handler(app: FreshPin):
                 return
             if path in ("/", "/index.html"):
                 self._send(200, (WEB / "index.html").read_bytes(), "text/html; charset=utf-8")
+            elif path in ("/bench", "/bench.html"):
+                self._send(200, (WEB / "bench.html").read_bytes(), "text/html; charset=utf-8")
+            elif path == "/api/bench/list":
+                self._json(200, {"files": bench_files()})
+            elif path == "/api/bench/result":
+                from urllib.parse import parse_qs, urlparse
+                name = (parse_qs(urlparse(self.path).query).get("file") or [""])[0]
+                f = bench_file(name)
+                if f is None:
+                    self._json(404, {"error": "no such result"})
+                else:
+                    self._send(200, f.read_bytes(), "application/json; charset=utf-8")
             elif path == "/api/status":
                 self._json(200, app.status())
             elif path == "/api/samples":
