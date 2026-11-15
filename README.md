@@ -2,7 +2,7 @@
 
 **Benchmarks AI agents, not just models, on facts that changed after their training.**
 
-AI answers go stale quietly: last week's outage, this year's law, today's price. FreshPin measures how different **agent configurations** of the same model cope (the model alone, the model with search first, a tool-using agent that decides for itself whether to look things up, and the model after being told what was wrong) on questions built from **this week's news**, each with a gold answer and a quote found word for word in its source. Its **stale-answer detector** is the grader: Tavily evidence, two blind judges from different model families through Bifrost, and fixed rules in code. Its **pin ledger** shows what a stale answer would have broken: approved decisions that relied on the old fact reopen for a named person.
+AI answers go stale quietly: last week's outage, this year's law, today's price. FreshPin measures how different **agent configurations** of the same model cope (the model alone, the model with search first, a tool-using agent that decides for itself whether to look things up, and the model after being told what was wrong) on questions built from **this week's news**, each with a gold answer and a quote found word for word in its source. Answers are graded against the **gold answers** by one model from a family none of the contestants belongs to, and a whole-word check of the gold answer's key names and numbers must agree. FreshPin's **stale-answer detector** (Tavily evidence, two blind judges from different model families through Bifrost, fixed rules in code) checks each answer claim by claim, powers the grounding and the repair feedback, and is itself tested against the gold set (`--self-test`). Its **pin ledger** shows what a stale answer would have broken: approved decisions that relied on the old fact reopen for a named person.
 
 Built for the Geek Room AI Global Hackathon 2026. **Primary problem statement:** *Build a Benchmarking Platform for AI Agents, Not Just Models* (Bifrost track). **Integrated:** *Build a Stale-Answer Detector for AI Applications* (Tavily track).
 
@@ -59,7 +59,7 @@ The UI, the MCP tool and the CLI show the second check's result, the best refere
 - **The judges are models you choose in Bifrost.** The demo uses Gemini and Groq free tiers. They only read Tavily's evidence; they never answer from memory.
 - **Bring your own keys.** Anyone integrating FreshPin runs their own Bifrost with their own provider keys and their own Tavily key. No keys are shared.
 - **Three outputs:** a verdict and score per claim (*verify*), a **corrections** list with today's fact, the best reference and an exact quote (*correct*), and the decisions that depended on a changed fact (*reopen*).
-- **Not yet:** feeding live facts into a model *before* it answers ("grounding"). FreshPin checks after the answer.
+- **Before and after:** `ground_question` feeds dated sources into a model *before* it answers; `check_answer` audits the answer afterwards.
 
 ### How a model goes wrong, and the guardrail for each
 
@@ -330,6 +330,8 @@ tests/          unittest suite
 
 ## Limits
 
+- **Shared source.** Questions are built from Tavily news and the grounded/agent arms also search Tavily, so the grounding gain is likely larger than with another retriever (the gold article itself is removed from grounding results). A non-Tavily grounding arm is the planned control.
+- **Clustered events.** At most two items per event, but some items still share a story, so treat items as not fully independent.
 - **Small samples.** The arena runs on about 10–20 fresh questions per set, so a 95% interval is roughly ±20 points; compare arms with the paired sign test, not by eye. Gold answers are built and graded by models (with a quote found word for word and a string backstop); no human-labelled set yet.
 - **Login is off by default** (`FRESHPIN_API_TOKEN` turns it on). The local API refuses non-JSON and cross-site requests either way.
 - **Search coverage.** One search provider (Tavily); quotes are matched against ~700-character snippets, not full pages. Non-Latin scripts now match, but prompts are English-only.
