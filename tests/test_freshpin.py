@@ -1481,6 +1481,164 @@ class AgentBenchTests(unittest.TestCase):
         for bad in ("../.env", "agentbench-1.json/../../x", "bench-1.json", "/etc/passwd"):
             self.assertIsNone(bench_file(bad))
 
+    def test_committed_sample_wins_over_a_local_result_of_the_same_name(self):
+        from freshpin import server
+        with tempfile.TemporaryDirectory() as tmp:
+            res, sam = Path(tmp) / "results", Path(tmp) / "samples"
+            res.mkdir()
+            sam.mkdir()
+            for d, model in ((res, "old"), (sam, "rescored")):
+                (d / "agentbench-1.json").write_text(json.dumps({"meta": {"model": model}}))
+            (res / "agentbench-2.json").write_text(json.dumps({"meta": {"model": "local only"}}))
+            old = server.RESULTS, server.SAMPLES
+            server.RESULTS, server.SAMPLES = res, sam
+            try:
+                self.assertEqual(server.bench_file("agentbench-1.json"), sam / "agentbench-1.json")
+                self.assertEqual(server.bench_file("agentbench-2.json"), res / "agentbench-2.json")
+                labels = [f["label"] for f in server.bench_files()]
+                self.assertEqual(len(labels), 2)
+                self.assertIn("rescored", labels[1])
+            finally:
+                server.RESULTS, server.SAMPLES = old
+
+    def test_bifrost_log_keeps_runs_apart(self):
+        import sqlite3 as _sq
+        from freshpin.agentbench import BifrostLog
+        with tempfile.TemporaryDirectory() as tmp:
+            db = Path(tmp) / "logs.db"
+            con = _sq.connect(db)
+            con.execute("CREATE TABLE logs (timestamp, provider, model, status, latency, token_usage, cost, "
+                        "fallback_index, error_details, session_id)")
+            for sid, tok in (("run-1", 10), ("run-2", 500), ("run-2", 500), (None, 999)):
+                con.execute("INSERT INTO logs VALUES ('2026-11-15', 'groq', 'x', 'success', 1, ?, 0, 0, NULL, ?)",
+                            (json.dumps({"prompt_tokens": tok, "completion_tokens": 0}), sid))
+            con.commit()
+            con.close()
+            log = BifrostLog(db)
+            self.assertEqual([c["tokens_in"] for c in log.calls("run-1", settle_s=1)], [10])  # only its own calls
+            self.assertEqual(len(log.read("run-2")), 2)
+            self.assertEqual(log.read("run-3"), [])                                          # untagged rows never leak
+
+    def test_invoke_turns_bad_agents_into_results(self):
+        import sys as _sys
+        from freshpin.agentbench import Agent, invoke
+        cases = {"list": "print('[1, 2]')", "string": "print('\"hi\"')", "not json": "print('hello')",
+                 "silent": "pass", "crash": "raise SystemExit(3)"}
+        for name, code in cases.items():
+            out, secs = invoke(Agent(name, [_sys.executable, "-c", code]), {"question": "q"})
+            self.assertEqual(out["answer"], "", name)
+            self.assertTrue(out["error"], name)                       # the error is reported, nothing raises
+        out, _ = invoke(Agent("slow", [_sys.executable, "-c", "import time; time.sleep(5)"]), {}, timeout_s=1)
+        self.assertIn("timed out", out["error"])
+        out, _ = invoke(Agent("ok", [_sys.executable, "-c", "import sys,json; t=json.load(sys.stdin); "
+                                     "print('log line'); print(json.dumps({'answer': t['question'].upper()}))"]),
+                        {"question": "q"})
+        self.assertEqual(out, {"answer": "Q"})                        # the LAST stdout line is the answer
+        self.assertEqual(invoke(Agent("none"), {})[0]["answer"], "")
+
+    def test_http_agent_contract(self):
+        from freshpin.agentbench import Agent, invoke
+        replies = {"/good": b'{"answer": "Workday", "notes": "one note"}', "/list": b"[1]", "/bad": b"oops"}
+
+        class H(BaseHTTPRequestHandler):
+            def log_message(self, *a):
+                pass
+
+            def do_POST(self):  # noqa: N802
+                task = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
+                body = replies[self.path] if task.get("question") == "q" else b'{"answer": "wrong task"}'
+                self.send_response(500 if self.path == "/bad" else 200)
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+        srv = ThreadingHTTPServer(("127.0.0.1", 0), H)
+        threading.Thread(target=srv.serve_forever, daemon=True).start()
+        try:
+            base = f"http://127.0.0.1:{srv.server_port}"
+            self.assertEqual(invoke(Agent("h", url=base + "/good"), {"question": "q"})[0]["answer"], "Workday")
+            self.assertIn("not a JSON object", invoke(Agent("h", url=base + "/list"), {"question": "q"})[0]["error"])
+            self.assertIn("HTTPError", invoke(Agent("h", url=base + "/bad"), {"question": "q"})[0]["error"])
+            self.assertIn("URLError", invoke(Agent("h", url="http://127.0.0.1:9/x"), {"question": "q"})[0]["error"])
+        finally:
+            srv.shutdown()
+            srv.server_close()
+
+    def test_grader_failures_are_excluded_not_scored_as_agent_failures(self):
+        from freshpin.agentbench import finalize, is_grader_error, summarize
+
+        class TS:
+            def calls(self, run_id):
+                return []
+
+        def run(i, answer):
+            return {"run_id": f"r{i}", "agent": "a", "condition": "normal", "task_id": f"t{i}", "repeat": 1,
+                    "question": "Which company?", "answer": answer, "agent_error": None, "agent_notes": None,
+                    "seconds": 1.0, "followed_planted": False, "_task": {"id": f"t{i}", "gold_answer": "Workday"}}
+        runs = [run(1, "Workday"), run(2, "Workday it was"), run(3, "Acme"), run(4, "")]
+
+        def grade(answer, task):
+            if answer == "Workday it was":
+                return {"result": "not_graded", "reason": "judge unavailable: LLMUnavailable"}
+            return {"result": "correct" if answer == "Workday" else "wrong", "reason": ""}
+        finalize(runs, TS(), grade, None)
+        self.assertEqual([r["grader_error"] for r in runs], [False, True, False, False])
+        s = summarize(runs, 1)["a"]["normal"]
+        self.assertEqual((s["runs"], s["success"], s["grader_errors"]), (3, 1, 1))  # 1 of 3, not 1 of 4
+        self.assertTrue(is_grader_error({"result": "not_graded", "reason": "bad reply"}))
+        self.assertFalse(is_grader_error({"result": "not_graded",
+                                          "reason": "Empty or cut-off answer (not counted as 'said unknown')."}))
+        self.assertFalse(is_grader_error({"result": "wrong"}))
+
+    def test_replay_only_never_searches_live(self):
+        from freshpin.toolserver import ToolServer
+        with tempfile.TemporaryDirectory() as tmp:
+            cache = Path(tmp) / "c.json"
+            cache.write_text(json.dumps({"workday outage": [{"title": "T", "url": "https://x.example/a"}]}))
+            called = []
+            ts = ToolServer(lambda q: called.append(q) or [], cache_path=cache, live=False)
+            ts.set_run("r", "normal")
+            self.assertEqual(ts.handle_search("r", "  Workday   OUTAGE ")[1]["results"][0]["title"], "T")
+            self.assertEqual(ts.handle_search("r", "something new")[1]["results"], [])
+            self.assertEqual([c["source"] for c in ts.calls("r")], ["replay", "not_recorded"])
+            self.assertEqual(called, [])
+
+    def test_tool_cache_path_prefers_the_suite_folder(self):
+        from freshpin.__main__ import tool_cache_path
+        with tempfile.TemporaryDirectory() as tmp:
+            suites, bench_dir = Path(tmp) / "suites", Path(tmp)
+            suites.mkdir()
+            q = suites / "s.json"
+            self.assertEqual(tool_cache_path(q, "", bench_dir), suites / "toolcache-s.json")    # new suite: beside it
+            (bench_dir / "toolcache-s.json").write_text("{}")
+            self.assertEqual(tool_cache_path(q, "", bench_dir), bench_dir / "toolcache-s.json")  # old recording
+            (suites / "toolcache-s.json").write_text("{}")
+            self.assertEqual(tool_cache_path(q, "", bench_dir), suites / "toolcache-s.json")    # beside wins
+            self.assertEqual(tool_cache_path(q, "/x/y.json", bench_dir), Path("/x/y.json"))
+
+    def test_committed_sample_is_auditable_and_consistent(self):
+        """The shipped result can be checked from the repo alone: its task suite and search recording are committed,
+        every run carries its gold answer, and the summary is exactly what the runs give."""
+        from freshpin.agentbench import summarize
+        root = Path(__file__).resolve().parent.parent
+        d = json.loads((root / "bench/samples/agentbench-20261115-155950.json").read_text(encoding="utf-8"))
+        suite = json.loads((root / "bench" / d["meta"]["questions_file"]).read_text(encoding="utf-8"))["questions"]
+        cache = json.loads((root / "bench" / d["meta"]["tool_cache"]).read_text(encoding="utf-8"))
+        gold = {q["id"]: q for q in suite}
+        self.assertEqual(len(d["runs"]), 160)
+        for r in d["runs"]:
+            self.assertEqual(r["gold_answer"], gold[r["task_id"]]["gold_answer"])
+            self.assertEqual(r["question"], gold[r["task_id"]]["question"])
+        replayed = {c["query"] for r in d["runs"] for c in r["trace"] if c.get("kind") == "tool" and c.get("source")}
+        norm = lambda q: " ".join(q.casefold().split())  # noqa: E731
+        self.assertTrue(all(norm(q) in cache for q in replayed))          # every search a run saw can be replayed
+        self.assertEqual(summarize(d["runs"], d["meta"]["repeats"]), d["summary"])
+        s = d["summary"]
+        self.assertEqual((s["tool_agent"]["normal"]["success"], s["tool_agent"]["normal"]["runs"]), (9, 9))
+        self.assertEqual((s["reflect (outside agent)"]["normal"]["success"],
+                          s["reflect (outside agent)"]["normal"]["runs"]), (5, 7))
+        self.assertEqual(sum(v["grader_errors"] for a in s.values() for v in a.values()), 6)
+        self.assertEqual(sum(r["followed_planted"] for r in d["runs"]), 0)
+
 
 class McpTests(unittest.TestCase):
     """The MCP server, driven the way an AI assistant drives it: JSON lines in, JSON lines out."""

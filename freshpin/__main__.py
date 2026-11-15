@@ -236,6 +236,17 @@ def arena_cmd(a, s, app, client, questions, models, check) -> int:
     return 0
 
 
+def tool_cache_path(questions: "Path", explicit: str, bench_dir: "Path") -> "Path":
+    """Where the recorded searches for a task suite live: --tool-cache if given, else next to the suite (so a
+    committed suite and its recording travel together), else the old bench/ location."""
+    from pathlib import Path
+    if explicit:
+        return Path(explicit)
+    beside = questions.parent / f"toolcache-{questions.stem}.json"
+    old = bench_dir / f"toolcache-{questions.stem}.json"
+    return beside if beside.exists() or not old.exists() else old
+
+
 def agentbench_cmd(args: list[str]) -> int:
     import argparse
     import json as _json
@@ -262,6 +273,11 @@ def agentbench_cmd(args: list[str]) -> int:
     ap.add_argument("--fallbacks", default="", help="fallback models offered to agents (comma-separated)")
     ap.add_argument("--search-type", default="event", help="claim type for live searches (event = news, last week)")
     ap.add_argument("--pace", type=float, default=0.0, help="seconds to wait between runs (free-tier rate limits)")
+    ap.add_argument("--tool-cache", default="", help="recorded searches to replay (default: toolcache-<suite>.json "
+                    "next to the suite file, else in bench/)")
+    ap.add_argument("--replay-only", action="store_true",
+                    help="never search live: replay the recorded searches only (no Tavily credits; unrecorded "
+                    "queries return no results)")
     ap.add_argument("--yes", action="store_true")
     a = ap.parse_args(args)
 
@@ -300,8 +316,12 @@ def agentbench_cmd(args: list[str]) -> int:
     def search(q: str) -> list:
         return [x.as_dict() for x in app.search.search(q, a.search_type, 5, depth="basic")]
 
-    cache = bench.RESULTS_DIR.parent / f"toolcache-{Path(a.questions).stem}.json"
-    tools = ToolServer(search, cache_path=cache).start()
+    cache = tool_cache_path(Path(a.questions), a.tool_cache, bench.RESULTS_DIR.parent)
+    if a.replay_only and not cache.exists():
+        print(f"--replay-only needs recorded searches, and {cache} does not exist.")
+        return 2
+    print(f"Tool recording: {cache}{' (replay only, no live searches)' if a.replay_only else ''}", flush=True)
+    tools = ToolServer(search, cache_path=cache, live=not a.replay_only).start()
     headers = {"x-bf-vk": s.bifrost_virtual_key} if s.bifrost_virtual_key else {}
     llm = {"base_url": s.bifrost_url.rstrip("/") + "/v1", "headers": headers}
     path = bench.RESULTS_DIR / f"agentbench-{_time.strftime('%Y%m%d-%H%M%S')}.json"
@@ -310,7 +330,7 @@ def agentbench_cmd(args: list[str]) -> int:
             "repeats": a.repeats, "conditions": conds, "grader": judges[0], "grader_independent": independent,
             "agents": [{"name": ag.name, "description": ag.description,
                         "how": "command" if ag.command else "http"} for ag in agents],
-            "questions_file": Path(a.questions).name}
+            "questions_file": Path(a.questions).name, "tool_cache": cache.name, "replay_only": a.replay_only}
     done: list = []
 
     def on_progress(rec: dict) -> None:

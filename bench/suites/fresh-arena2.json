@@ -1,0 +1,148 @@
+{
+  "_note": "Auto-built from news by FreshPin. Each gold answer has a quote found word for word in its source. Read and correct before relying on it (review: auto). Curated: removed fresh-3 (third item on the 12 Nov Microsoft outage; max two per event). Items still need a person's read.",
+  "built_on": "2026-11-15",
+  "candidates": 35,
+  "skipped": {
+    "not_usable": 0,
+    "quote_not_found": 0,
+    "model_error": 0,
+    "index_page": 1,
+    "live_value": 1,
+    "quote_cut_off": 2,
+    "same_event": 0
+  },
+  "questions": [
+    {
+      "id": "fresh-1",
+      "category": "event",
+      "question": "How many users were affected at the peak of the Microsoft 365 and Outlook outage on Thursday, November 12, 2026?",
+      "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
+      "evidence_quote": "Microsoft 365 and Outlook experienced a major outage on Thursday, affecting more than 100,000 users at its peak as individuals reported issues accessing Exchange Online mailboxes and other services.",
+      "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
+      "source_title": "Microsoft 365 and Outlook experience major service outage | News | ktbs.com",
+      "published_date": "Thu, 12 Nov 2026 20:06:00 GMT",
+      "as_of": "2026-11-15",
+      "review": "auto + rule-curated (see _note)"
+    },
+    {
+      "id": "fresh-2",
+      "category": "event",
+      "question": "On what date did Workday suffer a major service outage that affected 11,500 companies?",
+      "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
+      "evidence_quote": "Workday suffered a major service outage on Friday, leaving 11,500 companies without access to its platform.",
+      "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
+      "source_title": "Workday, software company with thousands of Fortune 500 clients, joins Microsoft in experiencing major outage",
+      "published_date": "Sat, 14 Nov 2026 17:31:57 GMT",
+      "as_of": "2026-11-15",
+      "review": "auto + rule-curated (see _note)"
+    },
+    {
+      "id": "fresh-4",
+      "category": "event",
+      "question": "What services were affected by the Microsoft outage on November 12, 2026?",
+      "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
+      "evidence_quote": "Services including Teams, Outlook and Microsoft's artificial intelligence software Copilot have been affected by 'connectivity problems'.",
+      "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
+      "source_title": "Global Microsoft outage affecting tens of thousands of users",
+      "published_date": "Thu, 12 Nov 2026 20:25:29 GMT",
+      "as_of": "2026-11-15",
+      "review": "auto + rule-curated (see _note)"
+    },
+    {
+      "id": "fresh-5",
+      "category": "event",
+      "question": "What is the maximum power rating of the Lunar Fast Charger unveiled on Nov. 11, 2026?",
+      "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
+      "evidence_quote": "Lunar Energy unveiled its Lunar Fast Charger on Nov. 11 as part of a broader product launch announced by the company. The home DC unit is rated at up to 25 kilowatts (kW).",
+      "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
+      "source_title": "Heating Aid Push, Generator Recall Lead Weekly Energy Wrap | Environment+Energy Leader",
+      "published_date": "Sat, 14 Nov 2026 10:00:00 GMT",
+      "as_of": "2026-11-15",
+      "review": "auto + rule-curated (see _note)"
+    },
+    {
+      "id": "fresh-6",
+      "category": "event",
+      "question": "On what date did Apple HomeView become available in stores in the United States?",
+      "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
+      "evidence_quote": "In Store: November 13, 2026",
+      "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
+      "source_title": "Apple HomeView guide: Price, release date, features, and everything you need to know | Macworld",
+      "published_date": "Mon, 09 Nov 2026 00:00:00 GMT",
+      "as_of": "2026-11-15",
+      "review": "auto + rule-curated (see _note)"
+    },
+    {
+      "id": "fresh-7",
+      "category": "event",
+      "question": "What was the name of the AI technology company that Worker.ai acquired on 12 November 2026?",
+      "gold_answer": "Worker.ai announced its acquisition of DeltaGen and launched a company operating system for small businesses on 12 November 2026.",
+      "evidence_quote": "Worker.ai announced its acquisition of DeltaGen and launched a company operating system for small businesses on 12 November 2026.",
+      "source_url": "https://casrai.org/news/worker-ai-deltagen-acquisition-platform-launch-2026",
+      "source_title": "Worker.ai: DeltaGen acquisition and AI launch — CASRAI",
+      "published_date": "Sun, 15 Nov 2026 00:08:50 GMT",
+      "as_of": "2026-11-15",
+      "review": "auto + rule-curated (see _note)"
+    },
+    {
+      "id": "fresh-8",
+      "category": "event",
+      "question": "What is the name of the new AI marketing product launched by Constant Contact for small businesses?",
+      "gold_answer": "Catalyst",
+      "evidence_quote": "Constant Contact, a marketing solutions provider for small businesses, announced Thursday the release of Catalyst, a new agentic AI marketing product that the company says works like an expert that owners hired rather than another tool they need to learn.",
+      "source_url": "https://www.cpapracticeadvisor.com/2026/11/12/constant-contact-launches-ai-marketing-product-for-small-businesses/193776",
+      "source_title": "Constant Contact Launches AI Marketing Product for Small Businesses - CPA Practice Advisor",
+      "published_date": "Thu, 12 Nov 2026 16:43:00 GMT",
+      "as_of": "2026-11-15",
+      "review": "auto + rule-curated (see _note)"
+    },
+    {
+      "id": "fresh-9",
+      "category": "event",
+      "question": "What new AI office productivity tools did Anthropic launch ahead of its IPO, and what was the stated goal of the launch event?",
+      "gold_answer": "Anthropic launched new AI office productivity tools, including Claude Code, to expand beyond software engineering into broader corporate knowledge work, aiming to create momentum ahead of its IPO. The company held a launch event in San Francisco to generate buzz around the new products.",
+      "evidence_quote": "To help create momentum around the product launch, Anthropic held a buzzy launch event in San Francisco Tuesday with hundreds of guests. Anthropic’s Chief Product Officer Ami Vora spoke on stage about how Claude has changed computer coding over the past year.",
+      "source_url": "https://fortune.com/2026/11/10/anthropic-launches-office-knowledge-worker-product-launch-ahead-of-ipo",
+      "source_title": "Anthropic launches new suits of AI office productivity tools in run up to IPO | Fortune",
+      "published_date": "Wed, 11 Nov 2026 10:00:00 GMT",
+      "as_of": "2026-11-15",
+      "review": "auto + rule-curated (see _note)"
+    },
+    {
+      "id": "fresh-10",
+      "category": "event",
+      "question": "What two pump brands did Xylem Inc. acquire in November 2026?",
+      "gold_answer": "Xylem Inc. completed its acquisition of Cornell Pump and Roper Pump, advancing the company’s strategy to sharpen its portfolio and increase its exposure to higher-growth markets.",
+      "evidence_quote": "Xylem Inc. has completed its previously announced acquisition of Cornell Pump and Roper Pump",
+      "source_url": "https://impeller.net/magazin/xylem-completes-acquisition-of-cornell-pump-and-roper-pump",
+      "source_title": "Xylem Completes Acquisition of Cornell Pump and Roper Pump | impeller.net - The Online Pump Magazine",
+      "published_date": "Thu, 12 Nov 2026 09:00:00 GMT",
+      "as_of": "2026-11-15",
+      "review": "auto + rule-curated (see _note)"
+    },
+    {
+      "id": "fresh-11",
+      "category": "event",
+      "question": "Which AI code review startup did Cohere acquire in November 2026?",
+      "gold_answer": "Cubic, a London-based AI code review startup.",
+      "evidence_quote": "Cubic, which is based in London, United Kingdom, according to its Y Combinator profile.",
+      "source_url": "https://betakit.com/cohere-buys-ai-code-review-startup-cubic-as-acquisition-spree-continues",
+      "source_title": "Cohere buys AI code review startup Cubic as acquisition spree continues | BetaKit",
+      "published_date": "Fri, 13 Nov 2026 20:58:00 GMT",
+      "as_of": "2026-11-15",
+      "review": "auto + rule-curated (see _note)"
+    },
+    {
+      "id": "fresh-12",
+      "category": "event",
+      "question": "What emergency action did Governor Maura Healey take regarding abortion access in Massachusetts, and what was the immediate effect of this action?",
+      "gold_answer": "Governor Maura Healey signed an emergency order to enact one of the nation's most expansive abortion laws, allowing anyone in Massachusetts to legally get an abortion at any point in their pregnancy with a doctor's signoff, effectively leapfrogging efforts to freeze the law's implementation.",
+      "evidence_quote": "Gov. Maura Healey has signed an emergency order to enact one of the nation's most expansive abortion laws, leapfrogging anti-abortion advocates who'd gathered signatures in an attempt to freeze the law's implementation. Now, anyone in Massachusetts can legally get an abortion at any point in their pregnancy, as long as they have a doctor's signoff.",
+      "source_url": "https://nationalpartnership.org/news-democratic-wins-create-abortion-rights-opportunities-in-states-with-strict-laws",
+      "source_title": "NEWS: Democratic wins create abortion rights opportunities in states with strict laws | National Partnership for Women & Families",
+      "published_date": "Thu, 12 Nov 2026 20:37:07 GMT",
+      "as_of": "2026-11-15",
+      "review": "auto + rule-curated (see _note)"
+    }
+  ]
+}

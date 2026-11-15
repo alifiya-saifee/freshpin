@@ -21,7 +21,8 @@ def bench_files() -> list[dict[str, str]]:
     """Agent-benchmark result files, newest first."""
     import json as _json
     out = []
-    files = sorted(list(RESULTS.glob("agentbench-*.json")) + list(SAMPLES.glob("agentbench-*.json")),
+    # A committed sample wins over a local result of the same name (the sample is the curated, rescored copy).
+    files = sorted(list(SAMPLES.glob("agentbench-*.json")) + list(RESULTS.glob("agentbench-*.json")),
                    key=lambda f: f.name, reverse=True)
     seen = set()
     for f in files:
@@ -42,7 +43,7 @@ def bench_file(name: str):
     import re as _re
     if not _re.fullmatch(r"agentbench-[0-9-]+\.json", name or ""):
         return None
-    for d in (RESULTS, SAMPLES):
+    for d in (SAMPLES, RESULTS):
         f = d / name
         if f.is_file():
             return f

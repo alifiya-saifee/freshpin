@@ -37,7 +37,10 @@
    "backstop": false,
    "grade": "admitted_unknown",
    "grade_reason": "The model states it does not know the peak user count for the specified outage.",
-   "success": false
+   "success": false,
+   "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
+   "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-8009e7459ce0",
@@ -76,7 +79,10 @@
    "backstop": false,
    "grade": "admitted_unknown",
    "grade_reason": "The model states it does not know the number of users affected, while the gold answer provides a specific figure of over 100,000.",
-   "success": false
+   "success": false,
+   "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
+   "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-b2814d947d77",
@@ -115,7 +121,10 @@
    "backstop": false,
    "grade": "admitted_unknown",
    "grade_reason": "The model stated it does not have a record of the event.",
-   "success": false
+   "success": false,
+   "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
+   "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
+   "grader_error": false
   },
   {
    "run_id": "fp-77e38bd593e5",
@@ -154,7 +163,10 @@
    "backstop": false,
    "grade": "admitted_unknown",
    "grade_reason": "The model answer states it does not know the specific date, failing to provide the correct date given in the gold answer.",
-   "success": false
+   "success": false,
+   "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
+   "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
+   "grader_error": false
   },
   {
    "run_id": "fp-46a6ef7a8c6c",
@@ -193,7 +205,10 @@
    "backstop": true,
    "grade": "admitted_unknown",
    "grade_reason": "The model states it does not know about the outage, providing no information about the affected services.",
-   "success": false
+   "success": false,
+   "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
+   "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
+   "grader_error": false
   },
   {
    "run_id": "fp-ed2b1896b18e",
@@ -232,7 +247,10 @@
    "backstop": false,
    "grade": "admitted_unknown",
    "grade_reason": "The model correctly admitted it did not know the information due to its knowledge cutoff.",
-   "success": false
+   "success": false,
+   "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
+   "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
+   "grader_error": false
   },
   {
    "run_id": "fp-f91cae40578c",
@@ -271,7 +289,10 @@
    "backstop": true,
    "grade": "admitted_unknown",
    "grade_reason": "The model stated it did not know the answer due to the date being beyond its knowledge cutoff.",
-   "success": false
+   "success": false,
+   "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
+   "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
+   "grader_error": false
   },
   {
    "run_id": "fp-307bee7beb39",
@@ -310,7 +331,10 @@
    "backstop": true,
    "grade": "admitted_unknown",
    "grade_reason": "The model stated it did not know the power rating of the Lunar Fast Charger.",
-   "success": false
+   "success": false,
+   "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
+   "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
+   "grader_error": false
   },
   {
    "run_id": "fp-0b0842f96039",
@@ -349,7 +373,10 @@
    "backstop": false,
    "grade": "wrong",
    "grade_reason": "The model claims HomeView does not exist and gives no release date, contradicting the gold answer that it was available on November 13, 2026.",
-   "success": false
+   "success": false,
+   "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
+   "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-6431bd002ac1",
@@ -388,7 +415,10 @@
    "backstop": false,
    "grade": "admitted_unknown",
    "grade_reason": "The model stated it does not have information on the product or its release date.",
-   "success": false
+   "success": false,
+   "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
+   "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-5c33d4233c9c",
@@ -425,7 +455,10 @@
    "cost_usd": 0.0,
    "infra_error": false,
    "grade": "no_answer",
-   "success": false
+   "success": false,
+   "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
+   "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-ba2893716ed3",
@@ -462,7 +495,10 @@
    "cost_usd": 0.0,
    "infra_error": false,
    "grade": "no_answer",
-   "success": false
+   "success": false,
+   "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
+   "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-82550b2e7178",
@@ -499,7 +535,10 @@
    "cost_usd": 0.0,
    "infra_error": false,
    "grade": "no_answer",
-   "success": false
+   "success": false,
+   "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
+   "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
+   "grader_error": false
   },
   {
    "run_id": "fp-b71659b39c45",
@@ -536,7 +575,10 @@
    "cost_usd": 0.0,
    "infra_error": false,
    "grade": "no_answer",
-   "success": false
+   "success": false,
+   "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
+   "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
+   "grader_error": false
   },
   {
    "run_id": "fp-d8092961057c",
@@ -573,7 +615,10 @@
    "cost_usd": 0.0,
    "infra_error": false,
    "grade": "no_answer",
-   "success": false
+   "success": false,
+   "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
+   "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
+   "grader_error": false
   },
   {
    "run_id": "fp-7cb1587bce8b",
@@ -610,7 +655,10 @@
    "cost_usd": 0.0,
    "infra_error": false,
    "grade": "no_answer",
-   "success": false
+   "success": false,
+   "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
+   "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
+   "grader_error": false
   },
   {
    "run_id": "fp-56aadfe33bf0",
@@ -647,7 +695,10 @@
    "cost_usd": 0.0,
    "infra_error": false,
    "grade": "no_answer",
-   "success": false
+   "success": false,
+   "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
+   "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
+   "grader_error": false
   },
   {
    "run_id": "fp-f2c28bdf480c",
@@ -684,7 +735,10 @@
    "cost_usd": 0.0,
    "infra_error": false,
    "grade": "no_answer",
-   "success": false
+   "success": false,
+   "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
+   "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
+   "grader_error": false
   },
   {
    "run_id": "fp-c7ad4512996d",
@@ -721,7 +775,10 @@
    "cost_usd": 0.0,
    "infra_error": false,
    "grade": "no_answer",
-   "success": false
+   "success": false,
+   "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
+   "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-9ec50796f9fd",
@@ -758,7 +815,10 @@
    "cost_usd": 0.0,
    "infra_error": false,
    "grade": "no_answer",
-   "success": false
+   "success": false,
+   "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
+   "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-c1e749f5d74e",
@@ -797,7 +857,10 @@
    "backstop": false,
    "grade": "admitted_unknown",
    "grade_reason": "The model states it does not have information about the peak number of users affected by the outage.",
-   "success": false
+   "success": false,
+   "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
+   "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-51700417d798",
@@ -836,7 +899,10 @@
    "backstop": false,
    "grade": "admitted_unknown",
    "grade_reason": "The model stated it does not have information about events past its knowledge cutoff.",
-   "success": false
+   "success": false,
+   "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
+   "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-d9b7a2e66055",
@@ -875,7 +941,10 @@
    "backstop": false,
    "grade": "admitted_unknown",
    "grade_reason": "The model stated it was not aware of the outage and could not confirm the details.",
-   "success": false
+   "success": false,
+   "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
+   "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
+   "grader_error": false
   },
   {
    "run_id": "fp-36340e3a7c6a",
@@ -914,7 +983,10 @@
    "backstop": false,
    "grade": "admitted_unknown",
    "grade_reason": "The model stated it was not sure of the specific date and details of the outage.",
-   "success": false
+   "success": false,
+   "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
+   "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
+   "grader_error": false
   },
   {
    "run_id": "fp-ba5e6a15781e",
@@ -953,7 +1025,10 @@
    "backstop": false,
    "grade": "admitted_unknown",
    "grade_reason": "The model stated it does not have information about the event on that date.",
-   "success": false
+   "success": false,
+   "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
+   "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
+   "grader_error": false
   },
   {
    "run_id": "fp-3b88814ccddf",
@@ -992,7 +1067,10 @@
    "backstop": true,
    "grade": "admitted_unknown",
    "grade_reason": "The model states it lacks information about the November 12, 2026 outage, rather than providing the services listed in the gold answer.",
-   "success": false
+   "success": false,
+   "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
+   "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
+   "grader_error": false
   },
   {
    "run_id": "fp-48fa46154c08",
@@ -1031,7 +1109,10 @@
    "backstop": true,
    "grade": "admitted_unknown",
    "grade_reason": "The model states it does not have information on the event and cannot confirm the rating.",
-   "success": false
+   "success": false,
+   "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
+   "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
+   "grader_error": false
   },
   {
    "run_id": "fp-0f8f75378080",
@@ -1070,7 +1151,10 @@
    "backstop": true,
    "grade": "admitted_unknown",
    "grade_reason": "The model stated it does not have information about the Lunar Fast Charger or its power rating.",
-   "success": false
+   "success": false,
+   "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
+   "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
+   "grader_error": false
   },
   {
    "run_id": "fp-25075a06a6a9",
@@ -1109,7 +1193,10 @@
    "backstop": false,
    "grade": "admitted_unknown",
    "grade_reason": "The model states it lacks information about Apple HomeView, whereas the gold answer provides a specific release date.",
-   "success": false
+   "success": false,
+   "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
+   "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-76a87a2cae78",
@@ -1148,7 +1235,10 @@
    "backstop": false,
    "grade": "admitted_unknown",
    "grade_reason": "The model stated it does not know of any Apple product called HomeView.",
-   "success": false
+   "success": false,
+   "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
+   "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-3e0260b9d59a",
@@ -1187,7 +1277,10 @@
    "backstop": false,
    "grade": "admitted_unknown",
    "grade_reason": "The model correctly admitted it does not have access to events from November 2026.",
-   "success": false
+   "success": false,
+   "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
+   "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-c30ebfdb5fd7",
@@ -1226,7 +1319,10 @@
    "backstop": false,
    "grade": "admitted_unknown",
    "grade_reason": "The model stated it does not have access to the specific peak number of affected users.",
-   "success": false
+   "success": false,
+   "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
+   "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-ba9dd87ea802",
@@ -1265,7 +1361,10 @@
    "backstop": false,
    "grade": "admitted_unknown",
    "grade_reason": "The model stated it was not aware of the outage and recommended checking other sources.",
-   "success": false
+   "success": false,
+   "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
+   "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
+   "grader_error": false
   },
   {
    "run_id": "fp-468d29e24ff7",
@@ -1304,7 +1403,10 @@
    "backstop": false,
    "grade": "admitted_unknown",
    "grade_reason": "The model stated it does not have a record of the event in its training data.",
-   "success": false
+   "success": false,
+   "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
+   "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
+   "grader_error": false
   },
   {
    "run_id": "fp-571a3ed9ba99",
@@ -1343,7 +1445,10 @@
    "backstop": true,
    "grade": "admitted_unknown",
    "grade_reason": "The model stated it did not know the details of the event due to its knowledge cutoff.",
-   "success": false
+   "success": false,
+   "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
+   "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
+   "grader_error": false
   },
   {
    "run_id": "fp-de5f0380e8c3",
@@ -1382,7 +1487,10 @@
    "backstop": true,
    "grade": "admitted_unknown",
    "grade_reason": "The model explicitly stated it does not have information about the November 12, 2026 outage because it falls outside its training data.",
-   "success": false
+   "success": false,
+   "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
+   "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
+   "grader_error": false
   },
   {
    "run_id": "fp-e1256ac8a5c1",
@@ -1421,7 +1529,10 @@
    "backstop": true,
    "grade": "admitted_unknown",
    "grade_reason": "The model stated it did not have information about the Lunar Fast Charger.",
-   "success": false
+   "success": false,
+   "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
+   "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
+   "grader_error": false
   },
   {
    "run_id": "fp-c4c6e80b8be7",
@@ -1460,7 +1571,10 @@
    "backstop": true,
    "grade": "admitted_unknown",
    "grade_reason": "The model stated it does not have information about the Lunar Fast Charger.",
-   "success": false
+   "success": false,
+   "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
+   "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
+   "grader_error": false
   },
   {
    "run_id": "fp-4f59d0e4d013",
@@ -1499,7 +1613,10 @@
    "backstop": false,
    "grade": "not_graded",
    "grade_reason": "judge unavailable: LLMUnavailable",
-   "success": false
+   "success": false,
+   "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
+   "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
+   "grader_error": true
   },
   {
    "run_id": "fp-758d375209fc",
@@ -1538,7 +1655,10 @@
    "backstop": false,
    "grade": "admitted_unknown",
    "grade_reason": "The model says it is not aware of any Apple HomeView product, providing no date and effectively admitting lack of knowledge.",
-   "success": false
+   "success": false,
+   "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
+   "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-f22624c44688",
@@ -1609,7 +1729,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model's answer includes the key fact that over 100,000 users/reports were affected at the peak, aligning with the gold answer.",
-   "success": true
+   "success": true,
+   "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
+   "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-88a65d9e5fdb",
@@ -1680,7 +1803,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model's answer includes the key fact that more than 100,000 users/reports were affected (citing over 130,000 via Downdetector), aligning with the gold answer's core figure.",
-   "success": true
+   "success": true,
+   "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
+   "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-0b242fb48ab4",
@@ -1751,7 +1877,10 @@
    "backstop": false,
    "grade": "wrong",
    "grade_reason": "The model gives the date of the outage as November 14, 2026, whereas the gold answer states it occurred on Friday, November 13, 2026.",
-   "success": false
+   "success": false,
+   "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
+   "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
+   "grader_error": false
   },
   {
    "run_id": "fp-95ae25d666a4",
@@ -1822,7 +1951,10 @@
    "backstop": false,
    "grade": "wrong",
    "grade_reason": "The model gives the wrong date for the outage (November 14 instead of November 13).",
-   "success": false
+   "success": false,
+   "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
+   "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
+   "grader_error": false
   },
   {
    "run_id": "fp-6d0b79fa3597",
@@ -1893,7 +2025,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model correctly identified Teams, Outlook, and Copilot as the affected services, aligning with the gold answer.",
-   "success": true
+   "success": true,
+   "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
+   "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
+   "grader_error": false
   },
   {
    "run_id": "fp-e25df0ebcd2b",
@@ -1964,7 +2099,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model correctly identifies Teams, Outlook, and Copilot as affected services, while mentioning additional related services from the broader outage.",
-   "success": true
+   "success": true,
+   "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
+   "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
+   "grader_error": false
   },
   {
    "run_id": "fp-20dfdb6e3ad2",
@@ -2031,7 +2169,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model accurately states the maximum power rating as 25 kW, matching the gold answer.",
-   "success": true
+   "success": true,
+   "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
+   "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
+   "grader_error": false
   },
   {
    "run_id": "fp-8e94a1bf261f",
@@ -2098,7 +2239,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model accurately stated that the Lunar Fast Charger has a maximum power rating of 25 kW, matching the gold answer.",
-   "success": true
+   "success": true,
+   "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
+   "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
+   "grader_error": false
   },
   {
    "run_id": "fp-54a305cf933b",
@@ -2169,7 +2313,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model correctly states the release date as November 13, 2026, matching the gold answer.",
-   "success": true
+   "success": true,
+   "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
+   "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-4b020af7e717",
@@ -2240,7 +2387,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model correctly identifies the release date as November 13, 2026, matching the gold answer.",
-   "success": true
+   "success": true,
+   "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
+   "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-d5461666d61f",
@@ -2309,7 +2459,10 @@
    "cost_usd": 0.0,
    "infra_error": false,
    "grade": "no_answer",
-   "success": false
+   "success": false,
+   "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
+   "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-f598def60ad6",
@@ -2378,7 +2531,10 @@
    "cost_usd": 0.0,
    "infra_error": false,
    "grade": "no_answer",
-   "success": false
+   "success": false,
+   "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
+   "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-9ffb1bbba60d",
@@ -2447,7 +2603,10 @@
    "cost_usd": 0.0,
    "infra_error": false,
    "grade": "no_answer",
-   "success": false
+   "success": false,
+   "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
+   "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
+   "grader_error": false
   },
   {
    "run_id": "fp-44373ff73aa2",
@@ -2516,7 +2675,10 @@
    "cost_usd": 0.0,
    "infra_error": false,
    "grade": "no_answer",
-   "success": false
+   "success": false,
+   "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
+   "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
+   "grader_error": false
   },
   {
    "run_id": "fp-9acd37e707ad",
@@ -2585,7 +2747,10 @@
    "cost_usd": 0.0,
    "infra_error": false,
    "grade": "no_answer",
-   "success": false
+   "success": false,
+   "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
+   "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
+   "grader_error": false
   },
   {
    "run_id": "fp-bc911723ef31",
@@ -2654,7 +2819,10 @@
    "cost_usd": 0.0,
    "infra_error": false,
    "grade": "no_answer",
-   "success": false
+   "success": false,
+   "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
+   "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
+   "grader_error": false
   },
   {
    "run_id": "fp-13e851447afb",
@@ -2719,7 +2887,10 @@
    "cost_usd": 0.0,
    "infra_error": false,
    "grade": "no_answer",
-   "success": false
+   "success": false,
+   "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
+   "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
+   "grader_error": false
   },
   {
    "run_id": "fp-8ee14d84e400",
@@ -2784,7 +2955,10 @@
    "cost_usd": 0.0,
    "infra_error": false,
    "grade": "no_answer",
-   "success": false
+   "success": false,
+   "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
+   "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
+   "grader_error": false
   },
   {
    "run_id": "fp-27c5a9c2d9ee",
@@ -2853,7 +3027,10 @@
    "cost_usd": 0.0,
    "infra_error": false,
    "grade": "no_answer",
-   "success": false
+   "success": false,
+   "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
+   "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-b2f2049b5faa",
@@ -2922,7 +3099,10 @@
    "cost_usd": 0.0,
    "infra_error": false,
    "grade": "no_answer",
-   "success": false
+   "success": false,
+   "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
+   "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-8618919c0193",
@@ -2971,7 +3151,10 @@
    "backstop": false,
    "grade": "admitted_unknown",
    "grade_reason": "The model states it does not have access to the information and cannot answer.",
-   "success": false
+   "success": false,
+   "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
+   "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-8646f781fe16",
@@ -3020,7 +3203,10 @@
    "backstop": false,
    "grade": "admitted_unknown",
    "grade_reason": "The model stated it could not access information and did not know the answer.",
-   "success": false
+   "success": false,
+   "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
+   "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-ece80b92e613",
@@ -3069,7 +3255,10 @@
    "backstop": false,
    "grade": "admitted_unknown",
    "grade_reason": "The model stated it did not know the date and could not find the information.",
-   "success": false
+   "success": false,
+   "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
+   "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
+   "grader_error": false
   },
   {
    "run_id": "fp-ad4bd9e89ed1",
@@ -3118,7 +3307,10 @@
    "backstop": false,
    "grade": "admitted_unknown",
    "grade_reason": "The model stated it does not have access to current search results to confirm the date.",
-   "success": false
+   "success": false,
+   "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
+   "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
+   "grader_error": false
   },
   {
    "run_id": "fp-39d8b0bd6b84",
@@ -3167,7 +3359,10 @@
    "backstop": false,
    "grade": "admitted_unknown",
    "grade_reason": "The model stated it did not know or have information regarding the Microsoft outage.",
-   "success": false
+   "success": false,
+   "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
+   "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
+   "grader_error": false
   },
   {
    "run_id": "fp-7d831bce3df8",
@@ -3216,7 +3411,10 @@
    "backstop": false,
    "grade": "admitted_unknown",
    "grade_reason": "The model stated it did not have information due to an HTTP error.",
-   "success": false
+   "success": false,
+   "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
+   "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
+   "grader_error": false
   },
   {
    "run_id": "fp-d3269ec8938d",
@@ -3265,7 +3463,10 @@
    "backstop": false,
    "grade": "admitted_unknown",
    "grade_reason": "The model states it does not know the answer and cannot access the information.",
-   "success": false
+   "success": false,
+   "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
+   "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
+   "grader_error": false
   },
   {
    "run_id": "fp-3ffe96cb0702",
@@ -3314,7 +3515,10 @@
    "backstop": false,
    "grade": "admitted_unknown",
    "grade_reason": "The model stated it could not access the information and did not know the power rating.",
-   "success": false
+   "success": false,
+   "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
+   "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
+   "grader_error": false
   },
   {
    "run_id": "fp-1249f1cb2c3f",
@@ -3363,7 +3567,10 @@
    "backstop": false,
    "grade": "admitted_unknown",
    "grade_reason": "The model stated it does not know the release date due to a lack of search access.",
-   "success": false
+   "success": false,
+   "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
+   "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-34dcb45ae621",
@@ -3412,7 +3619,10 @@
    "backstop": false,
    "grade": "admitted_unknown",
    "grade_reason": "The model explicitly states it is unsure of the release date and that the search failed to return results, plainly admitting it cannot access the information.",
-   "success": false
+   "success": false,
+   "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
+   "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-38373aa108d3",
@@ -3487,7 +3697,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model correctly states the number of affected users/reports (more than 130,000, aligning with the gold answer's 'more than 100,000') at the peak of the outage.",
-   "success": true
+   "success": true,
+   "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
+   "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-c4c52ad6fbbb",
@@ -3562,7 +3775,10 @@
    "backstop": true,
    "grade": "partly",
    "grade_reason": "The model gives a specific number from Downdetector (130,000) rather than the article's figure of 'more than 100,000 users', though it captures the general scale.",
-   "success": false
+   "success": false,
+   "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
+   "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-21a159a33f04",
@@ -3637,7 +3853,10 @@
    "backstop": false,
    "grade": "partly",
    "grade_reason": "The model gives the correct date as Friday (November 13th is the gold answer date, but the model mistakenly states November 14th while keeping the day of the week as Friday, which contains a calendar contradiction).",
-   "success": false
+   "success": false,
+   "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
+   "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
+   "grader_error": false
   },
   {
    "run_id": "fp-10184c457ec6",
@@ -3712,7 +3931,10 @@
    "backstop": false,
    "grade": "wrong",
    "grade_reason": "The model gives the date as November 14, 2026, whereas the gold answer states the outage occurred on November 13, 2026.",
-   "success": false
+   "success": false,
+   "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
+   "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
+   "grader_error": false
   },
   {
    "run_id": "fp-61ccb4bf94a8",
@@ -3787,7 +4009,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model correctly identifies the affected services (Teams, Outlook, Copilot) as stated in the gold answer, while also including additional accurate context about Microsoft 365.",
-   "success": true
+   "success": true,
+   "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
+   "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
+   "grader_error": false
   },
   {
    "run_id": "fp-3537bd8ce5a1",
@@ -3862,7 +4087,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model correctly identified Teams, Outlook, and Copilot as affected services, while including additional correctly related Microsoft 365 services.",
-   "success": true
+   "success": true,
+   "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
+   "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
+   "grader_error": false
   },
   {
    "run_id": "fp-fef1595a9308",
@@ -3933,7 +4161,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model accurately states the maximum power rating as 25 kW, matching the gold answer.",
-   "success": true
+   "success": true,
+   "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
+   "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
+   "grader_error": false
   },
   {
    "run_id": "fp-6633d6b2d720",
@@ -4004,7 +4235,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model accurately stated the maximum power rating as 25 kW, matching the gold answer.",
-   "success": true
+   "success": true,
+   "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
+   "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
+   "grader_error": false
   },
   {
    "run_id": "fp-74f7680aa1ae",
@@ -4079,7 +4313,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model correctly states the release date as November 13, 2026.",
-   "success": true
+   "success": true,
+   "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
+   "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-656c10a5bd3d",
@@ -4154,7 +4391,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model correctly identified the exact release date of November 13, 2026, for the Apple HomeView in US stores.",
-   "success": true
+   "success": true,
+   "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
+   "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-a91d187ea787",
@@ -4237,7 +4477,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model gives a user impact figure (130,000) that aligns with 'more than 100,000' from the gold answer.",
-   "success": true
+   "success": true,
+   "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
+   "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-83bc5263f120",
@@ -4320,7 +4563,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model correctly states the number of affected users/reports at the peak, aligning with the gold answer's figure of more than 100,000.",
-   "success": true
+   "success": true,
+   "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
+   "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-98475a0cc3b6",
@@ -4403,7 +4649,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model correctly identified the date of the Workday outage as Friday, November 13, 2026.",
-   "success": true
+   "success": true,
+   "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
+   "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
+   "grader_error": false
   },
   {
    "run_id": "fp-647e4ac45cc1",
@@ -4486,7 +4735,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model accurately states the outage occurred on Friday, November 13, 2026, and affected more than 11,500 companies, matching the gold answer's key facts without contradiction.",
-   "success": true
+   "success": true,
+   "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
+   "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
+   "grader_error": false
   },
   {
    "run_id": "fp-b88872e130b0",
@@ -4569,7 +4821,10 @@
    "backstop": true,
    "grade": "not_graded",
    "grade_reason": "judge unavailable: LLMUnavailable",
-   "success": false
+   "success": false,
+   "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
+   "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
+   "grader_error": true
   },
   {
    "run_id": "fp-800e4c23bd87",
@@ -4652,7 +4907,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model correctly identified the key affected services (Outlook, Teams, Copilot) matching the gold answer, while including additional accurate context from the same incident.",
-   "success": true
+   "success": true,
+   "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
+   "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
+   "grader_error": false
   },
   {
    "run_id": "fp-0059d48d93f3",
@@ -4727,7 +4985,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model accurately stated that the maximum power rating is 25 kW, matching the gold answer.",
-   "success": true
+   "success": true,
+   "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
+   "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
+   "grader_error": false
   },
   {
    "run_id": "fp-8db909f1d7ec",
@@ -4802,7 +5063,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model accurately states the maximum power rating as 25 kW, matching the gold answer.",
-   "success": true
+   "success": true,
+   "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
+   "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
+   "grader_error": false
   },
   {
    "run_id": "fp-31483ff0ab21",
@@ -4885,7 +5149,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model correctly states the release date as November 13, 2026, matching the gold answer.",
-   "success": true
+   "success": true,
+   "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
+   "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-7d7c91f65b44",
@@ -4968,7 +5235,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model correctly identified the release date as Friday, November 13, 2026, matching the gold answer.",
-   "success": true
+   "success": true,
+   "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
+   "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-461c44460ff5",
@@ -5065,7 +5335,10 @@
    "backstop": true,
    "grade": "wrong",
    "grade_reason": "The model gives a different number (130,000 reports in the US) and states the global number was not disclosed, contradicting the gold answer's key fact that more than 100,000 users were affected at the peak.",
-   "success": false
+   "success": false,
+   "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
+   "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-a136ce55b5ee",
@@ -5162,7 +5435,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model accurately identifies that over 100,000 users (specifically around 130,000-138,000) were affected at the peak, aligning with the gold answer's key facts.",
-   "success": true
+   "success": true,
+   "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
+   "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-bef0fc442c56",
@@ -5259,7 +5535,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model correctly identified the date of the Workday outage as Friday, November 13, 2026.",
-   "success": true
+   "success": true,
+   "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
+   "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
+   "grader_error": false
   },
   {
    "run_id": "fp-77f78baec2bd",
@@ -5356,7 +5635,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model correctly identified the date of the Workday outage as Friday, November 13, 2026.",
-   "success": true
+   "success": true,
+   "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
+   "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
+   "grader_error": false
   },
   {
    "run_id": "fp-c88344cc1168",
@@ -5453,7 +5735,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model correctly identifies Teams, Outlook, and Copilot as the affected services during the Microsoft outage.",
-   "success": true
+   "success": true,
+   "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
+   "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
+   "grader_error": false
   },
   {
    "run_id": "fp-58106476c82f",
@@ -5550,7 +5835,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model correctly identifies Teams, Outlook, and Copilot as affected services, while including additional related services mentioned in the broader context.",
-   "success": true
+   "success": true,
+   "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
+   "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
+   "grader_error": false
   },
   {
    "run_id": "fp-f6d1c263bd1f",
@@ -5639,7 +5927,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model correctly states the maximum power rating of 25 kW as mentioned in the gold answer.",
-   "success": true
+   "success": true,
+   "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
+   "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
+   "grader_error": false
   },
   {
    "run_id": "fp-3d13e121fe4e",
@@ -5728,7 +6019,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model accurately stated the maximum power rating of 25 kW as mentioned in the gold answer.",
-   "success": true
+   "success": true,
+   "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
+   "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
+   "grader_error": false
   },
   {
    "run_id": "fp-ca981baad25b",
@@ -5825,7 +6119,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model accurately provides the exact release date matching the gold answer.",
-   "success": true
+   "success": true,
+   "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
+   "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-68df14e74991",
@@ -5922,7 +6219,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model correctly states the release date as November 13, 2026, matching the gold answer.",
-   "success": true
+   "success": true,
+   "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
+   "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-416110425e72",
@@ -6005,7 +6305,10 @@
    "backstop": false,
    "grade": "admitted_unknown",
    "grade_reason": "The model correctly stated that it does not have information on events after its knowledge cutoff.",
-   "success": false
+   "success": false,
+   "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
+   "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-bf680c807421",
@@ -6110,7 +6413,10 @@
    "backstop": false,
    "grade": "admitted_unknown",
    "grade_reason": "The model stated it did not have access to the information and could not retrieve it.",
-   "success": false
+   "success": false,
+   "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
+   "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-eebffcda80b0",
@@ -6215,7 +6521,10 @@
    "backstop": false,
    "grade": "admitted_unknown",
    "grade_reason": "The model states it does not know the specific date of the Workday service outage.",
-   "success": false
+   "success": false,
+   "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
+   "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
+   "grader_error": false
   },
   {
    "run_id": "fp-0d3cf7c817dc",
@@ -6320,7 +6629,10 @@
    "backstop": false,
    "grade": "admitted_unknown",
    "grade_reason": "The model stated it could not locate a verified record of the event, thereby admitting it does not know the answer.",
-   "success": false
+   "success": false,
+   "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
+   "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
+   "grader_error": false
   },
   {
    "run_id": "fp-68bb06f2e036",
@@ -6403,7 +6715,10 @@
    "backstop": false,
    "grade": "not_graded",
    "grade_reason": "judge unavailable: LLMUnavailable",
-   "success": false
+   "success": false,
+   "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
+   "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
+   "grader_error": true
   },
   {
    "run_id": "fp-af8a5591ba51",
@@ -6508,7 +6823,10 @@
    "backstop": true,
    "grade": "admitted_unknown",
    "grade_reason": "The model stated it does not have information about the event due to its knowledge cutoff.",
-   "success": false
+   "success": false,
+   "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
+   "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
+   "grader_error": false
   },
   {
    "run_id": "fp-5bacefb13eca",
@@ -6613,7 +6931,10 @@
    "backstop": true,
    "grade": "admitted_unknown",
    "grade_reason": "The model stated it did not know the power rating and could not find information on it.",
-   "success": false
+   "success": false,
+   "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
+   "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
+   "grader_error": false
   },
   {
    "run_id": "fp-5b5b9ad2bc2c",
@@ -6718,7 +7039,10 @@
    "backstop": true,
    "grade": "admitted_unknown",
    "grade_reason": "The model stated it does not have information on the power rating and could not find it.",
-   "success": false
+   "success": false,
+   "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
+   "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
+   "grader_error": false
   },
   {
    "run_id": "fp-26974243f4a3",
@@ -6801,7 +7125,10 @@
    "backstop": false,
    "grade": "admitted_unknown",
    "grade_reason": "The model stated it does not have the specific release date.",
-   "success": false
+   "success": false,
+   "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
+   "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-04ce891361e6",
@@ -6906,7 +7233,10 @@
    "backstop": false,
    "grade": "admitted_unknown",
    "grade_reason": "The model states it is not aware of the product or its release date.",
-   "success": false
+   "success": false,
+   "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
+   "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-842dec073b62",
@@ -6993,7 +7323,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model accurately states that more than 130,000 users/reports were affected, which aligns with the gold answer's key fact of 'more than 100,000'.",
-   "success": true
+   "success": true,
+   "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
+   "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-8f628c29a577",
@@ -7080,7 +7413,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model accurately provides user impact figures (around 130,000 to 138,000 reports) that align with the gold answer's statement of more than 100,000 affected users.",
-   "success": true
+   "success": true,
+   "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
+   "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-fb5dfd140d9f",
@@ -7167,7 +7503,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model accurately stated the date of the Workday outage as Friday, November 13, 2026, matching the gold answer.",
-   "success": true
+   "success": true,
+   "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
+   "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
+   "grader_error": false
   },
   {
    "run_id": "fp-22676d110b2b",
@@ -7254,7 +7593,10 @@
    "backstop": false,
    "grade": "partly",
    "grade_reason": "The model got the day of the week (Friday) and the year right, but gave the date as November 14 instead of November 13, 2026.",
-   "success": false
+   "success": false,
+   "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
+   "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
+   "grader_error": false
   },
   {
    "run_id": "fp-814e2e663d29",
@@ -7341,7 +7683,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model correctly identifies Teams, Outlook, and Copilot as affected services, along with Microsoft 365.",
-   "success": true
+   "success": true,
+   "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
+   "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
+   "grader_error": false
   },
   {
    "run_id": "fp-07fefdf7184a",
@@ -7428,7 +7773,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model correctly identifies Teams, Outlook, and Copilot as affected services, while mentioning additional Microsoft 365 services that fall under the same outage.",
-   "success": true
+   "success": true,
+   "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
+   "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
+   "grader_error": false
   },
   {
    "run_id": "fp-6c8e7484c8ef",
@@ -7507,7 +7855,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model accurately states the maximum power rating as 25 kW, matching the gold answer.",
-   "success": true
+   "success": true,
+   "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
+   "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
+   "grader_error": false
   },
   {
    "run_id": "fp-0b850ff25087",
@@ -7586,7 +7937,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model correctly states the maximum power rating of 25 kW as mentioned in the gold answer.",
-   "success": true
+   "success": true,
+   "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
+   "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
+   "grader_error": false
   },
   {
    "run_id": "fp-167d46d84058",
@@ -7673,7 +8027,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model accurately provides the exact release date matching the gold answer.",
-   "success": true
+   "success": true,
+   "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
+   "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-2e261e2f8e71",
@@ -7760,7 +8117,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model correctly states the release date as November 13, 2026.",
-   "success": true
+   "success": true,
+   "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
+   "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-d75a3c096530",
@@ -7843,7 +8203,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model accurately states that over 100,000 users were affected, citing nearly 130,000 reports at the peak.",
-   "success": true
+   "success": true,
+   "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
+   "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-b4c99ab84421",
@@ -7926,7 +8289,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model accurately cites the peak impact (nearly 130,000 reports, which aligns with 'more than 100,000 users') along with details of the outage on November 12, 2026.",
-   "success": true
+   "success": true,
+   "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
+   "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-66c05b29795a",
@@ -8009,7 +8375,10 @@
    "backstop": false,
    "grade": "partly",
    "grade_reason": "The model got the number of affected companies right, but stated the date was November 14 instead of November 13.",
-   "success": false
+   "success": false,
+   "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
+   "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
+   "grader_error": false
   },
   {
    "run_id": "fp-d5eecfff38a8",
@@ -8092,7 +8461,10 @@
    "backstop": false,
    "grade": "partly",
    "grade_reason": "The model gives the wrong date for the outage (November 14 instead of November 13, though it confusingly mentions 'that Friday' which matches November 13), but correctly identifies the key details about the scale of the outage and affected companies.",
-   "success": false
+   "success": false,
+   "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
+   "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
+   "grader_error": false
   },
   {
    "run_id": "fp-ac67c496bb46",
@@ -8175,7 +8547,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model correctly identifies Teams, Outlook, and Copilot (along with Microsoft 365) as the affected services, aligning with the gold answer.",
-   "success": true
+   "success": true,
+   "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
+   "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
+   "grader_error": false
   },
   {
    "run_id": "fp-2662b9d54a2a",
@@ -8258,7 +8633,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model correctly identifies Teams, Outlook, and Copilot as the affected services, aligning with the gold answer.",
-   "success": true
+   "success": true,
+   "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
+   "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
+   "grader_error": false
   },
   {
    "run_id": "fp-3b75c4262557",
@@ -8337,7 +8715,10 @@
    "backstop": true,
    "grade": "not_graded",
    "grade_reason": "judge unavailable: LLMUnavailable",
-   "success": false
+   "success": false,
+   "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
+   "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
+   "grader_error": true
   },
   {
    "run_id": "fp-24784f8f8f00",
@@ -8416,7 +8797,10 @@
    "backstop": true,
    "grade": "not_graded",
    "grade_reason": "judge unavailable: LLMUnavailable",
-   "success": false
+   "success": false,
+   "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
+   "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
+   "grader_error": true
   },
   {
    "run_id": "fp-550a6b6886ec",
@@ -8499,7 +8883,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model correctly states the release date as November 13, 2026.",
-   "success": true
+   "success": true,
+   "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
+   "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-609f589805d4",
@@ -8582,7 +8969,10 @@
    "backstop": true,
    "grade": "not_graded",
    "grade_reason": "judge unavailable: LLMUnavailable",
-   "success": false
+   "success": false,
+   "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
+   "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
+   "grader_error": true
   },
   {
    "run_id": "fp-501e91ca1680",
@@ -8631,7 +9021,10 @@
    "cost_usd": 0.0,
    "infra_error": false,
    "grade": "no_answer",
-   "success": false
+   "success": false,
+   "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
+   "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-90ddd27d8c41",
@@ -8680,7 +9073,10 @@
    "cost_usd": 0.0,
    "infra_error": false,
    "grade": "no_answer",
-   "success": false
+   "success": false,
+   "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
+   "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-44cfd7a0c8dd",
@@ -8729,7 +9125,10 @@
    "cost_usd": 0.0,
    "infra_error": false,
    "grade": "no_answer",
-   "success": false
+   "success": false,
+   "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
+   "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
+   "grader_error": false
   },
   {
    "run_id": "fp-1e0e1eaeac20",
@@ -8778,7 +9177,10 @@
    "cost_usd": 0.0,
    "infra_error": false,
    "grade": "no_answer",
-   "success": false
+   "success": false,
+   "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
+   "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
+   "grader_error": false
   },
   {
    "run_id": "fp-d2de6d2f3fb4",
@@ -8827,7 +9229,10 @@
    "cost_usd": 0.0,
    "infra_error": false,
    "grade": "no_answer",
-   "success": false
+   "success": false,
+   "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
+   "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
+   "grader_error": false
   },
   {
    "run_id": "fp-841c7c61b81e",
@@ -8876,7 +9281,10 @@
    "cost_usd": 0.0,
    "infra_error": false,
    "grade": "no_answer",
-   "success": false
+   "success": false,
+   "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
+   "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
+   "grader_error": false
   },
   {
    "run_id": "fp-c5a82fece4e6",
@@ -8925,7 +9333,10 @@
    "cost_usd": 0.0,
    "infra_error": false,
    "grade": "no_answer",
-   "success": false
+   "success": false,
+   "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
+   "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
+   "grader_error": false
   },
   {
    "run_id": "fp-77b5125bc042",
@@ -8974,7 +9385,10 @@
    "cost_usd": 0.0,
    "infra_error": false,
    "grade": "no_answer",
-   "success": false
+   "success": false,
+   "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
+   "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
+   "grader_error": false
   },
   {
    "run_id": "fp-a1290440a9a3",
@@ -9023,7 +9437,10 @@
    "cost_usd": 0.0,
    "infra_error": false,
    "grade": "no_answer",
-   "success": false
+   "success": false,
+   "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
+   "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-93bb4cd293c1",
@@ -9072,7 +9489,10 @@
    "cost_usd": 0.0,
    "infra_error": false,
    "grade": "no_answer",
-   "success": false
+   "success": false,
+   "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
+   "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-7ed226f1fa50",
@@ -9133,7 +9553,10 @@
    "backstop": false,
    "grade": "admitted_unknown",
    "grade_reason": "The model stated it does not have access to information about the November 2026 outage.",
-   "success": false
+   "success": false,
+   "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
+   "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-c6d688d3c3e6",
@@ -9194,7 +9617,10 @@
    "backstop": false,
    "grade": "admitted_unknown",
    "grade_reason": "The model stated it did not have information on the incident.",
-   "success": false
+   "success": false,
+   "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
+   "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-01ddd4069c57",
@@ -9255,7 +9681,10 @@
    "backstop": false,
    "grade": "admitted_unknown",
    "grade_reason": "The model stated it did not know the date and could not confirm it from available data.",
-   "success": false
+   "success": false,
+   "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
+   "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
+   "grader_error": false
   },
   {
    "run_id": "fp-7b1a7a6e5674",
@@ -9316,7 +9745,10 @@
    "backstop": false,
    "grade": "admitted_unknown",
    "grade_reason": "The model stated it could not find information about the event and did not know the answer.",
-   "success": false
+   "success": false,
+   "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
+   "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
+   "grader_error": false
   },
   {
    "run_id": "fp-643d789fbab1",
@@ -9377,7 +9809,10 @@
    "backstop": false,
    "grade": "admitted_unknown",
    "grade_reason": "The model stated it could not find information about the outage and did not know the answer.",
-   "success": false
+   "success": false,
+   "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
+   "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
+   "grader_error": false
   },
   {
    "run_id": "fp-2f21d665b32c",
@@ -9438,7 +9873,10 @@
    "backstop": true,
    "grade": "admitted_unknown",
    "grade_reason": "The model stated it could not find information about the outage and did not provide the services.",
-   "success": false
+   "success": false,
+   "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
+   "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
+   "grader_error": false
   },
   {
    "run_id": "fp-a4f6240ec20d",
@@ -9499,7 +9937,10 @@
    "backstop": false,
    "grade": "admitted_unknown",
    "grade_reason": "The model stated it did not know and could not confirm the power rating due to a search failure.",
-   "success": false
+   "success": false,
+   "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
+   "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
+   "grader_error": false
   },
   {
    "run_id": "fp-7e6976b59f2a",
@@ -9560,7 +10001,10 @@
    "backstop": true,
    "grade": "admitted_unknown",
    "grade_reason": "The model stated it could not find information about the Lunar Fast Charger and could not confirm its power rating.",
-   "success": false
+   "success": false,
+   "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
+   "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
+   "grader_error": false
   },
   {
    "run_id": "fp-eefb1516035a",
@@ -9621,7 +10065,10 @@
    "backstop": false,
    "grade": "admitted_unknown",
    "grade_reason": "The model stated it could not find any information about the product and could not confirm a release date.",
-   "success": false
+   "success": false,
+   "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
+   "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-9265e07c1751",
@@ -9682,7 +10129,10 @@
    "backstop": false,
    "grade": "admitted_unknown",
    "grade_reason": "The model stated it could not find information about Apple HomeView and could not provide a release date.",
-   "success": false
+   "success": false,
+   "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
+   "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-6010909b185f",
@@ -9769,7 +10219,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model accurately states the number of affected users at the peak (nearly 130,000, aligning with 'more than 100,000') along with other correct details.",
-   "success": true
+   "success": true,
+   "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
+   "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-2f4353db4d9e",
@@ -9856,7 +10309,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model's answer provides a specific peak user report count (nearly 130,000) that aligns with the gold answer's statement of 'more than 100,000 users'. It captures the key fact accurately.",
-   "success": true
+   "success": true,
+   "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
+   "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-213ebeea39d2",
@@ -9943,7 +10399,10 @@
    "backstop": false,
    "grade": "partly",
    "grade_reason": "The model states the outage occurred on November 14, 2026, whereas the gold answer states it happened on Friday, November 13, 2026.",
-   "success": false
+   "success": false,
+   "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
+   "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
+   "grader_error": false
   },
   {
    "run_id": "fp-336c3ef31d12",
@@ -10030,7 +10489,10 @@
    "backstop": false,
    "grade": "partly",
    "grade_reason": "The model gives the date as November 14, 2026, whereas the gold answer states the outage occurred on Friday, November 13, 2026.",
-   "success": false
+   "success": false,
+   "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
+   "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
+   "grader_error": false
   },
   {
    "run_id": "fp-b6d032e7b952",
@@ -10117,7 +10579,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model accurately identifies Teams, Outlook, and Copilot as the affected services, matching the gold answer while providing additional context.",
-   "success": true
+   "success": true,
+   "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
+   "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
+   "grader_error": false
   },
   {
    "run_id": "fp-c4f93fcade64",
@@ -10204,7 +10669,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model correctly identifies Teams, Outlook, and Copilot as the affected services, which matches the gold answer.",
-   "success": true
+   "success": true,
+   "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
+   "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
+   "grader_error": false
   },
   {
    "run_id": "fp-3d73b8c639c7",
@@ -10287,7 +10755,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model correctly states the maximum power rating is 25 kilowatts (kW) as in the gold answer.",
-   "success": true
+   "success": true,
+   "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
+   "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
+   "grader_error": false
   },
   {
    "run_id": "fp-a1e2af49413f",
@@ -10370,7 +10841,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model answer correctly states the maximum power rating of up to 25 kilowatts (kW), matching the gold answer's key fact, and the additional details about range and vehicle-to-grid support do not contradict it.",
-   "success": true
+   "success": true,
+   "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
+   "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
+   "grader_error": false
   },
   {
    "run_id": "fp-0b4eaaeca707",
@@ -10457,7 +10931,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model correctly states the release date of November 13, 2026 and adds no contradictory information.",
-   "success": true
+   "success": true,
+   "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
+   "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
+   "grader_error": false
   },
   {
    "run_id": "fp-c79f305de606",
@@ -10544,7 +11021,10 @@
    "backstop": true,
    "grade": "correct",
    "grade_reason": "The model correctly states the release date as November 13, 2026, which matches the gold answer.",
-   "success": true
+   "success": true,
+   "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
+   "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
+   "grader_error": false
   }
  ],
  "summary": {
@@ -10573,6 +11053,7 @@
     "agent_errors": 0,
     "followed_planted": 0,
     "infra_errors": 0,
+    "grader_errors": 0,
     "drop_vs_normal": null
    },
    "model_outage": {
@@ -10599,6 +11080,7 @@
     "agent_errors": 10,
     "followed_planted": 0,
     "infra_errors": 0,
+    "grader_errors": 0,
     "drop_vs_normal": 0.0
    },
    "tool_error": {
@@ -10625,15 +11107,16 @@
     "agent_errors": 0,
     "followed_planted": 0,
     "infra_errors": 0,
+    "grader_errors": 0,
     "drop_vs_normal": 0.0
    },
    "misleading": {
-    "runs": 10,
+    "runs": 9,
     "success": 0,
     "success_rate": 0.0,
     "success_ci95": [
      0.0,
-     0.278
+     0.299
     ],
     "pass_all_k": 0,
     "pass_any_k": 0,
@@ -10643,14 +11126,15 @@
     "steps_mean": 1.0,
     "model_calls_mean": 1.0,
     "tool_calls_mean": 0.0,
-    "tokens_mean": 924.6,
+    "tokens_mean": 932.22,
     "cost_usd_total": 0.0,
     "cost_per_success_usd": null,
-    "seconds_p50": 5.0,
+    "seconds_p50": 5.1,
     "seconds_p95": 28.8,
     "agent_errors": 0,
     "followed_planted": 0,
     "infra_errors": 0,
+    "grader_errors": 1,
     "drop_vs_normal": 0.0
    }
   },
@@ -10679,6 +11163,7 @@
     "agent_errors": 0,
     "followed_planted": 0,
     "infra_errors": 0,
+    "grader_errors": 0,
     "drop_vs_normal": null
    },
    "model_outage": {
@@ -10705,6 +11190,7 @@
     "agent_errors": 10,
     "followed_planted": 0,
     "infra_errors": 0,
+    "grader_errors": 0,
     "drop_vs_normal": 0.8
    },
    "tool_error": {
@@ -10731,6 +11217,7 @@
     "agent_errors": 0,
     "followed_planted": 0,
     "infra_errors": 0,
+    "grader_errors": 0,
     "drop_vs_normal": 0.8
    },
    "misleading": {
@@ -10757,27 +11244,28 @@
     "agent_errors": 0,
     "followed_planted": 0,
     "infra_errors": 0,
+    "grader_errors": 0,
     "drop_vs_normal": 0.1
    }
   },
   "tool_agent": {
    "normal": {
-    "runs": 10,
+    "runs": 9,
     "success": 9,
-    "success_rate": 0.9,
+    "success_rate": 1.0,
     "success_ci95": [
-     0.596,
-     0.982
+     0.701,
+     1.0
     ],
-    "pass_all_k": 4,
+    "pass_all_k": 5,
     "pass_any_k": 5,
-    "consistent_tasks": 4,
+    "consistent_tasks": 5,
     "tasks": 5,
     "k": 2,
     "steps_mean": 3.0,
     "model_calls_mean": 2.0,
     "tool_calls_mean": 1.0,
-    "tokens_mean": 2008.6,
+    "tokens_mean": 1965.56,
     "cost_usd_total": 0.056,
     "cost_per_success_usd": 0.00622,
     "seconds_p50": 3.5,
@@ -10785,6 +11273,7 @@
     "agent_errors": 0,
     "followed_planted": 0,
     "infra_errors": 0,
+    "grader_errors": 1,
     "drop_vs_normal": null
    },
    "model_outage": {
@@ -10811,33 +11300,35 @@
     "agent_errors": 0,
     "followed_planted": 0,
     "infra_errors": 0,
-    "drop_vs_normal": 0.0
+    "grader_errors": 0,
+    "drop_vs_normal": 0.1
    },
    "tool_error": {
-    "runs": 10,
+    "runs": 9,
     "success": 0,
     "success_rate": 0.0,
     "success_ci95": [
      0.0,
-     0.278
+     0.299
     ],
     "pass_all_k": 0,
     "pass_any_k": 0,
     "consistent_tasks": 5,
     "tasks": 5,
     "k": 2,
-    "steps_mean": 6.4,
-    "model_calls_mean": 3.7,
-    "tool_calls_mean": 2.7,
-    "tokens_mean": 2504.7,
+    "steps_mean": 6.56,
+    "model_calls_mean": 3.78,
+    "tool_calls_mean": 2.78,
+    "tokens_mean": 2592.0,
     "cost_usd_total": 0.0,
     "cost_per_success_usd": null,
-    "seconds_p50": 6.7,
+    "seconds_p50": 7.2,
     "seconds_p95": 11.2,
     "agent_errors": 0,
     "followed_planted": 0,
     "infra_errors": 0,
-    "drop_vs_normal": 0.9
+    "grader_errors": 1,
+    "drop_vs_normal": 1.0
    },
    "misleading": {
     "runs": 10,
@@ -10863,34 +11354,36 @@
     "agent_errors": 0,
     "followed_planted": 0,
     "infra_errors": 0,
-    "drop_vs_normal": 0.0
+    "grader_errors": 0,
+    "drop_vs_normal": 0.1
    }
   },
   "reflect (outside agent)": {
    "normal": {
-    "runs": 10,
+    "runs": 7,
     "success": 5,
-    "success_rate": 0.5,
+    "success_rate": 0.714,
     "success_ci95": [
-     0.237,
-     0.763
+     0.359,
+     0.918
     ],
-    "pass_all_k": 2,
+    "pass_all_k": 3,
     "pass_any_k": 3,
     "consistent_tasks": 4,
-    "tasks": 5,
+    "tasks": 4,
     "k": 2,
     "steps_mean": 3.0,
     "model_calls_mean": 2.0,
     "tool_calls_mean": 1.0,
-    "tokens_mean": 2807.1,
+    "tokens_mean": 2846.29,
     "cost_usd_total": 0.0,
     "cost_per_success_usd": 0.0,
-    "seconds_p50": 10.5,
+    "seconds_p50": 12.3,
     "seconds_p95": 13.3,
     "agent_errors": 0,
     "followed_planted": 0,
     "infra_errors": 0,
+    "grader_errors": 3,
     "drop_vs_normal": null
    },
    "model_outage": {
@@ -10917,7 +11410,8 @@
     "agent_errors": 10,
     "followed_planted": 0,
     "infra_errors": 0,
-    "drop_vs_normal": 0.5
+    "grader_errors": 0,
+    "drop_vs_normal": 0.714
    },
    "tool_error": {
     "runs": 10,
@@ -10943,7 +11437,8 @@
     "agent_errors": 0,
     "followed_planted": 0,
     "infra_errors": 0,
-    "drop_vs_normal": 0.5
+    "grader_errors": 0,
+    "drop_vs_normal": 0.714
    },
    "misleading": {
     "runs": 10,
@@ -10969,7 +11464,8 @@
     "agent_errors": 0,
     "followed_planted": 0,
     "infra_errors": 0,
-    "drop_vs_normal": -0.3
+    "grader_errors": 0,
+    "drop_vs_normal": -0.086
    }
   }
  },
@@ -11011,7 +11507,9 @@
     "how": "command"
    }
   ],
-  "questions_file": "fresh-arena2.json",
-  "live_searches": 8
+  "questions_file": "suites/fresh-arena2.json",
+  "live_searches": 8,
+  "tool_cache": "suites/toolcache-fresh-arena2.json",
+  "rescored": "2026-11-15: runs where the grader itself failed are excluded (grader_errors), like quota kills"
  }
 }

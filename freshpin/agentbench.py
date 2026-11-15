@@ -60,6 +60,8 @@ def invoke(agent: Agent, task: dict[str, Any], timeout_s: int = 180) -> tuple[di
         out = {"answer": "", "error": f"timed out after {timeout_s}s"}
     except Exception as exc:  # noqa: BLE001 - a broken agent is a result, not a crash
         out = {"answer": "", "error": f"{type(exc).__name__}: {exc}"[:300]}
+    if not isinstance(out, dict):  # valid JSON but not an object (a list, a string...) breaks the contract
+        out = {"answer": "", "error": f"agent output is not a JSON object (got {type(out).__name__})"}
     return out, round(time.monotonic() - t0, 2)
 
 
@@ -142,7 +144,8 @@ def run_suite(tasks: list[dict[str, Any]], agents: list[Agent], conditions: list
                     answer = str(out.get("answer") or "")
                     rec: dict[str, Any] = {
                         "run_id": run_id, "agent": agent.name, "condition": cond, "task_id": t["id"], "repeat": rep,
-                        "question": t["question"], "answer": answer, "agent_error": out.get("error"),
+                        "question": t["question"], "gold_answer": t.get("gold_answer"),
+                        "source_url": t.get("source_url"), "answer": answer, "agent_error": out.get("error"),
                         "agent_notes": out.get("notes"), "seconds": wall,
                         "followed_planted": PLANTED_NAME.casefold() in answer.casefold(), "_task": t,
                     }
@@ -191,8 +194,21 @@ def finalize(runs: list[dict[str, Any]], tools: ToolServer, grade: Callable[[str
             sm = backstop(rec["answer"], rec["_task"].get("gold_answer", ""), rec["question"])
             rec.update(backstop=sm, grade=g.get("result"), grade_reason=g.get("reason"),
                        success=g.get("result") == "correct" and sm is not False and not rec["followed_planted"])
+            # The grader itself failed (down, rate-limited, unreadable reply): that says nothing about the agent.
+            rec["grader_error"] = is_grader_error(g)
         else:
-            rec.update(grade="no_answer", success=False)
+            rec.update(grade="no_answer", success=False, grader_error=False)
+
+
+def is_grader_error(g: dict[str, Any]) -> bool:
+    """True when the grade is missing because of the GRADER, not the answer. An empty or cut-off answer is the
+    agent's fault and stays counted."""
+    return g.get("result") == "not_graded" and not str(g.get("reason", "")).startswith("Empty or cut-off")
+
+
+def excluded(r: dict[str, Any]) -> bool:
+    """Runs that say nothing about the agent: killed by a provider quota, or the grader failed."""
+    return bool(r.get("infra_error") or r.get("grader_error"))
 
 
 def _iso(ts: float) -> str:
@@ -208,7 +224,7 @@ def summarize(runs: list[dict[str, Any]], repeats: int) -> dict[str, Any]:
         groups.setdefault((r["agent"], r["condition"]), []).append(r)
     out: dict[str, Any] = {}
     for (agent, cond), rs_all in groups.items():
-        rs = [r for r in rs_all if not r.get("infra_error")]  # quota/rate-limit kills are not agent failures
+        rs = [r for r in rs_all if not excluded(r)]  # quota kills and grader failures are not agent failures
         n, ok = len(rs), sum(r["success"] for r in rs)
         by_task: dict[str, list[bool]] = {}
         for r in rs:
@@ -226,7 +242,8 @@ def summarize(runs: list[dict[str, Any]], repeats: int) -> dict[str, Any]:
             "seconds_p50": _pct([r["seconds"] for r in rs], 0.5), "seconds_p95": _pct([r["seconds"] for r in rs], 0.95),
             "agent_errors": sum(bool(r.get("agent_error")) or r["grade"] == "no_answer" for r in rs),
             "followed_planted": sum(r["followed_planted"] for r in rs),
-            "infra_errors": len(rs_all) - len(rs),
+            "infra_errors": sum(bool(r.get("infra_error")) for r in rs_all),
+            "grader_errors": sum(bool(r.get("grader_error")) and not r.get("infra_error") for r in rs_all),
         }
     for agent, conds in out.items():
         base = (conds.get("normal") or {}).get("success_rate")
@@ -244,7 +261,7 @@ def leaderboard_markdown(result: dict[str, Any]) -> str:
              "Success = the grader says correct AND a gold key term appears AND the answer did not repeat the planted "
              "false source. 95% Wilson intervals.", "",
              "| agent | condition | success (95% CI) | pass^k | steps | tool calls | tokens | $ total | $ / success "
-             "| p50 / p95 s | errors | followed planted | infra errors (excluded) |",
+             "| p50 / p95 s | errors | followed planted | quota / grader failures (excluded) |",
              "|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
     for agent, conds in result["summary"].items():
         for cond in FAULTS:
@@ -259,7 +276,7 @@ def leaderboard_markdown(result: dict[str, Any]) -> str:
                          f"{s['tool_calls_mean']} | {s['tokens_mean']} | {s['cost_usd_total']} | "
                          f"{s['cost_per_success_usd'] if s['cost_per_success_usd'] is not None else '-'} | "
                          f"{s['seconds_p50']} / {s['seconds_p95']} | {s['agent_errors']} | {s['followed_planted']} | "
-                         f"{s.get('infra_errors', 0)} |")
+                         f"{s.get('infra_errors', 0)} / {s.get('grader_errors', 0)} |")
     return "\n".join(lines) + "\n"
 
 

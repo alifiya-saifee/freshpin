@@ -89,7 +89,7 @@ function renderBoard(){
         ${s.drop_vs_normal?`<span class="pill ${s.drop_vs_normal>0?"fault":""}">${s.drop_vs_normal>0?"−":"+"}${Math.abs(Math.round(s.drop_vs_normal*100))} pts</span>`:""}<br>
         <span class="small">pass^${s.k}: ${s.pass_all_k}/${s.tasks} · steps ${s.steps_mean} · tools ${s.tool_calls_mean} · tokens ${s.tokens_mean}<br>
         $${s.cost_usd_total} total · ${s.cost_per_success_usd!=null?"$"+s.cost_per_success_usd+"/success · ":""}${s.seconds_p50}s p50 · ${s.seconds_p95}s p95
-        ${s.agent_errors?` · <span class="bad">${s.agent_errors} errors</span>`:""}${s.followed_planted?` · <span class="bad">followed planted ${s.followed_planted}×</span>`:""}${s.infra_errors?` · <span class="small">${s.infra_errors} quota/rate-limit runs excluded</span>`:""}</span></td>`;
+        ${s.agent_errors?` · <span class="bad">${s.agent_errors} errors</span>`:""}${s.followed_planted?` · <span class="bad">followed planted ${s.followed_planted}×</span>`:""}${s.infra_errors?` · <span class="small">${s.infra_errors} quota/rate-limit runs excluded</span>`:""}${s.grader_errors?` · <span class="small">${s.grader_errors} grader-failure runs excluded</span>`:""}</span></td>`;
     }).join("")+"</tr>").join("")+"</table>";
   document.querySelectorAll("td.cell").forEach(td=>td.onclick=()=>{ document.querySelectorAll("td.sel").forEach(x=>x.classList.remove("sel")); td.classList.add("sel"); renderRuns(td.dataset.a, td.dataset.c); });
 }
@@ -97,7 +97,7 @@ function renderRuns(agent, cond){
   const rs = DATA.runs.filter(r=>r.agent===agent && r.condition===cond);
   $("#runs").innerHTML = `<div class="meta" style="margin-bottom:6px"><b>${esc(agent)}</b> · ${esc(CLABEL[cond])}</div><table><tr><th>task</th><th>rep</th><th>result</th><th>steps</th><th>tools</th><th>tokens</th><th>$</th><th>s</th></tr>`+
     rs.map((r,i)=>`<tr class="run" data-i="${DATA.runs.indexOf(r)}"><td>${esc(r.task_id)}</td><td>${r.repeat}</td>
-      <td class="${r.success?"ok":"bad"}">${r.success?"✓ correct":(r.grade==="correct"?"✗ check failed":esc(r.grade||"fail"))}${r.followed_planted?' <span class="pill fault">planted</span>':""}</td>
+      <td class="${r.success?"ok":(r.grader_error||r.infra_error?"small":"bad")}">${r.grader_error?"grader failed (excluded)":r.infra_error?"quota hit (excluded)":r.success?"✓ correct":(r.grade==="correct"?"✗ check failed":esc(r.grade||"fail"))}${r.followed_planted?' <span class="pill fault">planted</span>':""}</td>
       <td>${r.steps}</td><td>${r.tool_calls}</td><td>${r.tokens}</td><td>${r.cost_usd}</td><td>${r.seconds}</td></tr>`).join("")+"</table>";
   document.querySelectorAll("tr.run").forEach(tr=>tr.onclick=()=>{ document.querySelectorAll("tr.run.sel").forEach(x=>x.classList.remove("sel")); tr.classList.add("sel"); renderTrace(DATA.runs[+tr.dataset.i]); });
 }
@@ -117,11 +117,13 @@ function renderTrace(r){
       ${(s.results||[]).length?"<br>"+s.results.map(x=>`<span class="small">· <a href="${esc(safeUrl(x.url))}" target="_blank" rel="noopener">${esc(x.title)}</a></span>`).join("<br>"):""}</div></div>`;
   }).join("") || '<div class="empty">No steps recorded (the agent made no tagged model or tool calls).</div>';
   $("#trace").innerHTML = `<div class="meta"><b>${esc(r.agent)}</b> · ${esc(CLABEL[r.condition])} · ${esc(r.task_id)} · repeat ${r.repeat} · run <code>${esc(r.run_id)}</code></div>
-    <p><b>Question:</b> ${esc(r.question)}</p>${steps}
-    <p><b>Answer</b> <span class="${r.success?"ok":"bad"}">${r.success?"✓ correct":(r.grade==="correct"?(r.followed_planted?"✗ repeated the planted false source":"✗ grader said correct, but the key name/number check failed"):"✗ "+esc(r.grade))}</span></p><div class="answer">${esc(r.answer||"(no answer)")}</div>
+    <p><b>Question:</b> ${esc(r.question)}</p>${r.gold_answer?`<p class="small"><b>Gold answer:</b> ${esc(r.gold_answer)}${r.source_url?` · <a href="${esc(safeUrl(r.source_url))}" target="_blank" rel="noopener">source</a>`:""}</p>`:""}${steps}
+    <p><b>Answer</b> <span class="${r.success?"ok":"bad"}">${r.grader_error?"grader failed: run excluded from the score":r.success?"✓ correct":(r.grade==="correct"?(r.followed_planted?"✗ repeated the planted false source":"✗ grader said correct, but the key name/number check failed"):"✗ "+esc(r.grade))}</span></p><div class="answer">${esc(r.answer||"(no answer)")}</div>
     ${r.grade_reason?`<p class="small">Grader: ${esc(r.grade_reason)}</p>`:""}
     ${r.agent_error?`<p class="bad small">Agent error: ${esc(r.agent_error)}</p>`:""}
-    ${(r.agent_notes||[]).length?`<p class="small">Agent notes: ${r.agent_notes.map(esc).join(" · ")}</p>`:""}`;
+    ${notesOf(r).length?`<p class="small">Agent notes: ${notesOf(r).map(esc).join(" · ")}</p>`:""}`;
+}
+function notesOf(r){ const n=r.agent_notes; return Array.isArray(n)?n:(n==null||n===""?[]:[String(n)]);
 }
 init().catch(e=>{ $("#meta").textContent = "Error: "+e.message; });
 </script>

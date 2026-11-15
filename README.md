@@ -12,8 +12,8 @@ Built for the Geek Room AI Global Hackathon 2026. **Primary problem statement:**
 |---|---|
 | **Framework independence** | An agent is **any command or HTTP endpoint** that reads a task JSON and prints an answer JSON. It calls models through the **Bifrost** gateway URL it is given and tools through FreshPin's **tool server** URL. Nothing to rewrite: the included outside agent (`examples/agents/reflect_agent.py`) imports neither FreshPin nor any framework. |
 | **Consistent evaluation** | Same tasks, same tools, same recorded evidence for every agent. Per run: **success** (graded against gold), **steps** (model + tool calls), **tool calls**, **tokens** and **$ cost** (read from Bifrost's own request log, tagged with the run id via `x-bf-session-id`), Tavily credits, **time**. |
-| **Repeatability** | `--repeats k`: every task k times. Reported: success with a 95% Wilson interval, **pass^k** (right every time), pass@k, consistency, p50/p95 time. Searches are recorded once and replayed, so repeats differ only by the agent. |
-| **Failure testing** | Controlled conditions: **model unavailable** (the given model fails; fallbacks are offered), **broken tool** (search returns 503), **misleading source** (a planted top result with a wrong answer and a hidden instruction). Reported: drop vs normal, recoveries, errors, and how often an agent **repeated the planted answer**. |
+| **Repeatability** | `--repeats k`: every task k times. Reported: success with a 95% Wilson interval, **pass^k** (right every time), pass@k, consistency, p50/p95 time. Searches are recorded once and replayed, so repeats differ only by the agent. The task suite and its search recording are committed (`bench/suites/`), so anyone can re-run the same tasks on the same evidence with `--replay-only` (no Tavily credits; Bifrost and a model key are still needed). |
+| **Failure testing** | Controlled conditions: **model unavailable** (the agent is handed a model id the gateway rejects; a fallback list is offered, starting with the real model), **broken tool** (search returns 503), **misleading source** (a planted top result with a wrong answer and a hidden instruction). Reported: drop vs normal, recoveries, errors, and how often an agent **repeated the planted answer**. |
 | **Inspection & comparison** | `/bench` in the web app: a leaderboard (agent × condition), every run, and a **step-by-step trace** of each run: each model call (model, tokens, $, ms, fallbacks, errors), each tool call (query, results, injected fault), the answer and the grader's reason. |
 
 ```bash
@@ -21,26 +21,28 @@ python -m freshpin bench-build --n 12                                  # this we
 python -m freshpin agentbench --questions bench/fresh-<date>.json --max 5 --repeats 3 \
     --model gemini/gemini-3.5-flash-lite --fallbacks groq/openai/gpt-oss-120b --yes
 python -m freshpin agentbench ... --agent 'mine=python3 my_agent.py'   # add YOUR agent (any language, any framework)
+python -m freshpin agentbench --questions bench/suites/fresh-arena2.json --replay-only \
+    --model openai/nvidia/nemotron-3.5-lightning-30b-a3b --yes         # re-run the published suite on its recorded searches
 python -m freshpin serve                                               # then open http://127.0.0.1:8787/bench
 python -m unittest discover -s tests                                   # offline, no keys
 ```
 
 ### Live result (15 Nov 2026)
 
-Four agents on the **same model** (NVIDIA Nemotron 3.5 Lightning via Bifrost), 5 research tasks about that week's news × 2 repeats × 4 conditions = **160 runs**, graded by a model from another family (gpt-oss, with Mistral as backup). Full traces: `bench/samples/agentbench-20261115-155950.json`, browsable at `/bench`.
+Four agents on the **same model** (NVIDIA Nemotron 3.5 Lightning via Bifrost), 5 research tasks about that week's news × 2 repeats × 4 conditions = **160 runs**, graded by a model from another family (gpt-oss, with Mistral as backup). Full traces, with each run's gold answer: `bench/samples/agentbench-20261115-155950.json`, browsable at `/bench`; the tasks and recorded searches are in `bench/suites/`. Cells show successes / counted runs: **6 runs where the grader itself was unavailable are excluded** (like quota kills), not scored as agent failures.
 
 | Agent | normal | model unavailable | broken tool | misleading source |
 |---|---|---|---|---|
-| `bare` (no tools) | 0% | 0% | 0% | 0% |
-| `search_first` | 80% | 0% (no fallback) | 0% | 70% |
-| `tool_agent` (decides when to search, falls back on errors) | **90%** | **90%** (recovered via Mistral) | 0% | **90%** |
-| `reflect`, an outside agent (draft → search → revise) | 50% | 0% | 0% | 80% |
+| `bare` (no tools) | 0/10 | 0/10 | 0/10 | 0/9 |
+| `search_first` | 8/10 (80%) | 0/10 (no fallback) | 0/10 | 7/10 (70%) |
+| `tool_agent` (decides when to search, falls back on errors) | **9/9 (100%)** | **9/10 (90%)**, via its fallback list | 0/9 | **9/10 (90%)** |
+| `reflect`, an outside agent (draft → search → revise) | 5/7 (71%) | 0/10 | 0/10 | 8/10 (80%) |
 
 What it shows:
-- **Same model, different agent: 0% to 90%.** On facts that changed after training, the agent's design matters more than the model.
-- **Only the agent with a fallback survived a dead model**; the others failed on every run.
+- **Same model, different agent: 0% to 90–100%.** On this model and these facts that changed after training, the agent's design decided the result.
+- **Only the agent that reads the fallback list survived the rejected model id.** It recovered by moving to the next model offered, which is the real model under test (0 calls went to Mistral); the others failed on every run. This tests "does the agent handle a model error and fall back", not a provider outage in the middle of a run.
 - **No agent repeated the planted false source**, but with search broken every agent fell to 0%: none could answer from memory.
-- Intervals are wide at this size (90% is 60–98% at 95% confidence), so read differences of a few points as noise; differences like 0% vs 90% are not.
+- Intervals are wide at this size (9/10 is 60–98% at 95% confidence; 5/7 is 36–92%), so read differences of a few points as noise; differences like 0% vs 90% are not. Only 4 of the 5 tasks are separate events (fresh-1 and fresh-4 are both the 12 Nov Microsoft outage), and only one model was tested.
 - **$ is understated for NVIDIA's free endpoints:** Bifrost has no price for them, so their model calls show $0; Tavily credits are counted (searches were recorded once, so most runs replayed them for free).
 
 ### The agent contract
@@ -374,6 +376,15 @@ tests/          unittest suite
 ```
 
 ## Limits
+
+**Agent benchmark:**
+- **Failure modes are one simple variant each.** "Model unavailable" is a model id the gateway rejects (HTTP 403), not a 5xx, timeout or mid-run outage. "Broken tool" is a 503 on every call. "Misleading" is one planted top search result (a wrong name plus a hidden instruction), the same for every question; it does not test false premises in the task itself.
+- **Only plain-Python agents are demonstrated.** The contract works for any framework that can point its OpenAI-compatible client at a base URL and send headers, but no LangChain/CrewAI agent is included yet.
+- **Metrics rely on the agent using the gateway URL and headers it is given.** An agent that calls a provider directly shows 0 model calls and tokens.
+- **$ for searches** counts only live Tavily calls; replayed searches are free, so runs that replay show $0 for search. NVIDIA's free models show $0 for model calls.
+- **Grading:** an LLM gold judge from another model family plus a string backstop. Identical answers to the same task are graded once. Runs where the grader failed are excluded and shown as "grader failures".
+
+**Detector and arena:**
 
 - **Shared source.** Questions are built from Tavily news and the grounded/agent arms also search Tavily, so the grounding gain is likely larger than with another retriever (the gold article itself is removed from grounding results). A non-Tavily grounding arm is the planned control.
 - **Clustered events.** At most two items per event, but some items still share a story, so treat items as not fully independent.
