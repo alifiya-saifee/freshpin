@@ -50,8 +50,11 @@ def evidence_hash(evidence: list[dict[str, Any]]) -> str:
 
 
 class Ledger:
-    def __init__(self, path: Path | str):
+    def __init__(self, path: Path | str, max_auto_reopens: int = 20):
         self.path = str(path)
+        # One changed fact may reopen at most this many decisions automatically; the rest go "at risk" so a
+        # single bad (or hostile) source can't flood every owner at once.
+        self.max_auto_reopens = max_auto_reopens
         self.db = sqlite3.connect(self.path, check_same_thread=False)
         self.db.row_factory = sqlite3.Row
         self.db.executescript(SCHEMA)
@@ -114,7 +117,8 @@ class Ledger:
                 "old_statement": cur["statement"] if cur else claim["text"], "new_statement": corrected,
                 "checked_claim": claim["text"], "score": claim["freshness"]["score"],
                 "evidence_hash": evidence_hash(evidence)})
-            effect["reopened"] = self._reopen_pinned_below(key, new_version, claim)
+            effect["reopened"], capped = self._reopen_pinned_below(key, new_version, claim)
+            effect["at_risk"] = capped
         elif cur is None:
             self._insert_fact(key, claim["text"], claim["type"], band, claim["freshness"]["score"], evidence)
             self._event("fact_added", None, key, {"statement": claim["text"], "band": band})
@@ -129,17 +133,24 @@ class Ledger:
         self.db.commit()
         return effect
 
-    def _reopen_pinned_below(self, key: str, version: int, claim: dict[str, Any]) -> list[str]:
+    def _reopen_pinned_below(self, key: str, version: int, claim: dict[str, Any]) -> tuple[list[str], list[str]]:
         rows = self.db.execute(
             "SELECT d.id FROM decisions d JOIN pins p ON p.decision_id=d.id "
-            "WHERE p.fact_key=? AND p.fact_version<? AND d.status!='reopened'", (key, version)).fetchall()
-        ids = [r["id"] for r in rows]
+            "WHERE p.fact_key=? AND p.fact_version<? AND d.status!='reopened' ORDER BY d.id", (key, version)).fetchall()
+        all_ids = [r["id"] for r in rows]
+        ids, capped = all_ids[:max(0, self.max_auto_reopens)], all_ids[max(0, self.max_auto_reopens):]
+        for did in capped:
+            self.db.execute("UPDATE decisions SET status='at_risk' WHERE id=?", (did,))
+            self._event("decision_at_risk", did, key, {
+                "reason": f"Fact '{key}' changed, but the automatic reopen limit ({self.max_auto_reopens}) was reached; "
+                          "a person should review this one",
+                "score": claim["freshness"]["score"]})
         for did in ids:
             self.db.execute("UPDATE decisions SET status='reopened' WHERE id=?", (did,))
             self._event("decision_reopened", did, key, {
                 "reason": f"Fact '{key}' changed after this was approved",
                 "stale_claim": claim["text"], "now": claim.get("current_statement")})
-        return ids
+        return ids, capped
 
     def _flag_at_risk(self, key: str, claim: dict[str, Any]) -> list[str]:
         rows = self.db.execute(

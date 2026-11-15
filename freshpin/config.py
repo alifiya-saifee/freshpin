@@ -38,13 +38,13 @@ class Settings:
 
     # Models use Bifrost's "provider/model" naming. The first is primary; the rest are fallbacks.
     extractor_models: list[str] = field(default_factory=lambda: _list(
-        "FRESHPIN_EXTRACTOR_MODELS", "gemini/gemini-2.5-flash,groq/openai/gpt-oss-120b"))
+        "FRESHPIN_EXTRACTOR_MODELS", "gemini/gemini-3.5-flash-lite,groq/openai/gpt-oss-120b"))
     verifier_models: list[str] = field(default_factory=lambda: _list(
-        "FRESHPIN_VERIFIER_MODELS", "groq/openai/gpt-oss-120b,gemini/gemini-2.5-flash"))
+        "FRESHPIN_VERIFIER_MODELS", "groq/openai/gpt-oss-120b,gemini/gemini-3.5-flash-lite"))
     # The second, independent judge in the recheck layer. Its primary should be a different provider
     # from the verifier's primary, so one model's blind spot can't confirm itself.
     checker_models: list[str] = field(default_factory=lambda: _list(
-        "FRESHPIN_CHECKER_MODELS", "gemini/gemini-2.5-flash,groq/openai/gpt-oss-120b"))
+        "FRESHPIN_CHECKER_MODELS", "gemini/gemini-3.5-flash-lite,groq/openai/gpt-oss-120b"))
     # Recheck every claim with a second search and a second judge (costs one extra Tavily search per claim).
     recheck: bool = field(default_factory=lambda: os.environ.get("FRESHPIN_RECHECK", "1") not in ("0", "false", "no"))
     # "provider/" prefixes of models that should run with thinking off (comma-separated), e.g. NVIDIA models
@@ -52,6 +52,13 @@ class Settings:
     no_thinking_prefixes: list[str] = field(default_factory=lambda: _list("FRESHPIN_NO_THINKING_PREFIXES", ""))
     # Where alerts go (Slack-style incoming webhook). Empty = print only.
     webhook_url: str = field(default_factory=lambda: os.environ.get("FRESHPIN_WEBHOOK_URL", ""))
+    # Privacy and spend guards (see freshpin/privacy.py and the README "Running it for real").
+    customer_data: bool = field(default_factory=lambda: os.environ.get("FRESHPIN_CUSTOMER_DATA", "0") in ("1", "true", "yes"))
+    trial_prefixes: list[str] = field(default_factory=lambda: _list("FRESHPIN_TRIAL_PREFIXES", ""))
+    api_token: str = field(default_factory=lambda: os.environ.get("FRESHPIN_API_TOKEN", ""))
+    daily_check_limit: int = field(default_factory=lambda: int(os.environ.get("FRESHPIN_DAILY_CHECK_LIMIT", "0")))
+    max_auto_reopens: int = field(default_factory=lambda: int(os.environ.get("FRESHPIN_MAX_AUTO_REOPENS", "20")))
+    allow_private_webhook: bool = field(default_factory=lambda: os.environ.get("FRESHPIN_ALLOW_PRIVATE_WEBHOOK", "0") in ("1", "true", "yes"))
     # Model calls at the same time. Free tiers limit tokens per minute, so keep this low.
     model_concurrency: int = field(default_factory=lambda: int(os.environ.get("FRESHPIN_MODEL_CONCURRENCY", "2")))
     # Used by the "simulate outage" switch: a model that will fail, so Bifrost must fall back.

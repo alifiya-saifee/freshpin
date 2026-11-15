@@ -95,7 +95,7 @@ def watch_cmd(args: list[str]) -> int:
     text = alert_text(res["alerts"])
     print(text)
     if s.webhook_url:
-        print("Webhook:", post_webhook(s.webhook_url, text))
+        print("Webhook:", post_webhook(s.webhook_url, text, allow_private=s.allow_private_webhook))
     return 0
 
 

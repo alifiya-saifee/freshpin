@@ -83,7 +83,7 @@ Live test, 15 Nov 2026: *"Gold is trading at $2,000 an ounce today."* came back 
 `python -m freshpin bench` asks one or more models (through Bifrost, no fallbacks, no web access) questions whose right answer changes over time, checks every answer with FreshPin, and prints a scorecard. It is for anyone launching or choosing a model.
 
 ```bash
-python -m freshpin bench --models groq/openai/gpt-oss-120b,gemini/gemini-2.5-flash --max 3 --yes
+python -m freshpin bench --models groq/openai/gpt-oss-120b,gemini/gemini-3.5-flash-lite --max 3 --yes
 ```
 
 - Questions live in `bench/questions.json` (latest Python version, gold price today, Dubai building rule, an outage this week, a company CEO, a software release). Add your own.
@@ -120,7 +120,7 @@ Two research agents argued for and against each free candidate (strengths, weakn
 | mistral-large-4 (NVIDIA) | correct, exact quote, 11.5 s | backup judge, different family |
 | deepseek-v4.1-flash, glm-5.3-flash (NVIDIA) | timed out | |
 | gpt-oss-120b (Groq) | correct | second judge: a different provider and family; free tier allows 8,000 tokens/minute |
-| gemini-2.5-flash (Google) | correct | free tier cut to about 20 requests a day; retired 1 Dec 2026, so only a last backup |
+| gemini-2.5-flash (Google) | correct | free tier cut to about 20 requests a day; from 1 Dec 2026 its calls are routed to gemini-3.5-flash-lite, so FreshPin now names gemini-3.5-flash-lite directly (tested: 1.0 s) |
 
 **Setup used:** extractor Nemotron Lightning; first judge Nemotron Super; second judge Groq gpt-oss-120b (a different provider and model family); Mistral Large 4 and Gemini as backups. NVIDIA's free endpoints allow about 40 requests a minute and are for trials only, which is fine for a prototype with made-up decisions.
 
@@ -201,7 +201,7 @@ Then open http://localhost:8080. With Bifrost v2.5:
 2. **Providers.** Under **Models → Model Providers**, add a key for two providers. Two free options: **Gemini** (key from aistudio.google.com) and **Groq** (key from console.groq.com; Groq, not Grok). Any providers Bifrost supports will work.
 3. **Virtual key.** Under **Governance → Virtual Keys**, create a key, allow both providers **and the models you will use**, and copy it (`sk-bf-...`). If "Enforce Virtual Keys on Inference" is on, calls without it get HTTP 401.
 
-The model names FreshPin uses by default (`gemini/gemini-2.5-flash`, `groq/openai/gpt-oss-120b`) worked on 15 Nov 2026. Providers retire models, so check the names in Bifrost's model list. See the [Bifrost docs](https://docs.getbifrost.ai) for details.
+The model names FreshPin uses by default (`gemini/gemini-3.5-flash-lite`, `groq/openai/gpt-oss-120b`) worked on 15 Nov 2026. Providers retire models, so check the names in Bifrost's model list. See the [Bifrost docs](https://docs.getbifrost.ai) for details.
 
 ### 2. Get a Tavily key
 
@@ -335,6 +335,28 @@ The FreshPin loop is general: **claim → fresh evidence → independent second 
 The freshness rule carries over: evidence has a half-life (seconds for a robot's view of the world, days for news, months for laws), and no evidence means no verdict. These are design notes, not built here.
 
 **How it would plug in:** an `EvidenceSource` with the same shape as the Tavily client (`search(query, type) -> dated items with text`). A camera adapter returns frames with timestamps and a vision model's caption; a sensor adapter returns readings. The judges, the quote rule (here: a frame ID and a reading must back the verdict), the two-judge agreement and the pin ledger stay the same. This is the plan for Site Witness ("a repair closes only when the camera sees it").
+
+## Rules in code from the infrastructure review
+
+A research review of FreshPin's weak points (judge models, search evidence, cost, rules and security) led to these rules. They are in code, not just in prompts, and each has tests:
+
+| Weak point found | Rule now |
+|---|---|
+| Both judges took a page's silence as confirmation | "Current" needs a quote that states the claim (every number in the claim, and enough of its words); otherwise *unverifiable: not stated by the source* |
+| The quote check made "2.0 years" equal "20 years" | Numbers in a quote must match the source exactly |
+| Judge 2 saw judge 1's verdict and could simply agree | Judge 2 now decides blind; fixed rules compare the two |
+| A fallback could make both judges the same model family | Agreement only counts if two different model families answered; otherwise *disputed* |
+| One page, or one article copied across sites, could decide | A confirmation needs an official or vendor source, or two separate sites; copies count once |
+| Web pages can carry hidden instructions | Source text is fenced as untrusted data, fake markers and invisible characters are removed, and poisoned-page tests guard it |
+| Search is about 95% of the cost | First search is basic (1 credit), the recheck advanced (2): 3 credits a claim instead of 4 |
+| Free and trial tiers may use your data | Personal data (email, phone, Emirates ID, IBAN, card numbers) is masked before any search or model call; `FRESHPIN_CUSTOMER_DATA=1` refuses to run on routes in `FRESHPIN_TRIAL_PREFIXES` |
+| An open API means unlimited spend | `FRESHPIN_API_TOKEN` login on every `/api/` call except status; `FRESHPIN_DAILY_CHECK_LIMIT` spend cap (HTTP 429) |
+| One bad source could flood every owner with reopens | At most `FRESHPIN_MAX_AUTO_REOPENS` decisions reopen per changed fact; the rest go *at risk*; alerts list reopened first |
+| A webhook setting could reach internal services | Webhooks only to public http(s) addresses unless explicitly allowed |
+| Gemini 2.5 Flash is silently rerouted from 1 Dec 2026 | The backup is named directly: gemini-3.5-flash-lite |
+| AI output must be labelled (EU AI Act Art. 50) | Every report, correction and MCP answer says it is AI-generated, with the models and search used |
+
+**Still to build** (larger work, from the same review): an official-law reader for the Dubai and UAE legislation portals (issue, gazette and effective dates; Arabic text first), a human-labelled test set with agreement scores, Postgres with per-customer separation and a signed audit chain, signed camera evidence for Site Witness, and UAE hosting for government customers.
 
 ## Every scenario, and what FreshPin does
 

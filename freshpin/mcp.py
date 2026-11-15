@@ -76,7 +76,8 @@ def summarize(report: dict[str, Any]) -> str:
     stale = sum(c["verdict"] in ("stale", "contradicted") for c in claims)
     unverified = sum(c["verdict"] == "unverifiable" for c in claims)
     disputed = sum(c["verdict"] == "disputed" for c in claims)
-    lines = [f"FreshPin checked {len(claims)} claim(s): {s['fresh']} fresh, {stale} stale or contradicted, "
+    lines = ["(AI-generated check by FreshPin; decisions change only when a named person approves.)",
+             f"FreshPin checked {len(claims)} claim(s): {s['fresh']} fresh, {stale} stale or contradicted, "
              f"{disputed} disputed, {unverified} could not be verified. "
              f"{s.get('confirmed', 0)} of {len(claims)} confirmed by an independent second check."]
     if report.get("degraded") or any(not c.get("ai_available", True) for c in claims):

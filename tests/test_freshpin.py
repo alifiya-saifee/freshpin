@@ -159,6 +159,21 @@ class FakeBifrost(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(b'{"error":"down"}')
             return
+        if body["model"] == "parts/model":  # a provider that returns content as a list of parts
+            data = json.dumps({"model": "m", "choices": [{"message": {"content": [
+                {"type": "text", "text": '{"ok": '}, {"type": "text", "text": 'true}'}]}}]}).encode()
+            self.send_response(200)
+            self.send_header("Content-Length", str(len(data)))
+            self.end_headers()
+            self.wfile.write(data)
+            return
+        if body["model"] == "array/model":  # valid JSON, but not an object: must fail over, not crash
+            data = json.dumps({"model": "m", "choices": [{"message": {"content": "[1, 2]"}}]}).encode()
+            self.send_response(200)
+            self.send_header("Content-Length", str(len(data)))
+            self.end_headers()
+            self.wfile.write(data)
+            return
         served = body["fallbacks"][0] if body["model"] == "bad/model" else body["model"]
         provider, _, model = served.partition("/")
         out = {"model": model, "extra_fields": {"provider": provider},
@@ -209,6 +224,13 @@ class BifrostClientTests(unittest.TestCase):
         c.chat_json("x", ["g/other"], "s", "u", RunBudget(1000))
         self.assertNotIn("chat_template_kwargs", FakeBifrost.calls[-1])
         self.assertNotIn("x-bf-passthrough-extra-params", FakeBifrost.headers[-1])
+
+    def test_odd_reply_shapes_are_read_or_failed_over(self):
+        c = BifrostClient(self.url)
+        self.assertEqual(c.chat_json("x", ["parts/model"], "s", "u", RunBudget(1000)), {"ok": True})
+        b = RunBudget(1000)
+        self.assertEqual(c.chat_json("x", ["array/model", "good/model"], "s", "u", b), {"ok": True})
+        self.assertFalse(b.traces[0].ok)  # the odd reply was logged as a failure, then the next model answered
 
     def test_rate_limit_is_retried_once(self):
         b = RunBudget(1000)
@@ -499,6 +521,10 @@ class JudgeRuleTests(unittest.TestCase):
         self.assertFalse(quote_states_claim("Python 3.15 is the latest release.", "Python 3.14 is the latest release."))
         self.assertTrue(quote_states_claim("Dubai Municipality issues building permits in Dubai.",
                                            "Dubai Municipality business services for building permits"))
+        # From the live run: the official page says it in other word forms ("issuing Building Permits").
+        self.assertTrue(quote_states_claim("Dubai Municipality issues building permits in Dubai.",
+                                           "Dubai Municipality's Building Control and Building Permits Department lays "
+                                           "down procedures and steps for issuing Building Permits in Dubai."))
 
     def test_model_family_and_backing(self):
         from freshpin.pipeline import independent_backing, model_family
@@ -922,12 +948,92 @@ class WatchTests(unittest.TestCase):
         httpd = ThreadingHTTPServer(("127.0.0.1", 0), Catch)
         threading.Thread(target=httpd.serve_forever, daemon=True).start()
         try:
-            self.assertEqual(post_webhook(f"http://127.0.0.1:{httpd.server_port}/hook", "hello"), "sent")
+            url = f"http://127.0.0.1:{httpd.server_port}/hook"
+            self.assertTrue(post_webhook(url, "hello").startswith("not sent: webhook points to a private"))  # SSRF guard
+            self.assertEqual(post_webhook(url, "hello", allow_private=True), "sent")
         finally:
             httpd.shutdown()
             httpd.server_close()
         self.assertEqual(got, [{"text": "hello"}])
-        self.assertTrue(post_webhook("http://127.0.0.1:9/nothing", "x", timeout_s=2).startswith("not sent"))
+        self.assertTrue(post_webhook("http://127.0.0.1:9/nothing", "x", timeout_s=2, allow_private=True).startswith("not sent"))
+        self.assertIn("only http(s)", post_webhook("file:///etc/passwd", "x"))
+        self.assertIn("private", post_webhook("http://169.254.169.254/latest/meta-data", "x"))  # cloud metadata address
+
+
+class SafetyOpsTests(unittest.TestCase):
+    def test_personal_data_is_masked_before_anything_leaves(self):
+        from freshpin.privacy import redact
+        text = ("Tenant Sara (sara.m@example.com, +971 50 123 4567, Emirates ID 784-1990-1234567-1, "
+                "IBAN AE07 0331 2345 6789 0123 456) says no certificate is needed.")
+        out, counts = redact(text)
+        for leak in ("sara.m@example.com", "123 4567", "784-1990", "AE07"):
+            self.assertNotIn(leak, out)
+        self.assertEqual(counts, {"email": 1, "emirates_id": 1, "iban": 1, "phone": 1})
+        self.assertIn("no certificate is needed", out)
+        self.assertEqual(redact("Law No. 3 of 2026 applies after 20 years.")[1], {})  # facts are left alone
+        with tempfile.TemporaryDirectory() as tmp:
+            app = replay_app(tmp)
+            app.load_sample("dubai_building_law")
+            answer = app.samples()["dubai_building_law"]["answer"]
+            rep = app.check(answer + " Contact: owner@example.com")
+            self.assertEqual(rep["privacy"]["redacted"], {"email": 1})
+            self.assertTrue(rep["ai_generated"])
+            self.assertIn("AI-generated", rep["provenance"]["note"])
+            self.assertTrue(all(k["ai_generated"] for k in rep["corrections"]))
+
+    def test_customer_data_mode_refuses_trial_routes_and_daily_cap(self):
+        from freshpin.app import LimitReached
+        with tempfile.TemporaryDirectory() as tmp:
+            s = Settings()
+            s.mode, s.db_path = "live", Path(tmp) / "c.db"
+            s.extractor_models, s.verifier_models, s.checker_models = ["openai/nvidia/x"], ["groq/y"], ["groq/y"]
+            s.customer_data, s.trial_prefixes = True, ["openai/nvidia/"]
+            with self.assertRaises(ValueError) as e:
+                FreshPin(s).check("Some answer.")
+            self.assertIn("trial routes", str(e.exception))
+            r = replay_app(tmp)
+            r.s.daily_check_limit = 1
+            r.load_sample("dubai_building_law")
+            r.check(r.samples()["dubai_building_law"]["answer"])
+            with self.assertRaises(LimitReached):
+                r.check("Another answer.")
+
+    def test_reopen_cap_sends_the_rest_to_at_risk(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            app = replay_app(tmp)
+            app.load_sample("dubai_building_law")
+            app.ledger.max_auto_reopens = 1
+            rep = app.check(app.samples()["dubai_building_law"]["answer"])
+            states = {d["id"]: d["status"] for d in app.ledger.state()["decisions"]}
+            self.assertEqual(sorted([states["Q-112"], states["PB-LEASE-3"]]), ["at_risk", "reopened"])
+            self.assertEqual(len(rep["summary"]["decisions_reopened"]), 1)
+
+    def test_api_needs_the_token_when_set(self):
+        from freshpin.server import make_handler
+        with tempfile.TemporaryDirectory() as tmp:
+            app = replay_app(tmp)
+            app.s.api_token = "s3cret-token"
+            httpd = ThreadingHTTPServer(("127.0.0.1", 0), make_handler(app))
+            threading.Thread(target=httpd.serve_forever, daemon=True).start()
+            base = f"http://127.0.0.1:{httpd.server_port}"
+            import urllib.error
+            import urllib.request
+
+            def get(path, tok=None):
+                req = urllib.request.Request(base + path, headers={"X-FreshPin-Token": tok} if tok else {})
+                try:
+                    with urllib.request.urlopen(req, timeout=5) as r:
+                        return r.status
+                except urllib.error.HTTPError as exc:
+                    return exc.code
+            try:
+                self.assertEqual(get("/api/status"), 200)            # status stays public (no data in it)
+                self.assertEqual(get("/api/ledger"), 401)
+                self.assertEqual(get("/api/ledger", "wrong"), 401)
+                self.assertEqual(get("/api/ledger", "s3cret-token"), 200)
+            finally:
+                httpd.shutdown()
+                httpd.server_close()
 
 
 class McpTests(unittest.TestCase):

@@ -118,8 +118,16 @@ _STOP = {"that", "this", "with", "from", "have", "been", "will", "into", "they",
          "does", "were", "would", "should", "could", "than", "then", "when", "what", "also", "only", "under"}
 
 
+def _stem(w: str) -> str:
+    """Crude stem so 'issues', 'issuing' and 'issued' match."""
+    for suf in ("ing", "ed", "es", "s"):
+        if w.endswith(suf) and len(w) - len(suf) >= 4:
+            return w[: -len(suf)]
+    return w
+
+
 def _words(text: str) -> set[str]:
-    return {w for w in re.findall(r"[a-z0-9]+", (text or "").lower()) if len(w) > 3 and w not in _STOP}
+    return {_stem(w) for w in re.findall(r"[a-z0-9]+", (text or "").lower()) if len(w) > 3 and w not in _STOP}
 
 
 def quote_states_claim(claim: str, quote: str) -> bool:
@@ -128,7 +136,7 @@ def quote_states_claim(claim: str, quote: str) -> bool:
     if not numbers_in(claim) <= numbers_in(quote):
         return False
     c, q = _words(claim), _words(quote)
-    return bool(c) and len(c & q) / len(c | q) >= 0.3
+    return bool(c) and len(c & q) / len(c) >= 0.5  # the quote covers at least half of the claim's words
 
 
 _FAMILIES = [("nemotron", "nvidia-nemotron"), ("gpt-oss", "openai-gpt-oss"), ("gemini", "google-gemini"),

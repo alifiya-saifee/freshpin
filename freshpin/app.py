@@ -10,15 +10,21 @@ from typing import Any
 from .config import Settings
 from .ledger import Ledger
 from .llm import BifrostClient
-from .pipeline import run_check
+from .pipeline import run_check, served_model  # noqa: F401
+from .privacy import redact, trial_routes
 from .replay import ReplayChat, ReplayData, ReplaySearch, load_samples
 from .search import CachedSearch, TavilyClient
+
+
+class LimitReached(RuntimeError):
+    """The daily check limit (spend cap) was reached."""
 
 
 class FreshPin:
     def __init__(self, s: Settings):
         self.s = s
-        self.ledger = Ledger(s.db_path)
+        self.ledger = Ledger(s.db_path, max_auto_reopens=s.max_auto_reopens)
+        self._day, self._checks_today = "", 0
         self.lock = threading.Lock()
         if s.mode == "replay":
             data = ReplayData()
@@ -43,7 +49,11 @@ class FreshPin:
                 "tavily_key_set": bool(self.s.tavily_api_key) or self.s.mode == "replay",
                 "extractor_models": self.s.extractor_models, "verifier_models": self.s.verifier_models,
                 "checker_models": self.s.checker_models, "recheck": self.s.recheck,
-                "run_token_budget": self.s.run_token_budget, "virtual_key_set": bool(self.s.bifrost_virtual_key)}
+                "run_token_budget": self.s.run_token_budget, "virtual_key_set": bool(self.s.bifrost_virtual_key),
+                "login_required": bool(self.s.api_token), "daily_check_limit": self.s.daily_check_limit,
+                "customer_data_mode": self.s.customer_data,
+                "trial_routes": trial_routes(self.s.extractor_models + self.s.verifier_models + self.s.checker_models,
+                                             self.s.trial_prefixes)}
 
     def samples(self) -> dict[str, Any]:
         return {k: {"title": v["title"], "context": v["context"], "answer": v["answer"]}
@@ -60,12 +70,31 @@ class FreshPin:
                                          {k: versions[k] for k in d["pins"]}, d["approved_by"], d["approved_at"])
             return self.ledger.state()
 
+    def _guard(self) -> None:
+        """Spend and privacy guards that apply before anything is sent out."""
+        from datetime import date as _date
+        today = _date.today().isoformat()
+        if today != self._day:
+            self._day, self._checks_today = today, 0
+        if self.s.daily_check_limit and self._checks_today >= self.s.daily_check_limit:
+            raise LimitReached(f"daily check limit of {self.s.daily_check_limit} reached (FRESHPIN_DAILY_CHECK_LIMIT)")
+        if self.s.customer_data and self.s.mode == "live":
+            bad = trial_routes(self.s.extractor_models + self.s.verifier_models + self.s.checker_models,
+                               self.s.trial_prefixes)
+            if bad:
+                raise ValueError("customer-data mode: these models are on free or trial routes and may use your data "
+                                 f"to improve their products: {', '.join(bad)}. Use paid routes with a data agreement.")
+        self._checks_today += 1
+
     def check(self, answer: str, context: str = "", simulate_outage: bool = False,
               apply_to_ledger: bool = True) -> dict[str, Any]:
         if not answer.strip():
             raise ValueError("answer text is empty")
         if len(answer) > 12000:
             raise ValueError("answer is too long (max 12,000 characters)")
+        self._guard()
+        answer, red_a = redact(answer)
+        context, red_c = redact(context)
         with self.lock:
             report = run_check(answer, chat=self.chat, search=self.search, ledger=self.ledger,
                                extractor_models=self.s.extractor_models, verifier_models=self.s.verifier_models,
@@ -74,6 +103,16 @@ class FreshPin:
                                checker_models=self.s.checker_models, recheck=self.s.recheck,
                                apply_to_ledger=apply_to_ledger, model_concurrency=self.s.model_concurrency)
             report["mode"] = self.s.mode
+            report["privacy"] = {"redacted": {k: red_a.get(k, 0) + red_c.get(k, 0) for k in set(red_a) | set(red_c)}}
+            # Every verdict is machine-made: say so, and say which models and search made it.
+            served = sorted({t["served_by"] for t in report["gateway"]["traces"] if t.get("ok") and t.get("served_by")})
+            report["ai_generated"] = True
+            report["provenance"] = {"generator": f"FreshPin {__import__('freshpin').__version__}",
+                                    "checked_on": report["checked_on"], "models": served,
+                                    "search": "Tavily" if self.s.mode == "live" else "replay recordings",
+                                    "note": "AI-generated check. Decisions change only when a named person approves."}
+            for k in report.get("corrections", []):
+                k["ai_generated"] = True
             report["ledger"] = self.ledger.state()
             return report
 
@@ -82,6 +121,8 @@ class FreshPin:
         from .pipeline import ground_question
         if not question.strip():
             raise ValueError("question is empty")
+        self._guard()
+        question, _ = redact(question)
         return ground_question(question, chat=self.chat, search=self.search, models=self.s.extractor_models,
                                max_sources=self.s.max_sources_per_claim)
 

@@ -73,6 +73,15 @@ class ChatBackend(Protocol):
                   simulate_outage: bool = False) -> dict[str, Any]: ...
 
 
+def message_text(content: Any) -> str:
+    """Providers return the reply as a string or as a list of parts ([{"type": "text", "text": "..."}])."""
+    if isinstance(content, str):
+        return content
+    if isinstance(content, list):
+        return "".join(p.get("text", "") if isinstance(p, dict) else str(p) for p in content)
+    return "" if content is None else str(content)
+
+
 def parse_json_reply(text: str) -> dict[str, Any]:
     """Models sometimes wrap JSON in prose or code fences; pull out the first JSON object."""
     text = text.strip()
@@ -173,10 +182,13 @@ class BifrostClient:
                 trace.fallback_used = _model_differs(primary, trace.served_by)
                 budget.charge(trace.prompt_tokens + trace.completion_tokens)
                 budget.log(trace)
-                content = data["choices"][0]["message"]["content"]
-                return parse_json_reply(content)
-            except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError, KeyError,
-                    json.JSONDecodeError, ValueError) as exc:
+                content = message_text(data["choices"][0]["message"]["content"])
+                reply = parse_json_reply(content)
+                if not isinstance(reply, dict):
+                    raise ValueError("reply is not a JSON object")
+                return reply
+            except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError, KeyError, IndexError, TypeError,
+                    AttributeError, json.JSONDecodeError, ValueError) as exc:  # odd reply shape: try the next model
                 trace.ok = False
                 trace.latency_ms = int((time.monotonic() - t0) * 1000)
                 trace.error = _describe(exc)
@@ -200,8 +212,9 @@ class BifrostClient:
             trace.completion_tokens = int(usage.get("completion_tokens") or 0)
             trace.served_by = data.get("model") or model
             budget.charge(trace.prompt_tokens + trace.completion_tokens)
-            return str(data["choices"][0]["message"]["content"] or "").strip()
-        except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError, KeyError, ValueError) as exc:
+            return message_text(data["choices"][0]["message"]["content"]).strip()
+        except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError, KeyError, IndexError, TypeError,
+                AttributeError, ValueError) as exc:
             trace.ok, trace.error = False, _describe(exc)
             raise LLMUnavailable(trace.error) from exc
         finally:

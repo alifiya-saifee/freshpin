@@ -38,6 +38,7 @@ def run_watch(ledger: Ledger, check: Callable[[str, str], dict[str, Any]], today
                "to": d["status"]}
               for did, d in after.items()
               if d["status"] in ALERT_STATUSES and before.get(did, {}).get("status") != d["status"]]
+    alerts.sort(key=lambda a: (a["to"] != "reopened", a["id"]))  # reopened first: those need a person most
     return {"due": len(due), "checked": checked, "errors": errors, "alerts": alerts}
 
 
@@ -49,8 +50,33 @@ def alert_text(alerts: list[dict[str, Any]]) -> str:
     return "\n".join(lines)
 
 
-def post_webhook(url: str, text: str, timeout_s: int = 10) -> str:
+def webhook_allowed(url: str, allow_private: bool = False) -> str | None:
+    """SSRF guard: only http(s), and never to private, loopback, link-local or reserved addresses (a webhook
+    setting must not become a way to reach internal services). Returns a reason when blocked."""
+    import ipaddress
+    import socket
+    from urllib.parse import urlparse
+    u = urlparse(url)
+    if u.scheme not in ("http", "https") or not u.hostname:
+        return "only http(s) webhook URLs are allowed"
+    if allow_private:
+        return None
+    try:
+        addrs = {ai[4][0] for ai in socket.getaddrinfo(u.hostname, u.port or (443 if u.scheme == "https" else 80))}
+    except OSError:
+        return "webhook host does not resolve"
+    for a in addrs:
+        ip = ipaddress.ip_address(a.split("%")[0])
+        if ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved or ip.is_multicast or ip.is_unspecified:
+            return f"webhook points to a private or local address ({a}); set FRESHPIN_ALLOW_PRIVATE_WEBHOOK=1 to allow"
+    return None
+
+
+def post_webhook(url: str, text: str, timeout_s: int = 10, allow_private: bool = False) -> str:
     """Returns "sent" or a short error. Never raises: alerts must not crash a scheduled job."""
+    blocked = webhook_allowed(url, allow_private)
+    if blocked:
+        return f"not sent: {blocked}"
     req = urllib.request.Request(url, data=json.dumps({"text": text}).encode(), method="POST",
                                  headers={"Content-Type": "application/json"})
     try:

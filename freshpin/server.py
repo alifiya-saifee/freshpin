@@ -1,12 +1,13 @@
 """A small HTTP server (standard library only) for the web UI and JSON API."""
 from __future__ import annotations
 
+import hmac
 import json
 import traceback
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import Any
 
-from .app import FreshPin
+from .app import FreshPin, LimitReached
 from .config import ROOT, settings
 
 WEB = ROOT / "web"
@@ -36,8 +37,25 @@ def make_handler(app: FreshPin):
                 raise ValueError("request too large")
             return json.loads(self.rfile.read(n) or b"{}")
 
+        def _authorised(self, path: str) -> bool:
+            """With FRESHPIN_API_TOKEN set, every /api/ call except /api/status needs the token
+            (header "Authorization: Bearer <token>" or "X-FreshPin-Token: <token>")."""
+            token = app.s.api_token
+            if not token or not path.startswith("/api/") or path == "/api/status":
+                return True
+            given = self.headers.get("X-FreshPin-Token") or ""
+            auth = self.headers.get("Authorization") or ""
+            if auth.lower().startswith("bearer "):
+                given = given or auth[7:].strip()
+            if given and hmac.compare_digest(given.encode(), token.encode()):
+                return True
+            self._json(401, {"error": "login required: send the FreshPin API token"})
+            return False
+
         def do_GET(self) -> None:  # noqa: N802
             path = self.path.split("?")[0]
+            if not self._authorised(path):
+                return
             if path in ("/", "/index.html"):
                 self._send(200, (WEB / "index.html").read_bytes(), "text/html; charset=utf-8")
             elif path == "/api/status":
@@ -51,6 +69,8 @@ def make_handler(app: FreshPin):
 
         def do_POST(self) -> None:  # noqa: N802
             path = self.path.split("?")[0]
+            if not self._authorised(path):
+                return
             try:
                 b = self._body()
                 if path == "/api/check":
@@ -63,6 +83,8 @@ def make_handler(app: FreshPin):
                     self._json(200, app.pin_decision(b.get("title", ""), b.get("owner", ""), b.get("keys", []), b.get("by", "")))
                 else:
                     self._json(404, {"error": "not found"})
+            except LimitReached as exc:
+                self._json(429, {"error": str(exc)})
             except (ValueError, KeyError) as exc:
                 self._json(400, {"error": str(exc)})
             except Exception as exc:  # noqa: BLE001

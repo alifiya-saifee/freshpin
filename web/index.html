@@ -173,9 +173,16 @@ const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 let SAMPLES = {}, lastReport = null;
 
-async function api(path, body){
-  const r = await fetch(path, body ? {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)} : {});
+function token(){ try{ return sessionStorage.getItem("freshpin_token")||""; }catch(e){ return ""; } }
+async function api(path, body, retried){
+  const headers = {"Content-Type":"application/json"};
+  if(token()) headers["X-FreshPin-Token"] = token();
+  const r = await fetch(path, body ? {method:"POST", headers, body:JSON.stringify(body)} : {headers});
   const j = await r.json();
+  if(r.status===401 && !retried){  // login required: ask once, keep it for this browser tab only
+    const t = prompt("FreshPin API token");
+    if(t){ try{ sessionStorage.setItem("freshpin_token", t); }catch(e){} return api(path, body, true); }
+  }
   if(!r.ok) throw new Error(j.error || r.statusText);
   return j;
 }
@@ -252,6 +259,7 @@ function renderReport(rep){
     [`${s.confirmed??0}/${s.claims}`,"confirmed by 2nd check"],[s.disputed??0,"disputed"],
     [s.decisions_reopened.length,"decisions reopened"],[`${g.tokens.toLocaleString()}`,`tokens of ${g.token_budget.toLocaleString()}`]
   ].map(([b,t])=>`<div class="stat"><b>${esc(b)}</b><span>${t}</span></div>`).join("");
+  $("#summary").insertAdjacentHTML("afterend", rep.ai_generated ? `<div class="meta" style="margin:6px 0 2px">AI-generated check (${esc((rep.provenance||{}).models ? rep.provenance.models.length+" model(s)" : "")}, ${esc((rep.provenance||{}).search||"")}). Decisions change only when a named person approves.</div>` : "");
   $("#claims").innerHTML = rep.claims.map(c => {
     const f = c.freshness, sup = new Set(c.supporting_urls), con = new Set(c.contradicting_urls);
     const changed = c.verdict==="stale"||c.verdict==="contradicted"||c.verdict==="partly_current";
