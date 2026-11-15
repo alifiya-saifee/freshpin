@@ -56,7 +56,8 @@ def load_questions(path: Path = QUESTIONS) -> list[dict[str, Any]]:
     return json.loads(path.read_text(encoding="utf-8"))["questions"]
 
 
-ERROR_VERDICTS = ("stale", "contradicted", "partly_current")
+# Problems in an answer: out of date, wrong, partly wrong, or not supported by any source found.
+ERROR_VERDICTS = ("stale", "contradicted", "partly_current", "unverifiable")
 
 
 def feedback_message(question: str, answer: str, report: dict[str, Any]) -> str | None:

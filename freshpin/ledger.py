@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 import sqlite3
 from datetime import date, datetime, timezone
 from pathlib import Path
@@ -42,6 +43,27 @@ CREATE TABLE IF NOT EXISTS events (
 
 def _now() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def _fact_words(text: str) -> set[str]:
+    out = set()
+    for w in re.findall(r"\w+", (text or "").casefold()):
+        if w.isdigit() or len(w) > 2:
+            for suf in ("ing", "ed", "es", "s"):
+                if w.endswith(suf) and len(w) - len(suf) >= 4:
+                    w = w[: -len(suf)]
+                    break
+            out.add(w)
+    return out
+
+
+def _same_fact(a: str, b: str) -> bool:
+    """Two statements of one fact: most of their words in common (rewordings of the same sentence)."""
+    nums = lambda s: set(re.findall(r"\d+(?:\.\d+)?", re.sub(r"(?<=\d),(?=\d{3})", "", s or "")))  # noqa: E731
+    if nums(a) != nums(b):
+        return False  # "valid 10 years" and "valid 20 years" are different facts
+    x, y = _fact_words(a), _fact_words(b)
+    return bool(x and y) and len(x & y) / len(x | y) >= 0.7
 
 
 def evidence_hash(evidence: list[dict[str, Any]]) -> str:
@@ -101,14 +123,36 @@ class Ledger:
             (key, version, statement, claim_type, band, score, json.dumps(evidence), evidence_hash(evidence), _now()))
         return version
 
+    def _older_statements(self, key: str, below: int) -> list[str]:
+        return [r["statement"] for r in self.db.execute(
+            "SELECT statement FROM facts WHERE key=? AND version<?", (key, below)).fetchall()]
+
     def record_check(self, claim: dict[str, Any]) -> dict[str, Any]:
         """Apply one verified claim to the ledger. Returns what changed."""
         key, verdict, band = claim["key"], claim["verdict"], claim["freshness"]["band"]
         evidence = claim.get("sources", [])
         cur = self.current_fact(key)
         effect: dict[str, Any] = {"key": key, "reopened": [], "at_risk": [], "new_version": None}
+        changed = verdict in ("stale", "contradicted")
 
-        if verdict in ("stale", "contradicted"):
+        if changed and cur is not None and (
+                any(_same_fact(claim["text"], s) for s in self._older_statements(key, cur["version"]))
+                or _same_fact(claim.get("current_statement") or "", cur["statement"])):
+            # Someone repeated an old claim the ledger already corrected: the world didn't change again, so no new
+            # version and no reopen (decisions already re-approved on the current version stay approved).
+            self._event("stale_claim_repeated", None, key, {"claim": claim["text"], "current_version": cur["version"]})
+            effect["repeated"] = True
+            self.db.commit()
+            return effect
+        if changed and not claim.get("reopen_allowed", True):
+            # Only one judge said "changed" (the recheck was off or didn't confirm): never reopen on that alone.
+            self._event("fact_change_unconfirmed", None, key, {"claim": claim["text"],
+                                                               "suggested": claim.get("current_statement")})
+            effect["at_risk"] = self._flag_at_risk(key, claim)
+            self.db.commit()
+            return effect
+
+        if changed:
             corrected = claim.get("current_statement") or claim["text"]
             new_version = self._insert_fact(key, corrected, claim["type"], "fresh", None, evidence)
             effect["new_version"] = new_version

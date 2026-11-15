@@ -100,6 +100,45 @@ class LedgerTests(unittest.TestCase):
         self.assertFalse(d["pins"][0]["outdated"])
 
 
+class DebateFixTests(unittest.TestCase):
+    """Bugs the expert debate reproduced: they must stay fixed."""
+
+    def test_repeating_an_old_claim_does_not_reopen_reapproved_decisions(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            app = replay_app(tmp)
+            app.load_sample("dubai_building_law")
+            answer = app.samples()["dubai_building_law"]["answer"]
+            app.check(answer)                                   # the law changed: Q-112 reopens
+            app.approve("Q-112", "Alifiya", "Budget updated")  # a person re-approves on the new version
+            rep = app.check(answer)                             # someone repeats the old answer
+            states = {d["id"]: d["status"] for d in app.ledger.state()["decisions"]}
+            self.assertEqual(states["Q-112"], "approved")
+            self.assertEqual(rep["summary"]["decisions_reopened"], [])
+            cert = next(c for c in rep["claims"] if c["key"] == "dubai.old_buildings.safety_certificate_required")
+            self.assertTrue(cert["ledger_effect"]["repeated"])
+            self.assertEqual(cert["verdict"], "stale")          # still reported as stale to the user
+
+    def test_one_judge_alone_never_reopens(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            app = replay_app(tmp)
+            app.s.recheck = False
+            app.load_sample("dubai_building_law")
+            rep = app.check(app.samples()["dubai_building_law"]["answer"])
+            self.assertEqual(rep["summary"]["decisions_reopened"], [])
+            self.assertIn("Q-112", rep["summary"]["decisions_at_risk"])
+
+    def test_claims_must_be_asserted_by_the_answer(self):
+        from freshpin.pipeline import asserted_in_answer
+        answer = ("Workday had a major outage on Friday. The exact number of affected companies "
+                  "(such as 11,500) has not been confirmed.")
+        self.assertEqual(asserted_in_answer("Workday had a major outage on Friday.", answer), (True, ""))
+        self.assertFalse(asserted_in_answer("The outage affected 11,500 companies.", answer)[0])   # hedged
+        self.assertEqual(asserted_in_answer("Microsoft Teams was down for nine hours.", answer)[1],
+                         "not stated in the answer")                                             # invented
+        self.assertTrue(asserted_in_answer("Authorities may suspend Ejari attestation.",
+                                           "Under the law, authorities may suspend Ejari attestation.")[0])
+
+
 class PipelineReplayTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
@@ -406,7 +445,8 @@ class StubSearch:
 def stub_run(claims, verify, recheck, rows, tmp):
     from freshpin.pipeline import run_check
     chat, search = StubChat(claims, verify, recheck), StubSearch(rows)
-    rep = run_check("answer", chat=chat, search=search, ledger=Ledger(Path(tmp) / "s.db"),
+    answer = " ".join(c["text"] for c in claims)  # the claims must be asserted in the answer
+    rep = run_check(answer, chat=chat, search=search, ledger=Ledger(Path(tmp) / "s.db"),
                     extractor_models=["a/x"], verifier_models=["b/y"], token_budget=10**6, today=TODAY)
     return rep, chat, search
 
@@ -470,6 +510,7 @@ class NewsLiveDataTests(unittest.TestCase):
             httpd.shutdown()
             httpd.server_close()
         self.assertEqual({b["search_depth"] for b in bodies}, {"advanced"})
+        self.assertTrue(all(b["include_published_date"] for b in bodies))  # dates for every topic, not just news
         self.assertEqual([(b["topic"], b.get("time_range")) for b in bodies],
                          [("news", "week"), ("finance", "day"), ("general", None)])
 

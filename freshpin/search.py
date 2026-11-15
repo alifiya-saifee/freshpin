@@ -31,7 +31,8 @@ class SearchBackend(Protocol):
 
 
 # Fast-changing claim types search a recent window; news and markets use Tavily's news and finance topics.
-_TIME_RANGE = {"pricing": "year", "api_version": "year", "company": "year", "event": "week", "live_data": "day"}
+# pricing and api_version pages are updated in place and keep old publish dates, so a time filter would drop them.
+_TIME_RANGE = {"company": "year", "event": "week", "live_data": "day"}
 _TOPIC = {"event": "news", "live_data": "finance"}
 
 
@@ -51,6 +52,7 @@ class TavilyClient:
             "max_results": max_results,
             "include_answer": False,
             "topic": _TOPIC.get(claim_type, "general"),
+            "include_published_date": True,  # without it Tavily returns no dates except for news
         }
         if claim_type in _TIME_RANGE:
             body["time_range"] = _TIME_RANGE[claim_type]

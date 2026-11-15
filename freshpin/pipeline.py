@@ -233,8 +233,31 @@ def heuristic_claims(answer: str) -> list[dict[str, Any]]:
     return out[:8]
 
 
+_HEDGES = re.compile(r"not (?:been |yet )?confirmed|unconfirmed|unverified|such as|reportedly|rumou?red|"
+                     r"it is unclear|(?:i|we) (?:do not|don't) know", re.I)
+
+
+def asserted_in_answer(claim_text: str, answer: str) -> tuple[bool, str]:
+    """Fixed rule: a claim must be something the answer asserts. Its words must mostly come from one sentence
+    of the answer (no claims invented from the question), and that sentence must not hedge it."""
+    cw = _words(claim_text)
+    if not cw:
+        return False, "empty claim"
+    best, best_sent = 0.0, ""
+    for sent in re.split(r"(?<=[.!?。؟])\s+|\n+", answer):
+        cov = len(cw & _words(sent)) / len(cw)
+        if cov > best:
+            best, best_sent = cov, sent
+    if best < 0.6:
+        return False, "not stated in the answer"
+    if _HEDGES.search(best_sent):
+        return False, "the answer hedges it (not asserted as fact)"
+    return True, ""
+
+
 def extract_claims(answer: str, context: str, chat: ChatBackend, models: list[str], ledger: Ledger,
-                   budget: RunBudget, simulate_outage: bool, today: date) -> tuple[list[dict[str, Any]], bool]:
+                   budget: RunBudget, simulate_outage: bool, today: date,
+                   dropped: list[dict[str, Any]] | None = None) -> tuple[list[dict[str, Any]], bool]:
     known = ledger.known_facts()
     user = (f"TODAY: {today.isoformat()}\nCONTEXT: {context or 'none'}\n"
             f"KNOWN_FACTS: {json.dumps(known, ensure_ascii=False)}\n\nANSWER:\n{answer}")
@@ -255,6 +278,11 @@ def extract_claims(answer: str, context: str, chat: ChatBackend, models: list[st
             c["time_sensitive"] = True
         c["key"] = c.get("key") or _slug(c["text"])
         c["search_query"] = c.get("search_query") or c["text"]
+        ok, why = asserted_in_answer(c["text"], answer)
+        if not ok:
+            if dropped is not None:
+                dropped.append({"text": c["text"], "reason": why})
+            continue
         clean.append(c)
     return clean, degraded
 
@@ -347,7 +375,9 @@ def run_check(answer: str, *, chat: ChatBackend, search: SearchBackend, ledger: 
     today = today or date.today()
     t0 = time.monotonic()
     budget = RunBudget(limit_tokens=token_budget)
-    claims, degraded = extract_claims(answer, context, chat, extractor_models, ledger, budget, simulate_outage, today)
+    dropped: list[dict[str, Any]] = []
+    claims, degraded = extract_claims(answer, context, chat, extractor_models, ledger, budget, simulate_outage, today,
+                                      dropped)
     checkable = [c for c in claims if c.get("time_sensitive", True)]
     skipped = [c for c in claims if not c.get("time_sensitive", True)]
 
@@ -490,6 +520,8 @@ def run_check(answer: str, *, chat: ChatBackend, search: SearchBackend, ledger: 
             "freshness": fs.as_dict(), "ai_available": v.get("ai_available", True) and not degraded,
             "recheck": recheck_info, "needs_live_feed": needs_live_feed,
         }
+        # A change reopens decisions only when the recheck confirmed it (two judges, quote, rules).
+        claim["reopen_allowed"] = (claim.get("recheck") or {}).get("status") == "confirmed"
         claim["ledger_effect"] = (ledger.record_check(claim)
                                   if apply_to_ledger and claim["ai_available"] else None)
         results.append(claim)
@@ -515,7 +547,7 @@ def run_check(answer: str, *, chat: ChatBackend, search: SearchBackend, ledger: 
     return {
         "checked_on": today.isoformat(),
         "claims": results,
-        "skipped": [{"text": c["text"], "reason": "not time-sensitive"} for c in skipped],
+        "skipped": [{"text": c["text"], "reason": "not time-sensitive"} for c in skipped] + dropped,
         "corrections": corrections,
         "unconfirmed": unconfirmed,
         "degraded": degraded,
