@@ -1,0 +1,11 @@
+{
+  "_note": "Questions whose right answer changes over time. category = the FreshPin claim type it mostly tests. live_data and event questions also test whether a model admits it can't know live values or this week's news.",
+  "questions": [
+    {"id": "python-latest", "category": "api_version", "question": "What is the latest stable version of Python?"},
+    {"id": "gold-today", "category": "live_data", "question": "What is the gold spot price per ounce today?"},
+    {"id": "dubai-building-cert", "category": "regulation", "question": "Do owners of older buildings in Dubai need a periodic building quality and safety certificate?"},
+    {"id": "outage-this-week", "category": "event", "question": "Was there a major outage of a big email or cloud service (for example Microsoft Outlook, AWS or Google) this week? What happened?"},
+    {"id": "openai-ceo", "category": "company", "question": "Who is the CEO of OpenAI?"},
+    {"id": "bifrost-release", "category": "api_version", "question": "What is the latest release of the Bifrost AI gateway by Maxim AI?"}
+  ]
+}

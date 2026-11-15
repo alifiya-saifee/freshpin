@@ -152,6 +152,29 @@ class BifrostClient:
         raise LLMUnavailable(last_error)
 
 
+    def chat_text(self, model: str, system: str, user: str, budget: RunBudget, step: str = "ask") -> str:
+        """Ask ONE model for a plain-text answer, with no fallbacks: used by the bench to test that exact model."""
+        budget.check()
+        trace = CallTrace(step=step, requested_model=model)
+        payload = {"model": model, "temperature": 0,
+                   "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}]}
+        t0 = time.monotonic()
+        try:
+            data = self._post(payload)
+            usage = data.get("usage") or {}
+            trace.prompt_tokens = int(usage.get("prompt_tokens") or 0)
+            trace.completion_tokens = int(usage.get("completion_tokens") or 0)
+            trace.served_by = data.get("model") or model
+            budget.charge(trace.prompt_tokens + trace.completion_tokens)
+            return str(data["choices"][0]["message"]["content"] or "").strip()
+        except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError, KeyError, ValueError) as exc:
+            trace.ok, trace.error = False, _describe(exc)
+            raise LLMUnavailable(trace.error) from exc
+        finally:
+            trace.latency_ms = int((time.monotonic() - t0) * 1000)
+            budget.log(trace)
+
+
 def _model_differs(requested: str, served: str | None) -> bool:
     """True when the gateway answered with a different provider or model than we asked for.
     Providers often append a date to the model name (gpt-4o-mini -> gpt-4o-mini-2024-07-18), so

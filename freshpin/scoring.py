@@ -26,6 +26,8 @@ HALF_LIFE_DAYS = {
     "company": 120,
     "regulation": 240,
     "statistic": 180,
+    "event": 7,       # outages, launches, incidents, deals: news moves in days
+    "live_data": 1,   # market prices, FX, rates, scores: a day-old page is already half as convincing
     "other": 365,
 }
 

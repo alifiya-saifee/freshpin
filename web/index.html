@@ -125,6 +125,7 @@ td.err{color:var(--stale)}td.fb{color:var(--check)}
       <h2>2. Claims and freshness</h2>
       <div class="summary" id="summary"></div>
       <div id="claims"></div>
+      <div id="corrections"></div>
       <div class="skipped" id="skipped"></div>
       <div id="pinNew" style="display:none">
         <details>
@@ -263,6 +264,7 @@ function renderReport(rep){
       ${changed?`<div class="now"><b>Now:</b> ${esc(c.current_statement)}</div>`:""}
       <div class="expl">${esc(c.explanation)}</div>
       ${recheckBox(c, g.traces)}
+      ${c.needs_live_feed?`<div class="meta" style="color:var(--check);margin-top:6px">Needs a live data feed: no source dated today states this live value.</div>`:""}
       ${!c.ai_available?`<div class="meta" style="color:var(--check)">AI verifier was unavailable. The ledger was not changed.</div>`:""}
       ${eff.reopened&&eff.reopened.length?`<div class="meta" style="color:var(--stale);margin-top:6px">Reopened: ${eff.reopened.map(esc).join(", ")}</div>`:""}
       ${eff.at_risk&&eff.at_risk.length?`<div class="meta" style="color:var(--check);margin-top:6px">At risk: ${eff.at_risk.map(esc).join(", ")}</div>`:""}
@@ -278,6 +280,9 @@ function renderReport(rep){
       </details>
     </div>`;
   }).join("") || `<div class="empty">No time-sensitive claims found.</div>`;
+  const corr = rep.corrections||[];
+  $("#corrections").innerHTML = corr.length ? `<h2 style="margin-top:14px">Corrections (confirmed by two checks)</h2>` + corr.map(k=>
+    `<div class="recheck"><p><b>Replace:</b> ${esc(k.claim)}</p><p><b>With:</b> ${esc(k.now)}</p>${k.reference?`<p class="meta">Source: <a href="${esc(k.reference.url)}" target="_blank" rel="noopener">${esc(k.reference.title||k.reference.url)}</a> <span class="meta">${esc(k.reference.published_date||"undated")}</span>${authTag(k.reference.authority)}</p>`:""}</div>`).join("") : "";
   $("#skipped").textContent = rep.skipped.length ? `Not checked (not time-sensitive): ${rep.skipped.map(x=>x.text).join(" · ")}` : "";
   if(rep.degraded) showErr("Every AI model was unavailable, so claims were found with a simple rule instead. Nothing in the ledger was changed.");
   if(rep.search_errors.length) showErr("Search problem: "+rep.search_errors.join("; "));

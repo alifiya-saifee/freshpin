@@ -11,6 +11,8 @@ from .server import serve
 USAGE = """usage:
   python -m freshpin serve                 start the web app (default http://127.0.0.1:8787)
   python -m freshpin mcp                   run as an MCP server (stdio) for AI assistants
+  python -m freshpin bench --models a,b [--max N] [--questions file] [--no-recheck] [--yes]
+                                           test models on facts that change; print a freshness scorecard
   python -m freshpin check "answer text"   check an answer and print the JSON report
   python -m freshpin sample <id>           load a sample ledger, check its answer, print a summary
 """
@@ -28,6 +30,8 @@ def main(argv: list[str]) -> int:
         from .mcp import run
         run()
         return 0
+    if cmd == "bench":
+        return bench_cmd(argv[1:])
     app = FreshPin(settings())
     if cmd == "check" and len(argv) > 1:
         print(json.dumps(app.check(" ".join(argv[1:])), indent=2, ensure_ascii=False))
@@ -41,6 +45,8 @@ def main(argv: list[str]) -> int:
             print(f"[{label:5}] {f['score']:3}  {c['text']}")
             if c["verdict"] in ("stale", "contradicted"):
                 print(f"         now: {c['current_statement']}")
+            if c.get("needs_live_feed"):
+                print("         needs a live data feed: no source dated today states this value")
             r = c.get("recheck") or {}
             if r.get("status") not in (None, "skipped"):
                 ref = r.get("best_reference") or {}
@@ -55,6 +61,58 @@ def main(argv: list[str]) -> int:
         return 0
     print(USAGE)
     return 2
+
+
+
+def bench_cmd(args: list[str]) -> int:
+    import argparse
+    from datetime import date
+    from pathlib import Path
+
+    from . import bench
+    from .llm import BifrostClient, RunBudget
+
+    ap = argparse.ArgumentParser(prog="python -m freshpin bench")
+    ap.add_argument("--models", required=True, help="comma-separated Bifrost provider/model names to test")
+    ap.add_argument("--questions", default=str(bench.QUESTIONS))
+    ap.add_argument("--max", type=int, default=6, help="use only the first N questions")
+    ap.add_argument("--no-recheck", action="store_true", help="skip the recheck layer (half the Tavily credits)")
+    ap.add_argument("--yes", action="store_true", help="run even if the estimate is above 40 Tavily credits")
+    a = ap.parse_args(args)
+
+    s = settings()
+    if s.mode != "live":
+        print("The bench asks real models, so it needs FRESHPIN_MODE=live (Bifrost + Tavily).")
+        return 2
+    if a.no_recheck:
+        s.recheck = False
+    models = [m.strip() for m in a.models.split(",") if m.strip()]
+    questions = bench.load_questions(Path(a.questions))[: max(1, a.max)]
+    est = bench.estimate_credits(len(questions), len(models), s.recheck)
+    print(f"{len(questions)} question(s) x {len(models)} model(s), recheck {'on' if s.recheck else 'off'}: "
+          f"about {est} Tavily credits at most.")
+    if est > 40 and not a.yes:
+        print("Above 40 credits: run again with --yes, or use --max / --no-recheck.")
+        return 2
+
+    app = FreshPin(s)
+    client = BifrostClient(s.bifrost_url, s.bifrost_virtual_key, s.timeout_s)
+    system = bench.ASK_SYSTEM.format(today=date.today().isoformat())
+
+    def ask(model: str, question: str) -> str:
+        print(f"  asking {model}: {question[:70]}")
+        return client.chat_text(model, system, question, RunBudget(8000))
+
+    def check(answer: str, question: str) -> dict:
+        return app.check(answer, context=question, apply_to_ledger=False)
+
+    result = bench.run_bench(questions, models, ask, check)
+    print()
+    bench.print_table(result)
+    print(f"\nSaved: {bench.save(result)}")
+    if hasattr(app.search, "hits"):
+        print(f"Tavily searches: {app.search.misses} made, {app.search.hits} reused from cache")
+    return 0
 
 
 if __name__ == "__main__":

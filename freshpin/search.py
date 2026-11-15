@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import json
+import threading
+import time
 import urllib.error
 import urllib.request
 from dataclasses import dataclass
@@ -28,8 +30,9 @@ class SearchBackend(Protocol):
     def search(self, query: str, claim_type: str, max_results: int) -> list[Source]: ...
 
 
-# Fast-changing claim types search recent news; slower ones search the general web.
-_TIME_RANGE = {"pricing": "year", "api_version": "year", "company": "year"}
+# Fast-changing claim types search a recent window; news and markets use Tavily's news and finance topics.
+_TIME_RANGE = {"pricing": "year", "api_version": "year", "company": "year", "event": "week", "live_data": "day"}
+_TOPIC = {"event": "news", "live_data": "finance"}
 
 
 class TavilyClient:
@@ -46,7 +49,7 @@ class TavilyClient:
             "search_depth": "advanced",
             "max_results": max_results,
             "include_answer": False,
-            "topic": "general",
+            "topic": _TOPIC.get(claim_type, "general"),
         }
         if claim_type in _TIME_RANGE:
             body["time_range"] = _TIME_RANGE[claim_type]
@@ -68,3 +71,36 @@ class TavilyClient:
                 relevance=float(r.get("score") or 0.0),
             ))
         return out
+
+
+# How long a search result may be reused, by claim type (seconds). Live values go stale fastest.
+CACHE_TTL_S = {"live_data": 600, "event": 3600}
+DEFAULT_CACHE_TTL_S = 86400
+
+
+class CachedSearch:
+    """Reuses identical searches for a while, so repeat checks and the bench don't spend Tavily credits twice.
+    In memory, per process. Errors are never cached."""
+
+    def __init__(self, inner: SearchBackend, clock=time.monotonic):
+        self.inner = inner
+        self.clock = clock
+        self.hits = 0
+        self.misses = 0
+        self._store: dict[tuple[str, str, int], tuple[float, list[Source]]] = {}
+        self._lock = threading.Lock()
+
+    def search(self, query: str, claim_type: str, max_results: int = 5) -> list[Source]:
+        key = (query.strip().lower(), claim_type, max_results)
+        ttl = CACHE_TTL_S.get(claim_type, DEFAULT_CACHE_TTL_S)
+        now = self.clock()
+        with self._lock:
+            hit = self._store.get(key)
+            if hit and now - hit[0] < ttl:
+                self.hits += 1
+                return list(hit[1])
+        result = self.inner.search(query, claim_type, max_results)
+        with self._lock:
+            self.misses += 1
+            self._store[key] = (now, list(result))
+        return result

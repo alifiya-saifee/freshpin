@@ -1,5 +1,5 @@
 {
-  "_note": "Recorded responses for OFFLINE TESTS ONLY (FRESHPIN_MODE=replay). Source URLs are real; snippets are short summaries, not quotes. Run in live mode to check against the web today. The 'recheck' entries are the second judge's recorded answers; every evidence_quote is copied word for word from the recorded source text.",
+  "_note": "Recorded responses for OFFLINE TESTS ONLY (FRESHPIN_MODE=replay). Source URLs are real; snippets are short summaries, not quotes. Run in live mode to check against the web today. The 'recheck' entries are the second judge's recorded answers; every evidence_quote is copied word for word from the recorded source text. Recheck source numbers follow the checker's ranked listing (most official, then newest first).",
   "extract": {
     "dubai_building_law": {
       "claims": [
@@ -204,7 +204,7 @@
       "agree": true,
       "verdict": "stale",
       "current_statement": "Under Dubai Law No. 3 of 2026, owners must obtain a building quality and safety certificate once a building is 20 years past its completion certificate (valid 10 years, or 5 years at 40+ years).",
-      "best_source": 1,
+      "best_source": 2,
       "evidence_quote": "Owners must obtain a building quality and safety certificate once a building is 20 years past its completion certificate",
       "supporting": [],
       "contradicting": [

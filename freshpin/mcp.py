@@ -76,6 +76,8 @@ def summarize(report: dict[str, Any]) -> str:
         lines.append(f"\n{i}. [{label} {f['score']}/100] {c['text']}")
         if c["verdict"] in ("stale", "contradicted", "partly_current") and c.get("current_statement"):
             lines.append(f"   Now: {c['current_statement']}")
+        if c.get("needs_live_feed"):
+            lines.append("   Needs a live data feed: no source dated today states this live value.")
         r = c.get("recheck") or {}
         if r.get("status") in ("confirmed", "disputed", "unavailable"):
             lines.append(f"   Second check: {r['status']}. {r.get('reason', '')}")
@@ -102,6 +104,11 @@ def summarize(report: dict[str, Any]) -> str:
         lines.append("Treat unverified claims as unconfirmed; say so rather than stating them as fact.")
     if disputed:
         lines.append("Disputed claims: the two checks disagree. Show both views and let a person decide.")
+    if report.get("corrections"):
+        lines.append("\nUse these corrections (confirmed by two checks, each with its source):")
+        for k in report["corrections"]:
+            ref = (k.get("reference") or {}).get("url", "")
+            lines.append(f"- Replace: {k['claim']}\n  With: {k['now']}\n  Source: {ref}")
     return "\n".join(lines)
 
 

@@ -46,6 +46,59 @@ The UI, the MCP tool and the CLI show the second check's result, the best refere
 
 **Cost:** one extra Tavily search and one extra model call per claim (the Dubai sample uses 8 searches instead of 4). Turn it off with `FRESHPIN_RECHECK=0`.
 
+## How to use it with any model
+
+- **FreshPin checks the answer of any model**: ChatGPT, Claude, Llama, Gemini, or a company's own model. It sits *after* that model, as an auditor. It never needs access to the model itself, only to its answer.
+- **Tavily is not a model.** It only brings evidence: live web pages with their dates.
+- **The judges are models you choose in Bifrost.** The demo uses Gemini and Groq free tiers. They only read Tavily's evidence; they never answer from memory.
+- **Bring your own keys.** Anyone integrating FreshPin runs their own Bifrost with their own provider keys and their own Tavily key. No keys are shared.
+- **Three outputs:** a verdict and score per claim (*verify*), a **corrections** list with today's fact, the best reference and an exact quote (*correct*), and the decisions that depended on a changed fact (*reopen*).
+- **Not yet:** feeding live facts into a model *before* it answers ("grounding"). FreshPin checks after the answer.
+
+### How a model goes wrong, and the guardrail for each
+
+| Why a model gives old or wrong information | FreshPin's guardrail |
+|---|---|
+| Training cutoff: it repeats the world as it was | Live Tavily evidence, dated sources, a half-life per claim type |
+| No clock: it states today's price or this week's news it can't know | `live_data` and `event` claim types; a live number counts only if a source **dated today** states it, otherwise "needs a live data feed" |
+| A confident tone hides uncertainty | The score comes from a fixed formula, not from the model's confidence |
+| Pages that don't mention a change look like "no change" | "Silence is not proof" rule for both judges |
+| One model's blind spot | Second judge on a different provider |
+| Made-up corrections | No quote, no verdict |
+| A wrong fix spreading into decisions | Disputed claims mark decisions at risk and never reopen them; only a named person re-approves |
+
+## Breaking news and live data
+
+Two claim types cover facts that change fastest:
+
+| Type | Examples | Tavily search | Half-life | Rule |
+|---|---|---|---|---|
+| `event` | outages, launches, incidents, elections, deals | `topic: news`, last week | 7 days | as for other claims |
+| `live_data` | market prices, FX, interest rates, scores, weather | `topic: finance`, last day | 1 day | "current" only if a supporting source dated today or yesterday states the value; otherwise **unverifiable, needs a live data feed** |
+
+Live test, 15 Nov 2026: *"Gold is trading at $2,000 an ounce today."* came back **unverified, needs a live data feed**. No page dated today stated a gold price, so FreshPin refused to confirm a number it cannot know is current. Web search is not a market data feed; connecting one is listed under Limits.
+
+## Model test bench
+
+`python -m freshpin bench` asks one or more models (through Bifrost, no fallbacks, no web access) questions whose right answer changes over time, checks every answer with FreshPin, and prints a scorecard. It is for anyone launching or choosing a model.
+
+```bash
+python -m freshpin bench --models groq/openai/gpt-oss-120b,gemini/gemini-2.5-flash --max 3 --yes
+```
+
+- Questions live in `bench/questions.json` (latest Python version, gold price today, Dubai building rule, an outage this week, a company CEO, a software release). Add your own.
+- **Scorecard per model:** claims checked, % fresh / stale / disputed / unverified, average score, and **honest on live data**: for price and news questions, the answer either checks out or says plainly that the model can't know live values.
+- The bench prints a Tavily credit estimate first and needs `--yes` above 40 credits. `--no-recheck` halves the cost. Results are saved to `bench/results/` and never touch the pin ledger.
+
+First live run (15 Nov 2026, 3 questions): `gpt-oss-120b` on Groq said the latest Python is 3.15.0 (confirmed current), said honestly that it has no real-time gold price, and described the Dubai rule as applying to buildings "10 years or older" (the law says 20), which FreshPin flagged. Gemini's free daily quota had run out, so its rows show the 429 error instead of a score.
+
+## Efficiency
+
+- Claims that can't go out of date are skipped before any search.
+- **Search cache:** identical searches are reused for 10 minutes (live data), 1 hour (events) or 24 hours (everything else), so repeat checks and the bench don't spend Tavily credits twice.
+- The second judge sees only the 6 best sources (most official, then newest), with snippets cut to 500 characters; quotes are still matched against the full text.
+- The report shows tokens per step (`extract`, `verify`, `recheck`) and the gateway trace shows every call.
+
 ## What's new about it
 
 Most stale-answer checkers stop at a score for each claim. FreshPin adds a **pin ledger**: a record of which approved decisions relied on which version of which fact. "This sentence is outdated" then becomes "these two approvals are now unsafe, here's what changed, and here's who has to sign again". Decisions that relied only on facts that are still current are left alone.
@@ -203,6 +256,8 @@ freshpin/
   app.py        wiring for the UI and CLI
   server.py     standard-library HTTP server + JSON API
   mcp.py        MCP server (stdio) for AI assistants
+  bench.py      model test bench and scorecard
+bench/          bench questions (results/ is git-ignored)
 web/index.html  the UI (no build step, no external assets)
 samples/        demo scenarios and their seeded decisions
 fixtures/       recorded responses for replay mode
@@ -214,8 +269,23 @@ tests/          unittest suite
 - Verdicts depend on what Tavily finds. When sources are thin or undated, FreshPin says so (the "check" band, "unverifiable") rather than guessing, and it never reopens a decision on unclear evidence.
 - Claim keys are produced by the extractor model and matched to known facts; two different wordings of the same fact can occasionally get different keys.
 - Free provider tiers have rate limits. Bifrost's fallbacks cover short bursts; heavy use needs paid keys or more providers.
+- No market data feed: live prices and rates can only be confirmed when a page dated today states them. A production version would add a feed (for example a commodities or FX API) as another evidence source.
+- Free tiers run out: Gemini's free daily quota can be used up during heavy testing. Bifrost then falls back to the next provider; add a third provider for more headroom.
 - Bifrost runs next to FreshPin (locally or on a server you control), so there is no hosted demo link: run it locally in three steps, or use replay mode with no keys.
 - The demo ledger is a local SQLite file. A production version would sit next to the systems where decisions live (CRM, ERP, document approvals).
+
+## Beyond text answers: robots and other models
+
+The FreshPin loop is general: **claim → fresh evidence → independent second check → fixed rules → pin what depends on it → a person re-approves.** Only the evidence source changes.
+
+| Kind of model | Its "claim" | Evidence instead of Tavily | Second check | What gets reopened |
+|---|---|---|---|---|
+| Robot or vision model | "door is closed", "repair done", "shelf has 4 boxes" | a fresh camera frame, a sensor reading, a timestamp | a different sensor or vision model | tasks or payments that relied on that state |
+| Voice or device control | "AC set to 22", "screen on" | the device's reported state, a room camera | device API plus camera | the job marked done |
+| Forecast or pricing model | "price is Y" | a market data feed | a second feed | quotes and budgets built on it |
+| Agents using tools | "email sent", "file uploaded" | the tool's log or API status | reading it back from the system | the next steps in the workflow |
+
+The freshness rule carries over: evidence has a half-life (seconds for a robot's view of the world, days for news, months for laws), and no evidence means no verdict. These are design notes, not built here.
 
 ## Built during the hackathon, and use of AI tools
 

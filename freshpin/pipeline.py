@@ -14,14 +14,17 @@ from .scoring import freshness_score
 from .search import SearchBackend, SearchUnavailable
 from .sources import grade, rank_key, source_notes
 
-CLAIM_TYPES = ["pricing", "api_version", "regulation", "company", "statistic", "other"]
+CLAIM_TYPES = ["pricing", "api_version", "regulation", "company", "statistic", "event", "live_data", "other"]
 
 EXTRACT_SYSTEM = """You split an AI-generated answer into atomic factual claims and judge which could go out of date.
 Return ONLY JSON: {"claims": [{"text": str, "key": str, "type": str, "time_sensitive": bool, "search_query": str}]}
 Rules:
 - One claim = one checkable fact, rewritten to stand alone (no "it", "this").
-- type is one of: pricing, api_version, regulation, company, statistic, other.
-- time_sensitive is true when the fact could change over months or years (prices, versions, laws, who owns or runs a company, counts, limits).
+- type is one of: pricing, api_version, regulation, company, statistic, event, live_data, other.
+  event = something that happened recently (outage, launch, incident, election, deal, announcement).
+  live_data = a value that changes by the minute or day (market price, exchange rate, interest rate, score, weather).
+  pricing = list prices of products and plans, which change over months.
+- time_sensitive is true when the fact could change over days, months or years (live values, recent events, prices, versions, laws, who owns or runs a company, counts, limits).
 - key is a stable snake_case id for the FACT, not the wording, e.g. "dubai.building_safety_certificate.required_for_old_buildings".
   If a claim is about the same fact as one in KNOWN_FACTS, reuse that key exactly.
 - search_query is a short web query that would find the CURRENT value of this fact. Include the place and topic; do not include the claimed value.
@@ -41,6 +44,8 @@ Verdicts:
 - stale: it was true once, but a newer source shows it changed.
 - contradicted: sources say it is wrong, with no sign it was ever true.
 - unverifiable: sources do not address it clearly. Prefer this over guessing.
+Live values: for a claim about a live value (market price, rate, score), say "current" only if a source dated
+TODAY states the same value; otherwise say "unverifiable" and explain that a live data feed is needed.
 Silence is not proof: a source that simply does not mention a requirement, change, price or limit is NOT
 evidence that none exists. Use "current" only when a source explicitly states the claim. For claims like
 "X does not require Y", a source must explicitly say Y is not required; otherwise use "unverifiable".
@@ -56,6 +61,7 @@ other) and age. Prefer official and newer sources; an old or unofficial page can
 Look hard for any source showing a RECENT CHANGE (new law, regulation, price, version, owner) that the first
 judge missed. Silence is not proof: a page that does not mention a requirement or change is NOT evidence that
 none exists. "current" needs a source that explicitly states the claim; otherwise say "unverifiable".
+For a live value (market price, rate, score), "current" needs a source dated TODAY with the same value.
 Return ONLY JSON:
 {"agree": bool,  // do you agree with the FIRST verdict?
  "verdict": "current"|"partly_current"|"stale"|"contradicted"|"unverifiable",  // your own verdict
@@ -163,24 +169,39 @@ def verify_claim(claim: dict[str, Any], sources: list[dict[str, Any]], chat: Cha
                                "nothing in the ledger was changed.", "changed_on": None, "ai_available": False}
 
 
+CHECKER_MAX_SOURCES = 6
+CHECKER_SNIPPET_CHARS = 500
+
+
 def recheck_claim(claim: dict[str, Any], first: dict[str, Any], sources: list[dict[str, Any]],
                   chat: ChatBackend, models: list[str], budget: RunBudget, simulate_outage: bool,
                   today: date) -> dict[str, Any] | None:
-    """The second judge: a different model reads the first verdict and every source (old and new).
-    Returns None when it could not run."""
+    """The second judge: a different model reads the first verdict and the best sources (old and new).
+    To save tokens it sees only the top sources by authority and date, with shorter snippets; its source
+    numbers are mapped back to the full list. Returns None when it could not run."""
     if not sources:
         return None
+    order = sorted(range(len(sources)), key=lambda j: rank_key(sources[j]))[:CHECKER_MAX_SOURCES]
     listing = "\n\n".join(
-        f"[{i + 1}] {s['title']} | authority: {s['authority']} | "
-        f"{('published ' + s['published_date']) if s.get('published_date') else 'undated'}\n{s['url']}\n{s['snippet']}"
-        for i, s in enumerate(sources))
+        f"[{n + 1}] {sources[j]['title']} | authority: {sources[j]['authority']} | "
+        f"{('published ' + sources[j]['published_date']) if sources[j].get('published_date') else 'undated'}\n"
+        f"{sources[j]['url']}\n{sources[j]['snippet'][:CHECKER_SNIPPET_CHARS]}"
+        for n, j in enumerate(order))
     user = (f"TODAY: {today.isoformat()}\nCLAIM: {claim['text']}\n"
             f"FIRST VERDICT: {first.get('verdict')}\nFIRST STATEMENT OF TODAY'S FACT: {first.get('current_statement')}\n"
             f"\nSOURCES:\n{listing}")
     try:
-        return chat.chat_json(f"recheck:{claim['key']}", models, RECHECK_SYSTEM, user, budget, simulate_outage)
+        out = chat.chat_json(f"recheck:{claim['key']}", models, RECHECK_SYSTEM, user, budget, simulate_outage)
     except (LLMUnavailable, BudgetExceeded):
         return None
+
+    def back(n: Any) -> int | None:  # checker's numbering -> 1-based index in the full source list
+        return order[n - 1] + 1 if isinstance(n, int) and 0 < n <= len(order) else None
+
+    out["best_source"] = back(out.get("best_source"))
+    for k in ("supporting", "contradicting"):
+        out[k] = [b for b in (back(n) for n in out.get(k) or []) if b]
+    return out
 
 
 def run_check(answer: str, *, chat: ChatBackend, search: SearchBackend, ledger: Ledger,
@@ -289,6 +310,17 @@ def run_check(answer: str, *, chat: ChatBackend, search: SearchBackend, ledger: 
                                              if verdict in ("stale", "contradicted", "partly_current", "disputed")
                                              else []),
             }
+        # Fixed rule for live values (prices, rates, scores): web pages can't confirm a live number unless
+        # one dated today or yesterday states it. Otherwise say so plainly instead of guessing.
+        needs_live_feed = False
+        if c["type"] == "live_data" and verdict in ("current", "partly_current", "unverifiable"):
+            fresh_backing = [s for s in srcs if s["url"] in set(sup) and s.get("age_days") is not None
+                             and s["age_days"] <= 1]
+            if verdict != "unverifiable" and not fresh_backing:
+                verdict = "unverifiable"
+                recheck_info["reason"] = (recheck_info.get("reason", "") + " No source dated today or yesterday "
+                                          "states this live value.").strip()
+            needs_live_feed = verdict == "unverifiable"
         fs = freshness_score(verdict, c["type"], srcs, sup, con, today)
         claim = {
             **c, "verdict": verdict, "first_verdict": v.get("verdict", "unverifiable"),
@@ -296,17 +328,32 @@ def run_check(answer: str, *, chat: ChatBackend, search: SearchBackend, ledger: 
             "explanation": v.get("explanation", ""), "changed_on": v.get("changed_on"),
             "supporting_urls": sup, "contradicting_urls": con, "sources": srcs,
             "freshness": fs.as_dict(), "ai_available": v.get("ai_available", True) and not degraded,
-            "recheck": recheck_info,
+            "recheck": recheck_info, "needs_live_feed": needs_live_feed,
         }
         claim["ledger_effect"] = (ledger.record_check(claim)
                                   if apply_to_ledger and claim["ai_available"] else None)
         results.append(claim)
+
+    # Corrections: rule-based, no extra model call. Only confirmed changes, each with its reference and quote.
+    corrections, unconfirmed = [], []
+    for r in results:
+        rc = r.get("recheck") or {}
+        if r["verdict"] in ("stale", "contradicted", "partly_current") and rc.get("status") == "confirmed":
+            corrections.append({"claim": r["text"], "now": r["current_statement"],
+                                "reference": rc.get("best_reference"), "quote": rc.get("evidence_quote"),
+                                "why_outdated": rc.get("why_outdated", "")})
+        elif r["verdict"] in ("disputed", "unverifiable"):
+            unconfirmed.append({"claim": r["text"], "verdict": r["verdict"],
+                                "reason": "needs a live data feed" if r.get("needs_live_feed")
+                                else rc.get("reason") or r.get("explanation", "")})
 
     traces = [t.as_dict() for t in budget.traces]
     return {
         "checked_on": today.isoformat(),
         "claims": results,
         "skipped": [{"text": c["text"], "reason": "not time-sensitive"} for c in skipped],
+        "corrections": corrections,
+        "unconfirmed": unconfirmed,
         "degraded": degraded,
         "search_errors": search_errors,
         "summary": {
@@ -325,6 +372,8 @@ def run_check(answer: str, *, chat: ChatBackend, search: SearchBackend, ledger: 
             "failed_attempts": sum(not t["ok"] for t in traces),
             "fallbacks_used": sum(t["fallback_used"] or t["client_failover"] for t in traces if t["ok"]),
             "tokens": budget.used_tokens, "token_budget": token_budget,
+            "tokens_by_step": {k: sum(t["prompt_tokens"] + t["completion_tokens"] for t in traces
+                                      if t["step"].split(":")[0] == k) for k in ("extract", "verify", "recheck")},
             "traces": traces,
         },
         "tavily_searches": len(checkable) + sum(do_recheck),

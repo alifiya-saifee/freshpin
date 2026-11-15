@@ -12,7 +12,7 @@ from .ledger import Ledger
 from .llm import BifrostClient
 from .pipeline import run_check
 from .replay import ReplayChat, ReplayData, ReplaySearch, load_samples
-from .search import TavilyClient
+from .search import CachedSearch, TavilyClient
 
 
 class FreshPin:
@@ -26,7 +26,7 @@ class FreshPin:
             self.search = ReplaySearch(data)
         else:
             self.chat = BifrostClient(s.bifrost_url, s.bifrost_virtual_key, s.timeout_s, s.outage_model)
-            self.search = TavilyClient(s.tavily_api_key, s.tavily_url, s.timeout_s)
+            self.search = CachedSearch(TavilyClient(s.tavily_api_key, s.tavily_url, s.timeout_s))
 
     def status(self) -> dict[str, Any]:
         bifrost_ok = None
@@ -59,7 +59,8 @@ class FreshPin:
                                          {k: versions[k] for k in d["pins"]}, d["approved_by"], d["approved_at"])
             return self.ledger.state()
 
-    def check(self, answer: str, context: str = "", simulate_outage: bool = False) -> dict[str, Any]:
+    def check(self, answer: str, context: str = "", simulate_outage: bool = False,
+              apply_to_ledger: bool = True) -> dict[str, Any]:
         if not answer.strip():
             raise ValueError("answer text is empty")
         if len(answer) > 12000:
@@ -69,7 +70,8 @@ class FreshPin:
                                extractor_models=self.s.extractor_models, verifier_models=self.s.verifier_models,
                                token_budget=self.s.run_token_budget, max_sources=self.s.max_sources_per_claim,
                                context=context, simulate_outage=simulate_outage,
-                               checker_models=self.s.checker_models, recheck=self.s.recheck)
+                               checker_models=self.s.checker_models, recheck=self.s.recheck,
+                               apply_to_ledger=apply_to_ledger)
             report["mode"] = self.s.mode
             report["ledger"] = self.ledger.state()
             return report

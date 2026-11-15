@@ -170,6 +170,7 @@ class BifrostClientTests(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         cls.httpd.shutdown()
+        cls.httpd.server_close()
 
     def test_sends_fallbacks_and_detects_gateway_fallback(self):
         c = BifrostClient(self.url)
@@ -298,6 +299,207 @@ class RecheckTests(unittest.TestCase):
         for sup in (["a"], []):
             s = freshness_score("disputed", "regulation", srcs, sup, [], TODAY)
             self.assertEqual(s.band, "check")
+
+
+class StubChat:
+    """Answers by step name: extract -> claims, verify:<key> / recheck:<key> -> canned JSON. Records prompts."""
+
+    def __init__(self, claims, verify, recheck):
+        self.claims, self.verify, self.recheck, self.prompts = claims, verify, recheck, {}
+
+    def chat_json(self, step, models, system, user, budget, simulate_outage=False):
+        self.prompts[step] = user
+        kind, _, key = step.partition(":")
+        if kind == "extract":
+            return {"claims": self.claims}
+        return json.loads(json.dumps({"verify": self.verify, "recheck": self.recheck}[kind][key]))
+
+
+class StubSearch:
+    def __init__(self, rows):
+        self.rows, self.calls = rows, []
+
+    def search(self, query, claim_type, max_results=5):
+        from freshpin.search import Source
+        self.calls.append((query, claim_type))
+        return [Source(**r) for r in self.rows.get(query, [])][:max_results]
+
+
+def stub_run(claims, verify, recheck, rows, tmp):
+    from freshpin.pipeline import run_check
+    chat, search = StubChat(claims, verify, recheck), StubSearch(rows)
+    rep = run_check("answer", chat=chat, search=search, ledger=Ledger(Path(tmp) / "s.db"),
+                    extractor_models=["a/x"], verifier_models=["b/y"], token_budget=10**6, today=TODAY)
+    return rep, chat, search
+
+
+class NewsLiveDataTests(unittest.TestCase):
+    GOLD = {"text": "Gold trades at $2,000 an ounce today.", "key": "gold.spot", "type": "live_data",
+            "time_sensitive": True, "search_query": "gold spot price today"}
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def gold_run(self, published):
+        src = {"title": "Gold price", "url": "https://markets.example.com/gold", "relevance": 0.9,
+               "snippet": "Gold trades at $2,000 an ounce in early trading.", "published_date": published}
+        verify = {"gold.spot": {"verdict": "current", "current_statement": "Gold trades at $2,000 an ounce.",
+                                "supporting": [1], "contradicting": [], "explanation": "[1]",
+                                "confirm_query": "gold price news"}}
+        recheck = {"gold.spot": {"agree": True, "verdict": "current", "current_statement": "Gold trades at $2,000.",
+                                 "best_source": 1, "evidence_quote": "Gold trades at $2,000 an ounce in early trading",
+                                 "supporting": [1], "contradicting": [], "why_outdated": "", "explanation": "[1]"}}
+        rep, _, _ = stub_run([self.GOLD], verify, recheck, {"gold spot price today": [src]}, self.tmp.name)
+        return rep["claims"][0], rep
+
+    def test_live_value_needs_a_source_dated_today(self):
+        old, rep = self.gold_run("2026-10-01")
+        self.assertEqual(old["verdict"], "unverifiable")
+        self.assertTrue(old["needs_live_feed"])
+        self.assertEqual(rep["unconfirmed"][0]["reason"], "needs a live data feed")
+        today, _ = self.gold_run(TODAY.isoformat())
+        self.assertEqual(today["verdict"], "current")
+        self.assertFalse(today["needs_live_feed"])
+
+    def test_tavily_gets_news_and_finance_topics(self):
+        from freshpin.search import TavilyClient
+        bodies = []
+
+        class FakeTavily(BaseHTTPRequestHandler):
+            def log_message(self, *a):
+                pass
+
+            def do_POST(self):  # noqa: N802
+                bodies.append(json.loads(self.rfile.read(int(self.headers["Content-Length"]))))
+                data = b'{"results": []}'
+                self.send_response(200)
+                self.send_header("Content-Length", str(len(data)))
+                self.end_headers()
+                self.wfile.write(data)
+
+        httpd = ThreadingHTTPServer(("127.0.0.1", 0), FakeTavily)
+        threading.Thread(target=httpd.serve_forever, daemon=True).start()
+        try:
+            c = TavilyClient("k", f"http://127.0.0.1:{httpd.server_port}")
+            for t in ("event", "live_data", "regulation"):
+                c.search("q", t)
+        finally:
+            httpd.shutdown()
+            httpd.server_close()
+        self.assertEqual([(b["topic"], b.get("time_range")) for b in bodies],
+                         [("news", "week"), ("finance", "day"), ("general", None)])
+
+
+class EfficiencyTests(unittest.TestCase):
+    def test_cache_reuses_until_it_expires(self):
+        from freshpin.search import CachedSearch
+        now = [0.0]
+        inner = StubSearch({"q": [{"title": "t", "url": "u", "snippet": "s", "published_date": None, "relevance": 1}]})
+        c = CachedSearch(inner, clock=lambda: now[0])
+        c.search("q", "live_data")
+        c.search("Q ", "live_data")  # same query, different case and spacing
+        self.assertEqual((len(inner.calls), c.hits), (1, 1))
+        now[0] = 601  # live data is reused for 10 minutes only
+        c.search("q", "live_data")
+        self.assertEqual(len(inner.calls), 2)
+        c.search("q", "regulation")
+        now[0] = 601 + 3600
+        c.search("q", "regulation")  # regulations are reused for a day
+        self.assertEqual(len(inner.calls), 3)
+
+    def test_second_judge_sees_top_six_trimmed_sources(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            claim = {"text": "X costs $5.", "key": "x.price", "type": "pricing", "time_sensitive": True,
+                     "search_query": "x price"}
+            rows = {"x price": [{"title": f"S{i}", "url": f"https://s{i}.example.com", "snippet": "y" * 900,
+                                 "published_date": f"2026-11-{i + 1:02d}", "relevance": 0.5} for i in range(5)],
+                    "x price change": [{"title": "Gov", "url": "https://x.gov/p", "snippet": "z" * 900,
+                                        "published_date": None, "relevance": 0.5},
+                                       {"title": "S9", "url": "https://s9.example.com", "snippet": "w",
+                                        "published_date": "2026-01-01", "relevance": 0.5}]}
+            verify = {"x.price": {"verdict": "current", "current_statement": "X costs $5.", "supporting": [1],
+                                  "contradicting": [], "explanation": "", "confirm_query": "x price change"}}
+            recheck = {"x.price": {"agree": True, "verdict": "current", "current_statement": "X costs $5.",
+                                   "best_source": 1, "evidence_quote": "", "supporting": [1], "contradicting": [],
+                                   "why_outdated": "", "explanation": ""}}
+            rep, chat, _ = stub_run([claim], verify, recheck, rows, tmp)
+            prompt = chat.prompts["recheck:x.price"]
+            self.assertEqual(prompt.count("\n[") + prompt.startswith("["), 6)  # 7 sources found, 6 sent
+            self.assertNotIn("y" * 501, prompt)
+            # The checker's "1" is the official source (ranked first), mapped back to the full list.
+            self.assertEqual(rep["claims"][0]["recheck"]["best_reference"]["url"], "https://x.gov/p")
+            self.assertGreater(rep["gateway"]["tokens_by_step"]["recheck"], -1)
+
+
+class CorrectionsAndBenchTests(unittest.TestCase):
+    def test_corrections_hold_confirmed_changes_only(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            app = replay_app(tmp)
+            app.load_sample("dubai_building_law")
+            app.chat.d.data["recheck"]["dubai.ejari.attestation_needs_building_certificate"]["agree"] = False
+            rep = app.check(app.samples()["dubai_building_law"]["answer"])
+            self.assertEqual([k["claim"][:20] for k in rep["corrections"]], ["Dubai does not requi"])
+            self.assertEqual(rep["corrections"][0]["reference"]["authority"], "official")
+            self.assertTrue(rep["corrections"][0]["quote"])
+            self.assertEqual(rep["unconfirmed"][0]["verdict"], "disputed")
+
+    def test_bench_scorecard_and_honesty(self):
+        from freshpin import bench
+        qs = [{"id": "gold", "category": "live_data", "question": "Gold price today?"},
+              {"id": "py", "category": "api_version", "question": "Latest Python?"}]
+        answers = {("m1", "Gold price today?"): "Gold is $2,000 an ounce.",
+                   ("m2", "Gold price today?"): "I don't have access to real-time prices; check a live source.",
+                   ("m1", "Latest Python?"): "Python 3.11.", ("m2", "Latest Python?"): "Python 3.14."}
+
+        def ask(model, q):
+            if model == "m3":
+                raise RuntimeError("down")
+            return answers[(model, q)]
+
+        def check(answer, q):
+            verdict = {"Gold is $2,000 an ounce.": "unverifiable", "Python 3.11.": "stale",
+                       "Python 3.14.": "current"}.get(answer)
+            claims = [] if verdict is None else [{"text": answer, "type": "x", "verdict": verdict,
+                                                  "freshness": {"score": {"stale": 10, "current": 90}.get(verdict, 45)},
+                                                  "current_statement": "Python 3.14."}]
+            return {"claims": claims, "corrections": []}
+
+        res = bench.run_bench(qs, ["m1", "m2", "m3"], ask, check)
+        m1, m2, m3 = (res["models"][m]["scorecard"] for m in ("m1", "m2", "m3"))
+        self.assertEqual((m1["claims"], m1["stale_pct"], m1["unverified_pct"], m1["honest_on_live"]), (2, 50, 50, 0))
+        self.assertEqual((m2["fresh_pct"], m2["honest_on_live"], m2["live_questions"]), (100, 1, 1))
+        self.assertEqual(m3["errors"], 2)
+        self.assertEqual(bench.estimate_credits(3, 2, True), 72)
+        # A real answer from the live bench: curly apostrophe and non-breaking hyphen.
+        self.assertTrue(bench.admits_live_limits("I\u2019m sorry, but I don\u2019t have real\u2011time data access."))
+        self.assertFalse(bench.admits_live_limits("Gold is $2,650 an ounce today."))
+        self.assertEqual(bench.estimate_credits(3, 2, False), 36)
+
+    def test_bench_check_leaves_ledger_alone(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            app = replay_app(tmp)
+            app.load_sample("dubai_building_law")
+            before = app.ledger.state()["decisions"]
+            app.check(app.samples()["dubai_building_law"]["answer"], apply_to_ledger=False)
+            self.assertEqual(app.ledger.state()["decisions"], before)
+
+    def test_bench_command_runs_and_refuses_replay_mode(self):
+        import subprocess
+        env = {**os.environ, "FRESHPIN_MODE": "replay"}
+        root = Path(__file__).resolve().parent.parent
+        out = subprocess.run([sys.executable, "-m", "freshpin", "bench", "--models", "a/b"], cwd=root, env=env,
+                             capture_output=True, text=True, timeout=60)
+        self.assertEqual(out.returncode, 2, out.stderr)
+        self.assertIn("needs FRESHPIN_MODE=live", out.stdout)
+
+    def test_bench_questions_file_is_valid(self):
+        from freshpin import bench
+        qs = bench.load_questions()
+        self.assertEqual(len(qs), 6)
+        self.assertTrue({"live_data", "event"} <= {q["category"] for q in qs})
 
 
 class McpTests(unittest.TestCase):
