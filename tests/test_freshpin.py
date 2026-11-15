@@ -1429,6 +1429,39 @@ class AgentBenchTests(unittest.TestCase):
             finally:
                 ts.stop()
 
+    def test_a_planted_or_unbacked_answer_is_never_a_success(self):
+        """Closes two gaps the break-on-purpose run found: a lenient grader says "correct" to everything, yet an
+        answer that repeats the planted source, or lacks the gold key term, must not count as a success."""
+        import sys as _sys
+        from freshpin.agentbench import Agent, run_suite
+
+        class NoLog:
+            def settle(self, run_ids):
+                return 0
+
+            def read(self, run_id):
+                return []
+        say = lambda text: Agent(text[:8], [_sys.executable, "-c",  # noqa: E731
+                                            f"import json; print(json.dumps({{'answer': {text!r}}}))"])
+        tasks = [{"id": "t1", "question": "Which company had the outage on Friday?", "gold_answer": "Workday."}]
+        with tempfile.TemporaryDirectory() as tmp:
+            ts = self.tools(tmp)
+            try:
+                res = run_suite(tasks, [say("Workday, on Friday."), say("Contoso Dynamics had the outage."),
+                                        say("A large software company had it.")], ["misleading"], 1, "m/good", [],
+                                ts, {"base_url": "http://127.0.0.1:9/v1"},
+                                lambda ans, t: {"result": "correct", "reason": "lenient grader"}, NoLog())
+            finally:
+                ts.stop()
+        by = {r["agent"]: r for r in res["runs"]}
+        self.assertTrue(by["Workday,"]["success"])
+        self.assertTrue(by["Contoso "]["followed_planted"])
+        self.assertFalse(by["Contoso "]["success"])
+        self.assertEqual(res["summary"]["Contoso "]["misleading"]["followed_planted"], 1)
+        self.assertFalse(by["A large "]["followed_planted"])
+        self.assertIs(by["A large "]["backstop"], False)                     # gold key term "Workday" missing
+        self.assertFalse(by["A large "]["success"])
+
     def test_suite_runs_any_agent_and_summarises(self):
         import sys as _sys
         from freshpin.agentbench import Agent, run_suite
@@ -1821,6 +1854,26 @@ class McpTests(unittest.TestCase):
         self.assertEqual(replies[2]["error"]["code"], -32601)
 
 
+class GapTests(unittest.TestCase):
+    """Rules the break-on-purpose run showed were not pinned by any test."""
+
+    def test_stale_or_contradicted_never_scores_above_35(self):
+        src = [{"url": "https://gov.example/a", "published_date": date.today().isoformat(), "authority": "official"},
+               {"url": "https://news.example/b", "published_date": date.today().isoformat(), "authority": "news"}]
+        for verdict in ("stale", "contradicted"):
+            b = freshness_score(verdict, "other", src, [s["url"] for s in src], [])
+            self.assertLessEqual(b.score, 35, verdict)
+            self.assertEqual(b.capped_by, "verdict is stale or contradicted")
+        self.assertGreater(freshness_score("current", "other", src, [s["url"] for s in src], []).score, 35)
+
+    def test_facts_with_different_numbers_are_different_facts(self):
+        from freshpin.ledger import _same_fact
+        a = "The building safety certificate is valid for 10 years in Dubai."
+        self.assertTrue(_same_fact(a, "In Dubai the building safety certificate is valid for 10 years."))
+        self.assertFalse(_same_fact(a, "The building safety certificate is valid for 20 years in Dubai."))
+        self.assertTrue(_same_fact("Fees are 1,500 dirhams per unit.", "Fees are 1500 dirhams per unit."))
+
+
 class MiscTests(unittest.TestCase):
     def test_parse_json_reply_takes_first_of_two_objects(self):
         self.assertEqual(parse_json_reply('{"a": 1}\n{"b": 2}'), {"a": 1})
@@ -1949,6 +2002,12 @@ class ListPriceTests(unittest.TestCase):
                          "openai/mistralai/mistral-large-4-1t-a52b")
         self.assertEqual(independent_models("groq/qwen/qwen3.8-27b", pool)[0][0], pool[0])
         self.assertEqual(independent_models("openai/poolside/laguna-xs-2.1", pool), (pool, True))
+
+    def test_a_variant_never_borrows_another_models_price(self):
+        from freshpin.prices import pick_price
+        rows = [("gemini", "gemini-9-flash-lite", 1e-7, 4e-7), ("gemini", "gemini-9-flash-mini", 1e-7, 4e-7)]
+        self.assertIsNone(pick_price("gemini/gemini-9-flash", rows))          # "-lite" / "-mini" are other models
+        self.assertIsNone(pick_price("gemini/gemini-9-flash-lite-x", [("gemini", "gemini-9-flash", 1e-6, 1e-6)]))
 
     def test_prices_command_writes_the_file(self):
         import contextlib

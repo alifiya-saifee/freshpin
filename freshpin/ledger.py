@@ -47,7 +47,8 @@ def _now() -> str:
 
 def _fact_words(text: str) -> set[str]:
     out = set()
-    for w in re.findall(r"\w+", (text or "").casefold()):
+    text = re.sub(r"(?<=\d),(?=\d{3})", "", text or "")  # "1,500" and "1500" are the same number
+    for w in re.findall(r"\w+", text.casefold()):
         if w.isdigit() or len(w) > 2:
             for suf in ("ing", "ed", "es", "s"):
                 if w.endswith(suf) and len(w) - len(suf) >= 4:
