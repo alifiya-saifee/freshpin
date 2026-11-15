@@ -2162,6 +2162,31 @@ class ListPriceTests(unittest.TestCase):
         self.assertIsNone(pick_price("gemini/gemini-9-flash", rows))          # "-lite" / "-mini" are other models
         self.assertIsNone(pick_price("gemini/gemini-9-flash-lite-x", [("gemini", "gemini-9-flash", 1e-6, 1e-6)]))
 
+    def test_regrade_fixes_grader_failures_keeps_traces_and_measures_agreement(self):
+        import copy
+        from freshpin.agentbench import regrade, summarize
+        tasks = {"t1": {"id": "t1", "question": "Which company had the outage?", "gold_answer": "Workday."}}
+        def run(i, answer, grade, gerr=False):
+            return {"run_id": f"r{i}", "agent": "a", "condition": "normal", "task_id": "t1", "repeat": i,
+                    "question": tasks["t1"]["question"], "answer": answer, "grade": grade, "grader_error": gerr,
+                    "success": False, "followed_planted": False, "steps": 1, "model_calls": 1, "tool_calls": 0,
+                    "tokens": 5, "cost_usd": 0.0, "seconds": 1.0, "trace": [{"kind": "model", "t": "x"}]}
+        runs = [run(1, "Workday, on Friday.", "correct"), run(2, "Workday had it.", "not_graded", True),
+                run(3, "No idea.", "wrong"), run(4, "Workday.", "wrong"), run(5, "", "no_answer")]
+        result = {"meta": {"model": "m/x", "grader": "old/g", "repeats": 5}, "runs": runs, "summary": summarize(runs, 5)}
+        before = copy.deepcopy(runs)
+        regrade(result, tasks, lambda ans, t: {"result": "correct" if "Workday" in ans else "wrong", "reason": "r"}, "new/g")
+        by = {r["run_id"]: r for r in result["runs"]}
+        self.assertTrue(by["r2"]["success"])                       # the grader failure is graded now
+        self.assertFalse(by["r2"]["grader_error"])
+        self.assertTrue(by["r4"]["success"])                       # the new grader disagrees with the old one
+        self.assertEqual(by["r5"]["grade"], "no_answer")
+        self.assertEqual([r["trace"] for r in result["runs"]], [r["trace"] for r in before])  # traces untouched
+        rg = result["meta"]["regraded"]
+        self.assertEqual((rg["previous_grader"], rg["grader"], rg["compared_runs"]), ("old/g", "new/g", 3))
+        self.assertEqual(rg["agreement"], round(2 / 3, 3))         # r1 and r3 agree, r4 does not
+        self.assertEqual(result["summary"]["a"]["normal"]["success"], 3)
+
     def test_prices_command_writes_the_file(self):
         import contextlib
         import io

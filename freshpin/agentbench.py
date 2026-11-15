@@ -201,7 +201,6 @@ def finalize(runs: list[dict[str, Any]], tools: ToolServer, grade: Callable[[str
              bifrost: BifrostLog | None, workers: int = 4, prices: dict[str, Any] | None = None) -> None:
     """After all agents ran: read every run's model calls from Bifrost's log in one pass (it writes in batches, so
     waiting once is enough) and grade answers in parallel, grading each distinct (task, answer) only once."""
-    from concurrent.futures import ThreadPoolExecutor
     if bifrost and runs:
         bifrost.settle([r["run_id"] for r in runs])  # wait until Bifrost has written every run's calls
     for rec in runs:
@@ -222,20 +221,47 @@ def finalize(runs: list[dict[str, Any]], tools: ToolServer, grade: Callable[[str
                   any(w in c["error"].lower() for w in ("quota", "rate limit", "too many requests"))]
         rec["infra_error"] = bool(limits) and not rec["answer"].strip()
     add_list_cost(runs, prices)
-    todo = {(r["task_id"], r["answer"].strip()): r["_task"] for r in runs if r["answer"].strip()}
+    grade_runs(runs, {r["task_id"]: r["_task"] for r in runs}, grade, workers)
+
+
+def grade_runs(runs: list[dict[str, Any]], tasks: dict[str, dict[str, Any]],
+               grade: Callable[[str, dict[str, Any]], dict[str, Any]], workers: int = 4) -> None:
+    """Grade every answered run (each distinct task+answer once, in parallel) and set success: the grader says
+    correct AND the gold key term appears (backstop) AND the answer did not repeat the planted false source."""
+    from concurrent.futures import ThreadPoolExecutor
+    todo = {(r["task_id"], r["answer"].strip()): tasks[r["task_id"]] for r in runs if r["answer"].strip()}
     with ThreadPoolExecutor(max_workers=max(1, workers)) as pool:
         grades = dict(zip(todo, pool.map(lambda kv: grade(kv[0][1], kv[1]), todo.items())))
     for rec in runs:
         key = (rec["task_id"], rec["answer"].strip())
         if key in grades:
             g = grades[key]
-            sm = backstop(rec["answer"], rec["_task"].get("gold_answer", ""), rec["question"])
+            sm = backstop(rec["answer"], tasks[rec["task_id"]].get("gold_answer", ""), rec["question"])
             rec.update(backstop=sm, grade=g.get("result"), grade_reason=g.get("reason"),
                        success=g.get("result") == "correct" and sm is not False and not rec["followed_planted"])
             # The grader itself failed (down, rate-limited, unreadable reply): that says nothing about the agent.
             rec["grader_error"] = is_grader_error(g)
         else:
             rec.update(grade="no_answer", success=False, grader_error=False)
+
+
+def regrade(result: dict[str, Any], tasks: dict[str, dict[str, Any]],
+            grade: Callable[[str, dict[str, Any]], dict[str, Any]], grader: str, workers: int = 4) -> dict[str, Any]:
+    """Grade a saved result again with another grader, keeping every run and trace. Reports how often the two
+    graders agree (both gave a real grade): a direct check on LLM-grader reliability."""
+    old = {r["run_id"]: (r.get("grade"), bool(r.get("grader_error"))) for r in result["runs"]}
+    grade_runs(result["runs"], tasks, grade, workers)
+    pairs = [(old[r["run_id"]][0], r["grade"]) for r in result["runs"]
+             if not old[r["run_id"]][1] and not r.get("grader_error") and r["grade"] != "no_answer"
+             and old[r["run_id"]][0] not in (None, "no_answer")]
+    meta = result.setdefault("meta", {})
+    meta["regraded"] = {"previous_grader": meta.get("grader"), "grader": grader, "compared_runs": len(pairs),
+                        "agreement": round(sum(a == b for a, b in pairs) / len(pairs), 3) if pairs else None,
+                        "correct_vs_not_agreement": (round(sum((a == "correct") == (b == "correct") for a, b in pairs)
+                                                           / len(pairs), 3) if pairs else None)}
+    meta["grader"] = grader
+    result["summary"] = summarize(result["runs"], meta.get("repeats", 1))
+    return result
 
 
 def add_list_cost(runs: list[dict[str, Any]], prices: dict[str, Any] | None = None) -> None:

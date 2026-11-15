@@ -16,6 +16,8 @@ USAGE = """usage:
                                            test models on facts that change; print a freshness scorecard
   python -m freshpin agentbench [...]      benchmark AGENTS (any framework) on a task suite: repeats, failure
                                            conditions, steps/tools/tokens/$/time, step-by-step traces (see --help)
+  python -m freshpin regrade FILE --graders a,b   grade a saved agentbench result again with another grader
+                                           (keeps every trace; reports how often the two graders agree)
   python -m freshpin prices --models a,b   write bench/list-prices.json from Bifrost's pricing table (list-price $)
   python -m freshpin bench-build [--n 8]   build a fresh-events question set (gold answers + quotes) from this week's news
   python -m freshpin watch [--all]         re-check pinned facts past their half-life; alert on reopened decisions
@@ -46,6 +48,8 @@ def main(argv: list[str]) -> int:
         return watch_cmd(argv[1:])
     if cmd == "prices":
         return prices_cmd(argv[1:])
+    if cmd == "regrade":
+        return regrade_cmd(argv[1:])
     app = FreshPin(settings())
     if cmd == "check" and len(argv) > 1:
         print(json.dumps(app.check(" ".join(argv[1:])), indent=2, ensure_ascii=False))
@@ -376,6 +380,62 @@ def agentbench_cmd(args: list[str]) -> int:
     print()
     print(leaderboard_markdown(result))
     print(f"Saved: {path}\nOpen the comparison page: python -m freshpin serve, then http://127.0.0.1:{s.port}/bench")
+    return 0
+
+
+def regrade_cmd(args: list[str]) -> int:
+    """Grade a saved agentbench result again (e.g. when its grader was down), and measure grader agreement."""
+    import argparse
+    import time as _time
+    from pathlib import Path
+
+    from . import bench
+    from .agentbench import leaderboard_markdown, regrade
+    from .benchbuild import make_gold_judge
+
+    ap = argparse.ArgumentParser(prog="python -m freshpin regrade")
+    ap.add_argument("file", help="a saved agentbench-*.json result")
+    ap.add_argument("--graders", required=True, help="grader models in order; the first from another family grades")
+    ap.add_argument("--questions", default="", help="the task suite (default: the one named in the result)")
+    a = ap.parse_args(args)
+    src = Path(a.file)
+    if not src.exists():
+        print(f"No such file: {src}")
+        return 2
+    result = json.loads(src.read_text(encoding="utf-8"))
+    if "runs" not in result:
+        print("Not an agentbench result (no runs).")
+        return 2
+    meta = result.get("meta", {})
+    qfile = Path(a.questions) if a.questions else next(
+        (p for p in (bench.RESULTS_DIR.parent / "suites" / meta.get("questions_file", ""),
+                     bench.RESULTS_DIR.parent / meta.get("questions_file", "")) if p.is_file()), None)
+    if not qfile or not qfile.exists():
+        print("Can't find the task suite: pass --questions FILE.")
+        return 2
+    tasks = {q["id"]: q for q in bench.load_questions(qfile)}
+    missing = sorted({r["task_id"] for r in result["runs"]} - set(tasks))
+    if missing:
+        print(f"The suite has no gold answers for: {', '.join(missing)}")
+        return 2
+    s = settings()
+    if s.mode != "live":
+        print("regrade calls grader models, so it needs FRESHPIN_MODE=live (Bifrost).")
+        return 2
+    judges, independent = bench.independent_models(meta.get("model", ""), [m.strip() for m in a.graders.split(",") if m.strip()])
+    if not independent:
+        print(f"warning: no grader outside the model's family ({meta.get('model')}); grading anyway")
+    app = FreshPin(s)
+    print(f"Regrading {len(result['runs'])} runs with {judges[0]} (was {meta.get('grader')})...", flush=True)
+    regrade(result, tasks, make_gold_judge(app.chat, judges, bench.admits_live_limits), judges[0])
+    # agentbench-<digits>.json, so the /bench page lists it (meta.regraded says what changed)
+    out = bench.RESULTS_DIR / f"agentbench-{_time.strftime('%Y%m%d-%H%M%S')}.json"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(result, indent=1, ensure_ascii=False), encoding="utf-8")
+    out.with_suffix(".md").write_text(leaderboard_markdown(result), encoding="utf-8")
+    print(leaderboard_markdown(result))
+    print(f"Grader agreement: {result['meta']['regraded']}")
+    print(f"Saved: {out}")
     return 0
 
 
