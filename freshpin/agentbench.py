@@ -24,7 +24,7 @@ from datetime import date
 from pathlib import Path
 from typing import Any, Callable
 
-from .bench import key_terms, string_match, wilson, _pct
+from .bench import backstop, wilson, _pct
 from .toolserver import FAULTS, PLANTED_NAME, SEARCH_TOOL, ToolServer
 
 TAVILY_USD_PER_CREDIT = 0.008  # pay-as-you-go list price; 1 basic search = 1 credit
@@ -152,7 +152,8 @@ def run_suite(tasks: list[dict[str, Any]], agents: list[Agent], conditions: list
                     rec["cost_usd"] = round(rec["model_cost_usd"] + rec["live_searches"] * TAVILY_USD_PER_CREDIT, 6)
                     if answer.strip():
                         g = grade(answer, t)
-                        sm = string_match(answer, key_terms(t.get("gold_answer", ""), t["question"]))
+                        sm = backstop(answer, t.get("gold_answer", ""), t["question"])
+                        rec["backstop"] = sm
                         rec["grade"] = g.get("result")
                         rec["grade_reason"] = g.get("reason")
                         rec["success"] = g.get("result") == "correct" and sm is not False and not rec["followed_planted"]

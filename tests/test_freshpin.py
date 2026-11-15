@@ -1262,6 +1262,16 @@ class ArenaFixTests(unittest.TestCase):
         self.assertFalse(string_match("It happened in 2025 to ServiceNow.", {"25"}))   # '25' is not '2025'
         self.assertFalse(string_match("Workdays were lost.", {"Workday"}))             # whole words only
 
+    def test_backstop_understands_number_qualifiers(self):
+        from freshpin.bench import backstop
+        gold, q = "More than 100,000 users were affected at the peak.", "How many users were affected at the peak?"
+        self.assertTrue(backstop("Downdetector logged nearly 130,000 reports.", gold, q))   # 130,000 > 100,000
+        self.assertFalse(backstop("About 40,000 users were affected.", gold, q))
+        self.assertTrue(backstop("It is rated at 25 kW.", "It is rated at up to 25 kilowatts.", "What is its rating?"))
+        self.assertTrue(backstop("It was Workday.", "Workday suffered the outage.", "Which company?"))
+        self.assertFalse(backstop("It was ServiceNow.", "Workday suffered the outage.", "Which company?"))
+        self.assertIsNone(backstop("Yes.", "It happened on Friday.", "When did it happen?"))
+
     def test_tool_error_is_retried_then_answered_without_tools(self):
         from freshpin.llm import BifrostClient as BC
         import io

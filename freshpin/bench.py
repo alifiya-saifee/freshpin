@@ -410,6 +410,48 @@ def string_match(answer: str, terms: set[str]) -> bool | None:
     return False
 
 
+_QUAL = [(re.compile(r"(more than|over|above|at least|exceeding|upwards of)\s*$", re.I), ">="),
+         (re.compile(r"(fewer than|less than|under|below|up to|at most)\s*$", re.I), "<="),
+         (re.compile(r"(nearly|almost|about|around|roughly|approximately|some|close to|~)\s*$", re.I), "~")]
+
+
+def _numbers(text: str) -> list[tuple[float, str]]:
+    """Numbers with the qualifier written before them: 'more than 100,000' -> (100000, '>=')."""
+    out = []
+    for m in re.finditer(r"\d[\d,]*(?:\.\d+)?", text or ""):
+        raw = m.group(0).rstrip(",")
+        try:
+            v = float(raw.replace(",", ""))
+        except ValueError:
+            continue
+        if re.fullmatch(r"(19|20)\d\d", raw):
+            continue  # years identify nothing
+        before = (text or "")[max(0, m.start() - 25):m.start()]
+        op = next((o for pat, o in _QUAL if pat.search(before)), "=")
+        out.append((v, op))
+    return out
+
+
+def backstop(answer: str, gold: str, question: str) -> bool | None:
+    """Deterministic check next to the LLM grader. True if a distinguishing NAME from the gold answer appears as a
+    whole word, or a gold NUMBER is satisfied (130,000 satisfies 'more than 100,000'; 'about 25' accepts 20-30).
+    None when the gold answer has nothing distinguishing to check."""
+    names = {t for t in key_terms(gold, question) if not re.fullmatch(r"[\d,.]+", t)}
+    if names and string_match(answer, names):
+        return True
+    q_nums = {v for v, _ in _numbers(question)}
+    gold_nums = [(v, op) for v, op in _numbers(gold) if v not in q_nums]
+    ans = [v for v, _ in _numbers(answer)]
+    for v, op in gold_nums:
+        for a in ans:
+            if (op == ">=" and a >= v) or (op == "<=" and a <= v) or (op == "~" and abs(a - v) <= 0.25 * v) \
+                    or (op == "=" and abs(a - v) <= 1e-9 * max(1.0, v)):
+                return True
+    if not names and not gold_nums:
+        return None
+    return False
+
+
 def _pct(xs: list[float], p: float) -> float | None:
     if not xs:
         return None
@@ -467,7 +509,7 @@ def run_arena(questions: list[dict[str, Any]], models: list[str], arms: list[str
                     row["error"] = f"{type(exc).__name__}: {exc}"[:300]
                 if q.get("gold_answer") and "answer" in row:
                     row["gold"] = judge(row["answer"], q)
-                    row["string_match"] = string_match(row["answer"], key_terms(q["gold_answer"], q["question"]))
+                    row["string_match"] = backstop(row["answer"], q["gold_answer"], q["question"])
                     g = row["gold"].get("result")
                     # LLM grader and string backstop must both agree for "correct".
                     row["correct"] = g == "correct" and row["string_match"] is not False
