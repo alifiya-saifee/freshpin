@@ -14,7 +14,8 @@ The task JSON (the contract):
     {"task_id", "run_id", "question", "today",
      "model": "provider/model", "fallback_models": [...],
      "llm": {"base_url": ".../v1", "headers": {...}},        # OpenAI-compatible; headers tag calls with run_id
-     "tools": {"base_url": "http://127.0.0.1:PORT", "headers": {"X-Run-Id": ...}, "spec": [ ...OpenAI tools... ]}}
+     "tools": {"base_url": "http://127.0.0.1:PORT", "mcp_url": ".../mcp",   # plain HTTP, or the same tool over MCP
+               "headers": {"X-Run-Id": ...}, "spec": [ ...OpenAI tools... ]}}
 Output: {"answer": "...", "notes": [...]}
 """
 from __future__ import annotations

@@ -2,6 +2,8 @@
 
     POST /tools/search_web   {"query": "..."}   header X-Run-Id: <run id>
     GET  /tools              the tool list (OpenAI function format)
+    POST /mcp                the same tool over MCP (JSON-RPC 2.0, streamable HTTP with JSON replies), for frameworks
+                             that take tools from an MCP server; same header, same faults, same per-run log
 
 Why it exists:
   * Identical evidence: each query is searched live ONCE (Tavily via FreshPin) and recorded; repeats and failure
@@ -122,6 +124,21 @@ class ToolServer:
                     self._send(404, {"error": "not found"})
 
             def do_POST(self):  # noqa: N802
+                if self.path.split("?")[0] == "/mcp":
+                    try:
+                        msg = json.loads(self.rfile.read(int(self.headers.get("Content-Length") or 0)) or b"{}")
+                    except json.JSONDecodeError:
+                        self._send(400, {"jsonrpc": "2.0", "id": None,
+                                         "error": {"code": -32700, "message": "parse error"}})
+                        return
+                    reply = server.handle_mcp(self.headers.get("X-Run-Id", ""), msg)
+                    if reply is None:  # a notification: accepted, no body
+                        self.send_response(202)
+                        self.send_header("Content-Length", "0")
+                        self.end_headers()
+                    else:
+                        self._send(200, reply)
+                    return
                 if self.path.split("?")[0] != "/tools/search_web":
                     self._send(404, {"error": "unknown tool"})
                     return
@@ -160,6 +177,31 @@ class ToolServer:
 
     def calls(self, run_id: str) -> list[dict[str, Any]]:
         return list(self.runs.get(run_id, {}).get("calls", []))
+
+    # ---- MCP: the same tool for MCP clients
+    def handle_mcp(self, run_id: str, msg: dict[str, Any]) -> dict[str, Any] | None:
+        """One JSON-RPC message from an MCP client. Returns None for notifications."""
+        method, mid = msg.get("method"), msg.get("id")
+        if mid is None:
+            return None
+        fn = SEARCH_TOOL["function"]
+        if method == "initialize":
+            result: Any = {"protocolVersion": (msg.get("params") or {}).get("protocolVersion") or "2025-06-18",
+                           "capabilities": {"tools": {"listChanged": False}},
+                           "serverInfo": {"name": "freshpin-bench-tools", "version": "1"}}
+        elif method == "ping":
+            result = {}
+        elif method == "tools/list":
+            result = {"tools": [{"name": fn["name"], "description": fn["description"], "inputSchema": fn["parameters"]}]}
+        elif method == "tools/call":
+            params = msg.get("params") or {}
+            if params.get("name") != fn["name"]:
+                return {"jsonrpc": "2.0", "id": mid, "error": {"code": -32602, "message": f"unknown tool: {params.get('name')}"}}
+            code, out = self.handle_search(run_id, str((params.get("arguments") or {}).get("query", "")))
+            result = {"content": [{"type": "text", "text": json.dumps(out, ensure_ascii=False)}], "isError": code != 200}
+        else:
+            return {"jsonrpc": "2.0", "id": mid, "error": {"code": -32601, "message": f"method not found: {method}"}}
+        return {"jsonrpc": "2.0", "id": mid, "result": result}
 
     # ---- the tool
     def handle_search(self, run_id: str, query: str) -> tuple[int, dict[str, Any]]:

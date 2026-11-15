@@ -1,0 +1,31 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python: ["3.9", "3.12", "3.14"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      # No keys and no network services: FreshPin runs in replay mode, agent tests use a fake gateway.
+      # The OpenAI Agents SDK agent test is skipped here (it needs the SDK installed in its own venv).
+      - name: Unit tests (standard library only)
+        env:
+          FRESHPIN_MODE: replay
+        run: python -W error::ResourceWarning -m unittest discover -s tests -v

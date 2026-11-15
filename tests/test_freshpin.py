@@ -1483,6 +1483,38 @@ class AgentBenchTests(unittest.TestCase):
         root = Path(__file__).resolve().parent.parent
         res = self._run_outside(Agent("sdk", [py, str(root / "examples/agents/openai_agents_sdk_agent.py")]))
         self._assert_behaves(res, "sdk")
+        res = self._run_outside(Agent("sdk_mcp", [py, str(root / "examples/agents/openai_agents_sdk_agent.py"), "--mcp"]))
+        self._assert_behaves(res, "sdk_mcp")                       # the same tool, taken over MCP
+
+    def test_tool_server_speaks_mcp_with_the_same_faults_and_log(self):
+        import urllib.request
+        with tempfile.TemporaryDirectory() as tmp:
+            ts = self.tools(tmp)
+            try:
+                def rpc(msg, run="r1"):
+                    req = urllib.request.Request(ts.url + "/mcp", data=json.dumps(msg).encode(), method="POST",
+                                                 headers={"Content-Type": "application/json", "X-Run-Id": run})
+                    with urllib.request.urlopen(req, timeout=10) as r:
+                        return r.status, (json.loads(r.read() or b"null"))
+                ts.set_run("r1", "normal")
+                ts.set_run("r2", "tool_error")
+                code, init = rpc({"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {"protocolVersion": "2025-06-18"}})
+                self.assertEqual((code, init["result"]["protocolVersion"]), (200, "2025-06-18"))
+                self.assertEqual(rpc({"jsonrpc": "2.0", "method": "notifications/initialized"})[0], 202)
+                tools = rpc({"jsonrpc": "2.0", "id": 2, "method": "tools/list"})[1]["result"]["tools"]
+                self.assertEqual([t["name"] for t in tools], ["search_web"])
+                self.assertIn("query", tools[0]["inputSchema"]["properties"])
+                call = {"jsonrpc": "2.0", "id": 3, "method": "tools/call", "params": {"name": "search_web", "arguments": {"query": "workday outage"}}}
+                ok = rpc(call)[1]["result"]
+                self.assertFalse(ok["isError"])
+                self.assertIn("Workday", json.loads(ok["content"][0]["text"])["results"][0]["title"])
+                broken = rpc(call, run="r2")[1]["result"]                      # the run's fault applies over MCP too
+                self.assertTrue(broken["isError"])
+                self.assertEqual([c["status"] for c in ts.calls("r1")] + [c["status"] for c in ts.calls("r2")], [200, 503])
+                self.assertEqual(rpc({"jsonrpc": "2.0", "id": 4, "method": "tools/call", "params": {"name": "nope"}})[1]["error"]["code"], -32602)
+                self.assertEqual(rpc({"jsonrpc": "2.0", "id": 5, "method": "nope"})[1]["error"]["code"], -32601)
+            finally:
+                ts.stop()
 
     def test_misleading_instruction_in_the_task_and_a_slow_tool(self):
         import contextlib

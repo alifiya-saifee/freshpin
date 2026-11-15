@@ -172,7 +172,8 @@ def run_suite(tasks: list[dict[str, Any]], agents: list[Agent], conditions: list
                             "today": date.today().isoformat(), "model": use_model, "fallback_models": fbs,
                             "llm": {"base_url": llm["base_url"],
                                     "headers": {**llm.get("headers", {}), "x-bf-session-id": run_id}},
-                            "tools": {"base_url": tools.url, "headers": {"X-Run-Id": run_id},
+                            "tools": {"base_url": tools.url, "mcp_url": tools.url + "/mcp",
+                                      "headers": {"X-Run-Id": run_id},
                                       "spec": [SEARCH_TOOL]}}
                     if pace_s and runs:
                         time.sleep(pace_s)  # stay inside free-tier rate limits
