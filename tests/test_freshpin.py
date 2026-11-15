@@ -200,6 +200,69 @@ class BifrostClientTests(unittest.TestCase):
             BifrostClient(self.url).chat_json("x", ["good/model"], "s", "u", b)
 
 
+class McpTests(unittest.TestCase):
+    """The MCP server, driven the way an AI assistant drives it: JSON lines in, JSON lines out."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.app = replay_app(self.tmp.name)
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def talk(self, *msgs):
+        import io
+        from freshpin.mcp import run
+        out = io.StringIO()
+        run(io.StringIO("".join(json.dumps(m) + "\n" for m in msgs)), out, lambda: self.app)
+        return [json.loads(line) for line in out.getvalue().splitlines()]
+
+    def test_initialize_and_list_tools(self):
+        replies = self.talk(
+            {"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {"protocolVersion": "2025-06-18"}},
+            {"jsonrpc": "2.0", "method": "notifications/initialized"},
+            {"jsonrpc": "2.0", "id": 2, "method": "tools/list"})
+        self.assertEqual(len(replies), 2)  # the notification gets no reply
+        self.assertEqual(replies[0]["result"]["serverInfo"]["name"], "freshpin")
+        names = [t["name"] for t in replies[1]["result"]["tools"]]
+        self.assertEqual(names, ["check_answer", "get_ledger"])
+        self.assertNotIn("approve", " ".join(names))  # only people re-approve
+
+    def test_check_answer_reports_stale_claims_and_reopens(self):
+        self.app.load_sample("dubai_building_law")
+        answer = self.app.samples()["dubai_building_law"]["answer"]
+        (reply,) = self.talk({"jsonrpc": "2.0", "id": 3, "method": "tools/call",
+                              "params": {"name": "check_answer", "arguments": {"answer": answer}}})
+        res = reply["result"]
+        self.assertFalse(res["isError"])
+        text = res["content"][0]["text"]
+        self.assertIn("2 stale or contradicted", text)
+        self.assertIn("Q-112", text)
+        self.assertIn("PB-LEASE-3", text)
+        self.assertIn("Now: Under Dubai Law No. 3 of 2026", text)
+        states = {d["id"]: d["status"] for d in self.app.ledger.state()["decisions"]}
+        self.assertEqual(states["Q-112"], "reopened")
+
+    def test_unverified_claims_are_not_called_stale(self):
+        # Replay has no recording for this answer, so the AI is "down": the claim must read UNVERIFIED.
+        (reply,) = self.talk({"jsonrpc": "2.0", "id": 7, "method": "tools/call", "params": {
+            "name": "check_answer", "arguments": {"answer": "The Acme Widget API is at version 9 and costs $5 a month."}}})
+        text = reply["result"]["content"][0]["text"]
+        self.assertIn("UNVERIFIED", text)
+        self.assertIn("0 stale or contradicted", text)
+        self.assertNotIn("Do not repeat the stale claims", text)
+
+    def test_errors_do_not_crash_the_server(self):
+        replies = self.talk(
+            {"jsonrpc": "2.0", "id": 4, "method": "tools/call", "params": {"name": "check_answer", "arguments": {"answer": "  "}}},
+            {"jsonrpc": "2.0", "id": 5, "method": "tools/call", "params": {"name": "delete_everything", "arguments": {}}},
+            {"jsonrpc": "2.0", "id": 6, "method": "no/such/method"})
+        self.assertTrue(replies[0]["result"]["isError"])
+        self.assertIn("empty", replies[0]["result"]["content"][0]["text"])
+        self.assertEqual(replies[1]["error"]["code"], -32602)
+        self.assertEqual(replies[2]["error"]["code"], -32601)
+
+
 class MiscTests(unittest.TestCase):
     def test_parse_json_reply_handles_prose(self):
         self.assertEqual(parse_json_reply('Sure! {"a": 1} hope that helps'), {"a": 1})

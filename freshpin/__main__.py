@@ -1,4 +1,4 @@
-"""Command line:  python -m freshpin serve | check "answer text" | sample <id>"""
+"""Command line:  python -m freshpin serve | mcp | check "answer text" | sample <id>"""
 from __future__ import annotations
 
 import json
@@ -10,6 +10,7 @@ from .server import serve
 
 USAGE = """usage:
   python -m freshpin serve                 start the web app (default http://127.0.0.1:8787)
+  python -m freshpin mcp                   run as an MCP server (stdio) for AI assistants
   python -m freshpin check "answer text"   check an answer and print the JSON report
   python -m freshpin sample <id>           load a sample ledger, check its answer, print a summary
 """
@@ -22,6 +23,10 @@ def main(argv: list[str]) -> int:
     cmd = argv[0]
     if cmd == "serve":
         serve()
+        return 0
+    if cmd == "mcp":
+        from .mcp import run
+        run()
         return 0
     app = FreshPin(settings())
     if cmd == "check" and len(argv) > 1:
