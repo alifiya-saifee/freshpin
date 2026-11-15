@@ -31,6 +31,7 @@ tr.run{cursor:pointer}tr.run:hover{background:var(--panel2)}tr.run.sel{backgroun
 .pill{display:inline-block;font-size:11px;font-weight:700;padding:1px 7px;border-radius:6px;background:#1b2230;color:var(--muted);margin-left:4px}
 .pill.fault{background:#3a2f12;color:var(--warn)}
 .empty{color:var(--muted);padding:10px 0}
+a{color:var(--accent)}
 .grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:16px}
 @media (max-width:1000px){.grid2{grid-template-columns:1fr}}
 </style>
@@ -96,7 +97,7 @@ function renderRuns(agent, cond){
   const rs = DATA.runs.filter(r=>r.agent===agent && r.condition===cond);
   $("#runs").innerHTML = `<div class="meta" style="margin-bottom:6px"><b>${esc(agent)}</b> · ${esc(CLABEL[cond])}</div><table><tr><th>task</th><th>rep</th><th>result</th><th>steps</th><th>tools</th><th>tokens</th><th>$</th><th>s</th></tr>`+
     rs.map((r,i)=>`<tr class="run" data-i="${DATA.runs.indexOf(r)}"><td>${esc(r.task_id)}</td><td>${r.repeat}</td>
-      <td class="${r.success?"ok":"bad"}">${r.success?"✓ correct":esc(r.grade||"fail")}${r.followed_planted?' <span class="pill fault">planted</span>':""}</td>
+      <td class="${r.success?"ok":"bad"}">${r.success?"✓ correct":(r.grade==="correct"?"✗ check failed":esc(r.grade||"fail"))}${r.followed_planted?' <span class="pill fault">planted</span>':""}</td>
       <td>${r.steps}</td><td>${r.tool_calls}</td><td>${r.tokens}</td><td>${r.cost_usd}</td><td>${r.seconds}</td></tr>`).join("")+"</table>";
   document.querySelectorAll("tr.run").forEach(tr=>tr.onclick=()=>{ document.querySelectorAll("tr.run.sel").forEach(x=>x.classList.remove("sel")); tr.classList.add("sel"); renderTrace(DATA.runs[+tr.dataset.i]); });
 }
@@ -117,7 +118,7 @@ function renderTrace(r){
   }).join("") || '<div class="empty">No steps recorded (the agent made no tagged model or tool calls).</div>';
   $("#trace").innerHTML = `<div class="meta"><b>${esc(r.agent)}</b> · ${esc(CLABEL[r.condition])} · ${esc(r.task_id)} · repeat ${r.repeat} · run <code>${esc(r.run_id)}</code></div>
     <p><b>Question:</b> ${esc(r.question)}</p>${steps}
-    <p><b>Answer</b> <span class="${r.success?"ok":"bad"}">${r.success?"✓ correct":"✗ "+esc(r.grade)}</span></p><div class="answer">${esc(r.answer||"(no answer)")}</div>
+    <p><b>Answer</b> <span class="${r.success?"ok":"bad"}">${r.success?"✓ correct":(r.grade==="correct"?(r.followed_planted?"✗ repeated the planted false source":"✗ grader said correct, but the key name/number check failed"):"✗ "+esc(r.grade))}</span></p><div class="answer">${esc(r.answer||"(no answer)")}</div>
     ${r.grade_reason?`<p class="small">Grader: ${esc(r.grade_reason)}</p>`:""}
     ${r.agent_error?`<p class="bad small">Agent error: ${esc(r.agent_error)}</p>`:""}
     ${(r.agent_notes||[]).length?`<p class="small">Agent notes: ${r.agent_notes.map(esc).join(" · ")}</p>`:""}`;
