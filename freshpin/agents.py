@@ -117,8 +117,8 @@ def main(argv: list[str]) -> int:
     if not argv or argv[0] not in STRATEGIES:
         print(json.dumps({"error": f"usage: python -m freshpin.agents {{{'|'.join(STRATEGIES)}}} < task.json"}))
         return 2
-    task = json.loads(sys.stdin.read())
     try:
+        task = json.loads(sys.stdin.read())
         out = STRATEGIES[argv[0]](task)
     except Exception as exc:  # noqa: BLE001 - an agent reports its own failure in the contract
         out = {"answer": "", "error": f"{type(exc).__name__}: {exc}"[:300]}

@@ -34,6 +34,11 @@ tr.run{cursor:pointer}tr.run:hover{background:var(--panel2)}tr.run.sel{backgroun
 a{color:var(--accent)}
 .grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:16px}
 @media (max-width:1000px){.grid2{grid-template-columns:1fr}}
+#board,#runs{overflow-x:auto;-webkit-overflow-scrolling:touch}
+#board table{min-width:560px}
+#file{max-width:calc(100vw - 32px)}
+.answer,#trace{overflow-wrap:anywhere}
+@media (max-width:600px){main{padding:12px 16px}}
 </style>
 </head>
 <body>

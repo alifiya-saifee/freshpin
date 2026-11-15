@@ -423,7 +423,19 @@ def bench_cmd(args: list[str]) -> int:
     a = ap.parse_args(args)
     if a.show:
         import json as _json
-        saved = bench.rescore(_json.loads(Path(a.show).read_text(encoding="utf-8")))
+        saved = _json.loads(Path(a.show).read_text(encoding="utf-8"))
+        if "runs" in saved and "summary" in saved:          # an agentbench result
+            from .agentbench import leaderboard_markdown, summarize
+            saved["summary"] = summarize(saved["runs"], saved.get("meta", {}).get("repeats", 1))
+            print(leaderboard_markdown(saved))
+            return 0
+        if "arms" in saved:                                 # an agent-arena result: re-score with the current rules
+            for m in saved["models"].values():
+                m["scorecard"] = {arm: bench.arena_scorecard(m["rows"][arm]) for arm in saved["arms"]}
+                m["paired"] = bench.paired_tests(m["rows"], saved["arms"])
+            print(bench.arena_markdown(saved))
+            return 0
+        saved = bench.rescore(saved)
         bench.print_table(saved)
         bench.print_details(saved)
         return 0

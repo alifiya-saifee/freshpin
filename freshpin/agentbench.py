@@ -81,6 +81,39 @@ class BifrostLog:
             time.sleep(1.5)
         return rows
 
+    def settle(self, run_ids: list[str], quiet_s: float = 6.0, max_s: float = 45.0, poll_s: float = 1.5) -> int:
+        """Wait until Bifrost has finished writing: the number of logged calls for ALL these runs stays the same for
+        quiet_s seconds (Bifrost writes in batches, so one stable pair of reads is not enough). Returns the count."""
+        start = time.monotonic()
+        last, stable_since = -1, time.monotonic()
+        while True:
+            n = self._count(run_ids)
+            now = time.monotonic()
+            if n != last:
+                last, stable_since = n, now
+            elif n > 0 and now - stable_since >= quiet_s:
+                return n
+            if now - start >= max_s:
+                return n
+            time.sleep(poll_s)
+
+    def _count(self, run_ids: list[str]) -> int:
+        if not run_ids:
+            return 0
+        try:
+            db = sqlite3.connect(f"file:{self.db_path}?mode=ro", uri=True, timeout=5)
+            try:
+                total = 0
+                for i in range(0, len(run_ids), 500):
+                    chunk = run_ids[i:i + 500]
+                    total += db.execute(f"SELECT COUNT(*) FROM logs WHERE session_id IN ({','.join('?' * len(chunk))})",
+                                        chunk).fetchone()[0]
+                return total
+            finally:
+                db.close()
+        except sqlite3.Error:
+            return 0
+
     def read(self, run_id: str) -> list[dict[str, Any]]:
         """One read of a run's model calls, without waiting."""
         return self._read(run_id)
@@ -166,7 +199,7 @@ def finalize(runs: list[dict[str, Any]], tools: ToolServer, grade: Callable[[str
     waiting once is enough) and grade answers in parallel, grading each distinct (task, answer) only once."""
     from concurrent.futures import ThreadPoolExecutor
     if bifrost and runs:
-        bifrost.calls(runs[-1]["run_id"])  # waits until the log for the last run has settled
+        bifrost.settle([r["run_id"] for r in runs])  # wait until Bifrost has written every run's calls
     for rec in runs:
         model_calls = bifrost.read(rec["run_id"]) if bifrost else []
         tool_calls = tools.calls(rec["run_id"])

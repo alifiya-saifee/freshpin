@@ -231,6 +231,11 @@ class Ledger:
             raise KeyError(did)
         if not by.strip():
             raise ValueError("an approver name is required")
+        if d["status"] == "approved" and all(
+                p["fact_version"] == self.current_fact(p["fact_key"])["version"]
+                for p in self.db.execute("SELECT * FROM pins WHERE decision_id=?", (did,)).fetchall()):
+            # Nothing changed since the last approval: don't overwrite who approved it.
+            raise ValueError("already approved on the current facts; nothing to re-approve")
         pins = {}
         hashes = {}
         for p in self.db.execute("SELECT fact_key FROM pins WHERE decision_id=?", (did,)).fetchall():

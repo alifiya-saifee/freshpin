@@ -98,6 +98,14 @@ class LedgerTests(unittest.TestCase):
         self.assertEqual(d["status"], "approved")
         self.assertEqual(d["pins"][0]["pinned_version"], 2)
         self.assertFalse(d["pins"][0]["outdated"])
+        with self.assertRaises(ValueError):                 # a second approval on the same facts is refused...
+            self.l.approve("D1", "Mallory", "overwrite")
+        self.assertEqual(self.l.state()["decisions"][0]["approved_by"], "Bob")   # ...so the approver stays Bob
+
+    def test_at_risk_decision_can_still_be_confirmed(self):
+        self.l.record_check(self._claim("unverifiable", "check", 45))
+        self.l.approve("D1", "Bob", "checked by hand")      # at_risk, not approved: a person may confirm it
+        self.assertEqual(self.l.state()["decisions"][0]["status"], "approved")
 
 
 class DebateFixTests(unittest.TestCase):
@@ -1103,6 +1111,7 @@ class HardeningTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             app = replay_app(tmp)
             app.load_sample("dubai_building_law")
+            app.check(app.samples()["dubai_building_law"]["answer"])  # reopens Q-112, so there is something to approve
             httpd = ThreadingHTTPServer(("127.0.0.1", 0), make_handler(app))
             threading.Thread(target=httpd.serve_forever, daemon=True).start()
             base = f"http://127.0.0.1:{httpd.server_port}"
@@ -1122,6 +1131,7 @@ class HardeningTests(unittest.TestCase):
                 self.assertEqual(post("/api/load_sample", {"id": "dubai_building_law"}, origin="https://evil.example"), 403)
                 self.assertEqual(post("/api/approve", {"id": "Q-112", "by": "Ann"}), 400)          # no ack
                 self.assertEqual(post("/api/approve", {"id": "Q-112", "by": "Ann", "ack": True}), 200)
+                self.assertEqual(post("/api/approve", {"id": "Q-112", "by": "Eve", "ack": True}), 400)  # no overwrite
                 self.assertEqual(post("/api/load_sample", {"id": "dubai_building_law"}, origin=base), 200)
             finally:
                 httpd.shutdown()
@@ -1425,6 +1435,9 @@ class AgentBenchTests(unittest.TestCase):
         root = Path(__file__).resolve().parent.parent
 
         class FakeLog:
+            def settle(self, run_ids):
+                return len(run_ids)
+
             def read(self, run_id):
                 return self.calls(run_id)
 
@@ -1481,6 +1494,26 @@ class AgentBenchTests(unittest.TestCase):
         for bad in ("../.env", "agentbench-1.json/../../x", "bench-1.json", "/etc/passwd"):
             self.assertIsNone(bench_file(bad))
 
+    def test_bench_show_reads_every_result_format(self):
+        """bench --show used to crash on arena and agentbench files; it must print all three formats."""
+        import contextlib
+        import io
+        from freshpin.__main__ import main
+        root = Path(__file__).resolve().parent.parent
+        arena = {"run_on": "2026-11-15", "arms": ["bare", "agent"], "models": {"m/x": {"rows": {
+            "bare": [{"id": "q1", "gold": {"result": "wrong"}, "correct": False, "tokens": 10, "latency_s": 1.0}],
+            "agent": [{"id": "q1", "gold": {"result": "correct"}, "correct": True, "chose_to_search": True,
+                       "tool_calls": [{}], "tokens": 30, "latency_s": 2.0}]}}}}
+        with tempfile.TemporaryDirectory() as tmp:
+            f = Path(tmp) / "arena.json"
+            f.write_text(json.dumps(arena))
+            for path, want in ((f, "| agent | 1 | 1 | 100%"),
+                               (root / "bench/samples/agentbench-20261115-155950.json", "| tool_agent | normal | 100%")):
+                out = io.StringIO()
+                with contextlib.redirect_stdout(out):
+                    self.assertEqual(main(["bench", "--show", str(path)]), 0)
+                self.assertIn(want, out.getvalue())
+
     def test_committed_sample_wins_over_a_local_result_of_the_same_name(self):
         from freshpin import server
         with tempfile.TemporaryDirectory() as tmp:
@@ -1519,6 +1552,38 @@ class AgentBenchTests(unittest.TestCase):
             self.assertEqual(len(log.read("run-2")), 2)
             self.assertEqual(log.read("run-3"), [])                                          # untagged rows never leak
 
+    def test_settle_waits_for_a_late_bifrost_batch(self):
+        """Bifrost writes its log in batches. A run's second call landing ~2.5 s late must still be counted
+        (the old wait stopped after two equal reads 1.5 s apart and under-counted the last run)."""
+        import sqlite3 as _sq
+        from freshpin.agentbench import BifrostLog
+        with tempfile.TemporaryDirectory() as tmp:
+            db = Path(tmp) / "logs.db"
+            con = _sq.connect(db)
+            con.execute("CREATE TABLE logs (timestamp, provider, model, status, latency, token_usage, cost, "
+                        "fallback_index, error_details, session_id)")
+            row = "INSERT INTO logs VALUES ('t', 'p', 'm', 'success', 1, '{}', 0, 0, NULL, ?)"
+            con.execute(row, ("run-a",))
+            con.commit()
+            con.close()
+
+            def late():
+                import time as _t
+                _t.sleep(2.5)
+                c2 = _sq.connect(db)
+                c2.execute(row, ("run-b",))
+                c2.commit()
+                c2.close()
+            th = threading.Thread(target=late)
+            th.start()
+            log = BifrostLog(db)
+            n = log.settle(["run-a", "run-b"], quiet_s=3.0, max_s=15, poll_s=0.5)
+            th.join()
+            self.assertEqual(n, 2)
+            self.assertEqual(len(log.read("run-b")), 1)
+            self.assertEqual(log.settle([], quiet_s=0.1, max_s=0.5, poll_s=0.1), 0)          # nothing to wait for
+            self.assertEqual(BifrostLog(Path(tmp) / "missing.db").settle(["x"], quiet_s=0.1, max_s=0.5, poll_s=0.1), 0)
+
     def test_invoke_turns_bad_agents_into_results(self):
         import sys as _sys
         from freshpin.agentbench import Agent, invoke
@@ -1535,6 +1600,22 @@ class AgentBenchTests(unittest.TestCase):
                         {"question": "q"})
         self.assertEqual(out, {"answer": "Q"})                        # the LAST stdout line is the answer
         self.assertEqual(invoke(Agent("none"), {})[0]["answer"], "")
+
+    def test_every_agent_answers_in_the_contract_on_broken_input(self):
+        import subprocess
+        import sys as _sys
+        root = Path(__file__).resolve().parent.parent
+        dead = json.dumps({"question": "q", "today": "2026-11-15", "model": "m", "fallback_models": ["m2"],
+                           "llm": {"base_url": "http://127.0.0.1:9/v1"}, "tools": {"base_url": "http://127.0.0.1:9"}})
+        cmds = [[_sys.executable, "-m", "freshpin.agents", s] for s in ("bare", "search_first", "tool_agent")] + \
+               [[_sys.executable, str(root / "examples" / "agents" / "reflect_agent.py")]]
+        for cmd in cmds:
+            for inp in ("", "not json", "{}", "[1]", dead):
+                p = subprocess.run(cmd, input=inp, capture_output=True, text=True, timeout=60, cwd=root,
+                                   env={**os.environ, "PYTHONPATH": str(root)})
+                out = json.loads(p.stdout.strip().splitlines()[-1])
+                self.assertEqual(out.get("answer"), "", (cmd[-1], inp[:10]))
+                self.assertNotIn("Traceback", p.stderr, (cmd[-1], inp[:10]))
 
     def test_http_agent_contract(self):
         from freshpin.agentbench import Agent, invoke
