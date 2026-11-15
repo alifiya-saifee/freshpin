@@ -76,6 +76,10 @@ Return ONLY JSON:
                        // and why a model or a source might still say it. Empty string if current.
  "explanation": str}  // two sentences max, cite sources as [1], [2]"""
 
+QUOTE_SYSTEM = """Your quote was not found word for word in the sources. Copy ONE sentence EXACTLY, character for
+character, from one of the numbered sources that backs your statement. Do not paraphrase, shorten or fix it.
+Return ONLY JSON: {"best_source": int, "evidence_quote": str}"""
+
 # How verdicts compare: the two judges agree when they land in the same group.
 _GROUP = {"current": "holds", "partly_current": "partial", "stale": "changed", "contradicted": "changed",
           "unverifiable": "unclear"}
@@ -226,6 +230,23 @@ def recheck_claim(claim: dict[str, Any], first: dict[str, Any], sources: list[di
     out["best_source"] = back(out.get("best_source"))
     for k in ("supporting", "contradicting"):
         out[k] = [b for b in (back(n) for n in out.get(k) or []) if b]
+
+    # Quote retry: models sometimes paraphrase instead of copying. If the quote isn't in the sources, ask once
+    # more for an exact copy. The rule stays strict: the new quote must still be found word for word.
+    best = out.get("best_source")
+    if out.get("verdict") not in (None, "unverifiable") and \
+            find_quote(out.get("evidence_quote", ""), sources, best - 1 if isinstance(best, int) else None) is None:
+        retry_user = (f"{user}\n\nYOUR STATEMENT: {out.get('current_statement', '')}\n"
+                      f"YOUR QUOTE (not found word for word in any source): {out.get('evidence_quote', '')}")
+        try:
+            fix = chat.chat_json(f"quote:{claim['key']}", models, QUOTE_SYSTEM, retry_user, budget, simulate_outage)
+            nb = back(fix.get("best_source"))
+            if fix.get("evidence_quote"):
+                out["evidence_quote"] = fix["evidence_quote"]
+                out["best_source"] = nb or best
+                out["quote_retry"] = True
+        except (LLMUnavailable, BudgetExceeded):
+            pass
     return out
 
 

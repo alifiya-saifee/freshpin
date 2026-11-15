@@ -351,15 +351,20 @@ class RecheckTests(unittest.TestCase):
 class StubChat:
     """Answers by step name: extract -> claims, verify:<key> / recheck:<key> -> canned JSON. Records prompts."""
 
-    def __init__(self, claims, verify, recheck):
+    def __init__(self, claims, verify, recheck, quote=None):
         self.claims, self.verify, self.recheck, self.prompts = claims, verify, recheck, {}
+        self.quote = quote or {}
 
     def chat_json(self, step, models, system, user, budget, simulate_outage=False):
         self.prompts[step] = user
         kind, _, key = step.partition(":")
         if kind == "extract":
             return {"claims": self.claims}
-        return json.loads(json.dumps({"verify": self.verify, "recheck": self.recheck}[kind][key]))
+        try:
+            reply = {"verify": self.verify, "recheck": self.recheck, "quote": self.quote}[kind][key]
+        except KeyError:
+            raise LLMUnavailable(f"no stub reply for {step}")  # like a real client with nothing to say
+        return json.loads(json.dumps(reply))
 
 
 class StubSearch:
@@ -438,6 +443,36 @@ class NewsLiveDataTests(unittest.TestCase):
             httpd.server_close()
         self.assertEqual([(b["topic"], b.get("time_range")) for b in bodies],
                          [("news", "week"), ("finance", "day"), ("general", None)])
+
+
+class QuoteRetryTests(unittest.TestCase):
+    def run_case(self, retry_quote):
+        from freshpin.pipeline import run_check
+        claim = {"text": "No certificate is needed.", "key": "cert", "type": "regulation", "time_sensitive": True,
+                 "search_query": "cert"}
+        rows = {"cert": [{"title": "Law", "url": "https://dlp.dubai.gov.ae/l", "relevance": 1, "published_date": None,
+                          "snippet": "Owners must obtain a certificate once a building is 20 years old."}]}
+        verify = {"cert": {"verdict": "stale", "current_statement": "A certificate is needed at 20 years.",
+                           "supporting": [], "contradicting": [1], "explanation": "", "confirm_query": "cert"}}
+        recheck = {"cert": {"agree": True, "verdict": "stale", "current_statement": "Needed at 20 years.",
+                            "best_source": 1, "evidence_quote": "Owners need a certificate when the building turns 20",
+                            "supporting": [], "contradicting": [1], "why_outdated": "", "explanation": ""}}
+        quote = {"cert": {"best_source": 1, "evidence_quote": retry_quote}}
+        chat = StubChat([claim], verify, recheck, quote)
+        with tempfile.TemporaryDirectory() as tmp:
+            rep = run_check("No certificate is needed.", chat=chat, search=StubSearch(rows),
+                            ledger=Ledger(Path(tmp) / "q.db"), extractor_models=["a"], verifier_models=["b"],
+                            token_budget=10**6, today=TODAY)
+        return rep["claims"][0], chat
+
+    def test_paraphrased_quote_gets_one_retry_and_then_counts(self):
+        c, chat = self.run_case("Owners must obtain a certificate once a building is 20 years old.")
+        self.assertIn("quote:cert", chat.prompts)
+        self.assertEqual((c["verdict"], c["recheck"]["status"]), ("stale", "confirmed"))
+
+    def test_retry_is_still_strict(self):
+        c, _ = self.run_case("Owners must get some certificate eventually.")  # still not in the source
+        self.assertEqual(c["verdict"], "disputed")
 
 
 class EventSearchTests(unittest.TestCase):
