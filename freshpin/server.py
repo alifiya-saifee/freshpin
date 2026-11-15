@@ -14,13 +14,20 @@ WEB = ROOT / "web"
 
 
 RESULTS = ROOT / "bench" / "results"
+SAMPLES = ROOT / "bench" / "samples"  # committed example runs, so a fresh clone has something to inspect
 
 
 def bench_files() -> list[dict[str, str]]:
     """Agent-benchmark result files, newest first."""
     import json as _json
     out = []
-    for f in sorted(RESULTS.glob("agentbench-*.json"), reverse=True):
+    files = sorted(list(RESULTS.glob("agentbench-*.json")) + list(SAMPLES.glob("agentbench-*.json")),
+                   key=lambda f: f.name, reverse=True)
+    seen = set()
+    for f in files:
+        if f.name in seen:
+            continue
+        seen.add(f.name)
         try:
             meta = _json.loads(f.read_text(encoding="utf-8")).get("meta", {})
         except (OSError, ValueError):
@@ -35,8 +42,11 @@ def bench_file(name: str):
     import re as _re
     if not _re.fullmatch(r"agentbench-[0-9-]+\.json", name or ""):
         return None
-    f = RESULTS / name
-    return f if f.is_file() else None
+    for d in (RESULTS, SAMPLES):
+        f = d / name
+        if f.is_file():
+            return f
+    return None
 
 
 def make_handler(app: FreshPin):

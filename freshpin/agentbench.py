@@ -253,7 +253,8 @@ def leaderboard_markdown(result: dict[str, Any]) -> str:
                 continue
             rate = "-" if s["success_rate"] is None else (f"{s['success_rate']:.0%} ({s['success_ci95'][0]:.0%}–"
                                                           f"{s['success_ci95'][1]:.0%})")
-            drop = f" (−{s['drop_vs_normal']:.0%})" if s.get("drop_vs_normal") else ""
+            d = s.get("drop_vs_normal")
+            drop = "" if not d else (f" (−{d * 100:.0f} pts)" if d > 0 else f" (+{-d * 100:.0f} pts)")
             lines.append(f"| {agent} | {cond} | {rate}{drop} | {s['pass_all_k']}/{s['tasks']} | {s['steps_mean']} | "
                          f"{s['tool_calls_mean']} | {s['tokens_mean']} | {s['cost_usd_total']} | "
                          f"{s['cost_per_success_usd'] if s['cost_per_success_usd'] is not None else '-'} | "

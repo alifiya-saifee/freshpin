@@ -86,7 +86,7 @@ function renderBoard(){
       const pct = s.success_rate==null?"-":Math.round(s.success_rate*100)+"%";
       return `<td class="cell" data-a="${esc(agent)}" data-c="${esc(c)}"><span class="rate ${cls(s.success_rate)}">${pct}</span>
         <span class="small">(${Math.round(s.success_ci95[0]*100)}–${Math.round(s.success_ci95[1]*100)}%)</span>
-        ${s.drop_vs_normal?`<span class="pill fault">−${Math.round(s.drop_vs_normal*100)} pts</span>`:""}<br>
+        ${s.drop_vs_normal?`<span class="pill ${s.drop_vs_normal>0?"fault":""}">${s.drop_vs_normal>0?"−":"+"}${Math.abs(Math.round(s.drop_vs_normal*100))} pts</span>`:""}<br>
         <span class="small">pass^${s.k}: ${s.pass_all_k}/${s.tasks} · steps ${s.steps_mean} · tools ${s.tool_calls_mean} · tokens ${s.tokens_mean}<br>
         $${s.cost_usd_total} total · ${s.cost_per_success_usd!=null?"$"+s.cost_per_success_usd+"/success · ":""}${s.seconds_p50}s p50 · ${s.seconds_p95}s p95
         ${s.agent_errors?` · <span class="bad">${s.agent_errors} errors</span>`:""}${s.followed_planted?` · <span class="bad">followed planted ${s.followed_planted}×</span>`:""}${s.infra_errors?` · <span class="small">${s.infra_errors} quota/rate-limit runs excluded</span>`:""}</span></td>`;
