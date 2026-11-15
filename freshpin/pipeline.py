@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import re
+import unicodedata
 import time
 from concurrent.futures import ThreadPoolExecutor
 from datetime import date
@@ -80,7 +81,8 @@ _CORRECTIONS = ("stale", "contradicted", "partly_current")
 
 
 def _norm(text: str) -> str:
-    return re.sub(r"\s+", " ", re.sub(r"[\"'“”‘’]", "", text or "")).strip().lower().rstrip(".")
+    """Lower case, letters and digits only: copied quotes often differ in dashes, quote marks or commas."""
+    return re.sub(r"[^0-9a-z]+", " ", unicodedata.normalize("NFKC", text or "").lower()).strip()
 
 
 def find_quote(quote: str, sources: list[dict[str, Any]], prefer: int | None = None) -> int | None:
@@ -97,20 +99,37 @@ def find_quote(quote: str, sources: list[dict[str, Any]], prefer: int | None = N
     return None
 
 
+# Neighbouring verdicts: the judges agree on the direction but not the degree. Take the more careful one.
+_NEIGHBOURS = {frozenset({"holds", "partial"}): "partly_current", frozenset({"partial", "changed"}): "partly_current"}
+
+
 def decide(first: dict[str, Any], second: dict[str, Any] | None, quote_found: bool) -> tuple[str, str, str]:
-    """Fixed rules (not AI) combining the two judges. Returns (final verdict, recheck status, reason)."""
+    """Fixed rules (not AI) combining the two judges. Returns (final verdict, recheck status, reason).
+    Agreement is judged on the verdicts themselves (the same group, or neighbouring groups)."""
     v1 = first.get("verdict", "unverifiable")
     if second is None:
         if v1 in ("stale", "contradicted"):
             return "disputed", "unavailable", "Second check could not run, so the change is not confirmed."
         return v1, "unavailable", "Second check could not run."
     v2 = second.get("verdict", "unverifiable")
-    if not second.get("agree") or _GROUP.get(v1) != _GROUP.get(v2):
-        return "disputed", "disputed", f"The judges disagree: first said '{v1}', second said '{v2}'."
-    if v1 != "unverifiable" and not quote_found:
+    g1, g2 = _GROUP.get(v1, "unclear"), _GROUP.get(v2, "unclear")
+    final, how = v1, "Both judges agree"
+    if g1 != g2:
+        merged = _NEIGHBOURS.get(frozenset({g1, g2}))
+        if not merged:
+            return "disputed", "disputed", f"The judges disagree: first said '{v1}', second said '{v2}'."
+        final, how = merged, f"The judges nearly agree ('{v1}' and '{v2}'); the more careful verdict is used"
+    if final != "unverifiable" and not quote_found:
         # No quote, no verdict: both corrections and "still current" must be backed word for word.
         return "disputed", "disputed", "The verdict has no exact quote in its source, so it is not accepted."
-    return v1, "confirmed", "Both judges agree" + (" and the quote was found in the source." if quote_found else ".")
+    return final, "confirmed", how + (" and the quote was found in the source." if quote_found else ".")
+
+
+def one_check_fact(first: dict[str, Any], second: dict[str, Any] | None, quote_found: bool) -> bool:
+    """When one judge could not tell but the second made a definite call backed by a quote found in the source,
+    that fact is worth showing, labelled "one check only". It never changes the ledger."""
+    return bool(second) and quote_found and first.get("verdict") == "unverifiable" and \
+        second.get("verdict") in ("current", "partly_current", "stale", "contradicted")
 
 
 def _slug(text: str) -> str:
@@ -144,6 +163,10 @@ def extract_claims(answer: str, context: str, chat: ChatBackend, models: list[st
         if not c.get("text"):
             continue
         c["type"] = c.get("type") if c.get("type") in CLAIM_TYPES else "other"
+        # Fixed rule: laws, prices, versions, company facts, statistics, events and live values always get checked.
+        # Small extractor models sometimes call a fact "not time-sensitive" just because it looks familiar.
+        if c["type"] != "other":
+            c["time_sensitive"] = True
         c["key"] = c.get("key") or _slug(c["text"])
         c["search_query"] = c.get("search_query") or c["text"]
         clean.append(c)
@@ -308,6 +331,8 @@ def run_check(answer: str, *, chat: ChatBackend, search: SearchBackend, ledger: 
                 "quote_found": q_idx is not None,
                 "why_outdated": (second or {}).get("why_outdated") or "",
                 "second_explanation": (second or {}).get("explanation", ""),
+                "one_check": ({"verdict": second.get("verdict"), "statement": second.get("current_statement")}
+                              if status == "disputed" and one_check_fact(v, second, q_idx is not None) else None),
                 # Sources that agreed with the ORIGINAL claim matter only when the claim is not current.
                 "source_notes": source_notes(srcs, urls(v.get("supporting", []))
                                              if verdict in ("stale", "contradicted", "partly_current", "disputed")

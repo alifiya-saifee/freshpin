@@ -136,6 +136,7 @@ class PipelineReplayTests(unittest.TestCase):
 class FakeBifrost(BaseHTTPRequestHandler):
     """Mimics Bifrost: fails for one model name, otherwise answers with JSON content."""
     calls: list[dict] = []
+    headers: list[dict] = []
 
     def log_message(self, *a):
         pass
@@ -143,6 +144,7 @@ class FakeBifrost(BaseHTTPRequestHandler):
     def do_POST(self):  # noqa: N802
         body = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
         FakeBifrost.calls.append(body)
+        FakeBifrost.headers.append({k.lower(): v for k, v in self.headers.items()})
         if body["model"] == "busy/model" and sum(c["model"] == "busy/model" for c in FakeBifrost.calls) == 1:
             self.send_response(429)
             self.send_header("Retry-After", "0")
@@ -193,6 +195,17 @@ class BifrostClientTests(unittest.TestCase):
         BifrostClient(self.url).chat_json("x", ["groq/openai/gpt-oss-120b"], "s", "u", b)
         self.assertEqual(b.traces[-1].served_by, "groq/openai/gpt-oss-120b")
         self.assertFalse(b.traces[-1].fallback_used)
+
+    def test_thinking_off_only_for_listed_providers(self):
+        c = BifrostClient(self.url, no_thinking_prefixes=("nv/",))
+        c.chat_json("x", ["nv/judge", "g/other", "nv/backup"], "s", "u", RunBudget(1000))
+        body, hdr = FakeBifrost.calls[-1], FakeBifrost.headers[-1]
+        self.assertEqual(body["chat_template_kwargs"], {"enable_thinking": False, "thinking": False})
+        self.assertEqual(body["fallbacks"], ["nv/backup"])  # Bifrost must not forward the setting to g/other
+        self.assertEqual(hdr.get("x-bf-passthrough-extra-params"), "true")
+        c.chat_json("x", ["g/other"], "s", "u", RunBudget(1000))
+        self.assertNotIn("chat_template_kwargs", FakeBifrost.calls[-1])
+        self.assertNotIn("x-bf-passthrough-extra-params", FakeBifrost.headers[-1])
 
     def test_rate_limit_is_retried_once(self):
         b = RunBudget(1000)
@@ -270,6 +283,19 @@ class RecheckTests(unittest.TestCase):
         claim = next(c for c in rep["claims"] if c["key"] == key)
         self.assertEqual(claim["verdict"], "disputed")
 
+    def test_one_check_fact_is_shown_but_changes_nothing(self):
+        from freshpin.bench import claim_detail
+        key = "dubai.old_buildings.safety_certificate_required"
+        self.app.chat.d.data["verify"][key]["verdict"] = "unverifiable"  # first judge can't tell
+        rep = self.app.check(self.answer)
+        cert = next(c for c in rep["claims"] if c["key"] == key)
+        self.assertEqual(cert["verdict"], "disputed")
+        self.assertEqual(cert["recheck"]["one_check"]["verdict"], "stale")
+        d = claim_detail(cert)
+        self.assertIn("20 years past its completion", d["now"])
+        self.assertEqual(d["now_label"], "one check only")
+        self.assertNotIn("Q-112", rep["summary"]["decisions_reopened"])  # never reopens on one check
+
     def test_wrong_current_verdict_is_caught(self):
         # The first judge says "current"; the second judge disagrees. Rechecking every claim catches it.
         key = "dubai.building_permits.issuing_authority"
@@ -287,7 +313,15 @@ class RecheckTests(unittest.TestCase):
         first = {"verdict": "stale"}
         self.assertEqual(decide(first, {"agree": True, "verdict": "contradicted"}, True)[1], "confirmed")
         self.assertEqual(decide(first, {"agree": True, "verdict": "stale"}, False)[0], "disputed")
-        self.assertEqual(decide(first, {"agree": False, "verdict": "stale"}, True)[0], "disputed")
+        self.assertEqual(decide(first, {"agree": False, "verdict": "current"}, True)[0], "disputed")
+        # Neighbouring verdicts agree on direction: the more careful verdict is used, with a quote.
+        self.assertEqual(decide({"verdict": "current"}, {"verdict": "partly_current"}, True)[:2],
+                         ("partly_current", "confirmed"))
+        self.assertEqual(decide({"verdict": "stale"}, {"verdict": "partly_current"}, True)[0], "partly_current")
+        self.assertEqual(decide({"verdict": "current"}, {"verdict": "partly_current"}, False)[0], "disputed")
+        self.assertEqual(decide({"verdict": "unverifiable"}, {"verdict": "contradicted"}, True)[0], "disputed")
+        # Quotes: dashes, quote marks and commas don't matter, words do.
+        self.assertEqual(find_quote("don't have real-time data", [{"title": "", "snippet": "We don\u2019t have real\u2011time data."}]), 0)
         self.assertEqual(decide(first, None, False), ("disputed", "unavailable",
                                                       "Second check could not run, so the change is not confirmed."))
         self.assertEqual(decide({"verdict": "current"}, None, False)[0], "current")
@@ -452,7 +486,8 @@ class CorrectionsAndBenchTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             app = replay_app(tmp)
             app.load_sample("dubai_building_law")
-            app.chat.d.data["recheck"]["dubai.ejari.attestation_needs_building_certificate"]["agree"] = False
+            rc = app.chat.d.data["recheck"]["dubai.ejari.attestation_needs_building_certificate"]
+            rc.update(agree=False, verdict="current")  # the second judge thinks the old rule still holds
             rep = app.check(app.samples()["dubai_building_law"]["answer"])
             self.assertEqual([k["claim"][:20] for k in rep["corrections"]], ["Dubai does not requi"])
             self.assertEqual(rep["corrections"][0]["reference"]["authority"], "official")
@@ -605,6 +640,22 @@ class McpTests(unittest.TestCase):
 
 
 class MiscTests(unittest.TestCase):
+    def test_parse_json_reply_takes_first_of_two_objects(self):
+        self.assertEqual(parse_json_reply('{"a": 1}\n{"b": 2}'), {"a": 1})
+        self.assertEqual(parse_json_reply('Here you go: {"a": {"x": "}"}} thanks'), {"a": {"x": "}"}})
+
+    def test_typed_claims_are_always_checked(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            claims = [{"text": "Law X applies.", "key": "law.x", "type": "regulation", "time_sensitive": False,
+                       "search_query": "law x"},
+                      {"text": "Water is wet.", "key": "water", "type": "other", "time_sensitive": False,
+                       "search_query": "water"}]
+            verify = {"law.x": {"verdict": "unverifiable", "current_statement": "", "supporting": [],
+                                "contradicting": [], "explanation": ""}}
+            rep, _, _ = stub_run(claims, verify, {}, {}, tmp)
+            self.assertEqual([c["key"] for c in rep["claims"]], ["law.x"])
+            self.assertEqual([s["text"] for s in rep["skipped"]], ["Water is wet."])
+
     def test_parse_json_reply_handles_prose(self):
         self.assertEqual(parse_json_reply('Sure! {"a": 1} hope that helps'), {"a": 1})
 

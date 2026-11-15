@@ -25,7 +25,8 @@ class FreshPin:
             self.chat = ReplayChat(data, s.outage_model)
             self.search = ReplaySearch(data)
         else:
-            self.chat = BifrostClient(s.bifrost_url, s.bifrost_virtual_key, s.timeout_s, s.outage_model)
+            self.chat = BifrostClient(s.bifrost_url, s.bifrost_virtual_key, s.timeout_s, s.outage_model,
+                                      tuple(s.no_thinking_prefixes))
             self.search = CachedSearch(TavilyClient(s.tavily_api_key, s.tavily_url, s.timeout_s))
 
     def status(self) -> dict[str, Any]:

@@ -82,20 +82,30 @@ def parse_json_reply(text: str) -> dict[str, Any]:
     try:
         return json.loads(text)
     except json.JSONDecodeError:
-        start, end = text.find("{"), text.rfind("}")
-        if start != -1 and end > start:
-            return json.loads(text[start:end + 1])
-        raise
+        start = text.find("{")
+        if start == -1:
+            raise
+        # The first complete object wins: some models add prose, or a second object, after it.
+        obj, _ = json.JSONDecoder().raw_decode(text[start:])
+        return obj
 
 
 class BifrostClient:
     def __init__(self, base_url: str, virtual_key: str = "", timeout_s: int = 60,
-                 outage_model: str = "openai/model-that-does-not-exist"):
+                 outage_model: str = "openai/model-that-does-not-exist",
+                 no_thinking_prefixes: tuple[str, ...] = ()):
         self.base_url = base_url.rstrip("/")
         self.virtual_key = virtual_key
         self.timeout_s = timeout_s
         self.outage_model = outage_model
         self.retry_wait_s = 3.0  # wait before the one retry after a rate limit (HTTP 429)
+        # Models (by "provider/" prefix) that get "thinking off". Judges need short, clean JSON: thinking makes
+        # some models up to 10x slower and can break the JSON. Only some providers accept the setting
+        # (NVIDIA does; Gemini and Groq reject it with HTTP 400), so it is sent only to these.
+        self.no_thinking_prefixes = tuple(p for p in no_thinking_prefixes if p)
+
+    def _no_thinking(self, model: str) -> bool:
+        return any(model.startswith(p) for p in self.no_thinking_prefixes)
 
     def _post(self, payload: dict[str, Any]) -> dict[str, Any]:
         """One retry after a short wait when the provider says "rate limit" (HTTP 429). Free tiers reset per minute,
@@ -116,6 +126,8 @@ class BifrostClient:
         headers = {"Content-Type": "application/json"}
         if self.virtual_key:
             headers["x-bf-vk"] = self.virtual_key
+        if "chat_template_kwargs" in payload:
+            headers["x-bf-passthrough-extra-params"] = "true"  # Bifrost otherwise drops unknown fields
         req = urllib.request.Request(f"{self.base_url}/v1/chat/completions",
                                      data=json.dumps(payload).encode(), headers=headers, method="POST")
         with urllib.request.urlopen(req, timeout=self.timeout_s) as resp:
@@ -130,7 +142,11 @@ class BifrostClient:
             chain = [self.outage_model] + chain
         last_error = "no models configured"
         for i in range(len(chain)):
-            primary, fallbacks = chain[i], chain[i + 1:]
+            primary = chain[i]
+            # Bifrost sends the same body to its fallbacks, so only list fallbacks that accept the same settings.
+            # The others are still tried, one by one, by this loop (client failover).
+            same = self._no_thinking(primary)
+            fallbacks = [m for m in chain[i + 1:] if self._no_thinking(m) == same]
             trace = CallTrace(step=step, requested_model=primary, client_failover=i > 0)
             payload = {
                 "model": primary,
@@ -138,6 +154,8 @@ class BifrostClient:
                 "temperature": 0,
                 "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}],
             }
+            if same:
+                payload["chat_template_kwargs"] = {"enable_thinking": False, "thinking": False}
             t0 = time.monotonic()
             try:
                 data = self._post(payload)

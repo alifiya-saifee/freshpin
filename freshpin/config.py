@@ -47,6 +47,9 @@ class Settings:
         "FRESHPIN_CHECKER_MODELS", "gemini/gemini-2.5-flash,groq/openai/gpt-oss-120b"))
     # Recheck every claim with a second search and a second judge (costs one extra Tavily search per claim).
     recheck: bool = field(default_factory=lambda: os.environ.get("FRESHPIN_RECHECK", "1") not in ("0", "false", "no"))
+    # "provider/" prefixes of models that should run with thinking off (comma-separated), e.g. NVIDIA models
+    # reached through Bifrost's OpenAI-compatible provider: "openai/". Gemini and Groq reject the setting.
+    no_thinking_prefixes: list[str] = field(default_factory=lambda: _list("FRESHPIN_NO_THINKING_PREFIXES", ""))
     # Model calls at the same time. Free tiers limit tokens per minute, so keep this low.
     model_concurrency: int = field(default_factory=lambda: int(os.environ.get("FRESHPIN_MODEL_CONCURRENCY", "2")))
     # Used by the "simulate outage" switch: a model that will fail, so Bifrost must fall back.

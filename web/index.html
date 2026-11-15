@@ -236,6 +236,7 @@ function recheckBox(c, traces){
   const ref = r.best_reference;
   return `<div class="recheck"><span class="pill ${esc(r.status)}">${RECHECK[r.status]}</span><span class="meta">${t?`second judge: ${esc(t.served_by)} · `:""}${r.extra_sources} new source${r.extra_sources===1?"":"s"} from a targeted search</span>
     <p>${esc(r.reason||"")}</p>
+    ${c.verdict==="disputed" && r.one_check && r.one_check.statement ? `<p><b>One check only (not confirmed):</b> ${esc(r.one_check.statement)}</p>` : ""}
     ${r.why_outdated && c.verdict!=="current" ? `<p><b>Why it was out of date:</b> ${esc(r.why_outdated)}</p>` : ""}
     ${ref ? `<p><b>Best reference:</b> <a href="${esc(ref.url)}" target="_blank" rel="noopener">${esc(ref.title)}</a>${authTag(ref.authority)} <span class="meta">${esc(ref.published_date||"undated")}</span></p>` : ""}
     ${r.evidence_quote ? `<p><q>${esc(r.evidence_quote)}</q></p>` : ""}

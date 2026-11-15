@@ -81,6 +81,8 @@ def summarize(report: dict[str, Any]) -> str:
         r = c.get("recheck") or {}
         if r.get("status") in ("confirmed", "disputed", "unavailable"):
             lines.append(f"   Second check: {r['status']}. {r.get('reason', '')}")
+        if c["verdict"] == "disputed" and (r.get("one_check") or {}).get("statement"):
+            lines.append(f"   One check only (not confirmed): {r['one_check']['statement']}")
         if r.get("why_outdated") and c["verdict"] != "current":
             lines.append(f"   Why it was out of date: {r['why_outdated']}")
         ref = r.get("best_reference")

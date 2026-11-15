@@ -89,17 +89,21 @@ def claim_detail(c: dict[str, Any]) -> dict[str, Any]:
     """What a person needs to see per claim: not just a verdict, but what is true now, the source, and why."""
     rc = c.get("recheck") or {}
     now = (c.get("current_statement") or "").strip()
-    if c["verdict"] == "current" or _same(now, c["text"]):
+    if c["verdict"] in ("current", "unverifiable") or _same(now, c["text"]):
         now = ""  # nothing new to say: it is current, or the judges could only repeat the claim
+    label = None
     if c["verdict"] == "disputed":
-        now = ""  # the two checks disagree: don't present either as the truth
+        now = ""  # the two checks disagree: don't present either as the truth...
+        if rc.get("one_check") and rc["one_check"].get("statement"):
+            now, label = rc["one_check"]["statement"], "one check only"  # ...unless one is quoted and the other unsure
     why = rc.get("why_outdated") if c["verdict"] not in ("current", "unverifiable") else ""
     if c.get("needs_live_feed"):
         why = "No source dated today states this live value; it needs a live data feed."
     elif c["verdict"] in ("unverifiable", "disputed"):
         why = rc.get("reason") if c["verdict"] == "disputed" else (c.get("explanation") or rc.get("second_explanation") or "")
     return {"text": c["text"], "type": c["type"], "verdict": c["verdict"], "score": c["freshness"]["score"],
-            "needs_live_feed": c.get("needs_live_feed", False), "now": now or None, "why": (why or "").strip() or None,
+            "needs_live_feed": c.get("needs_live_feed", False), "now": now or None, "now_label": label,
+            "why": (why or "").strip() or None,
             "reference": rc.get("best_reference"), "quote": rc.get("evidence_quote")}
 
 
@@ -146,7 +150,7 @@ def print_details(result: dict[str, Any], width: int = 110) -> None:
                                     initial_indent=f"   {MARK.get(c['verdict'], c['verdict']):8} {c['score']:>3}  ",
                                     subsequent_indent=" " * 16))
                 if c.get("now"):
-                    wrapped("Real now: ", c["now"])
+                    wrapped("Real now (one check only): " if c.get("now_label") else "Real now: ", c["now"])
                 if c.get("why"):
                     wrapped("Why: ", c["why"])
                 ref = c.get("reference")

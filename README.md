@@ -92,6 +92,27 @@ python -m freshpin bench --models groq/openai/gpt-oss-120b,gemini/gemini-2.5-fla
 
 First live run (15 Nov 2026, 3 questions): `gpt-oss-120b` on Groq said the latest Python is 3.15.0 (confirmed current), said honestly that it has no real-time gold price, and described the Dubai rule as applying to buildings "10 years or older" (the law says 20), which FreshPin flagged. Gemini's free daily quota had run out, so its rows show the 429 error instead of a score.
 
+## Choosing the judge models
+
+Two research agents argued for and against each free candidate (strengths, weaknesses, free limits); then every finalist was tested live through Bifrost on the same task: read a source, return JSON with a verdict and a word-for-word quote.
+
+| Model (free tier) | Live test, thinking off | Notes |
+|---|---|---|
+| **nemotron-3.5-super-vl-120b** (NVIDIA) | correct, exact quote, **0.4 s** | best at saying "I don't know" in published tests; NVIDIA's own model, least likely to lose its free endpoint |
+| **nemotron-3.5-lightning-30b** (NVIDIA) | correct, exact quote, **0.5 s** | fast extractor; marks familiar facts as "not time-sensitive", so FreshPin checks every typed claim regardless |
+| mistral-large-4 (NVIDIA) | correct, exact quote, 11.5 s | backup judge, different family |
+| deepseek-v4.1-flash, glm-5.3-flash (NVIDIA) | timed out | |
+| gpt-oss-120b (Groq) | correct | second judge: a different provider and family; free tier allows 8,000 tokens/minute |
+| gemini-2.5-flash (Google) | correct | free tier cut to about 20 requests a day; retired 1 Dec 2026, so only a last backup |
+
+**Setup used:** extractor Nemotron Lightning; first judge Nemotron Super; second judge Groq gpt-oss-120b (a different provider and model family); Mistral Large 4 and Gemini as backups. NVIDIA's free endpoints allow about 40 requests a minute and are for trials only, which is fine for a prototype with made-up decisions.
+
+**Thinking off.** Judges need short JSON. With thinking on, Nemotron Super took 1.9 s and 261 tokens; with it off, 0.4 s and 35 tokens. FreshPin sends `chat_template_kwargs` (and Bifrost's `x-bf-passthrough-extra-params` header) only to the providers listed in `FRESHPIN_NO_THINKING_PREFIXES`, because Gemini and Groq reject it, and limits Bifrost's fallbacks to models that accept the same setting; the others are tried by FreshPin's own failover.
+
+**Agreement rules after live testing.** Neighbouring verdicts (current and partly current, or partly current and stale) count as agreement, with the more careful verdict kept. Quotes match on words only, ignoring dashes and quote marks. When one judge can't tell but the other's quote is found, its fact is shown as "one check only" and changes nothing.
+
+**Result.** The Dubai question that earlier came back "disputed" or "second check could not run" now returns WRONG, with the correct rule, an official source and the reason, in 13 seconds.
+
 ## Efficiency
 
 - Claims that can't go out of date are skipped before any search.
