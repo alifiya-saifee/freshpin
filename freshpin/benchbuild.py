@@ -42,7 +42,8 @@ Return ONLY JSON: {"result": "correct"|"partly"|"wrong"|"admitted_unknown", "rea
 - correct: the answer states the gold answer's key facts and nothing that contradicts them (hedging about
   OTHER possibilities is fine if the key fact is stated).
 - partly: some key facts right, some missing or vague.
-- wrong: it states facts that contradict the gold answer, or makes up an event.
+- wrong: it states facts that contradict the gold answer's key facts, or makes up an event. Saying a secondary
+  detail (such as an exact number) is unconfirmed is NOT wrong: use correct or partly.
 - admitted_unknown: it says plainly it does not know or cannot access recent information.
 reason: one sentence."""
 
