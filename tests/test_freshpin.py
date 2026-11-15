@@ -1077,6 +1077,99 @@ class SafetyOpsTests(unittest.TestCase):
                 httpd.server_close()
 
 
+class ArenaTests(unittest.TestCase):
+    """Agent arena: arms, statistics and independence of graders."""
+
+    def test_wilson_and_sign_test_match_known_values(self):
+        from freshpin.bench import sign_test, wilson
+        lo, hi = wilson(7, 10)
+        self.assertAlmostEqual(lo, 0.3968, places=3)
+        self.assertAlmostEqual(hi, 0.8922, places=3)
+        self.assertEqual(wilson(0, 0), (0.0, 1.0))
+        self.assertAlmostEqual(sign_test(0, 6), 0.03125)
+        self.assertEqual(sign_test(0, 0), 1.0)
+        self.assertAlmostEqual(sign_test(3, 3), 1.0)
+
+    def test_independent_graders(self):
+        from freshpin.bench import independent_models
+        pool = ["openai/nvidia/nemotron-3.5-super", "groq/openai/gpt-oss-120b", "gemini/gemini-3.5-flash-lite"]
+        self.assertEqual(independent_models("groq/openai/gpt-oss-120b", pool)[0],
+                         ["openai/nvidia/nemotron-3.5-super", "gemini/gemini-3.5-flash-lite"])
+        self.assertEqual(independent_models("x/gpt-oss-20b", ["groq/openai/gpt-oss-120b"]),
+                         (["groq/openai/gpt-oss-120b"], False))
+
+    def test_arena_runs_arms_and_compares_them(self):
+        from freshpin import bench
+        qs = [{"id": f"q{i}", "question": f"Which company had outage {i}?", "category": "event",
+               "gold_answer": "Workday had the outage."} for i in range(4)]
+
+        def bare(model, q):
+            return {"answer": "ServiceNow had it.", "tool_calls": [], "tokens": 10, "searches": 0, "latency_s": 1.0}
+
+        def agent(model, q):
+            searched = q.endswith("0?") is False  # the agent chooses to search on 3 of 4 questions
+            return {"answer": "Workday had it." if searched else "ServiceNow had it.",
+                    "tool_calls": [{"name": "search_web"}] if searched else [], "tokens": 30, "searches": int(searched),
+                    "latency_s": 2.0}
+
+        def judge_for(model):
+            return lambda ans, q: {"result": "correct" if "Workday" in ans else "wrong", "reason": ""}
+
+        def check(ans, q):
+            return {"claims": [], "corrections": [{"claim": ans, "now": "Workday had the outage.", "reference": {}}],
+                    "unconfirmed": []}
+
+        def repair(model, fb):
+            self.assertIn("Confirmed now: Workday had the outage.", fb)
+            return {"answer": "It was Workday.", "tool_calls": []}
+
+        res = bench.run_arena(qs, ["m"], ["bare", "agent", "repair"], {"bare": bare, "agent": agent}, judge_for,
+                              check=check, check_arms=("bare",), repair=repair)
+        sc = res["models"]["m"]["scorecard"]
+        self.assertEqual((sc["bare"]["correct"], sc["agent"]["correct"], sc["repair"]["correct"]), (0, 3, 4))
+        self.assertEqual(sc["agent"]["chose_to_search"], 3)
+        self.assertIsNone(sc["bare"]["chose_to_search"])
+        pair = next(p for p in res["models"]["m"]["paired"] if (p["a"], p["b"]) == ("bare", "repair"))
+        self.assertEqual((pair["fixed_by_b"], pair["broken_by_b"]), (4, 0))
+        self.assertAlmostEqual(pair["p_value"], 0.125)
+        md = bench.arena_markdown(res)
+        self.assertIn("| agent | 4 | 3 | 75%", md)
+
+    def test_string_backstop_blocks_a_lenient_grader(self):
+        from freshpin import bench
+        qs = [{"id": "q", "question": "Which company had the outage?", "category": "event", "gold_answer": "Workday."}]
+        res = bench.run_arena(qs, ["m"], ["bare"],
+                              {"bare": lambda m, q: {"answer": "A big software firm.", "tool_calls": []}},
+                              lambda m: (lambda a, q: {"result": "correct", "reason": ""}))
+        row = res["models"]["m"]["rows"]["bare"][0]
+        self.assertFalse(row["correct"])
+        self.assertTrue(row["grader_disagrees"])
+
+    def test_agent_tool_loop(self):
+        from freshpin.llm import BifrostClient as BC
+
+        class Fake(BC):
+            def __init__(self):
+                super().__init__("http://x")
+                self.turn = 0
+
+            def _post(self, payload):
+                self.turn += 1
+                if self.turn == 1:
+                    assert payload["tool_choice"] == "auto" and payload["tools"][0]["function"]["name"] == "search_web"
+                    return {"model": "m", "choices": [{"message": {"content": None, "tool_calls": [
+                        {"id": "t1", "function": {"name": "search_web", "arguments": '{"query": "outage friday"}'}}]}}]}
+                assert payload["messages"][-1]["role"] == "tool"
+                return {"model": "m", "choices": [{"message": {"content": "Workday."}}]}
+
+        got = []
+        out = Fake().chat_tools("m", "s", "q", [{"type": "function", "function": {"name": "search_web"}}],
+                                lambda n, a: got.append(a) or "[1] Workday outage", RunBudget(1000))
+        self.assertEqual(out["answer"], "Workday.")
+        self.assertEqual(got, [{"query": "outage friday"}])
+        self.assertEqual(len(out["tool_calls"]), 1)
+
+
 class McpTests(unittest.TestCase):
     """The MCP server, driven the way an AI assistant drives it: JSON lines in, JSON lines out."""
 

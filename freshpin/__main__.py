@@ -99,6 +99,95 @@ def watch_cmd(args: list[str]) -> int:
     return 0
 
 
+def arena_cmd(a, s, app, client, questions, models, check) -> int:
+    """Agent arena: the same model as several agent configurations, graded against gold answers."""
+    import time as _time
+    from datetime import date
+
+    from . import bench
+    from .benchbuild import make_gold_judge
+    from .llm import RunBudget
+    arms = [x.strip() for x in a.arms.split(",") if x.strip() in bench.ARMS]
+    check_arms = tuple(x.strip() for x in a.check_arms.split(",") if x.strip())
+    if "repair" in arms and "bare" not in arms:
+        arms.insert(0, "bare")
+    today = date.today().isoformat()
+    print(f"Arena: {len(questions)} question(s) x {len(models)} model(s) x arms {arms}; FreshPin checks on {check_arms}.")
+
+    def sources_text(g: dict) -> str:
+        if not g["sources"]:
+            return "(no recent sources found)"
+        return "\n".join(f"[{i}] {x['title']} ({x.get('published_date') or 'undated'}) {x['url']}\n    {x['snippet'][:400]}"
+                         for i, x in enumerate(g["sources"], 1)) + f"\nAdvice: {g['advice']}"
+
+    def timed(fn):
+        def run(model: str, question: str) -> dict:
+            budget, misses, t0 = RunBudget(30000), getattr(app.search, "misses", 0), _time.monotonic()
+            res = fn(model, question, budget)
+            res.update(tokens=budget.used_tokens, searches=getattr(app.search, "misses", 0) - misses,
+                       latency_s=round(_time.monotonic() - t0, 1))
+            print(f"  {model.split('/')[-1]} [{fn.__name__}] {question[:60]} -> {len(res.get('tool_calls') or [])} tool call(s)")
+            return res
+        return run
+
+    @timed
+    def bare(model, question, budget):
+        return {"answer": client.chat_text(model, bench.ASK_SYSTEM.format(today=today), question, budget), "tool_calls": []}
+
+    @timed
+    def grounded(model, question, budget):
+        g = app.ground(question, depth="basic")
+        user = f"QUESTION: {question}\n\nSOURCES:\n{sources_text(g)}"
+        return {"answer": client.chat_text(model, bench.GROUNDED_SYSTEM.format(today=today), user, budget),
+                "tool_calls": [{"name": "ground_question", "args": {"question": question}}]}
+
+    @timed
+    def agent(model, question, budget):
+        def run_tool(name: str, args: dict) -> str:
+            if name != "search_web":
+                return "unknown tool"
+            return sources_text(app.ground(str(args.get("query") or question), depth="basic"))
+        return client.chat_tools(model, bench.AGENT_SYSTEM.format(today=today), question, bench.SEARCH_TOOL,
+                                 run_tool, budget)
+
+    def repair_fn(model: str, feedback: str) -> dict:
+        budget, t0 = RunBudget(30000), _time.monotonic()
+        ans = client.chat_text(model, bench.ASK_SYSTEM.format(today=today), feedback, budget, step="repair")
+        return {"answer": ans, "tool_calls": [], "tokens": budget.used_tokens, "latency_s": round(_time.monotonic() - t0, 1)}
+
+    base = {"extractor": list(s.extractor_models), "verifier": list(s.verifier_models), "checker": list(s.checker_models)}
+    pool = base["checker"] + base["verifier"] + base["extractor"]
+
+    def set_model(model: str) -> bool:
+        # FreshPin's own judges and the gold grader must not share the agent's model family (self-preference).
+        ok = True
+        for role, attr in (("extractor", "extractor_models"), ("verifier", "verifier_models"), ("checker", "checker_models")):
+            chosen, indep = bench.independent_models(model, base[role])
+            if not indep:
+                chosen, indep = bench.independent_models(model, pool)
+            setattr(app.s, attr, chosen)
+            ok = ok and indep
+        if not ok:
+            print(f"  warning: no checker from a different model family than {model}")
+        return ok
+
+    def judge_for(model: str):
+        judges, _ = bench.independent_models(model, pool)
+        return make_gold_judge(app.chat, judges, bench.admits_live_limits)
+
+    result = bench.run_arena(questions, models, arms, {"bare": bare, "grounded": grounded, "agent": agent},
+                             judge_for, check=check, check_arms=check_arms, repair=repair_fn, set_model=set_model)
+    for role, attr in (("extractor", "extractor_models"), ("verifier", "verifier_models"), ("checker", "checker_models")):
+        setattr(app.s, attr, base[role])
+    path = bench.save(result)
+    md = path.with_suffix(".md")
+    md.write_text(bench.arena_markdown(result), encoding="utf-8")
+    print()
+    print(bench.arena_markdown(result))
+    print(f"Saved: {path}\n       {md}")
+    return 0
+
+
 def bench_build_cmd(args: list[str]) -> int:
     import argparse
     from datetime import date
@@ -144,6 +233,10 @@ def bench_cmd(args: list[str]) -> int:
     ap.add_argument("--yes", action="store_true", help="run even if the estimate is above 40 Tavily credits")
     ap.add_argument("--repair", action="store_true", help="tell the model what was wrong and let it rewrite, then re-check")
     ap.add_argument("--repair-rounds", type=int, default=1)
+    ap.add_argument("--arms", help="agent arena: comma-separated arms from bare,grounded,agent,repair "
+                                   "(benchmarks agent configurations, not just models)")
+    ap.add_argument("--check-arms", default="bare",
+                    help="arms whose answers FreshPin also claim-checks (Tavily credits!); repair needs bare")
     ap.add_argument("--self-test", action="store_true",
                     help="measure FreshPin itself: gold answers should pass, deliberately wrong versions should fail")
     a = ap.parse_args(args)
@@ -181,6 +274,9 @@ def bench_cmd(args: list[str]) -> int:
 
     def check(answer: str, question: str) -> dict:
         return app.check(answer, context=question, apply_to_ledger=False)
+
+    if a.arms:
+        return arena_cmd(a, s, app, client, questions, models, check)
 
     if a.self_test:
         from .benchbuild import corrupt_rule, self_test

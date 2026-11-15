@@ -59,6 +59,9 @@ class Settings:
     daily_check_limit: int = field(default_factory=lambda: int(os.environ.get("FRESHPIN_DAILY_CHECK_LIMIT", "0")))
     max_auto_reopens: int = field(default_factory=lambda: int(os.environ.get("FRESHPIN_MAX_AUTO_REOPENS", "20")))
     allow_private_webhook: bool = field(default_factory=lambda: os.environ.get("FRESHPIN_ALLOW_PRIVATE_WEBHOOK", "0") in ("1", "true", "yes"))
+    # Reasoning models that reject a temperature setting (OpenAI o-series, GPT-5 class).
+    no_temperature_prefixes: list[str] = field(default_factory=lambda: _list(
+        "FRESHPIN_NO_TEMPERATURE_PREFIXES", "openai/o1,openai/o3,openai/o4,openai/gpt-5"))
     # Model calls at the same time. Free tiers limit tokens per minute, so keep this low.
     model_concurrency: int = field(default_factory=lambda: int(os.environ.get("FRESHPIN_MODEL_CONCURRENCY", "2")))
     # Used by the "simulate outage" switch: a model that will fail, so Bifrost must fall back.

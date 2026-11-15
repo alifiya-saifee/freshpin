@@ -102,8 +102,11 @@ def parse_json_reply(text: str) -> dict[str, Any]:
 class BifrostClient:
     def __init__(self, base_url: str, virtual_key: str = "", timeout_s: int = 60,
                  outage_model: str = "openai/model-that-does-not-exist",
-                 no_thinking_prefixes: tuple[str, ...] = ()):
+                 no_thinking_prefixes: tuple[str, ...] = (),
+                 no_temperature_prefixes: tuple[str, ...] = ("openai/o1", "openai/o3", "openai/o4", "openai/gpt-5")):
         self.base_url = base_url.rstrip("/")
+        # Reasoning models (OpenAI o-series, GPT-5 class) reject a temperature setting, so it is left out for them.
+        self.no_temperature_prefixes = tuple(p for p in no_temperature_prefixes if p)
         self.virtual_key = virtual_key
         self.timeout_s = timeout_s
         self.outage_model = outage_model
@@ -160,9 +163,10 @@ class BifrostClient:
             payload = {
                 "model": primary,
                 "fallbacks": fallbacks,
-                "temperature": 0,
                 "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}],
             }
+            if not self._no_temperature(primary):
+                payload["temperature"] = 0
             if same:
                 payload["chat_template_kwargs"] = {"enable_thinking": False, "thinking": False}
             t0 = time.monotonic()
@@ -198,12 +202,62 @@ class BifrostClient:
         raise LLMUnavailable(last_error)
 
 
+    def chat_tools(self, model: str, system: str, user: str, tools: list[dict[str, Any]],
+                   run_tool: Any, budget: RunBudget, max_calls: int = 2, step: str = "agent") -> dict[str, Any]:
+        """A small agent loop for ONE model (no fallbacks: we test that exact model). The model decides whether to
+        call a tool; run_tool(name, args) returns text. Returns {"answer", "tool_calls": [...]}."""
+        messages: list[dict[str, Any]] = [{"role": "system", "content": system}, {"role": "user", "content": user}]
+        calls: list[dict[str, Any]] = []
+        for turn in range(max_calls + 1):
+            budget.check()
+            payload: dict[str, Any] = {"model": model, "messages": messages, "tools": tools,
+                                       "tool_choice": "auto" if turn < max_calls else "none"}
+            if not self._no_temperature(model):
+                payload["temperature"] = 0
+            trace = CallTrace(step=f"{step}:{turn}", requested_model=model)
+            t0 = time.monotonic()
+            try:
+                data = self._post(payload)
+                usage = data.get("usage") or {}
+                trace.prompt_tokens = int(usage.get("prompt_tokens") or 0)
+                trace.completion_tokens = int(usage.get("completion_tokens") or 0)
+                trace.served_by = data.get("model") or model
+                budget.charge(trace.prompt_tokens + trace.completion_tokens)
+                msg = data["choices"][0]["message"]
+            except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError, KeyError, IndexError, TypeError,
+                    AttributeError, ValueError) as exc:
+                trace.ok, trace.error = False, _describe(exc)
+                raise LLMUnavailable(trace.error) from exc
+            finally:
+                trace.latency_ms = int((time.monotonic() - t0) * 1000)
+                budget.log(trace)
+            tool_calls = msg.get("tool_calls") or []
+            if not tool_calls or turn >= max_calls:
+                return {"answer": message_text(msg.get("content")).strip(), "tool_calls": calls}
+            messages.append({"role": "assistant", "content": message_text(msg.get("content")) or None,
+                             "tool_calls": tool_calls})
+            for tc in tool_calls:
+                fn = tc.get("function") or {}
+                try:
+                    args = json.loads(fn.get("arguments") or "{}")
+                except json.JSONDecodeError:
+                    args = {}
+                result = run_tool(fn.get("name", ""), args)
+                calls.append({"name": fn.get("name"), "args": args})
+                messages.append({"role": "tool", "tool_call_id": tc.get("id", ""), "content": result})
+        return {"answer": "", "tool_calls": calls}
+
+    def _no_temperature(self, model: str) -> bool:
+        return any(model.startswith(p) for p in self.no_temperature_prefixes)
+
     def chat_text(self, model: str, system: str, user: str, budget: RunBudget, step: str = "ask") -> str:
         """Ask ONE model for a plain-text answer, with no fallbacks: used by the bench to test that exact model."""
         budget.check()
         trace = CallTrace(step=step, requested_model=model)
-        payload = {"model": model, "temperature": 0,
-                   "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}]}
+        payload: dict[str, Any] = {"model": model,
+                                   "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}]}
+        if not self._no_temperature(model):
+            payload["temperature"] = 0
         t0 = time.monotonic()
         try:
             data = self._post(payload)

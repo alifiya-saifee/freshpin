@@ -32,7 +32,7 @@ class FreshPin:
             self.search = ReplaySearch(data)
         else:
             self.chat = BifrostClient(s.bifrost_url, s.bifrost_virtual_key, s.timeout_s, s.outage_model,
-                                      tuple(s.no_thinking_prefixes))
+                                      tuple(s.no_thinking_prefixes), tuple(s.no_temperature_prefixes))
             self.search = CachedSearch(TavilyClient(s.tavily_api_key, s.tavily_url, s.timeout_s))
 
     def status(self) -> dict[str, Any]:
@@ -116,7 +116,7 @@ class FreshPin:
             report["ledger"] = self.ledger.state()
             return report
 
-    def ground(self, question: str) -> dict[str, Any]:
+    def ground(self, question: str, depth: str = "advanced") -> dict[str, Any]:
         """Dated sources for a question BEFORE it is answered (no ledger changes)."""
         from .pipeline import ground_question
         if not question.strip():
@@ -124,7 +124,7 @@ class FreshPin:
         self._guard()
         question, _ = redact(question)
         return ground_question(question, chat=self.chat, search=self.search, models=self.s.extractor_models,
-                               max_sources=self.s.max_sources_per_claim)
+                               max_sources=self.s.max_sources_per_claim, depth=depth)
 
     def approve(self, decision_id: str, by: str, note: str = "") -> dict[str, Any]:
         with self.lock:

@@ -588,7 +588,7 @@ Return ONLY JSON: {"time_sensitive": bool, "type": str, "search_query": str}
 
 
 def ground_question(question: str, *, chat: ChatBackend, search: SearchBackend, models: list[str],
-                    today: date | None = None, max_sources: int = 5) -> dict[str, Any]:
+                    today: date | None = None, max_sources: int = 5, depth: str = "advanced") -> dict[str, Any]:
     today = today or date.today()
     budget = RunBudget(10000)
     try:
@@ -608,7 +608,7 @@ def ground_question(question: str, *, chat: ChatBackend, search: SearchBackend, 
     seen, found = set(), []
     for q in queries:
         try:
-            for s in search.search(q, ctype, max_sources):
+            for s in search.search(q, ctype, max_sources, depth=depth):
                 if s.url not in seen:
                     seen.add(s.url)
                     found.append(grade(s.as_dict(), ctype, today))

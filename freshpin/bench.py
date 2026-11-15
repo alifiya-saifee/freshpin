@@ -321,3 +321,191 @@ def save(result: dict[str, Any], results_dir: Path = RESULTS_DIR) -> Path:
     path = results_dir / f"bench-{time.strftime('%Y%m%d-%H%M%S')}.json"
     path.write_text(json.dumps(result, indent=2, ensure_ascii=False), encoding="utf-8")
     return path
+
+
+# ============================================================================================================
+# Agent arena: benchmark AI AGENTS, not just models. The same model is run as different agent configurations
+# ("arms") on questions whose answer changed recently, and graded against gold answers with quotes:
+#   bare      the model alone (training data only)
+#   grounded  FreshPin's ground_question runs first and the dated sources go into the prompt
+#   agent     a tool loop: the model DECIDES whether to call search_web (Tavily via FreshPin), up to 2 times
+#   repair    the bare answer, checked by FreshPin, then the model is told what was wrong and rewrites
+# ============================================================================================================
+import math  # noqa: E402
+
+ARMS = ("bare", "grounded", "agent", "repair")
+GROUNDED_SYSTEM = ("Answer the question directly and briefly, in at most three sentences, using ONLY the dated "
+                   "sources below. Cite them as [1], [2]. If they don't answer it, say you could not find "
+                   "recent information. Today's date is {today}.")
+AGENT_SYSTEM = ("Answer the question directly and briefly, in at most three sentences. You can call search_web "
+                "to look things up when the answer may have changed recently. Today's date is {today}.")
+SEARCH_TOOL = [{"type": "function", "function": {
+    "name": "search_web",
+    "description": "Search the live web for recent, dated information (news, prices, laws, versions, who runs what).",
+    "parameters": {"type": "object", "properties": {"query": {"type": "string", "description": "What to look up"}},
+                   "required": ["query"]}}}]
+
+
+def wilson(k: int, n: int, z: float = 1.96) -> tuple[float, float]:
+    """Wilson 95% interval for k successes out of n."""
+    if n == 0:
+        return (0.0, 1.0)
+    p = k / n
+    d = 1 + z * z / n
+    centre = (p + z * z / (2 * n)) / d
+    half = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / d
+    return (max(0.0, centre - half), min(1.0, centre + half))
+
+
+def sign_test(b: int, c: int) -> float:
+    """Exact two-sided McNemar (sign) test on discordant pairs: b = right only in A, c = right only in B."""
+    n = b + c
+    if n == 0:
+        return 1.0
+    tail = sum(math.comb(n, i) for i in range(min(b, c) + 1)) / 2 ** n
+    return min(1.0, 2 * tail)
+
+
+def key_terms(gold: str, question: str) -> set[str]:
+    """Names and numbers in the gold answer that the question doesn't already give away (e.g. 'Workday')."""
+    q = (question or "").casefold()
+    terms = set(re.findall(r"\b[A-Z][A-Za-z0-9&.-]{2,}\b|\b\d[\d,.]*\b", gold or ""))
+    stop = {"The", "This", "That", "On", "In", "And", "For", "With", "After", "Before", "Its", "It"}
+    return {t.rstrip(".,") for t in terms if t not in stop and t.casefold().rstrip(".,") not in q}
+
+
+def string_match(answer: str, terms: set[str]) -> bool | None:
+    """Backstop next to the LLM grader: a 'correct' answer must contain at least one gold key term."""
+    if not terms:
+        return None
+    a = (answer or "").casefold().replace(",", "")
+    return any(t.casefold().replace(",", "") in a for t in terms)
+
+
+def _pct(xs: list[float], p: float) -> float | None:
+    if not xs:
+        return None
+    s = sorted(xs)
+    return round(s[min(len(s) - 1, int(round(p * (len(s) - 1))))], 1)
+
+
+def independent_models(agent_model: str, pool: list[str]) -> tuple[list[str], bool]:
+    """Graders and checkers from a different model family than the agent under test (no self-preference).
+    Returns (models, independent?)."""
+    from .pipeline import model_family
+    fam = model_family(agent_model)
+    other = [m for m in dict.fromkeys(pool) if model_family(m) != fam]
+    return (other, True) if other else (list(dict.fromkeys(pool)), False)
+
+
+def run_arena(questions: list[dict[str, Any]], models: list[str], arms: list[str],
+              runners: dict[str, Callable[[str, str], dict[str, Any]]],
+              gold_judge_for: Callable[[str], Callable[[str, dict[str, Any]], dict[str, Any]]],
+              check: Callable[[str, str], dict[str, Any]] | None = None, check_arms: tuple[str, ...] = (),
+              repair: Callable[[str, str], dict[str, Any]] | None = None,
+              set_model: Callable[[str], Any] | None = None) -> dict[str, Any]:
+    """runners[arm](model, question) -> {"answer", "tool_calls": [...], "tokens", "searches", "latency_s"}.
+    set_model(model) lets the caller point FreshPin's checkers at a different model family first."""
+    out: dict[str, Any] = {"run_on": date.today().isoformat(), "arms": arms, "models": {}}
+    for model in models:
+        independent = set_model(model) if set_model else None
+        judge = gold_judge_for(model)
+        rows: dict[str, list[dict[str, Any]]] = {a: [] for a in arms}
+        for q in questions:
+            bare_row = None
+            for arm in arms:
+                row: dict[str, Any] = {"id": q["id"], "question": q["question"], "arm": arm}
+                try:
+                    if arm == "repair":
+                        if bare_row is None or "answer" not in bare_row or not check or not repair:
+                            raise RuntimeError("repair needs the bare arm and a checker")
+                        rep = bare_row.get("_report") or check(bare_row["answer"], q["question"])
+                        fb = feedback_message(q["question"], bare_row["answer"], rep)
+                        res = repair(model, fb) if fb else {"answer": bare_row["answer"], "tool_calls": []}
+                        res["told_what_was_wrong"] = bool(fb)
+                    else:
+                        res = runners[arm](model, q["question"])
+                    row.update({k: v for k, v in res.items() if k != "_report"})
+                    row["chose_to_search"] = bool(res.get("tool_calls")) if arm == "agent" else None
+                    if check and arm in check_arms and row.get("answer"):
+                        rep = check(row["answer"], q["question"])
+                        row["_report"] = rep
+                        row["claims"] = [claim_detail(c) for c in rep["claims"]]
+                except Exception as exc:  # noqa: BLE001 - one failure must not stop the arena
+                    row["error"] = f"{type(exc).__name__}: {exc}"[:300]
+                if q.get("gold_answer") and "answer" in row:
+                    row["gold"] = judge(row["answer"], q)
+                    row["string_match"] = string_match(row["answer"], key_terms(q["gold_answer"], q["question"]))
+                    g = row["gold"].get("result")
+                    # LLM grader and string backstop must both agree for "correct".
+                    row["correct"] = g == "correct" and row["string_match"] is not False
+                    row["grader_disagrees"] = g == "correct" and row["string_match"] is False
+                if arm == "bare":
+                    bare_row = row
+                rows[arm].append(row)
+        for arm_rows in rows.values():
+            for r in arm_rows:
+                r.pop("_report", None)
+        out["models"][model] = {"rows": rows, "scorecard": {a: arena_scorecard(rows[a]) for a in arms},
+                                "paired": paired_tests(rows, arms), "graders_independent": independent}
+    return out
+
+
+def arena_scorecard(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    graded = [r for r in rows if "gold" in r and r["gold"].get("result") != "not_graded"]
+    n = len(graded)
+    correct = sum(bool(r.get("correct")) for r in graded)
+    abstain = sum(r["gold"].get("result") == "admitted_unknown" for r in graded)
+    agent_rows = [r for r in rows if r.get("chose_to_search") is not None]
+    lat = [r["latency_s"] for r in rows if r.get("latency_s") is not None]
+    return {
+        "n": n, "errors": sum("error" in r for r in rows),
+        "correct": correct, "accuracy": round(correct / n, 3) if n else None,
+        "accuracy_ci95": [round(x, 3) for x in wilson(correct, n)],
+        "partly": sum(r["gold"].get("result") == "partly" for r in graded),
+        "wrong": sum(r["gold"].get("result") == "wrong" for r in graded),
+        "abstain": abstain, "abstain_ci95": [round(x, 3) for x in wilson(abstain, n)],
+        "grader_disagrees": sum(bool(r.get("grader_disagrees")) for r in graded),
+        "chose_to_search": (sum(bool(r["chose_to_search"]) for r in agent_rows) if agent_rows else None),
+        "tool_calls": sum(len(r.get("tool_calls") or []) for r in rows),
+        "tokens_mean": round(sum(r.get("tokens", 0) for r in rows) / len(rows)) if rows else 0,
+        "tavily_searches": sum(r.get("searches", 0) for r in rows),
+        "latency_p50_s": _pct(lat, 0.5), "latency_p95_s": _pct(lat, 0.95),
+    }
+
+
+def paired_tests(rows: dict[str, list[dict[str, Any]]], arms: list[str]) -> list[dict[str, Any]]:
+    """Same items, two arms: who flipped from wrong to right and back, and an exact sign test."""
+    out = []
+    for i, a in enumerate(arms):
+        for b in arms[i + 1:]:
+            ra = {r["id"]: r for r in rows[a] if "gold" in r}
+            rb = {r["id"]: r for r in rows[b] if "gold" in r}
+            both = [k for k in ra if k in rb]
+            only_b = [k for k in both if not ra[k].get("correct") and rb[k].get("correct")]
+            only_a = [k for k in both if ra[k].get("correct") and not rb[k].get("correct")]
+            out.append({"a": a, "b": b, "items": len(both), "fixed_by_b": len(only_b), "broken_by_b": len(only_a),
+                        "p_value": round(sign_test(len(only_a), len(only_b)), 4)})
+    return out
+
+
+def arena_markdown(result: dict[str, Any]) -> str:
+    lines = [f"# FreshPin agent arena, {result['run_on']}", "",
+             "Same questions, same model, different agent configurations. Correct = the LLM grader says correct "
+             "AND a gold key term appears in the answer. 95% Wilson intervals; with n items an interval is wide, "
+             "so read differences with the paired test below.", ""]
+    for model, m in result["models"].items():
+        lines += [f"## {model}", "", "| arm | n | correct | accuracy (95% CI) | partly | wrong | said unknown | "
+                  "chose to search | tool calls | tokens/answer | Tavily searches | p50 / p95 s |",
+                  "|---|---|---|---|---|---|---|---|---|---|---|---|"]
+        for arm, s in m["scorecard"].items():
+            acc = "-" if s["accuracy"] is None else f"{s['accuracy']:.0%} ({s['accuracy_ci95'][0]:.0%}–{s['accuracy_ci95'][1]:.0%})"
+            cts = "-" if s["chose_to_search"] is None else f"{s['chose_to_search']}/{s['n']}"
+            lines.append(f"| {arm} | {s['n']} | {s['correct']} | {acc} | {s['partly']} | {s['wrong']} | {s['abstain']} | "
+                         f"{cts} | {s['tool_calls']} | {s['tokens_mean']} | {s['tavily_searches']} | "
+                         f"{s['latency_p50_s']} / {s['latency_p95_s']} |")
+        lines += ["", "| A vs B | items | B fixed | B broke | sign test p |", "|---|---|---|---|---|"]
+        for p in m["paired"]:
+            lines.append(f"| {p['a']} vs {p['b']} | {p['items']} | {p['fixed_by_b']} | {p['broken_by_b']} | {p['p_value']} |")
+        lines.append("")
+    return "\n".join(lines)
