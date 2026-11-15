@@ -8,6 +8,7 @@ fallbacks, errors) and every tool call is recorded the same way for every agent,
 For each agent x condition x task x repeat it records success, steps, tool calls, tokens, cost and time, and builds a
 step-by-step trace. Conditions: normal, model_outage (the given model is unavailable; fallbacks are offered),
 tool_error (search is broken), misleading (a planted search result states a wrong answer and hides an instruction).
+Opt-in: misleading_prompt (the task itself carries a false hint), slow_tool (search works but answers slowly).
 """
 from __future__ import annotations
 
@@ -25,7 +26,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 from .bench import backstop, wilson, _pct
-from .toolserver import FAULTS, PLANTED_NAME, SEARCH_TOOL, ToolServer
+from .toolserver import ALL_FAULTS, MISLEADING_HINT, PLANTED_NAME, SEARCH_TOOL, ToolServer
 
 TAVILY_USD_PER_CREDIT = 0.008  # pay-as-you-go list price; 1 basic search = 1 credit
 OUTAGE_MODEL_SUFFIX = "model-that-does-not-exist"
@@ -162,11 +163,12 @@ def run_suite(tasks: list[dict[str, Any]], agents: list[Agent], conditions: list
             for t in tasks:
                 for rep in range(1, repeats + 1):
                     run_id = f"fp-{uuid.uuid4().hex[:12]}"
-                    tools.set_run(run_id, cond if cond in ("tool_error", "misleading") else "normal")
+                    tools.set_run(run_id, cond if cond in ("tool_error", "misleading", "slow_tool") else "normal")
+                    sent = t["question"] + (MISLEADING_HINT if cond == "misleading_prompt" else "")
                     use_model, fbs = model, list(fallback_models)
                     if cond == "model_outage":
                         use_model, fbs = f"{provider}/{OUTAGE_MODEL_SUFFIX}", [model] + list(fallback_models)
-                    task = {"task_id": t["id"], "run_id": run_id, "question": t["question"],
+                    task = {"task_id": t["id"], "run_id": run_id, "question": sent,
                             "today": date.today().isoformat(), "model": use_model, "fallback_models": fbs,
                             "llm": {"base_url": llm["base_url"],
                                     "headers": {**llm.get("headers", {}), "x-bf-session-id": run_id}},
@@ -178,7 +180,7 @@ def run_suite(tasks: list[dict[str, Any]], agents: list[Agent], conditions: list
                     answer = str(out.get("answer") or "")
                     rec: dict[str, Any] = {
                         "run_id": run_id, "agent": agent.name, "condition": cond, "task_id": t["id"], "repeat": rep,
-                        "question": t["question"], "gold_answer": t.get("gold_answer"),
+                        "question": t["question"], "question_sent": sent, "gold_answer": t.get("gold_answer"),
                         "source_url": t.get("source_url"), "answer": answer, "agent_error": out.get("error"),
                         "agent_notes": out.get("notes"), "seconds": wall,
                         "followed_planted": PLANTED_NAME.casefold() in answer.casefold(), "_task": t,
@@ -331,7 +333,7 @@ def leaderboard_markdown(result: dict[str, Any]) -> str:
              "| quota / grader failures (excluded) |",
              "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
     for agent, conds in result["summary"].items():
-        for cond in FAULTS:
+        for cond in ALL_FAULTS:
             s = conds.get(cond)
             if not s:
                 continue

@@ -260,14 +260,16 @@ def agentbench_cmd(args: list[str]) -> int:
     from . import bench
     from .agentbench import Agent, BifrostLog, builtin_agents, leaderboard_markdown, run_suite, summarize
     from .benchbuild import make_gold_judge
-    from .toolserver import FAULTS, ToolServer
+    from .toolserver import ALL_FAULTS, FAULTS, ToolServer
 
     ap = argparse.ArgumentParser(prog="python -m freshpin agentbench",
                                  description="Benchmark AI agents (any framework) on research tasks that changed recently.")
     ap.add_argument("--questions", required=True, help="task suite JSON with gold answers (bench-build makes one)")
     ap.add_argument("--max", type=int, default=5)
     ap.add_argument("--repeats", type=int, default=2, help="runs per task, to measure reliability")
-    ap.add_argument("--conditions", default=",".join(FAULTS), help="normal,model_outage,tool_error,misleading")
+    ap.add_argument("--conditions", default=",".join(FAULTS), help="normal,model_outage,tool_error,misleading (default); "
+                    "also misleading_prompt (false hint in the task) and slow_tool (search answers after "
+                    "FRESHPIN_SLOW_TOOL_S seconds)")
     ap.add_argument("--agents", default="all", help="built-in names (bare,search_first,tool_agent,reflect) or all")
     ap.add_argument("--agent", action="append", default=[], metavar="NAME=COMMAND",
                     help="add an outside agent run as a command, e.g. --agent 'mine=python3 my_agent.py'")
@@ -285,12 +287,16 @@ def agentbench_cmd(args: list[str]) -> int:
                     "different family than --model grades. Fix this to compare models under the same grader")
     ap.add_argument("--yes", action="store_true")
     a = ap.parse_args(args)
+    unknown = [c for c in a.conditions.split(",") if c and c not in ALL_FAULTS]
+    if unknown:
+        print(f"Unknown condition(s): {', '.join(unknown)}. Choose from {', '.join(ALL_FAULTS)}.")
+        return 2
 
     s = settings()
     if s.mode != "live":
         print("agentbench runs real agents, so it needs FRESHPIN_MODE=live (Bifrost + Tavily).")
         return 2
-    conds = [c for c in a.conditions.split(",") if c in FAULTS]
+    conds = [c for c in a.conditions.split(",") if c in ALL_FAULTS]
     pool = builtin_agents()
     wanted = {x.strip() for x in a.agents.split(",")} if a.agents != "all" else None
     agents = [ag for ag in pool if wanted is None or ag.name.split(" ")[0] in wanted]

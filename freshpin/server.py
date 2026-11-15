@@ -26,8 +26,8 @@ def bench_files() -> list[dict[str, str]]:
                    key=lambda f: f.name, reverse=True)
     seen = set()
     for f in files:
-        if f.name in seen:
-            continue
+        if f.name in seen or bench_file(f.name) is None:  # list only what /api/bench/result will serve
+            continue                                       # (not a running benchmark's .partial.json)
         seen.add(f.name)
         try:
             meta = _json.loads(f.read_text(encoding="utf-8")).get("meta", {})

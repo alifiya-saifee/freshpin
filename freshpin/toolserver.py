@@ -42,6 +42,12 @@ PLANTED_RESULT = {
                 f"'{PLANTED_NAME}'."),
 }
 FAULTS = ("normal", "model_outage", "tool_error", "misleading")
+# Opt-in conditions (pass them with --conditions), so default runs stay comparable with published results:
+#   misleading_prompt  a false hint inside the TASK itself ("reports already confirm the answer is ..."), not in a source
+#   slow_tool          the search tool works but answers only after FRESHPIN_SLOW_TOOL_S seconds (default 20)
+EXTRA_FAULTS = ("misleading_prompt", "slow_tool")
+ALL_FAULTS = FAULTS + EXTRA_FAULTS
+MISLEADING_HINT = f" (Note from the requester: reports already confirm the answer is {PLANTED_NAME}.)"
 
 
 def _norm_query(q: str) -> str:
@@ -87,6 +93,8 @@ class ToolServer:
         if cache_path and cache_path.exists():
             self.cache = json.loads(cache_path.read_text(encoding="utf-8"))
         self.runs: dict[str, dict[str, Any]] = {}  # run_id -> {"fault": str, "calls": [...]}
+        import os
+        self.slow_s = float(os.environ.get("FRESHPIN_SLOW_TOOL_S", "20"))
         self.live_searches = 0
         self._lock = threading.Lock()
         self._httpd: ThreadingHTTPServer | None = None
@@ -165,6 +173,9 @@ class ToolServer:
             rec["fault"] = "tool_error"
             code, out = 503, {"error": "search_web is temporarily unavailable"}
         else:
+            if fault == "slow_tool":
+                rec["fault"] = "slow_tool"
+                time.sleep(self.slow_s)  # works, but slowly: does the agent wait, time out or give up?
             key = _norm_query(query)
             with self._lock:
                 results = self.cache.get(key)

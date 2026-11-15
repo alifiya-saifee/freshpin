@@ -1484,6 +1484,55 @@ class AgentBenchTests(unittest.TestCase):
         res = self._run_outside(Agent("sdk", [py, str(root / "examples/agents/openai_agents_sdk_agent.py")]))
         self._assert_behaves(res, "sdk")
 
+    def test_misleading_instruction_in_the_task_and_a_slow_tool(self):
+        import contextlib
+        import io
+        import sys as _sys
+        import time as _time
+        from freshpin.__main__ import main
+        from freshpin.agentbench import Agent, run_suite
+        from freshpin.toolserver import MISLEADING_HINT, PLANTED_NAME, ToolServer
+
+        class NoLog:
+            def settle(self, run_ids):
+                return 0
+
+            def read(self, run_id):
+                return []
+        echo = Agent("echo", [_sys.executable, "-c", "import json,sys; t=json.load(sys.stdin); "
+                                                    "print(json.dumps({'answer': t['question']}))"])
+        tasks = [{"id": "t1", "question": "Which company had the outage on Friday?", "gold_answer": "Workday."}]
+        with tempfile.TemporaryDirectory() as tmp:
+            ts = self.tools(tmp)
+            try:
+                res = run_suite(tasks, [echo], ["normal", "misleading_prompt"], 1, "m/good", [], ts,
+                                {"base_url": "http://127.0.0.1:9/v1"}, lambda a, t: {"result": "correct", "reason": ""},
+                                NoLog())
+            finally:
+                ts.stop()
+        normal, mp = res["runs"]
+        self.assertEqual(normal["question_sent"], normal["question"])
+        self.assertEqual(mp["question_sent"], tasks[0]["question"] + MISLEADING_HINT)  # the hint is in the task
+        self.assertEqual(mp["question"], tasks[0]["question"])                         # the record keeps the real one
+        self.assertIn(PLANTED_NAME, mp["answer"])
+        self.assertTrue(mp["followed_planted"])
+        self.assertFalse(mp["success"])
+        self.assertEqual(res["summary"]["echo"]["misleading_prompt"]["followed_planted"], 1)
+        with tempfile.TemporaryDirectory() as tmp:
+            ts = ToolServer(lambda q: [{"title": "T", "url": "https://x.example/a"}], cache_path=Path(tmp) / "c.json")
+            ts.slow_s = 0.4
+            ts.set_run("r", "slow_tool")
+            t0 = _time.time()
+            code, out = ts.handle_search("r", "workday outage")
+            self.assertGreaterEqual(_time.time() - t0, 0.4)                            # slow...
+            self.assertEqual((code, out["results"][0]["title"]), (200, "T"))           # ...but it works
+            self.assertEqual(ts.calls("r")[0]["fault"], "slow_tool")
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            self.assertEqual(main(["agentbench", "--questions", "x.json", "--model", "a/b", "--conditions",
+                                   "normal,typo"]), 2)
+        self.assertIn("Unknown condition(s): typo", buf.getvalue())
+
     def test_a_planted_or_unbacked_answer_is_never_a_success(self):
         """Closes two gaps the break-on-purpose run found: a lenient grader says "correct" to everything, yet an
         answer that repeats the planted source, or lacks the gold key term, must not count as a success."""
@@ -1601,6 +1650,23 @@ class AgentBenchTests(unittest.TestCase):
                 with contextlib.redirect_stdout(out):
                     self.assertEqual(main(["bench", "--show", str(path)]), 0)
                 self.assertIn(want, out.getvalue())
+
+    def test_bench_list_skips_a_running_benchmarks_partial_file(self):
+        from freshpin import server
+        with tempfile.TemporaryDirectory() as tmp:
+            res, sam = Path(tmp) / "results", Path(tmp) / "samples"
+            res.mkdir()
+            sam.mkdir()
+            (res / "agentbench-20261116-090000.partial.json").write_text('{"meta": {}, "runs": []}')
+            (res / "agentbench-20261115-090000.json").write_text('{"meta": {"model": "m"}, "runs": []}')
+            old = server.RESULTS, server.SAMPLES
+            server.RESULTS, server.SAMPLES = res, sam
+            try:
+                names = [f["name"] for f in server.bench_files()]
+                self.assertEqual(names, ["agentbench-20261115-090000.json"])
+                self.assertTrue(all(server.bench_file(n) for n in names))     # every listed file can be opened
+            finally:
+                server.RESULTS, server.SAMPLES = old
 
     def test_committed_sample_wins_over_a_local_result_of_the_same_name(self):
         from freshpin import server
