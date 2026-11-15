@@ -227,7 +227,7 @@ function ring(score, band){
 }
 const VERDICT = {current:"Still current", partly_current:"Partly current", stale:"Out of date", contradicted:"Contradicted", unverifiable:"Could not verify", disputed:"Disputed: the two checks disagree"};
 const BADGE = {unverifiable:"unverified", disputed:"disputed"};
-const RECHECK = {confirmed:"✓ Confirmed by a second check", disputed:"⚠ Disputed", unavailable:"⚠ Second check could not run"};
+const RECHECK = {confirmed:"✓ Confirmed by a second check", disputed:"⚠ Disputed", unavailable:"⚠ Second check could not run", not_stated:"⚠ Not stated by the source"};
 function authTag(a){ return a ? `<span class="auth ${esc(a)}">${esc(a.replace("_"," "))}</span>` : ""; }
 function recheckBox(c, traces){
   const r = c.recheck || {};

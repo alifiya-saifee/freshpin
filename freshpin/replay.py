@@ -64,7 +64,7 @@ class ReplaySearch:
     def __init__(self, data: ReplayData):
         self.d = data
 
-    def search(self, query: str, claim_type: str, max_results: int = 5) -> list[Source]:
+    def search(self, query: str, claim_type: str, max_results: int = 5, depth: str = "advanced") -> list[Source]:
         key = self.d.query_to_key.get(query)
         rows = self.d.data["search"].get(key, []) if key else []
         return [Source(**r) for r in rows[:max_results]]

@@ -27,7 +27,7 @@ class Source:
 
 
 class SearchBackend(Protocol):
-    def search(self, query: str, claim_type: str, max_results: int) -> list[Source]: ...
+    def search(self, query: str, claim_type: str, max_results: int, depth: str = "advanced") -> list[Source]: ...
 
 
 # Fast-changing claim types search a recent window; news and markets use Tavily's news and finance topics.
@@ -41,12 +41,13 @@ class TavilyClient:
         self.url = url
         self.timeout_s = timeout_s
 
-    def search(self, query: str, claim_type: str, max_results: int = 5) -> list[Source]:
+    def search(self, query: str, claim_type: str, max_results: int = 5, depth: str = "advanced") -> list[Source]:
+        """depth "basic" costs 1 Tavily credit, "advanced" 2."""
         if not self.api_key:
             raise SearchUnavailable("TAVILY_API_KEY is not set")
         body: dict[str, Any] = {
             "query": query,
-            "search_depth": "advanced",
+            "search_depth": depth if depth in ("basic", "advanced") else "advanced",
             "max_results": max_results,
             "include_answer": False,
             "topic": _TOPIC.get(claim_type, "general"),
@@ -90,8 +91,8 @@ class CachedSearch:
         self._store: dict[tuple[str, str, int], tuple[float, list[Source]]] = {}
         self._lock = threading.Lock()
 
-    def search(self, query: str, claim_type: str, max_results: int = 5) -> list[Source]:
-        key = (query.strip().lower(), claim_type, max_results)
+    def search(self, query: str, claim_type: str, max_results: int = 5, depth: str = "advanced") -> list[Source]:
+        key = (query.strip().lower(), claim_type, max_results, depth)
         ttl = CACHE_TTL_S.get(claim_type, DEFAULT_CACHE_TTL_S)
         now = self.clock()
         with self._lock:
@@ -99,7 +100,7 @@ class CachedSearch:
             if hit and now - hit[0] < ttl:
                 self.hits += 1
                 return list(hit[1])
-        result = self.inner.search(query, claim_type, max_results)
+        result = self.inner.search(query, claim_type, max_results, depth=depth)
         with self._lock:
             self.misses += 1
             self._store[key] = (now, list(result))

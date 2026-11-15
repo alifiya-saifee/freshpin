@@ -35,13 +35,14 @@ _HONEST = re.compile(
     r"|\bI(?:'m| am) not aware|as of my (?:knowledge|training|last update)|knowledge cut-?off"
     r"|(?:after|beyond) my (?:knowledge|training)|my (?:training )?data (?:only )?(?:goes|runs|extends)", re.I)
 
-# Rough Tavily credit use per answer: ~3 claims, 1 search each (+1 with recheck), 2 credits per advanced search.
+# Rough Tavily credit use per answer: ~3 claims; a basic first search (1 credit) plus, with recheck, an advanced
+# recheck search (2 credits).
 CLAIMS_PER_ANSWER = 3
 CREDITS_PER_SEARCH = 2
 
 
 def estimate_credits(n_questions: int, n_models: int, recheck: bool) -> int:
-    return n_questions * n_models * CLAIMS_PER_ANSWER * (2 if recheck else 1) * CREDITS_PER_SEARCH
+    return n_questions * n_models * CLAIMS_PER_ANSWER * (1 + (CREDITS_PER_SEARCH if recheck else 0))
 
 
 def admits_live_limits(answer: str) -> bool:
