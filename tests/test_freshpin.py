@@ -440,6 +440,21 @@ class NewsLiveDataTests(unittest.TestCase):
                          [("news", "week"), ("finance", "day"), ("general", None)])
 
 
+class EventSearchTests(unittest.TestCase):
+    def test_event_recheck_searches_the_question_not_the_guess(self):
+        from freshpin.pipeline import run_check
+        claim = {"text": "ServiceNow had the outage.", "key": "outage.friday", "type": "event",
+                 "time_sensitive": True, "search_query": "ServiceNow outage"}
+        verify = {"outage.friday": {"verdict": "unverifiable", "current_statement": "", "supporting": [],
+                                    "contradicting": [], "explanation": "", "confirm_query": "ServiceNow outage news"}}
+        chat, search = StubChat([claim], verify, {}), StubSearch({})
+        with tempfile.TemporaryDirectory() as tmp:
+            run_check("ServiceNow had the outage.", chat=chat, search=search, ledger=Ledger(Path(tmp) / "e.db"),
+                      extractor_models=["a"], verifier_models=["b"], token_budget=10**6, today=TODAY,
+                      context="Which company had a major outage on Friday 14 November affecting 11,500 companies?")
+        self.assertEqual(search.calls[1][0], "Which company had a major outage on Friday 14 November affecting 11,500 companies?")
+
+
 class EfficiencyTests(unittest.TestCase):
     def test_cache_reuses_until_it_expires(self):
         from freshpin.search import CachedSearch
@@ -524,6 +539,10 @@ class CorrectionsAndBenchTests(unittest.TestCase):
         # A real answer from the live bench: curly apostrophe and non-breaking hyphen.
         self.assertTrue(bench.admits_live_limits("I\u2019m sorry, but I don\u2019t have real\u2011time data access."))
         self.assertFalse(bench.admits_live_limits("Gold is $2,650 an ounce today."))
+        # Real answers from live runs: the model about itself counts; users "unable to access email" does not.
+        self.assertFalse(bench.admits_live_limits("The outage left thousands of users unable to access email."))
+        self.assertTrue(bench.admits_live_limits("I do not have a confirmed source identifying the company."))
+        self.assertTrue(bench.admits_live_limits("I\u2019m not aware of that event."))
         self.assertEqual(bench.estimate_credits(3, 2, False), 36)
 
     def test_bench_check_leaves_ledger_alone(self):
@@ -574,6 +593,120 @@ class CorrectionsAndBenchTests(unittest.TestCase):
         qs = bench.load_questions()
         self.assertEqual(len(qs), 6)
         self.assertTrue({"live_data", "event"} <= {q["category"] for q in qs})
+
+
+class FreshBenchTests(unittest.TestCase):
+    """Fresh-events bench builder, gold scoring, the repair loop and FreshPin's self-test."""
+
+    def test_builder_keeps_only_quoted_recent_unique_items(self):
+        from freshpin.benchbuild import build_fresh_set
+
+        def row(url, snippet, published="2026-11-13"):
+            return {"title": f"T {url}", "url": url, "snippet": snippet, "published_date": published, "relevance": 1}
+
+        art = "Outlook was down for six hours on Friday after a faulty update, Microsoft said."
+        rows = {"major service outage": [row("https://news.example.com/a", art),
+                                         row("https://news.example.com/old", "Old story.", "2026-09-01")],
+                "product launch announced": [row("https://news.example.com/a", art),  # duplicate URL
+                                             row("https://news.example.com/b", "A gadget launched.")],
+                "acquisition announced": [row("https://news.example.com/c", "Opinion piece about deals.")]}
+
+        class Chat:
+            def chat_json(self, step, models, system, user, budget, simulate_outage=False):
+                if "news.example.com/a" in user:
+                    return {"usable": True, "question": "What happened to Outlook on Friday 13 Nov 2026?",
+                            "gold_answer": "Outlook was down for six hours after a faulty update.",
+                            "evidence_quote": "Outlook was down for six hours on Friday after a faulty update"}
+                if "news.example.com/b" in user:  # made-up quote: must be dropped
+                    return {"usable": True, "question": "q", "gold_answer": "g",
+                            "evidence_quote": "The gadget sold a million units in an hour"}
+                return {"usable": False}
+
+        data = build_fresh_set(StubSearch(rows), Chat(), ["m"], TODAY, n=5,
+                               queries=list(rows))
+        self.assertEqual([q["source_url"] for q in data["questions"]], ["https://news.example.com/a"])
+        q = data["questions"][0]
+        self.assertEqual((q["category"], q["review"]), ("event", "auto"))
+        self.assertEqual(data["skipped"]["quote_not_found"], 1)
+        self.assertEqual(data["skipped"]["not_usable"], 1)
+        self.assertEqual(data["candidates"], 3)  # duplicate and too-old articles never reach the model
+
+    def test_gold_judge_grades_the_whole_answer(self):
+        from freshpin import bench
+        from freshpin.benchbuild import make_gold_judge
+
+        class Chat:
+            calls = 0
+
+            def chat_json(self, step, models, system, user, budget, simulate_outage=False):
+                Chat.calls += 1
+                answer = user.split("MODEL ANSWER:")[1]
+                return {"result": "correct" if "Workday" in answer else "wrong", "reason": ""}
+
+        judge = make_gold_judge(Chat(), ["m"], bench.admits_live_limits)
+        q = {"id": "x", "question": "Which company had the outage?", "gold_answer": "Workday."}
+        # A real rewrite from the live run: the right company plus a hedge about others. Not "unknown".
+        self.assertEqual(judge("It is Workday. I do not have confirmed information linking any other company.", q)
+                         ["result"], "correct")
+        self.assertEqual(judge("There was a flood in Paris.", q)["result"], "wrong")
+        self.assertEqual(judge("   ", q)["result"], "admitted_unknown")
+        self.assertEqual(Chat.calls, 2)
+
+    def test_repair_loop_tells_the_model_and_scores_the_fix(self):
+        from freshpin import bench
+        qs = [{"id": "dubai", "category": "regulation", "question": "Dubai rule?", "gold_answer": "20 years."}]
+        seen_feedback = []
+
+        def ask(model, q):
+            return "Buildings need it at 10 years."
+
+        def check(answer, q):
+            wrong = "10 years" in answer
+            claim = {"text": answer, "type": "regulation", "verdict": "contradicted" if wrong else "current",
+                     "freshness": {"score": 10 if wrong else 90},
+                     "current_statement": "Buildings need it at 20 years." if wrong else answer, "recheck": {}}
+            corr = [{"claim": answer, "now": "Buildings need it at 20 years.",
+                     "reference": {"url": "https://dlp.dubai.gov.ae/law3"}}] if wrong else []
+            return {"claims": [claim], "corrections": corr, "unconfirmed": []}
+
+        def repair(model, feedback):
+            seen_feedback.append(feedback)
+            return "Buildings need it at 20 years."
+
+        def gold(answer, q):
+            return {"result": "correct" if "20" in answer else "wrong", "reason": ""}
+
+        res = bench.run_bench(qs, ["m"], ask, check, gold_judge=gold, repair=repair)
+        s = res["models"]["m"]["scorecard"]
+        row = res["models"]["m"]["rows"][0]
+        self.assertIn("Confirmed now: Buildings need it at 20 years.", seen_feedback[0])
+        self.assertIn("dlp.dubai.gov.ae", seen_feedback[0])
+        self.assertTrue(row["repair"]["fixed"])
+        self.assertEqual((s["had_errors"], s["fixed_after_feedback"]), (1, 1))
+        self.assertEqual((s["gold_wrong"], s["gold_after_feedback_correct"]), (1, 1))
+        # Unverified claims carry the evidence FreshPin found, so the model can correct itself.
+        fb = bench.feedback_message("q", "ServiceNow had the outage.", {"corrections": [], "unconfirmed": [
+            {"claim": "ServiceNow had the outage.", "reason": "unverified",
+             "evidence": [{"title": "Workday outage hits 11,500 companies", "url": "https://nypost.com/x",
+                           "published_date": "2026-11-14", "snippet": "Workday suffered a major outage on Friday."}]}]})
+        self.assertIn("Evidence found: Workday outage hits 11,500 companies (2026-11-14)", fb)
+        self.assertIn("Do not repeat an unverified claim", fb)
+        # Nothing to fix -> no feedback is sent at all.
+        self.assertIsNone(bench.feedback_message("q", "a", {"corrections": [], "unconfirmed": []}))
+
+    def test_self_test_counts_and_rule_corruption(self):
+        from freshpin.benchbuild import corrupt_rule, self_test
+        self.assertEqual(corrupt_rule("The law was issued in 2026."), "The law was issued in 2024.")
+        self.assertEqual(corrupt_rule("It was down for 6 hours."), "It was down for 15 hours.")
+        self.assertIsNone(corrupt_rule("No numbers here."))
+
+        def check(answer, q):
+            v = "current" if "2026" in answer else "contradicted"
+            return {"claims": [{"verdict": v}]}
+
+        st = self_test([{"id": "a", "question": "q", "gold_answer": "Issued in 2026."}], check, corrupt_rule)
+        self.assertEqual(st["tally"], {"gold_claims": 1, "gold_confirmed": 1, "gold_false_alarm": 0,
+                                       "wrong_claims": 1, "wrong_caught": 1, "wrong_missed": 0})
 
 
 class McpTests(unittest.TestCase):

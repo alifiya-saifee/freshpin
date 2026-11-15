@@ -29,6 +29,8 @@ Rules:
 - key is a stable snake_case id for the FACT, not the wording, e.g. "dubai.building_safety_certificate.required_for_old_buildings".
   If a claim is about the same fact as one in KNOWN_FACTS, reuse that key exactly.
 - search_query is a short web query that would find the CURRENT value of this fact. Include the place and topic; do not include the claimed value.
+  For an event, describe the EVENT (what happened, when, where, numbers) and leave out the names the claim asserts,
+  e.g. "major software outage Friday 14 November 2026 11,500 companies", not "ServiceNow outage".
 - Skip opinions, advice and definitions."""
 
 VERIFY_SYSTEM = """You check one claim against web sources found today. Use ONLY the sources given, never memory.
@@ -273,6 +275,10 @@ def run_check(answer: str, *, chat: ChatBackend, search: SearchBackend, ledger: 
         c, v = checkable[i], verdicts[i]
         q = (v.get("confirm_query") or (v.get("current_statement") if v.get("verdict") in _CORRECTIONS else "")
              or c["text"]).strip()[:300]
+        if c["type"] == "event" and context.strip():
+            # Fixed rule: for events, search the person's own question. It describes the event without the
+            # model's guess (searching "ServiceNow outage" only finds ServiceNow news, never the real company).
+            q = context.strip()[:300]
         seen = {s["url"] for s in all_sources[i]}
         try:
             return [s.as_dict() for s in search.search(q, c["type"], max_sources) if s.url not in seen]
@@ -371,9 +377,13 @@ def run_check(answer: str, *, chat: ChatBackend, search: SearchBackend, ledger: 
                                 "reference": rc.get("best_reference"), "quote": rc.get("evidence_quote"),
                                 "why_outdated": rc.get("why_outdated", "")})
         elif r["verdict"] in ("disputed", "unverifiable"):
+            top = sorted(r.get("sources") or [], key=rank_key)[:2]
             unconfirmed.append({"claim": r["text"], "verdict": r["verdict"],
                                 "reason": "needs a live data feed" if r.get("needs_live_feed")
-                                else rc.get("reason") or r.get("explanation", "")})
+                                else rc.get("reason") or r.get("explanation", ""),
+                                "evidence": [{"title": s.get("title"), "url": s.get("url"),
+                                              "published_date": s.get("published_date"),
+                                              "snippet": (s.get("snippet") or "")[:300]} for s in top]})
 
     traces = [t.as_dict() for t in budget.traces]
     return {

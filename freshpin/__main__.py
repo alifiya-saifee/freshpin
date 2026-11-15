@@ -14,6 +14,7 @@ USAGE = """usage:
   python -m freshpin mcp                   run as an MCP server (stdio) for AI assistants
   python -m freshpin bench --models a,b [--max N] [--questions file] [--no-recheck] [--yes]
                                            test models on facts that change; print a freshness scorecard
+  python -m freshpin bench-build [--n 8]   build a fresh-events question set (gold answers + quotes) from this week's news
   python -m freshpin check "answer text"   check an answer and print the JSON report
   python -m freshpin sample <id>           load a sample ledger, check its answer, print a summary
 """
@@ -33,6 +34,8 @@ def main(argv: list[str]) -> int:
         return 0
     if cmd == "bench":
         return bench_cmd(argv[1:])
+    if cmd == "bench-build":
+        return bench_build_cmd(argv[1:])
     app = FreshPin(settings())
     if cmd == "check" and len(argv) > 1:
         print(json.dumps(app.check(" ".join(argv[1:])), indent=2, ensure_ascii=False))
@@ -64,6 +67,34 @@ def main(argv: list[str]) -> int:
 
 
 
+def bench_build_cmd(args: list[str]) -> int:
+    import argparse
+    from datetime import date
+    from pathlib import Path
+
+    from .benchbuild import NEWS_QUERIES, build_fresh_set, estimate_build_credits, save_set
+
+    ap = argparse.ArgumentParser(prog="python -m freshpin bench-build")
+    ap.add_argument("--n", type=int, default=8, help="how many questions to keep")
+    ap.add_argument("--days", type=int, default=7, help="only news from the last N days")
+    ap.add_argument("--out", help="output file (default bench/fresh-<date>.json)")
+    a = ap.parse_args(args)
+    s = settings()
+    if s.mode != "live":
+        print("bench-build searches real news, so it needs FRESHPIN_MODE=live (Bifrost + Tavily).")
+        return 2
+    print(f"Searching this week's news ({len(NEWS_QUERIES)} searches, about {estimate_build_credits()} Tavily credits).")
+    app = FreshPin(s)
+    data = build_fresh_set(app.search, app.chat, s.extractor_models, date.today(), n=a.n, days=a.days)
+    path = save_set(data, Path(a.out) if a.out else None)
+    print(f"Kept {len(data['questions'])} of {data['candidates']} articles; skipped {data['skipped']}.")
+    for q in data["questions"]:
+        print(f"- {q['question']}\n    gold: {q['gold_answer']}\n    quote: \"{q['evidence_quote']}\"\n"
+              f"    source: {q['source_url']} ({q.get('published_date') or 'undated'})")
+    print(f"\nSaved: {path}  (review: auto - read it before relying on it)")
+    return 0
+
+
 def bench_cmd(args: list[str]) -> int:
     import argparse
     from datetime import date
@@ -79,6 +110,10 @@ def bench_cmd(args: list[str]) -> int:
     ap.add_argument("--max", type=int, default=6, help="use only the first N questions")
     ap.add_argument("--no-recheck", action="store_true", help="skip the recheck layer (half the Tavily credits)")
     ap.add_argument("--yes", action="store_true", help="run even if the estimate is above 40 Tavily credits")
+    ap.add_argument("--repair", action="store_true", help="tell the model what was wrong and let it rewrite, then re-check")
+    ap.add_argument("--repair-rounds", type=int, default=1)
+    ap.add_argument("--self-test", action="store_true",
+                    help="measure FreshPin itself: gold answers should pass, deliberately wrong versions should fail")
     a = ap.parse_args(args)
     if a.show:
         import json as _json
@@ -115,7 +150,32 @@ def bench_cmd(args: list[str]) -> int:
     def check(answer: str, question: str) -> dict:
         return app.check(answer, context=question, apply_to_ledger=False)
 
-    result = bench.run_bench(questions, models, ask, check)
+    if a.self_test:
+        from .benchbuild import corrupt_rule, self_test
+        items = [q for q in questions if q.get("gold_answer")]
+        if not items:
+            print("--self-test needs a question set with gold answers (python -m freshpin bench-build).")
+            return 2
+        st = self_test(items, lambda ans, q: app.check(ans, context=q, apply_to_ledger=False), corrupt_rule)
+        t = st["tally"]
+        print(f"Gold answers: {t['gold_confirmed']} of {t['gold_claims']} claims confirmed, "
+              f"{t['gold_false_alarm']} wrongly called stale or wrong.")
+        print(f"Deliberately wrong versions: {t['wrong_caught']} of {t['wrong_claims']} claims caught, "
+              f"{t['wrong_missed']} wrongly called current.")
+        print(f"Saved: {bench.save({'self_test': st})}")
+        return 0
+
+    gold_judge = None
+    if any(q.get("gold_answer") for q in questions):
+        from .benchbuild import make_gold_judge
+        gold_judge = make_gold_judge(app.chat, s.checker_models, bench.admits_live_limits)
+
+    def repair(model: str, feedback: str) -> str:
+        print(f"  telling {model} what was wrong and asking it to rewrite")
+        return client.chat_text(model, system, feedback, RunBudget(8000), step="repair")
+
+    result = bench.run_bench(questions, models, ask, check, gold_judge=gold_judge,
+                             repair=repair if a.repair else None, repair_rounds=a.repair_rounds)
     print()
     bench.print_table(result)
     bench.print_details(result)

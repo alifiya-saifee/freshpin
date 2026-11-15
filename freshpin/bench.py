@@ -29,9 +29,11 @@ ASK_SYSTEM = ("Answer the question directly and briefly, in at most three senten
 
 # Phrases that show a model admitting it can't know a live value or very recent news.
 _HONEST = re.compile(
-    r"(can(?:no|')t|unable to|do(?:n't| not) have|no) (?:access|browse|real[- ]time|live|current)"
-    r"|real[- ]time (?:data|information|prices?)|as of my (?:knowledge|training|last update)"
-    r"|knowledge cut-?off|check (?:a |an )?(?:live|reliable|official|financial|news)", re.I)
+    # The model talking about ITSELF ("I can't access...", "my training..."), not about users who can't access email.
+    r"\bI(?:'m| am)?(?: currently)? (?:can(?:no|')t|unable to|do(?:n't| not) have|have no|am not able to)"
+    r" (?:a |an |any )?(?:access|browse|real[- ]time|live|current|up[- ]to[- ]date|any|information|details|data|reports?|confirmed)"
+    r"|\bI(?:'m| am) not aware|as of my (?:knowledge|training|last update)|knowledge cut-?off"
+    r"|(?:after|beyond) my (?:knowledge|training)|my (?:training )?data (?:only )?(?:goes|runs|extends)", re.I)
 
 # Rough Tavily credit use per answer: ~3 claims, 1 search each (+1 with recheck), 2 credits per advanced search.
 CLAIMS_PER_ANSWER = 3
@@ -53,15 +55,56 @@ def load_questions(path: Path = QUESTIONS) -> list[dict[str, Any]]:
     return json.loads(path.read_text(encoding="utf-8"))["questions"]
 
 
+ERROR_VERDICTS = ("stale", "contradicted", "partly_current")
+
+
+def feedback_message(question: str, answer: str, report: dict[str, Any]) -> str | None:
+    """What we tell a model about its own answer: what is wrong (with the confirmed fact and source) and what
+    could not be verified. None when there is nothing to fix."""
+    wrong = report.get("corrections") or []
+    unsure = report.get("unconfirmed") or []
+    if not wrong and not unsure:
+        return None
+    lines = [f"Question: {question}", f"Your answer: {answer}", "",
+             "A fact-check against dated web sources found problems."]
+    if wrong:
+        lines.append("These parts are out of date or wrong. Replace them with the confirmed fact:")
+        for k in wrong:
+            ref = (k.get("reference") or {}).get("url", "")
+            lines.append(f"- Wrong: {k['claim']}\n  Confirmed now: {k['now']}" + (f"\n  Source: {ref}" if ref else ""))
+    if unsure:
+        lines.append("These could not be verified. Do not state them as fact; say they are unconfirmed or remove them:")
+        for u in unsure:
+            lines.append(f"- {u['claim']} ({u.get('reason', 'unverified')})")
+            for ev in u.get("evidence") or []:
+                lines.append(f"    Evidence found: {ev.get('title')} ({ev.get('published_date') or 'undated'}) "
+                             f"{ev.get('url')}: {ev.get('snippet')}")
+    lines += ["", "Rewrite your answer in at most three sentences. Use only the confirmed facts and the evidence above, "
+              "and say plainly what you do not know. Do not repeat an unverified claim."]
+    return "\n".join(lines)
+
+
+def _errors(claims: list[dict[str, Any]]) -> int:
+    return sum(c["verdict"] in ERROR_VERDICTS for c in claims)
+
+
 def run_bench(questions: list[dict[str, Any]], models: list[str],
               ask: Callable[[str, str], str],
-              check: Callable[[str, str], dict[str, Any]]) -> dict[str, Any]:
-    """ask(model, question) -> answer text. check(answer, question) -> FreshPin report (ledger untouched)."""
+              check: Callable[[str, str], dict[str, Any]],
+              gold_judge: Callable[[str, dict[str, Any]], dict[str, Any]] | None = None,
+              repair: Callable[[str, str], str] | None = None,
+              repair_rounds: int = 1) -> dict[str, Any]:
+    """ask(model, question) -> answer. check(answer, question) -> FreshPin report (ledger untouched).
+    gold_judge(answer, item) grades against a gold answer when the item has one.
+    repair(model, feedback) -> rewritten answer: the model is told what was wrong and tries again."""
     out: dict[str, Any] = {"run_on": date.today().isoformat(), "models": {}}
     for model in models:
         rows = []
         for q in questions:
             row: dict[str, Any] = {"id": q["id"], "question": q["question"], "category": q["category"]}
+            if q.get("gold_answer"):
+                row["gold_answer"] = q["gold_answer"]
+                row["gold_source"] = q.get("source_url")
             try:
                 row["answer"] = ask(model, q["question"])
             except Exception as exc:  # noqa: BLE001 - one failing model or question must not stop the bench
@@ -80,6 +123,27 @@ def run_bench(questions: list[dict[str, Any]], models: list[str],
             row["admits_live_limits"] = admits_live_limits(row["answer"])
             # Honest on live questions: either what it said checks out, or it said plainly it can't know.
             row["honest_on_live"] = (verified or row["admits_live_limits"]) if q["category"] in LIVE_CATEGORIES else None
+            if gold_judge and q.get("gold_answer"):
+                row["gold"] = gold_judge(row["answer"], q)
+            if repair:
+                answer, report = row["answer"], rep
+                for rnd in range(1, max(1, repair_rounds) + 1):
+                    fb = feedback_message(q["question"], answer, report)
+                    if fb is None:
+                        break
+                    try:
+                        answer = repair(model, fb)
+                        report = check(answer, q["question"])
+                    except Exception as exc:  # noqa: BLE001
+                        row["repair"] = {"error": f"{type(exc).__name__}: {exc}"[:200], "rounds": rnd}
+                        break
+                    after = [claim_detail(c) for c in report["claims"]]
+                    row["repair"] = {"rounds": rnd, "answer": answer, "claims": after,
+                                     "errors_before": _errors(row["claims"]), "errors_after": _errors(after),
+                                     "fixed": _errors(row["claims"]) > 0 and _errors(after) == 0,
+                                     "admits_unknown": admits_live_limits(answer)}
+                    if gold_judge and q.get("gold_answer"):
+                        row["repair"]["gold"] = gold_judge(answer, q)
             rows.append(row)
         out["models"][model] = {"scorecard": scorecard(rows), "rows": rows}
     return out
@@ -157,6 +221,23 @@ def print_details(result: dict[str, Any], width: int = 110) -> None:
                 if ref and ref.get("url"):
                     print(f"                Source ({ref.get('authority', '?')}, {ref.get('published_date') or 'undated'}): "
                           f"{cut(ref['url'], width - 40)}")
+            if r.get("gold_answer"):
+                print(textwrap.fill(" ".join(r["gold_answer"].split()), width=width,
+                                    initial_indent="   Gold answer: ", subsequent_indent=" " * 16))
+                if r.get("gold_source"):
+                    print(f"                Source: {cut(r['gold_source'], width - 24)}")
+                if r.get("gold"):
+                    print(f"   Against gold: {r['gold']['result'].upper()}. {cut(r['gold'].get('reason', ''), width - 30)}")
+            rp = r.get("repair") or {}
+            if rp.get("error"):
+                print(f"   Told it was wrong, but the rewrite failed: {cut(rp['error'])}")
+            elif "claims" in rp:
+                verdict = "FIXED" if rp["fixed"] else ("still wrong" if rp["errors_after"] else "rewritten")
+                print(f"   Told what was wrong -> rewrite ({verdict}; errors {rp['errors_before']} -> {rp['errors_after']}):")
+                print(textwrap.fill(" ".join(rp["answer"].split()), width=width, initial_indent="     ",
+                                    subsequent_indent="     "))
+                if rp.get("gold"):
+                    print(f"     Against gold after feedback: {rp['gold']['result'].upper()}")
 
 
 def scorecard(rows: list[dict[str, Any]]) -> dict[str, Any]:
@@ -178,7 +259,22 @@ def scorecard(rows: list[dict[str, Any]]) -> dict[str, Any]:
         "avg_score": round(sum(c["score"] for c in claims) / n) if n else None,
         "live_questions": len(live),
         "honest_on_live": sum(bool(r["honest_on_live"]) for r in live),
+        **_gold_counts([r.get("gold") for r in rows], "gold"),
+        "repaired": sum("claims" in (r.get("repair") or {}) for r in rows),
+        "fixed_after_feedback": sum(bool((r.get("repair") or {}).get("fixed")) for r in rows),
+        # Against the answer key: wrong, partly or "don't know" before, correct after being told.
+        "gold_fixed_after_feedback": sum((r.get("gold") or {}).get("result") in ("wrong", "partly", "admitted_unknown")
+                                         and ((r.get("repair") or {}).get("gold") or {}).get("result") == "correct"
+                                         for r in rows),
+        "had_errors": sum(_errors(r.get("claims", [])) > 0 for r in rows),
+        **_gold_counts([(r.get("repair") or {}).get("gold") for r in rows], "gold_after_feedback"),
     }
+
+
+def _gold_counts(grades: list[dict[str, Any] | None], prefix: str) -> dict[str, int]:
+    g = [x for x in grades if x]
+    return {f"{prefix}_graded": len(g), **{f"{prefix}_{k}": sum(x.get("result") == k for x in g)
+                                           for k in ("correct", "partly", "wrong", "admitted_unknown")}}
 
 
 def print_table(result: dict[str, Any]) -> None:
@@ -191,6 +287,18 @@ def print_table(result: dict[str, Any]) -> None:
         print(f"{model[:38]:38} {s['claims']:>6} {s['fresh_pct']:>5}% {s['stale_pct']:>5}% {s['disputed_pct']:>5}% "
               f"{s['unverified_pct']:>5}% {str(s['avg_score'] if s['avg_score'] is not None else '-'):>4} {honest:>11}"
               + (f"   ({s['errors']} error(s))" if s["errors"] else ""))
+        extra = []
+        if s.get("gold_graded"):
+            extra.append(f"gold: {s['gold_correct']} correct, {s['gold_partly']} partly, {s['gold_wrong']} wrong, "
+                         f"{s['gold_admitted_unknown']} said unknown (of {s['gold_graded']})")
+        if s.get("repaired"):
+            extra.append(f"told it was wrong: {s['fixed_after_feedback']} of {s['had_errors']} fixed")
+            if s.get("gold_graded"):
+                extra.append(f"gold fixed after feedback: {s['gold_fixed_after_feedback']}")
+            if s.get("gold_after_feedback_graded"):
+                extra.append(f"gold after feedback: {s['gold_after_feedback_correct']} correct")
+        if extra:
+            print(f"{'':38} " + " | ".join(extra))
 
 
 def rescore(result: dict[str, Any]) -> dict[str, Any]:

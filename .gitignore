@@ -5,3 +5,5 @@ __pycache__/
 .DS_Store
 bifrost-data/
 bench/results/
+# auto-built question sets: commit only after a person has reviewed them (git add -f)
+bench/fresh-*.json
