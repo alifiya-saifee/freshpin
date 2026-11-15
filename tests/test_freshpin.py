@@ -2128,6 +2128,18 @@ class ListPriceTests(unittest.TestCase):
         md = leaderboard_markdown({"meta": {}, "summary": summarize([dict(ok, success=False)], 1)})
         self.assertIn("| 0.0100 | - |", md)                                         # no success: no $/success
 
+    def test_a_cell_with_every_run_excluded_shows_dashes_not_none(self):
+        from freshpin.agentbench import leaderboard_markdown, summarize
+        r = {"agent": "x", "condition": "misleading", "task_id": "t", "success": False, "grade": "not_graded",
+             "grader_error": True, "steps": 1, "model_calls": 1, "tool_calls": 0, "tokens": 5, "cost_usd": 0.0,
+             "seconds": 1.0, "followed_planted": False, "trace": []}
+        md = leaderboard_markdown({"meta": {}, "summary": summarize([r], 1)})
+        row = next(l for l in md.splitlines() if l.startswith("| x | misleading"))
+        self.assertIn("no counted runs", row)
+        self.assertNotIn("None", row)
+        self.assertTrue(row.endswith("| 0 / 1 |"))
+        self.assertEqual(row.count("|"), md.splitlines()[4].count("|"))      # same number of columns as the header
+
     def test_old_results_without_traces_still_summarise(self):
         from freshpin.agentbench import summarize
         r = {"agent": "x", "condition": "normal", "task_id": "t", "success": True, "grade": "correct", "steps": 1,

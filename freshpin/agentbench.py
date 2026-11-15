@@ -364,6 +364,11 @@ def leaderboard_markdown(result: dict[str, Any]) -> str:
             s = conds.get(cond)
             if not s:
                 continue
+            if not s["runs"]:  # every run excluded (grader failures / quota kills): nothing to score
+                lines.append(f"| {agent} | {cond} | - (no counted runs) | - | - | - | - | - | - | - | - | - | "
+                             f"{s['agent_errors']} | {s['followed_planted']} | "
+                             f"{s.get('infra_errors', 0)} / {s.get('grader_errors', 0)} |")
+                continue
             rate = "-" if s["success_rate"] is None else (f"{s['success_rate']:.0%} ({s['success_ci95'][0]:.0%}–"
                                                           f"{s['success_ci95'][1]:.0%})")
             d = s.get("drop_vs_normal")

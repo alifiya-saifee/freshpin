@@ -104,6 +104,7 @@ function renderBoard(){
   $("#board").innerHTML = `<table><tr><th>agent</th>${conds.map(c=>`<th>${esc(CLABEL[c])}</th>`).join("")}</tr>`+
     Object.entries(S).map(([agent,cs])=>`<tr><td><b>${esc(agent)}</b></td>`+conds.map(c=>{
       const s=cs[c]; if(!s) return "<td>-</td>";
+      if(!s.runs) return `<td class="small">- no counted runs${s.grader_errors?` (${s.grader_errors} grader-failure runs excluded)`:""}${s.infra_errors?` (${s.infra_errors} quota runs excluded)`:""}</td>`;
       const pct = s.success_rate==null?"-":Math.round(s.success_rate*100)+"%";
       return `<td class="cell" data-a="${esc(agent)}" data-c="${esc(c)}"><span class="rate ${cls(s.success_rate)}">${pct}</span>
         <span class="small">(${Math.round(s.success_ci95[0]*100)}–${Math.round(s.success_ci95[1]*100)}%)</span>
