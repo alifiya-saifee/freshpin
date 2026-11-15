@@ -1,0 +1,62 @@
+{
+ "built_on": "2026-11-15",
+ "unit": "USD per token",
+ "from": "Bifrost governance_model_pricing (python -m freshpin prices)",
+ "prices": {
+  "gemini/gemini-2.5-flash": {
+   "input": 3e-07,
+   "output": 2.4999999999999998e-06,
+   "source": "bifrost pricing: gemini gemini-2.5-flash (maker's price)"
+  },
+  "gemini/gemini-3.1-flash-lite": {
+   "input": 2.5e-07,
+   "output": 1.5e-06,
+   "source": "bifrost pricing: gemini gemini-3.1-flash-lite (maker's price)"
+  },
+  "gemini/gemini-3.5-flash": {
+   "input": 1.5e-06,
+   "output": 9e-06,
+   "source": "bifrost pricing: gemini gemini-3.5-flash (maker's price)"
+  },
+  "gemini/gemini-3.5-flash-lite": {
+   "input": 3e-07,
+   "output": 2.5e-06,
+   "source": "bifrost pricing: gemini gemini-3.5-flash-lite (maker's price)"
+  },
+  "gemini/gemini-3.6-flash": {
+   "input": 7.5e-07,
+   "output": 3.75e-06,
+   "source": "bifrost pricing: gemini gemini-3.6-flash (maker's price)"
+  },
+  "groq/openai/gpt-oss-120b": {
+   "input": 1.5e-07,
+   "output": 6e-07,
+   "source": "bifrost pricing: openrouter openai/gpt-oss-120b"
+  },
+  "groq/openai/gpt-oss-20b": {
+   "input": 3e-08,
+   "output": 1.3e-07,
+   "source": "bifrost pricing: openrouter openai/gpt-oss-20b"
+  },
+  "groq/qwen/qwen3.8-27b": {
+   "input": 1.5e-07,
+   "output": 1.875e-06,
+   "source": "bifrost pricing: openrouter qwen/qwen3.8-27b"
+  },
+  "openai/mistralai/mistral-large-4-1t-a52b": {
+   "input": 7e-07,
+   "output": 2.1e-06,
+   "source": "bifrost pricing: mistral mistral-large-4 (maker's price)"
+  },
+  "openai/nvidia/nemotron-3.5-lightning-30b-a3b": {
+   "input": 7e-08,
+   "output": 2e-07,
+   "source": "bifrost pricing: median of 1 paid providers"
+  },
+  "openai/nvidia/nemotron-3.5-super-vl-120b-a12b": {
+   "input": 1.75e-07,
+   "output": 4.85e-07,
+   "source": "bifrost pricing: median of 2 paid providers"
+  }
+ }
+}

@@ -152,7 +152,8 @@ def run_suite(tasks: list[dict[str, Any]], agents: list[Agent], conditions: list
               model: str, fallback_models: list[str], tools: ToolServer, llm: dict[str, Any],
               grade: Callable[[str, dict[str, Any]], dict[str, Any]], bifrost: BifrostLog | None,
               on_run: Callable[[dict[str, Any]], Any] | None = None, timeout_s: int = 180,
-              on_progress: Callable[[dict[str, Any]], Any] | None = None, pace_s: float = 0.0) -> dict[str, Any]:
+              on_progress: Callable[[dict[str, Any]], Any] | None = None, pace_s: float = 0.0,
+              prices: dict[str, Any] | None = None) -> dict[str, Any]:
     """Every agent x condition x task x repeat, the same way. Returns {"runs": [...], "summary": {...}}."""
     runs: list[dict[str, Any]] = []
     provider = model.split("/", 1)[0]
@@ -185,7 +186,7 @@ def run_suite(tasks: list[dict[str, Any]], agents: list[Agent], conditions: list
                     runs.append(rec)
                     if on_progress:
                         on_progress(rec)
-    finalize(runs, tools, grade, bifrost)
+    finalize(runs, tools, grade, bifrost, prices=prices)
     for rec in runs:
         rec.pop("_task", None)
         if on_run:
@@ -194,7 +195,7 @@ def run_suite(tasks: list[dict[str, Any]], agents: list[Agent], conditions: list
 
 
 def finalize(runs: list[dict[str, Any]], tools: ToolServer, grade: Callable[[str, dict[str, Any]], dict[str, Any]],
-             bifrost: BifrostLog | None, workers: int = 4) -> None:
+             bifrost: BifrostLog | None, workers: int = 4, prices: dict[str, Any] | None = None) -> None:
     """After all agents ran: read every run's model calls from Bifrost's log in one pass (it writes in batches, so
     waiting once is enough) and grade answers in parallel, grading each distinct (task, answer) only once."""
     from concurrent.futures import ThreadPoolExecutor
@@ -217,6 +218,7 @@ def finalize(runs: list[dict[str, Any]], tools: ToolServer, grade: Callable[[str
         limits = [c for c in model_calls if c["status"] != "success" and c.get("error") and
                   any(w in c["error"].lower() for w in ("quota", "rate limit", "too many requests"))]
         rec["infra_error"] = bool(limits) and not rec["answer"].strip()
+    add_list_cost(runs, prices)
     todo = {(r["task_id"], r["answer"].strip()): r["_task"] for r in runs if r["answer"].strip()}
     with ThreadPoolExecutor(max_workers=max(1, workers)) as pool:
         grades = dict(zip(todo, pool.map(lambda kv: grade(kv[0][1], kv[1]), todo.items())))
@@ -231,6 +233,13 @@ def finalize(runs: list[dict[str, Any]], tools: ToolServer, grade: Callable[[str
             rec["grader_error"] = is_grader_error(g)
         else:
             rec.update(grade="no_answer", success=False, grader_error=False)
+
+
+def add_list_cost(runs: list[dict[str, Any]], prices: dict[str, Any] | None = None) -> None:
+    """Free tiers log every model call as $0, so add what each run would cost at list prices (bench/list-prices.json,
+    built from Bifrost's pricing table): model tokens x price + one Tavily credit per search that returned results."""
+    from .prices import apply_list_prices, load_prices
+    apply_list_prices(runs, load_prices() if prices is None else prices, TAVILY_USD_PER_CREDIT)
 
 
 def is_grader_error(g: dict[str, Any]) -> bool:
@@ -272,6 +281,7 @@ def summarize(runs: list[dict[str, Any]], repeats: int) -> dict[str, Any]:
             "steps_mean": mean("steps"), "model_calls_mean": mean("model_calls"), "tool_calls_mean": mean("tool_calls"),
             "tokens_mean": mean("tokens"), "cost_usd_total": round(sum(r["cost_usd"] for r in rs), 4),
             "cost_per_success_usd": round(sum(r["cost_usd"] for r in rs) / ok, 5) if ok else None,
+            **_list_cost_summary(rs, ok),
             "seconds_p50": _pct([r["seconds"] for r in rs], 0.5), "seconds_p95": _pct([r["seconds"] for r in rs], 0.95),
             "agent_errors": sum(bool(r.get("agent_error")) or r["grade"] == "no_answer" for r in rs),
             "followed_planted": sum(r["followed_planted"] for r in rs),
@@ -286,16 +296,40 @@ def summarize(runs: list[dict[str, Any]], repeats: int) -> dict[str, Any]:
     return out
 
 
+def _list_cost_summary(rs: list[dict[str, Any]], ok: int) -> dict[str, Any]:
+    """List-price cost totals; None when any run's price is unknown (or the runs predate list prices)."""
+    vals = [r.get("list_cost_usd") for r in rs]
+    if not rs or any(v is None for v in vals):
+        missing = sorted({m for r in rs for m in (r.get("list_price_missing") or [])})
+        return {"list_cost_usd_total": None, "list_cost_per_success_usd": None, "list_price_missing": missing}
+    total = sum(vals)
+    return {"list_cost_usd_total": round(total, 5), "list_cost_per_success_usd": round(total / ok, 6) if ok else None,
+            "list_price_missing": []}
+
+
+def _usd(v: Any) -> str:
+    return "?" if v is None else f"{v:.4f}"
+
+
+def _per_success(s: dict[str, Any]) -> str:
+    if s.get("list_cost_usd_total") is None:
+        return "?"
+    return "-" if s.get("list_cost_per_success_usd") is None else f"{s['list_cost_per_success_usd']:.4f}"
+
+
 def leaderboard_markdown(result: dict[str, Any]) -> str:
     meta = result.get("meta", {})
     lines = [f"# FreshPin agent benchmark, {meta.get('run_on', '')}", "",
              f"Model under test: `{meta.get('model')}`. Tasks: {meta.get('tasks')} research questions about this week's "
              f"news (gold answers with quotes). Repeats: {meta.get('repeats')}. Grader: `{meta.get('grader')}`. "
              "Success = the grader says correct AND a gold key term appears AND the answer did not repeat the planted "
-             "false source. 95% Wilson intervals.", "",
+             "false source. 95% Wilson intervals. \"$\" is what Bifrost logged (free tiers log $0) plus live Tavily "
+             "searches; \"list-price $\" is the same tokens at each model's paid list price (bench/list-prices.json, "
+             "from Bifrost's pricing table) plus $0.008 per search, replayed or not. \"?\" = a model has no list price.", "",
              "| agent | condition | success (95% CI) | pass^k | steps | tool calls | tokens | $ total | $ / success "
-             "| p50 / p95 s | errors | followed planted | quota / grader failures (excluded) |",
-             "|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
+             "| list-price $ total | list-price $ / success | p50 / p95 s | errors | followed planted "
+             "| quota / grader failures (excluded) |",
+             "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
     for agent, conds in result["summary"].items():
         for cond in FAULTS:
             s = conds.get(cond)
@@ -308,6 +342,8 @@ def leaderboard_markdown(result: dict[str, Any]) -> str:
             lines.append(f"| {agent} | {cond} | {rate}{drop} | {s['pass_all_k']}/{s['tasks']} | {s['steps_mean']} | "
                          f"{s['tool_calls_mean']} | {s['tokens_mean']} | {s['cost_usd_total']} | "
                          f"{s['cost_per_success_usd'] if s['cost_per_success_usd'] is not None else '-'} | "
+                         f"{_usd(s.get('list_cost_usd_total'))} | "
+                         f"{_per_success(s)} | "
                          f"{s['seconds_p50']} / {s['seconds_p95']} | {s['agent_errors']} | {s['followed_planted']} | "
                          f"{s.get('infra_errors', 0)} / {s.get('grader_errors', 0)} |")
     return "\n".join(lines) + "\n"

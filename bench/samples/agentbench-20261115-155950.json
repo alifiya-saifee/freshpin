@@ -29,7 +29,8 @@
      "tokens_out": 881,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00018229
     }
    ],
    "cost_usd": 0.0,
@@ -40,7 +41,10 @@
    "success": false,
    "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
    "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00018229
   },
   {
    "run_id": "fp-8009e7459ce0",
@@ -71,7 +75,8 @@
      "tokens_out": 1117,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00022949
     }
    ],
    "cost_usd": 0.0,
@@ -82,7 +87,10 @@
    "success": false,
    "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
    "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00022949
   },
   {
    "run_id": "fp-b2814d947d77",
@@ -113,7 +121,8 @@
      "tokens_out": 1326,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00027059
     }
    ],
    "cost_usd": 0.0,
@@ -124,7 +133,10 @@
    "success": false,
    "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
    "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00027059
   },
   {
    "run_id": "fp-77e38bd593e5",
@@ -155,7 +167,8 @@
      "tokens_out": 1194,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00024419
     }
    ],
    "cost_usd": 0.0,
@@ -166,7 +179,10 @@
    "success": false,
    "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
    "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00024419
   },
   {
    "run_id": "fp-46a6ef7a8c6c",
@@ -197,7 +213,8 @@
      "tokens_out": 746,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00015445
     }
    ],
    "cost_usd": 0.0,
@@ -208,7 +225,10 @@
    "success": false,
    "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
    "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00015445
   },
   {
    "run_id": "fp-ed2b1896b18e",
@@ -239,7 +259,8 @@
      "tokens_out": 988,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00020285
     }
    ],
    "cost_usd": 0.0,
@@ -250,7 +271,10 @@
    "success": false,
    "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
    "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00020285
   },
   {
    "run_id": "fp-f91cae40578c",
@@ -281,7 +305,8 @@
      "tokens_out": 991,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00020387
     }
    ],
    "cost_usd": 0.0,
@@ -292,7 +317,10 @@
    "success": false,
    "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
    "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00020387
   },
   {
    "run_id": "fp-307bee7beb39",
@@ -323,7 +351,8 @@
      "tokens_out": 901,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00018587
     }
    ],
    "cost_usd": 0.0,
@@ -334,7 +363,10 @@
    "success": false,
    "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
    "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00018587
   },
   {
    "run_id": "fp-0b0842f96039",
@@ -365,7 +397,8 @@
      "tokens_out": 701,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.0001451
     }
    ],
    "cost_usd": 0.0,
@@ -376,7 +409,10 @@
    "success": false,
    "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
    "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0001451
   },
   {
    "run_id": "fp-6431bd002ac1",
@@ -407,7 +443,8 @@
      "tokens_out": 649,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.0001347
     }
    ],
    "cost_usd": 0.0,
@@ -418,7 +455,10 @@
    "success": false,
    "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
    "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0001347
   },
   {
    "run_id": "fp-5c33d4233c9c",
@@ -449,7 +489,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     }
    ],
    "cost_usd": 0.0,
@@ -458,7 +499,10 @@
    "success": false,
    "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
    "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0
   },
   {
    "run_id": "fp-ba2893716ed3",
@@ -489,7 +533,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     }
    ],
    "cost_usd": 0.0,
@@ -498,7 +543,10 @@
    "success": false,
    "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
    "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0
   },
   {
    "run_id": "fp-82550b2e7178",
@@ -529,7 +577,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     }
    ],
    "cost_usd": 0.0,
@@ -538,7 +587,10 @@
    "success": false,
    "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
    "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0
   },
   {
    "run_id": "fp-b71659b39c45",
@@ -569,7 +621,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     }
    ],
    "cost_usd": 0.0,
@@ -578,7 +631,10 @@
    "success": false,
    "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
    "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0
   },
   {
    "run_id": "fp-d8092961057c",
@@ -609,7 +665,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     }
    ],
    "cost_usd": 0.0,
@@ -618,7 +675,10 @@
    "success": false,
    "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
    "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0
   },
   {
    "run_id": "fp-7cb1587bce8b",
@@ -649,7 +709,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     }
    ],
    "cost_usd": 0.0,
@@ -658,7 +719,10 @@
    "success": false,
    "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
    "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0
   },
   {
    "run_id": "fp-56aadfe33bf0",
@@ -689,7 +753,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     }
    ],
    "cost_usd": 0.0,
@@ -698,7 +763,10 @@
    "success": false,
    "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
    "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0
   },
   {
    "run_id": "fp-f2c28bdf480c",
@@ -729,7 +797,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     }
    ],
    "cost_usd": 0.0,
@@ -738,7 +807,10 @@
    "success": false,
    "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
    "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0
   },
   {
    "run_id": "fp-c7ad4512996d",
@@ -769,7 +841,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     }
    ],
    "cost_usd": 0.0,
@@ -778,7 +851,10 @@
    "success": false,
    "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
    "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0
   },
   {
    "run_id": "fp-9ec50796f9fd",
@@ -809,7 +885,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     }
    ],
    "cost_usd": 0.0,
@@ -818,7 +895,10 @@
    "success": false,
    "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
    "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0
   },
   {
    "run_id": "fp-c1e749f5d74e",
@@ -849,7 +929,8 @@
      "tokens_out": 1293,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00026469
     }
    ],
    "cost_usd": 0.0,
@@ -860,7 +941,10 @@
    "success": false,
    "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
    "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00026469
   },
   {
    "run_id": "fp-51700417d798",
@@ -891,7 +975,8 @@
      "tokens_out": 623,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00013069
     }
    ],
    "cost_usd": 0.0,
@@ -902,7 +987,10 @@
    "success": false,
    "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
    "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00013069
   },
   {
    "run_id": "fp-d9b7a2e66055",
@@ -933,7 +1021,8 @@
      "tokens_out": 1195,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00024439
     }
    ],
    "cost_usd": 0.0,
@@ -944,7 +1033,10 @@
    "success": false,
    "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
    "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00024439
   },
   {
    "run_id": "fp-36340e3a7c6a",
@@ -975,7 +1067,8 @@
      "tokens_out": 1466,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00029859
     }
    ],
    "cost_usd": 0.0,
@@ -986,7 +1079,10 @@
    "success": false,
    "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
    "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00029859
   },
   {
    "run_id": "fp-ba5e6a15781e",
@@ -1017,7 +1113,8 @@
      "tokens_out": 1031,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00021145
     }
    ],
    "cost_usd": 0.0,
@@ -1028,7 +1125,10 @@
    "success": false,
    "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
    "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00021145
   },
   {
    "run_id": "fp-3b88814ccddf",
@@ -1059,7 +1159,8 @@
      "tokens_out": 815,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00016825
     }
    ],
    "cost_usd": 0.0,
@@ -1070,7 +1171,10 @@
    "success": false,
    "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
    "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00016825
   },
   {
    "run_id": "fp-48fa46154c08",
@@ -1101,7 +1205,8 @@
      "tokens_out": 750,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00015567
     }
    ],
    "cost_usd": 0.0,
@@ -1112,7 +1217,10 @@
    "success": false,
    "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
    "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00015567
   },
   {
    "run_id": "fp-0f8f75378080",
@@ -1143,7 +1251,8 @@
      "tokens_out": 930,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00019167
     }
    ],
    "cost_usd": 0.0,
@@ -1154,7 +1263,10 @@
    "success": false,
    "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
    "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00019167
   },
   {
    "run_id": "fp-25075a06a6a9",
@@ -1185,7 +1297,8 @@
      "tokens_out": 863,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.0001775
     }
    ],
    "cost_usd": 0.0,
@@ -1196,7 +1309,10 @@
    "success": false,
    "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
    "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0001775
   },
   {
    "run_id": "fp-76a87a2cae78",
@@ -1227,7 +1343,8 @@
      "tokens_out": 742,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.0001533
     }
    ],
    "cost_usd": 0.0,
@@ -1238,7 +1355,10 @@
    "success": false,
    "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
    "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0001533
   },
   {
    "run_id": "fp-3e0260b9d59a",
@@ -1269,7 +1389,8 @@
      "tokens_out": 903,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00018669
     }
    ],
    "cost_usd": 0.0,
@@ -1280,7 +1401,10 @@
    "success": false,
    "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
    "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00018669
   },
   {
    "run_id": "fp-c30ebfdb5fd7",
@@ -1311,7 +1435,8 @@
      "tokens_out": 1124,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00023089
     }
    ],
    "cost_usd": 0.0,
@@ -1322,7 +1447,10 @@
    "success": false,
    "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
    "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00023089
   },
   {
    "run_id": "fp-ba9dd87ea802",
@@ -1353,7 +1481,8 @@
      "tokens_out": 856,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00017659
     }
    ],
    "cost_usd": 0.0,
@@ -1364,7 +1493,10 @@
    "success": false,
    "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
    "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00017659
   },
   {
    "run_id": "fp-468d29e24ff7",
@@ -1395,7 +1527,8 @@
      "tokens_out": 1106,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00022659
     }
    ],
    "cost_usd": 0.0,
@@ -1406,7 +1539,10 @@
    "success": false,
    "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
    "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00022659
   },
   {
    "run_id": "fp-571a3ed9ba99",
@@ -1437,7 +1573,8 @@
      "tokens_out": 758,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00015685
     }
    ],
    "cost_usd": 0.0,
@@ -1448,7 +1585,10 @@
    "success": false,
    "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
    "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00015685
   },
   {
    "run_id": "fp-de5f0380e8c3",
@@ -1479,7 +1619,8 @@
      "tokens_out": 784,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00016205
     }
    ],
    "cost_usd": 0.0,
@@ -1490,7 +1631,10 @@
    "success": false,
    "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
    "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00016205
   },
   {
    "run_id": "fp-e1256ac8a5c1",
@@ -1521,7 +1665,8 @@
      "tokens_out": 742,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00015407
     }
    ],
    "cost_usd": 0.0,
@@ -1532,7 +1677,10 @@
    "success": false,
    "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
    "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00015407
   },
   {
    "run_id": "fp-c4c6e80b8be7",
@@ -1563,7 +1711,8 @@
      "tokens_out": 802,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00016607
     }
    ],
    "cost_usd": 0.0,
@@ -1574,7 +1723,10 @@
    "success": false,
    "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
    "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00016607
   },
   {
    "run_id": "fp-4f59d0e4d013",
@@ -1605,7 +1757,8 @@
      "tokens_out": 786,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.0001621
     }
    ],
    "cost_usd": 0.0,
@@ -1616,7 +1769,10 @@
    "success": false,
    "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
    "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
-   "grader_error": true
+   "grader_error": true,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0001621
   },
   {
    "run_id": "fp-758d375209fc",
@@ -1647,7 +1803,8 @@
      "tokens_out": 605,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.0001259
     }
    ],
    "cost_usd": 0.0,
@@ -1658,7 +1815,10 @@
    "success": false,
    "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
    "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0001259
   },
   {
    "run_id": "fp-f22624c44688",
@@ -1721,7 +1881,8 @@
      "tokens_out": 1479,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.0003651
     }
    ],
    "cost_usd": 0.0,
@@ -1732,7 +1893,10 @@
    "success": true,
    "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
    "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.0083651
   },
   {
    "run_id": "fp-88a65d9e5fdb",
@@ -1795,7 +1959,8 @@
      "tokens_out": 1288,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.0003269
     }
    ],
    "cost_usd": 0.0,
@@ -1806,7 +1971,10 @@
    "success": true,
    "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
    "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.0083269
   },
   {
    "run_id": "fp-0b242fb48ab4",
@@ -1869,7 +2037,8 @@
      "tokens_out": 1231,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00032222
     }
    ],
    "cost_usd": 0.0,
@@ -1880,7 +2049,10 @@
    "success": false,
    "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
    "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00832222
   },
   {
    "run_id": "fp-95ae25d666a4",
@@ -1943,7 +2115,8 @@
      "tokens_out": 949,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00026582
     }
    ],
    "cost_usd": 0.0,
@@ -1954,7 +2127,10 @@
    "success": false,
    "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
    "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00826582
   },
   {
    "run_id": "fp-6d0b79fa3597",
@@ -2017,7 +2193,8 @@
      "tokens_out": 1148,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00029869
     }
    ],
    "cost_usd": 0.0,
@@ -2028,7 +2205,10 @@
    "success": true,
    "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
    "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00829869
   },
   {
    "run_id": "fp-e25df0ebcd2b",
@@ -2091,7 +2271,8 @@
      "tokens_out": 2168,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00050269
     }
    ],
    "cost_usd": 0.0,
@@ -2102,7 +2283,10 @@
    "success": true,
    "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
    "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00850269
   },
   {
    "run_id": "fp-20dfdb6e3ad2",
@@ -2161,7 +2345,8 @@
      "tokens_out": 687,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00020243
     }
    ],
    "cost_usd": 0.0,
@@ -2172,7 +2357,10 @@
    "success": true,
    "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
    "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00820243
   },
   {
    "run_id": "fp-8e94a1bf261f",
@@ -2231,7 +2419,8 @@
      "tokens_out": 1958,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00045663
     }
    ],
    "cost_usd": 0.0,
@@ -2242,7 +2431,10 @@
    "success": true,
    "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
    "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00845663
   },
   {
    "run_id": "fp-54a305cf933b",
@@ -2305,7 +2497,8 @@
      "tokens_out": 949,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00025462
     }
    ],
    "cost_usd": 0.0,
@@ -2316,7 +2509,10 @@
    "success": true,
    "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
    "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00825462
   },
   {
    "run_id": "fp-4b020af7e717",
@@ -2379,7 +2575,8 @@
      "tokens_out": 961,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00025702
     }
    ],
    "cost_usd": 0.0,
@@ -2390,7 +2587,10 @@
    "success": true,
    "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
    "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00825702
   },
   {
    "run_id": "fp-d5461666d61f",
@@ -2453,7 +2653,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     }
    ],
    "cost_usd": 0.0,
@@ -2462,7 +2663,10 @@
    "success": false,
    "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
    "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.008
   },
   {
    "run_id": "fp-f598def60ad6",
@@ -2525,7 +2729,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     }
    ],
    "cost_usd": 0.0,
@@ -2534,7 +2739,10 @@
    "success": false,
    "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
    "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.008
   },
   {
    "run_id": "fp-9ffb1bbba60d",
@@ -2597,7 +2805,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     }
    ],
    "cost_usd": 0.0,
@@ -2606,7 +2815,10 @@
    "success": false,
    "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
    "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.008
   },
   {
    "run_id": "fp-44373ff73aa2",
@@ -2669,7 +2881,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     }
    ],
    "cost_usd": 0.0,
@@ -2678,7 +2891,10 @@
    "success": false,
    "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
    "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.008
   },
   {
    "run_id": "fp-9acd37e707ad",
@@ -2741,7 +2957,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     }
    ],
    "cost_usd": 0.0,
@@ -2750,7 +2967,10 @@
    "success": false,
    "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
    "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.008
   },
   {
    "run_id": "fp-bc911723ef31",
@@ -2813,7 +3033,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     }
    ],
    "cost_usd": 0.0,
@@ -2822,7 +3043,10 @@
    "success": false,
    "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
    "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.008
   },
   {
    "run_id": "fp-13e851447afb",
@@ -2881,7 +3105,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     }
    ],
    "cost_usd": 0.0,
@@ -2890,7 +3115,10 @@
    "success": false,
    "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
    "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.008
   },
   {
    "run_id": "fp-8ee14d84e400",
@@ -2949,7 +3177,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     }
    ],
    "cost_usd": 0.0,
@@ -2958,7 +3187,10 @@
    "success": false,
    "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
    "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.008
   },
   {
    "run_id": "fp-27c5a9c2d9ee",
@@ -3021,7 +3253,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     }
    ],
    "cost_usd": 0.0,
@@ -3030,7 +3263,10 @@
    "success": false,
    "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
    "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.008
   },
   {
    "run_id": "fp-b2f2049b5faa",
@@ -3093,7 +3329,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     }
    ],
    "cost_usd": 0.0,
@@ -3102,7 +3339,10 @@
    "success": false,
    "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
    "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.008
   },
   {
    "run_id": "fp-8618919c0193",
@@ -3143,7 +3383,8 @@
      "tokens_out": 519,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00011262
     }
    ],
    "cost_usd": 0.0,
@@ -3154,7 +3395,10 @@
    "success": false,
    "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
    "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00011262
   },
   {
    "run_id": "fp-8646f781fe16",
@@ -3195,7 +3439,8 @@
      "tokens_out": 562,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00012122
     }
    ],
    "cost_usd": 0.0,
@@ -3206,7 +3451,10 @@
    "success": false,
    "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
    "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00012122
   },
   {
    "run_id": "fp-ece80b92e613",
@@ -3247,7 +3495,8 @@
      "tokens_out": 662,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00014052
     }
    ],
    "cost_usd": 0.0,
@@ -3258,7 +3507,10 @@
    "success": false,
    "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
    "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00014052
   },
   {
    "run_id": "fp-ad4bd9e89ed1",
@@ -3299,7 +3551,8 @@
      "tokens_out": 845,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00017712
     }
    ],
    "cost_usd": 0.0,
@@ -3310,7 +3563,10 @@
    "success": false,
    "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
    "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00017712
   },
   {
    "run_id": "fp-39d8b0bd6b84",
@@ -3351,7 +3607,8 @@
      "tokens_out": 600,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00012798
     }
    ],
    "cost_usd": 0.0,
@@ -3362,7 +3619,10 @@
    "success": false,
    "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
    "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00012798
   },
   {
    "run_id": "fp-7d831bce3df8",
@@ -3403,7 +3663,8 @@
      "tokens_out": 575,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00012298
     }
    ],
    "cost_usd": 0.0,
@@ -3414,7 +3675,10 @@
    "success": false,
    "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
    "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00012298
   },
   {
    "run_id": "fp-d3269ec8938d",
@@ -3455,7 +3719,8 @@
      "tokens_out": 730,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.0001544
     }
    ],
    "cost_usd": 0.0,
@@ -3466,7 +3731,10 @@
    "success": false,
    "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
    "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0001544
   },
   {
    "run_id": "fp-3ffe96cb0702",
@@ -3507,7 +3775,8 @@
      "tokens_out": 816,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.0001716
     }
    ],
    "cost_usd": 0.0,
@@ -3518,7 +3787,10 @@
    "success": false,
    "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
    "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0001716
   },
   {
    "run_id": "fp-1249f1cb2c3f",
@@ -3559,7 +3831,8 @@
      "tokens_out": 676,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00014283
     }
    ],
    "cost_usd": 0.0,
@@ -3570,7 +3843,10 @@
    "success": false,
    "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
    "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00014283
   },
   {
    "run_id": "fp-34dcb45ae621",
@@ -3611,7 +3887,8 @@
      "tokens_out": 638,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00013523
     }
    ],
    "cost_usd": 0.0,
@@ -3622,7 +3899,10 @@
    "success": false,
    "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
    "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00013523
   },
   {
    "run_id": "fp-38373aa108d3",
@@ -3689,7 +3969,8 @@
      "tokens_out": 1460,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00036585
     }
    ],
    "cost_usd": 0.0,
@@ -3700,7 +3981,10 @@
    "success": true,
    "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
    "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00836585
   },
   {
    "run_id": "fp-c4c52ad6fbbb",
@@ -3767,7 +4051,8 @@
      "tokens_out": 1874,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00044865
     }
    ],
    "cost_usd": 0.0,
@@ -3778,7 +4063,10 @@
    "success": false,
    "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
    "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00844865
   },
   {
    "run_id": "fp-21a159a33f04",
@@ -3845,7 +4133,8 @@
      "tokens_out": 1187,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00031797
     }
    ],
    "cost_usd": 0.0,
@@ -3856,7 +4145,10 @@
    "success": false,
    "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
    "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00831797
   },
   {
    "run_id": "fp-10184c457ec6",
@@ -3923,7 +4215,8 @@
      "tokens_out": 1195,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00031957
     }
    ],
    "cost_usd": 0.0,
@@ -3934,7 +4227,10 @@
    "success": false,
    "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
    "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00831957
   },
   {
    "run_id": "fp-61ccb4bf94a8",
@@ -4001,7 +4297,8 @@
      "tokens_out": 1714,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00041644
     }
    ],
    "cost_usd": 0.0,
@@ -4012,7 +4309,10 @@
    "success": true,
    "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
    "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00841644
   },
   {
    "run_id": "fp-3537bd8ce5a1",
@@ -4079,7 +4379,8 @@
      "tokens_out": 1207,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00031504
     }
    ],
    "cost_usd": 0.0,
@@ -4090,7 +4391,10 @@
    "success": true,
    "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
    "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00831504
   },
   {
    "run_id": "fp-fef1595a9308",
@@ -4153,7 +4457,8 @@
      "tokens_out": 1127,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00029498
     }
    ],
    "cost_usd": 0.0,
@@ -4164,7 +4469,10 @@
    "success": true,
    "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
    "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00829498
   },
   {
    "run_id": "fp-6633d6b2d720",
@@ -4227,7 +4535,8 @@
      "tokens_out": 1224,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00031438
     }
    ],
    "cost_usd": 0.0,
@@ -4238,7 +4547,10 @@
    "success": true,
    "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
    "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00831438
   },
   {
    "run_id": "fp-74f7680aa1ae",
@@ -4305,7 +4617,8 @@
      "tokens_out": 1239,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00031717
     }
    ],
    "cost_usd": 0.0,
@@ -4316,7 +4629,10 @@
    "success": true,
    "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
    "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00831717
   },
   {
    "run_id": "fp-656c10a5bd3d",
@@ -4383,7 +4699,8 @@
      "tokens_out": 1227,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00031477
     }
    ],
    "cost_usd": 0.0,
@@ -4394,7 +4711,10 @@
    "success": true,
    "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
    "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00831477
   },
   {
    "run_id": "fp-a91d187ea787",
@@ -4425,7 +4745,8 @@
      "tokens_out": 180,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 6.323e-05
     },
     {
      "t": "2026-11-15 12:08:39.496179+00:00",
@@ -4469,7 +4790,8 @@
      "tokens_out": 280,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00014861
     }
    ],
    "cost_usd": 0.0,
@@ -4480,7 +4802,10 @@
    "success": true,
    "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
    "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00821184
   },
   {
    "run_id": "fp-83bc5263f120",
@@ -4511,7 +4836,8 @@
      "tokens_out": 128,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 5.283e-05
     },
     {
      "t": "2026-11-15 12:08:44.579292+00:00",
@@ -4555,7 +4881,8 @@
      "tokens_out": 280,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00014945
     }
    ],
    "cost_usd": 0.008,
@@ -4566,7 +4893,10 @@
    "success": true,
    "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
    "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00820228
   },
   {
    "run_id": "fp-98475a0cc3b6",
@@ -4597,7 +4927,8 @@
      "tokens_out": 80,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 4.253e-05
     },
     {
      "t": "2026-11-15 12:08:50.496170+00:00",
@@ -4641,7 +4972,8 @@
      "tokens_out": 154,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.0001218
     }
    ],
    "cost_usd": 0.008,
@@ -4652,7 +4984,10 @@
    "success": true,
    "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
    "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00816433
   },
   {
    "run_id": "fp-647e4ac45cc1",
@@ -4683,7 +5018,8 @@
      "tokens_out": 65,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 3.953e-05
     },
     {
      "t": "2026-11-15 12:08:55.031366+00:00",
@@ -4727,7 +5063,8 @@
      "tokens_out": 134,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00011605
     }
    ],
    "cost_usd": 0.008,
@@ -4738,7 +5075,10 @@
    "success": true,
    "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
    "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00815558
   },
   {
    "run_id": "fp-b88872e130b0",
@@ -4769,7 +5109,8 @@
      "tokens_out": 301,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 8.659e-05
     },
     {
      "t": "2026-11-15 12:09:01.475159+00:00",
@@ -4813,7 +5154,8 @@
      "tokens_out": 404,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00017278
     }
    ],
    "cost_usd": 0.0,
@@ -4824,7 +5166,10 @@
    "success": false,
    "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
    "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
-   "grader_error": true
+   "grader_error": true,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00825937
   },
   {
    "run_id": "fp-800e4c23bd87",
@@ -4855,7 +5200,8 @@
      "tokens_out": 467,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00011979
     },
     {
      "t": "2026-11-15 12:09:07.545228+00:00",
@@ -4899,7 +5245,8 @@
      "tokens_out": 259,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00014378
     }
    ],
    "cost_usd": 0.0,
@@ -4910,7 +5257,10 @@
    "success": true,
    "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
    "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00826357
   },
   {
    "run_id": "fp-0059d48d93f3",
@@ -4941,7 +5291,8 @@
      "tokens_out": 140,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 5.481e-05
     },
     {
      "t": "2026-11-15 12:09:11.548975+00:00",
@@ -4977,7 +5328,8 @@
      "tokens_out": 95,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 9.159e-05
     }
    ],
    "cost_usd": 0.008,
@@ -4988,7 +5340,10 @@
    "success": true,
    "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
    "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.0081464
   },
   {
    "run_id": "fp-8db909f1d7ec",
@@ -5019,7 +5374,8 @@
      "tokens_out": 142,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 5.521e-05
     },
     {
      "t": "2026-11-15 12:09:16.516762+00:00",
@@ -5055,7 +5411,8 @@
      "tokens_out": 109,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 9.439e-05
     }
    ],
    "cost_usd": 0.008,
@@ -5066,7 +5423,10 @@
    "success": true,
    "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
    "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.0081496
   },
   {
    "run_id": "fp-31483ff0ab21",
@@ -5097,7 +5457,8 @@
      "tokens_out": 59,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 3.784e-05
     },
     {
      "t": "2026-11-15 12:09:21.128862+00:00",
@@ -5141,7 +5502,8 @@
      "tokens_out": 224,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00013769
     }
    ],
    "cost_usd": 0.008,
@@ -5152,7 +5514,10 @@
    "success": true,
    "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
    "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00817553
   },
   {
    "run_id": "fp-7d7c91f65b44",
@@ -5183,7 +5548,8 @@
      "tokens_out": 77,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 4.144e-05
     },
     {
      "t": "2026-11-15 12:09:27.115050+00:00",
@@ -5227,7 +5593,8 @@
      "tokens_out": 124,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00011734
     }
    ],
    "cost_usd": 0.008,
@@ -5238,7 +5605,10 @@
    "success": true,
    "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
    "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00815878
   },
   {
    "run_id": "fp-461c44460ff5",
@@ -5271,7 +5641,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     },
     {
      "t": "2026-11-15 12:09:29.859457+00:00",
@@ -5283,7 +5654,8 @@
      "tokens_out": 147,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 5.663e-05
     },
     {
      "t": "2026-11-15 12:09:31.266866+00:00",
@@ -5327,7 +5699,8 @@
      "tokens_out": 384,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00016941
     }
    ],
    "cost_usd": 0.0,
@@ -5338,7 +5711,10 @@
    "success": false,
    "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
    "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00822604
   },
   {
    "run_id": "fp-a136ce55b5ee",
@@ -5371,7 +5747,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     },
     {
      "t": "2026-11-15 12:09:37.857653+00:00",
@@ -5383,7 +5760,8 @@
      "tokens_out": 127,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 5.263e-05
     },
     {
      "t": "2026-11-15 12:09:38.637119+00:00",
@@ -5427,7 +5805,8 @@
      "tokens_out": 447,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00018285
     }
    ],
    "cost_usd": 0.0,
@@ -5438,7 +5817,10 @@
    "success": true,
    "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
    "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00823548
   },
   {
    "run_id": "fp-bef0fc442c56",
@@ -5471,7 +5853,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     },
     {
      "t": "2026-11-15 12:09:43.050565+00:00",
@@ -5483,7 +5866,8 @@
      "tokens_out": 80,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 4.253e-05
     },
     {
      "t": "2026-11-15 12:09:43.869882+00:00",
@@ -5527,7 +5911,8 @@
      "tokens_out": 139,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.0001188
     }
    ],
    "cost_usd": 0.0,
@@ -5538,7 +5923,10 @@
    "success": true,
    "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
    "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00816133
   },
   {
    "run_id": "fp-77f78baec2bd",
@@ -5571,7 +5959,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     },
     {
      "t": "2026-11-15 12:09:47.336174+00:00",
@@ -5583,7 +5972,8 @@
      "tokens_out": 80,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 4.253e-05
     },
     {
      "t": "2026-11-15 12:09:48.248550+00:00",
@@ -5627,7 +6017,8 @@
      "tokens_out": 154,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.0001218
     }
    ],
    "cost_usd": 0.0,
@@ -5638,7 +6029,10 @@
    "success": true,
    "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
    "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00816433
   },
   {
    "run_id": "fp-c88344cc1168",
@@ -5671,7 +6065,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     },
     {
      "t": "2026-11-15 12:09:50.855291+00:00",
@@ -5683,7 +6078,8 @@
      "tokens_out": 103,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 4.699e-05
     },
     {
      "t": "2026-11-15 12:09:51.570754+00:00",
@@ -5727,7 +6123,8 @@
      "tokens_out": 232,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00013838
     }
    ],
    "cost_usd": 0.0,
@@ -5738,7 +6135,10 @@
    "success": true,
    "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
    "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00818537
   },
   {
    "run_id": "fp-58106476c82f",
@@ -5771,7 +6171,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     },
     {
      "t": "2026-11-15 12:09:56.477776+00:00",
@@ -5783,7 +6184,8 @@
      "tokens_out": 109,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 4.819e-05
     },
     {
      "t": "2026-11-15 12:09:57.335701+00:00",
@@ -5827,7 +6229,8 @@
      "tokens_out": 266,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00014518
     }
    ],
    "cost_usd": 0.0,
@@ -5838,7 +6241,10 @@
    "success": true,
    "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
    "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00819337
   },
   {
    "run_id": "fp-f6d1c263bd1f",
@@ -5871,7 +6277,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     },
     {
      "t": "2026-11-15 12:10:00.388716+00:00",
@@ -5883,7 +6290,8 @@
      "tokens_out": 272,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 8.121e-05
     },
     {
      "t": "2026-11-15 12:10:02.249049+00:00",
@@ -5919,7 +6327,8 @@
      "tokens_out": 83,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 8.919e-05
     }
    ],
    "cost_usd": 0.0,
@@ -5930,7 +6339,10 @@
    "success": true,
    "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
    "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.0081704
   },
   {
    "run_id": "fp-3d13e121fe4e",
@@ -5963,7 +6375,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     },
     {
      "t": "2026-11-15 12:10:04.587891+00:00",
@@ -5975,7 +6388,8 @@
      "tokens_out": 110,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 4.881e-05
     },
     {
      "t": "2026-11-15 12:10:05.383108+00:00",
@@ -6011,7 +6425,8 @@
      "tokens_out": 142,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00010099
     }
    ],
    "cost_usd": 0.0,
@@ -6022,7 +6437,10 @@
    "success": true,
    "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
    "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.0081498
   },
   {
    "run_id": "fp-ca981baad25b",
@@ -6055,7 +6473,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     },
     {
      "t": "2026-11-15 12:10:09.067497+00:00",
@@ -6067,7 +6486,8 @@
      "tokens_out": 94,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 4.484e-05
     },
     {
      "t": "2026-11-15 12:10:09.887614+00:00",
@@ -6111,7 +6531,8 @@
      "tokens_out": 90,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00011054
     }
    ],
    "cost_usd": 0.0,
@@ -6122,7 +6543,10 @@
    "success": true,
    "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
    "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00815538
   },
   {
    "run_id": "fp-68df14e74991",
@@ -6155,7 +6579,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     },
     {
      "t": "2026-11-15 12:10:12.216194+00:00",
@@ -6167,7 +6592,8 @@
      "tokens_out": 87,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 4.344e-05
     },
     {
      "t": "2026-11-15 12:10:12.888066+00:00",
@@ -6211,7 +6637,8 @@
      "tokens_out": 346,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00016209
     }
    ],
    "cost_usd": 0.0,
@@ -6222,7 +6649,10 @@
    "success": true,
    "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
    "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00820553
   },
   {
    "run_id": "fp-416110425e72",
@@ -6253,7 +6683,8 @@
      "tokens_out": 126,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 5.243e-05
     },
     {
      "t": "2026-11-15 12:10:17.365501+00:00",
@@ -6275,7 +6706,8 @@
      "tokens_out": 58,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 4.373e-05
     },
     {
      "t": "2026-11-15 12:10:18.015397+00:00",
@@ -6297,7 +6729,8 @@
      "tokens_out": 261,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 8.909e-05
     }
    ],
    "cost_usd": 0.0,
@@ -6308,7 +6741,10 @@
    "success": false,
    "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
    "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00018525
   },
   {
    "run_id": "fp-bf680c807421",
@@ -6339,7 +6775,8 @@
      "tokens_out": 133,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 5.383e-05
     },
     {
      "t": "2026-11-15 12:10:22.321272+00:00",
@@ -6361,7 +6798,8 @@
      "tokens_out": 65,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 4.513e-05
     },
     {
      "t": "2026-11-15 12:10:23.025146+00:00",
@@ -6383,7 +6821,8 @@
      "tokens_out": 65,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 4.989e-05
     },
     {
      "t": "2026-11-15 12:10:23.740783+00:00",
@@ -6405,7 +6844,8 @@
      "tokens_out": 895,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00020217
     }
    ],
    "cost_usd": 0.0,
@@ -6416,7 +6856,10 @@
    "success": false,
    "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
    "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00035102
   },
   {
    "run_id": "fp-eebffcda80b0",
@@ -6447,7 +6890,8 @@
      "tokens_out": 80,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 4.253e-05
     },
     {
      "t": "2026-11-15 12:10:30.741252+00:00",
@@ -6469,7 +6913,8 @@
      "tokens_out": 92,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 4.955e-05
     },
     {
      "t": "2026-11-15 12:10:31.525908+00:00",
@@ -6491,7 +6936,8 @@
      "tokens_out": 67,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 4.889e-05
     },
     {
      "t": "2026-11-15 12:10:32.122225+00:00",
@@ -6513,7 +6959,8 @@
      "tokens_out": 1259,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00027364
     }
    ],
    "cost_usd": 0.0,
@@ -6524,7 +6971,10 @@
    "success": false,
    "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
    "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00041461
   },
   {
    "run_id": "fp-0d3cf7c817dc",
@@ -6555,7 +7005,8 @@
      "tokens_out": 80,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 4.253e-05
     },
     {
      "t": "2026-11-15 12:10:43.519844+00:00",
@@ -6577,7 +7028,8 @@
      "tokens_out": 55,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 4.215e-05
     },
     {
      "t": "2026-11-15 12:10:44.574612+00:00",
@@ -6599,7 +7051,8 @@
      "tokens_out": 67,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 4.889e-05
     },
     {
      "t": "2026-11-15 12:10:45.207155+00:00",
@@ -6621,7 +7074,8 @@
      "tokens_out": 1111,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00024404
     }
    ],
    "cost_usd": 0.0,
@@ -6632,7 +7086,10 @@
    "success": false,
    "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
    "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00037761
   },
   {
    "run_id": "fp-68bb06f2e036",
@@ -6663,7 +7120,8 @@
      "tokens_out": 104,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 4.719e-05
     },
     {
      "t": "2026-11-15 12:10:52.522233+00:00",
@@ -6685,7 +7143,8 @@
      "tokens_out": 69,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 4.467e-05
     },
     {
      "t": "2026-11-15 12:10:53.112578+00:00",
@@ -6707,7 +7166,8 @@
      "tokens_out": 223,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 7.995e-05
     }
    ],
    "cost_usd": 0.0,
@@ -6718,7 +7178,10 @@
    "success": false,
    "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
    "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
-   "grader_error": true
+   "grader_error": true,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00017181
   },
   {
    "run_id": "fp-af8a5591ba51",
@@ -6749,7 +7212,8 @@
      "tokens_out": 315,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 8.939e-05
     },
     {
      "t": "2026-11-15 12:11:00.723417+00:00",
@@ -6771,7 +7235,8 @@
      "tokens_out": 65,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 4.387e-05
     },
     {
      "t": "2026-11-15 12:11:01.371534+00:00",
@@ -6793,7 +7258,8 @@
      "tokens_out": 65,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 4.821e-05
     },
     {
      "t": "2026-11-15 12:11:02.178500+00:00",
@@ -6815,7 +7281,8 @@
      "tokens_out": 620,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00014535
     }
    ],
    "cost_usd": 0.0,
@@ -6826,7 +7293,10 @@
    "success": false,
    "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
    "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00032682
   },
   {
    "run_id": "fp-5bacefb13eca",
@@ -6857,7 +7327,8 @@
      "tokens_out": 109,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 4.861e-05
     },
     {
      "t": "2026-11-15 12:11:07.501434+00:00",
@@ -6879,7 +7350,8 @@
      "tokens_out": 52,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 4.197e-05
     },
     {
      "t": "2026-11-15 12:11:08.050553+00:00",
@@ -6901,7 +7373,8 @@
      "tokens_out": 96,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 5.546e-05
     },
     {
      "t": "2026-11-15 12:11:08.902912+00:00",
@@ -6923,7 +7396,8 @@
      "tokens_out": 571,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00013646
     }
    ],
    "cost_usd": 0.0,
@@ -6934,7 +7408,10 @@
    "success": false,
    "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
    "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0002825
   },
   {
    "run_id": "fp-5b5b9ad2bc2c",
@@ -6965,7 +7442,8 @@
      "tokens_out": 81,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 4.301e-05
     },
     {
      "t": "2026-11-15 12:11:16.173897+00:00",
@@ -6987,7 +7465,8 @@
      "tokens_out": 62,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 4.397e-05
     },
     {
      "t": "2026-11-15 12:11:16.752936+00:00",
@@ -7009,7 +7488,8 @@
      "tokens_out": 59,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 4.771e-05
     },
     {
      "t": "2026-11-15 12:11:17.332709+00:00",
@@ -7031,7 +7511,8 @@
      "tokens_out": 989,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00021964
     }
    ],
    "cost_usd": 0.0,
@@ -7042,7 +7523,10 @@
    "success": false,
    "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
    "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00035433
   },
   {
    "run_id": "fp-26974243f4a3",
@@ -7073,7 +7557,8 @@
      "tokens_out": 82,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 4.244e-05
     },
     {
      "t": "2026-11-15 12:11:25.017230+00:00",
@@ -7095,7 +7580,8 @@
      "tokens_out": 53,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 4.063e-05
     },
     {
      "t": "2026-11-15 12:11:25.589751+00:00",
@@ -7117,7 +7603,8 @@
      "tokens_out": 260,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 8.595e-05
     }
    ],
    "cost_usd": 0.0,
@@ -7128,7 +7615,10 @@
    "success": false,
    "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
    "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00016902
   },
   {
    "run_id": "fp-04ce891361e6",
@@ -7159,7 +7649,8 @@
      "tokens_out": 110,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 4.804e-05
     },
     {
      "t": "2026-11-15 12:11:32.538985+00:00",
@@ -7181,7 +7672,8 @@
      "tokens_out": 72,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 4.45e-05
     },
     {
      "t": "2026-11-15 12:11:33.122773+00:00",
@@ -7203,7 +7695,8 @@
      "tokens_out": 56,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 4.529e-05
     },
     {
      "t": "2026-11-15 12:11:33.678062+00:00",
@@ -7225,7 +7718,8 @@
      "tokens_out": 1019,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00022347
     }
    ],
    "cost_usd": 0.0,
@@ -7236,7 +7730,10 @@
    "success": false,
    "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
    "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0003613
   },
   {
    "run_id": "fp-842dec073b62",
@@ -7267,7 +7764,8 @@
      "tokens_out": 160,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 5.923e-05
     },
     {
      "t": "2026-11-15 12:11:42.726764+00:00",
@@ -7315,7 +7813,8 @@
      "tokens_out": 285,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00015416
     }
    ],
    "cost_usd": 0.0,
@@ -7326,7 +7825,10 @@
    "success": true,
    "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
    "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00821339
   },
   {
    "run_id": "fp-8f628c29a577",
@@ -7357,7 +7859,8 @@
      "tokens_out": 121,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 5.143e-05
     },
     {
      "t": "2026-11-15 12:11:46.683827+00:00",
@@ -7405,7 +7908,8 @@
      "tokens_out": 582,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.0002144
     }
    ],
    "cost_usd": 0.0,
@@ -7416,7 +7920,10 @@
    "success": true,
    "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
    "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00826583
   },
   {
    "run_id": "fp-fb5dfd140d9f",
@@ -7447,7 +7954,8 @@
      "tokens_out": 80,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 4.253e-05
     },
     {
      "t": "2026-11-15 12:11:51.663038+00:00",
@@ -7495,7 +8003,8 @@
      "tokens_out": 187,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00013295
     }
    ],
    "cost_usd": 0.0,
@@ -7506,7 +8015,10 @@
    "success": true,
    "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
    "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00817548
   },
   {
    "run_id": "fp-22676d110b2b",
@@ -7537,7 +8049,8 @@
      "tokens_out": 97,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 4.593e-05
     },
     {
      "t": "2026-11-15 12:11:55.105340+00:00",
@@ -7585,7 +8098,8 @@
      "tokens_out": 126,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00011872
     }
    ],
    "cost_usd": 0.008,
@@ -7596,7 +8110,10 @@
    "success": false,
    "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
    "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00816465
   },
   {
    "run_id": "fp-814e2e663d29",
@@ -7627,7 +8144,8 @@
      "tokens_out": 113,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 4.899e-05
     },
     {
      "t": "2026-11-15 12:12:00.101059+00:00",
@@ -7675,7 +8193,8 @@
      "tokens_out": 394,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00017533
     }
    ],
    "cost_usd": 0.0,
@@ -7686,7 +8205,10 @@
    "success": true,
    "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
    "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00822432
   },
   {
    "run_id": "fp-07fefdf7184a",
@@ -7717,7 +8239,8 @@
      "tokens_out": 367,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 9.979e-05
     },
     {
      "t": "2026-11-15 12:12:05.619197+00:00",
@@ -7765,7 +8288,8 @@
      "tokens_out": 223,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00014113
     }
    ],
    "cost_usd": 0.0,
@@ -7776,7 +8300,10 @@
    "success": true,
    "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
    "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00824092
   },
   {
    "run_id": "fp-6c8e7484c8ef",
@@ -7807,7 +8334,8 @@
      "tokens_out": 333,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 9.341e-05
     },
     {
      "t": "2026-11-15 12:12:10.139602+00:00",
@@ -7847,7 +8375,8 @@
      "tokens_out": 140,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00010514
     }
    ],
    "cost_usd": 0.0,
@@ -7858,7 +8387,10 @@
    "success": true,
    "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
    "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00819855
   },
   {
    "run_id": "fp-0b850ff25087",
@@ -7889,7 +8421,8 @@
      "tokens_out": 141,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 5.501e-05
     },
     {
      "t": "2026-11-15 12:12:13.463148+00:00",
@@ -7929,7 +8462,8 @@
      "tokens_out": 90,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 9.514e-05
     }
    ],
    "cost_usd": 0.0,
@@ -7940,7 +8474,10 @@
    "success": true,
    "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
    "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00815015
   },
   {
    "run_id": "fp-167d46d84058",
@@ -7971,7 +8508,8 @@
      "tokens_out": 80,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 4.204e-05
     },
     {
      "t": "2026-11-15 12:12:16.492176+00:00",
@@ -8019,7 +8557,8 @@
      "tokens_out": 291,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00015529
     }
    ],
    "cost_usd": 0.0,
@@ -8030,7 +8569,10 @@
    "success": true,
    "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
    "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00819733
   },
   {
    "run_id": "fp-2e261e2f8e71",
@@ -8061,7 +8603,8 @@
      "tokens_out": 103,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 4.664e-05
     },
     {
      "t": "2026-11-15 12:12:21.300800+00:00",
@@ -8109,7 +8652,8 @@
      "tokens_out": 294,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00015589
     }
    ],
    "cost_usd": 0.0,
@@ -8120,7 +8664,10 @@
    "success": true,
    "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
    "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00820253
   },
   {
    "run_id": "fp-d75a3c096530",
@@ -8151,7 +8698,8 @@
      "tokens_out": 1293,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.0002635
     },
     {
      "t": "2026-11-15 12:12:29.956333+00:00",
@@ -8195,7 +8743,8 @@
      "tokens_out": 759,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00019996
     }
    ],
    "cost_usd": 0.0,
@@ -8206,7 +8755,10 @@
    "success": true,
    "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
    "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00846346
   },
   {
    "run_id": "fp-b4c99ab84421",
@@ -8237,7 +8789,8 @@
      "tokens_out": 946,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.0001941
     },
     {
      "t": "2026-11-15 12:12:39.133367+00:00",
@@ -8281,7 +8834,8 @@
      "tokens_out": 1317,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00031163
     }
    ],
    "cost_usd": 0.0,
@@ -8292,7 +8846,10 @@
    "success": true,
    "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
    "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00850573
   },
   {
    "run_id": "fp-66c05b29795a",
@@ -8323,7 +8880,8 @@
      "tokens_out": 1450,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.0002942
     },
     {
      "t": "2026-11-15 12:12:56.029218+00:00",
@@ -8367,7 +8925,8 @@
      "tokens_out": 1063,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00025712
     }
    ],
    "cost_usd": 0.0,
@@ -8378,7 +8937,10 @@
    "success": false,
    "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
    "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00855132
   },
   {
    "run_id": "fp-d5eecfff38a8",
@@ -8409,7 +8971,8 @@
      "tokens_out": 1200,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.0002442
     },
     {
      "t": "2026-11-15 12:13:10.967780+00:00",
@@ -8453,7 +9016,8 @@
      "tokens_out": 1098,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00026461
     }
    ],
    "cost_usd": 0.0,
@@ -8464,7 +9028,10 @@
    "success": false,
    "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
    "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00850881
   },
   {
    "run_id": "fp-ac67c496bb46",
@@ -8495,7 +9062,8 @@
      "tokens_out": 1256,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00025526
     },
     {
      "t": "2026-11-15 12:13:23.973934+00:00",
@@ -8539,7 +9107,8 @@
      "tokens_out": 1062,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00025769
     }
    ],
    "cost_usd": 0.0,
@@ -8550,7 +9119,10 @@
    "success": true,
    "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
    "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00851295
   },
   {
    "run_id": "fp-2662b9d54a2a",
@@ -8581,7 +9153,8 @@
      "tokens_out": 1271,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00025826
     },
     {
      "t": "2026-11-15 12:13:39.846483+00:00",
@@ -8625,7 +9198,8 @@
      "tokens_out": 769,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00019804
     }
    ],
    "cost_usd": 0.0,
@@ -8636,7 +9210,10 @@
    "success": true,
    "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
    "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.0084563
   },
   {
    "run_id": "fp-3b75c4262557",
@@ -8667,7 +9244,8 @@
      "tokens_out": 897,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00018388
     },
     {
      "t": "2026-11-15 12:13:48.682857+00:00",
@@ -8707,7 +9285,8 @@
      "tokens_out": 1139,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.0002677
     }
    ],
    "cost_usd": 0.0,
@@ -8718,7 +9297,10 @@
    "success": false,
    "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
    "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
-   "grader_error": true
+   "grader_error": true,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00845158
   },
   {
    "run_id": "fp-24784f8f8f00",
@@ -8749,7 +9331,8 @@
      "tokens_out": 1170,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00023848
     },
     {
      "t": "2026-11-15 12:14:00.325135+00:00",
@@ -8789,7 +9372,8 @@
      "tokens_out": 911,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.0002228
     }
    ],
    "cost_usd": 0.0,
@@ -8800,7 +9384,10 @@
    "success": false,
    "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
    "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
-   "grader_error": true
+   "grader_error": true,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00846128
   },
   {
    "run_id": "fp-550a6b6886ec",
@@ -8831,7 +9418,8 @@
      "tokens_out": 733,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00015031
     },
     {
      "t": "2026-11-15 12:14:09.746478+00:00",
@@ -8875,7 +9463,8 @@
      "tokens_out": 705,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00018566
     }
    ],
    "cost_usd": 0.0,
@@ -8886,7 +9475,10 @@
    "success": true,
    "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
    "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00833597
   },
   {
    "run_id": "fp-609f589805d4",
@@ -8917,7 +9509,8 @@
      "tokens_out": 1180,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00023971
     },
     {
      "t": "2026-11-15 12:14:20.629362+00:00",
@@ -8961,7 +9554,8 @@
      "tokens_out": 902,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00022359
     }
    ],
    "cost_usd": 0.0,
@@ -8972,7 +9566,10 @@
    "success": false,
    "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
    "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
-   "grader_error": true
+   "grader_error": true,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.0084633
   },
   {
    "run_id": "fp-501e91ca1680",
@@ -9003,7 +9600,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     },
     {
      "t": "2026-11-15 12:14:26.306958+00:00",
@@ -9015,7 +9613,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     }
    ],
    "cost_usd": 0.0,
@@ -9024,7 +9623,10 @@
    "success": false,
    "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
    "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0
   },
   {
    "run_id": "fp-90ddd27d8c41",
@@ -9055,7 +9657,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     },
     {
      "t": "2026-11-15 12:14:27.881811+00:00",
@@ -9067,7 +9670,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     }
    ],
    "cost_usd": 0.0,
@@ -9076,7 +9680,10 @@
    "success": false,
    "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
    "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0
   },
   {
    "run_id": "fp-44cfd7a0c8dd",
@@ -9107,7 +9714,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     },
     {
      "t": "2026-11-15 12:14:29.453832+00:00",
@@ -9119,7 +9727,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     }
    ],
    "cost_usd": 0.0,
@@ -9128,7 +9737,10 @@
    "success": false,
    "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
    "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0
   },
   {
    "run_id": "fp-1e0e1eaeac20",
@@ -9159,7 +9771,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     },
     {
      "t": "2026-11-15 12:14:31.03058+00:00",
@@ -9171,7 +9784,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     }
    ],
    "cost_usd": 0.0,
@@ -9180,7 +9794,10 @@
    "success": false,
    "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
    "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0
   },
   {
    "run_id": "fp-d2de6d2f3fb4",
@@ -9211,7 +9828,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     },
     {
      "t": "2026-11-15 12:14:32.608918+00:00",
@@ -9223,7 +9841,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     }
    ],
    "cost_usd": 0.0,
@@ -9232,7 +9851,10 @@
    "success": false,
    "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
    "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0
   },
   {
    "run_id": "fp-841c7c61b81e",
@@ -9263,7 +9885,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     },
     {
      "t": "2026-11-15 12:14:34.197811+00:00",
@@ -9275,7 +9898,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     }
    ],
    "cost_usd": 0.0,
@@ -9284,7 +9908,10 @@
    "success": false,
    "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
    "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0
   },
   {
    "run_id": "fp-c5a82fece4e6",
@@ -9315,7 +9942,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     },
     {
      "t": "2026-11-15 12:14:35.780222+00:00",
@@ -9327,7 +9955,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     }
    ],
    "cost_usd": 0.0,
@@ -9336,7 +9965,10 @@
    "success": false,
    "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
    "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0
   },
   {
    "run_id": "fp-77b5125bc042",
@@ -9367,7 +9999,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     },
     {
      "t": "2026-11-15 12:14:37.36252+00:00",
@@ -9379,7 +10012,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     }
    ],
    "cost_usd": 0.0,
@@ -9388,7 +10022,10 @@
    "success": false,
    "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
    "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0
   },
   {
    "run_id": "fp-a1290440a9a3",
@@ -9419,7 +10056,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     },
     {
      "t": "2026-11-15 12:14:38.934264+00:00",
@@ -9431,7 +10069,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     }
    ],
    "cost_usd": 0.0,
@@ -9440,7 +10079,10 @@
    "success": false,
    "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
    "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0
   },
   {
    "run_id": "fp-93bb4cd293c1",
@@ -9471,7 +10113,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     },
     {
      "t": "2026-11-15 12:14:40.507634+00:00",
@@ -9483,7 +10126,8 @@
      "tokens_out": 0,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+     "error": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'",
+     "list_cost_usd": 0.0
     }
    ],
    "cost_usd": 0.0,
@@ -9492,7 +10136,10 @@
    "success": false,
    "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
    "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0
   },
   {
    "run_id": "fp-7ed226f1fa50",
@@ -9523,7 +10170,8 @@
      "tokens_out": 677,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.0001403
     },
     {
      "t": "2026-11-15 12:14:44.940951+00:00",
@@ -9545,7 +10193,8 @@
      "tokens_out": 1150,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00024344
     }
    ],
    "cost_usd": 0.0,
@@ -9556,7 +10205,10 @@
    "success": false,
    "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
    "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00038374
   },
   {
    "run_id": "fp-c6d688d3c3e6",
@@ -9587,7 +10239,8 @@
      "tokens_out": 795,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.0001639
     },
     {
      "t": "2026-11-15 12:14:55.807815+00:00",
@@ -9609,7 +10262,8 @@
      "tokens_out": 674,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00014852
     }
    ],
    "cost_usd": 0.0,
@@ -9620,7 +10274,10 @@
    "success": false,
    "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
    "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00031242
   },
   {
    "run_id": "fp-01ddd4069c57",
@@ -9651,7 +10308,8 @@
      "tokens_out": 1079,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00022
     },
     {
      "t": "2026-11-15 12:15:08.721746+00:00",
@@ -9673,7 +10331,8 @@
      "tokens_out": 855,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00018178
     }
    ],
    "cost_usd": 0.0,
@@ -9684,7 +10343,10 @@
    "success": false,
    "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
    "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00040178
   },
   {
    "run_id": "fp-7b1a7a6e5674",
@@ -9715,7 +10377,8 @@
      "tokens_out": 1307,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.0002656
     },
     {
      "t": "2026-11-15 12:15:22.197475+00:00",
@@ -9737,7 +10400,8 @@
      "tokens_out": 1011,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.0002148
     }
    ],
    "cost_usd": 0.0,
@@ -9748,7 +10412,10 @@
    "success": false,
    "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
    "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0004804
   },
   {
    "run_id": "fp-643d789fbab1",
@@ -9779,7 +10446,8 @@
      "tokens_out": 1123,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00022866
     },
     {
      "t": "2026-11-15 12:15:37.119390+00:00",
@@ -9801,7 +10469,8 @@
      "tokens_out": 907,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00019253
     }
    ],
    "cost_usd": 0.0,
@@ -9812,7 +10481,10 @@
    "success": false,
    "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
    "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00042119
   },
   {
    "run_id": "fp-2f21d665b32c",
@@ -9843,7 +10515,8 @@
      "tokens_out": 927,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00018946
     },
     {
      "t": "2026-11-15 12:15:48.182585+00:00",
@@ -9865,7 +10538,8 @@
      "tokens_out": 980,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00020909
     }
    ],
    "cost_usd": 0.0,
@@ -9876,7 +10550,10 @@
    "success": false,
    "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
    "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00039855
   },
   {
    "run_id": "fp-a4f6240ec20d",
@@ -9907,7 +10584,8 @@
      "tokens_out": 1046,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00021368
     },
     {
      "t": "2026-11-15 12:16:00.647547+00:00",
@@ -9929,7 +10607,8 @@
      "tokens_out": 686,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00015008
     }
    ],
    "cost_usd": 0.0,
@@ -9940,7 +10619,10 @@
    "success": false,
    "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
    "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00036376
   },
   {
    "run_id": "fp-7e6976b59f2a",
@@ -9971,7 +10653,8 @@
      "tokens_out": 1271,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00025868
     },
     {
      "t": "2026-11-15 12:16:11.554202+00:00",
@@ -9993,7 +10676,8 @@
      "tokens_out": 809,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00017622
     }
    ],
    "cost_usd": 0.0,
@@ -10004,7 +10688,10 @@
    "success": false,
    "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
    "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0004349
   },
   {
    "run_id": "fp-eefb1516035a",
@@ -10035,7 +10722,8 @@
      "tokens_out": 876,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00017891
     },
     {
      "t": "2026-11-15 12:16:22.257290+00:00",
@@ -10057,7 +10745,8 @@
      "tokens_out": 1099,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.0002317
     }
    ],
    "cost_usd": 0.0,
@@ -10068,7 +10757,10 @@
    "success": false,
    "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
    "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00041061
   },
   {
    "run_id": "fp-9265e07c1751",
@@ -10099,7 +10791,8 @@
      "tokens_out": 660,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00013571
     },
     {
      "t": "2026-11-15 12:16:33.408873+00:00",
@@ -10121,7 +10814,8 @@
      "tokens_out": 907,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00019316
     }
    ],
    "cost_usd": 0.0,
@@ -10132,7 +10826,10 @@
    "success": false,
    "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
    "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.00032887
   },
   {
    "run_id": "fp-6010909b185f",
@@ -10163,7 +10860,8 @@
      "tokens_out": 899,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.0001847
     },
     {
      "t": "2026-11-15 12:16:46.519302+00:00",
@@ -10211,7 +10909,8 @@
      "tokens_out": 1842,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00041166
     }
    ],
    "cost_usd": 0.0,
@@ -10222,7 +10921,10 @@
    "success": true,
    "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
    "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00859636
   },
   {
    "run_id": "fp-2f4353db4d9e",
@@ -10253,7 +10955,8 @@
      "tokens_out": 592,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.0001233
     },
     {
      "t": "2026-11-15 12:17:03.314106+00:00",
@@ -10301,7 +11004,8 @@
      "tokens_out": 1155,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00027629
     }
    ],
    "cost_usd": 0.0,
@@ -10312,7 +11016,10 @@
    "success": true,
    "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
    "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00839959
   },
   {
    "run_id": "fp-213ebeea39d2",
@@ -10343,7 +11050,8 @@
      "tokens_out": 1012,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.0002066
     },
     {
      "t": "2026-11-15 12:17:16.677235+00:00",
@@ -10391,7 +11099,8 @@
      "tokens_out": 838,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00021156
     }
    ],
    "cost_usd": 0.0,
@@ -10402,7 +11111,10 @@
    "success": false,
    "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
    "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00841816
   },
   {
    "run_id": "fp-336c3ef31d12",
@@ -10433,7 +11145,8 @@
      "tokens_out": 1205,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.0002452
     },
     {
      "t": "2026-11-15 12:17:34.012311+00:00",
@@ -10481,7 +11194,8 @@
      "tokens_out": 873,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.0002159
     }
    ],
    "cost_usd": 0.0,
@@ -10492,7 +11206,10 @@
    "success": false,
    "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
    "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.0084611
   },
   {
    "run_id": "fp-b6d032e7b952",
@@ -10523,7 +11240,8 @@
      "tokens_out": 1059,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00021586
     },
     {
      "t": "2026-11-15 12:17:46.321359+00:00",
@@ -10571,7 +11289,8 @@
      "tokens_out": 1124,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00026505
     }
    ],
    "cost_usd": 0.0,
@@ -10582,7 +11301,10 @@
    "success": true,
    "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
    "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00848091
   },
   {
    "run_id": "fp-c4f93fcade64",
@@ -10613,7 +11335,8 @@
      "tokens_out": 1550,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00031406
     },
     {
      "t": "2026-11-15 12:18:01.998582+00:00",
@@ -10661,7 +11384,8 @@
      "tokens_out": 2224,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00048442
     }
    ],
    "cost_usd": 0.0,
@@ -10672,7 +11396,10 @@
    "success": true,
    "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
    "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00879848
   },
   {
    "run_id": "fp-3d73b8c639c7",
@@ -10703,7 +11430,8 @@
      "tokens_out": 1277,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00025988
     },
     {
      "t": "2026-11-15 12:18:28.529261+00:00",
@@ -10747,7 +11475,8 @@
      "tokens_out": 778,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00019893
     }
    ],
    "cost_usd": 0.0,
@@ -10758,7 +11487,10 @@
    "success": true,
    "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
    "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00845881
   },
   {
    "run_id": "fp-a1e2af49413f",
@@ -10789,7 +11521,8 @@
      "tokens_out": 808,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00016608
     },
     {
      "t": "2026-11-15 12:18:38.242644+00:00",
@@ -10833,7 +11566,8 @@
      "tokens_out": 1199,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00028362
     }
    ],
    "cost_usd": 0.0,
@@ -10844,7 +11578,10 @@
    "success": true,
    "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
    "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.0084497
   },
   {
    "run_id": "fp-0b4eaaeca707",
@@ -10875,7 +11612,8 @@
      "tokens_out": 1086,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00022091
     },
     {
      "t": "2026-11-15 12:18:55.555264+00:00",
@@ -10923,7 +11661,8 @@
      "tokens_out": 870,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00021208
     }
    ],
    "cost_usd": 0.0,
@@ -10934,7 +11673,10 @@
    "success": true,
    "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
    "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00843299
   },
   {
    "run_id": "fp-c79f305de606",
@@ -10965,7 +11707,8 @@
      "tokens_out": 812,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00016611
     },
     {
      "t": "2026-11-15 12:19:06.043257+00:00",
@@ -11013,7 +11756,8 @@
      "tokens_out": 603,
      "cost_usd": 0.0,
      "fallback_index": 0,
-     "error": null
+     "error": null,
+     "list_cost_usd": 0.00016148
     }
    ],
    "cost_usd": 0.0,
@@ -11024,7 +11768,10 @@
    "success": true,
    "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
    "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
-   "grader_error": false
+   "grader_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00832759
   }
  ],
  "summary": {
@@ -11048,6 +11795,9 @@
     "tokens_mean": 1027.4,
     "cost_usd_total": 0.0,
     "cost_per_success_usd": null,
+    "list_cost_usd_total": 0.00195,
+    "list_cost_per_success_usd": null,
+    "list_price_missing": [],
     "seconds_p50": 5.8,
     "seconds_p95": 15.1,
     "agent_errors": 0,
@@ -11075,6 +11825,9 @@
     "tokens_mean": 0.0,
     "cost_usd_total": 0.0,
     "cost_per_success_usd": null,
+    "list_cost_usd_total": 0.0,
+    "list_cost_per_success_usd": null,
+    "list_price_missing": [],
     "seconds_p50": 0.1,
     "seconds_p95": 0.1,
     "agent_errors": 10,
@@ -11102,6 +11855,9 @@
     "tokens_mean": 1048.8,
     "cost_usd_total": 0.0,
     "cost_per_success_usd": null,
+    "list_cost_usd_total": 0.002,
+    "list_cost_per_success_usd": null,
+    "list_price_missing": [],
     "seconds_p50": 6.3,
     "seconds_p95": 9.7,
     "agent_errors": 0,
@@ -11129,6 +11885,9 @@
     "tokens_mean": 932.22,
     "cost_usd_total": 0.0,
     "cost_per_success_usd": null,
+    "list_cost_usd_total": 0.00159,
+    "list_cost_per_success_usd": null,
+    "list_price_missing": [],
     "seconds_p50": 5.1,
     "seconds_p95": 28.8,
     "agent_errors": 0,
@@ -11158,6 +11917,9 @@
     "tokens_mean": 2265.4,
     "cost_usd_total": 0.0,
     "cost_per_success_usd": 0.0,
+    "list_cost_usd_total": 0.08325,
+    "list_cost_per_success_usd": 0.010407,
+    "list_price_missing": [],
     "seconds_p50": 6.8,
     "seconds_p95": 17.6,
     "agent_errors": 0,
@@ -11185,6 +11947,9 @@
     "tokens_mean": 0.0,
     "cost_usd_total": 0.0,
     "cost_per_success_usd": null,
+    "list_cost_usd_total": 0.08,
+    "list_cost_per_success_usd": null,
+    "list_price_missing": [],
     "seconds_p50": 0.1,
     "seconds_p95": 0.3,
     "agent_errors": 10,
@@ -11212,6 +11977,9 @@
     "tokens_mean": 779.3,
     "cost_usd_total": 0.0,
     "cost_per_success_usd": null,
+    "list_cost_usd_total": 0.00141,
+    "list_cost_per_success_usd": null,
+    "list_price_missing": [],
     "seconds_p50": 3.6,
     "seconds_p95": 4.8,
     "agent_errors": 0,
@@ -11239,6 +12007,9 @@
     "tokens_mean": 2394.0,
     "cost_usd_total": 0.0,
     "cost_per_success_usd": 0.0,
+    "list_cost_usd_total": 0.08342,
+    "list_cost_per_success_usd": 0.011918,
+    "list_price_missing": [],
     "seconds_p50": 6.2,
     "seconds_p95": 8.5,
     "agent_errors": 0,
@@ -11268,6 +12039,9 @@
     "tokens_mean": 1965.56,
     "cost_usd_total": 0.056,
     "cost_per_success_usd": 0.00622,
+    "list_cost_usd_total": 0.07363,
+    "list_cost_per_success_usd": 0.008181,
+    "list_price_missing": [],
     "seconds_p50": 3.5,
     "seconds_p95": 4.9,
     "agent_errors": 0,
@@ -11295,6 +12069,9 @@
     "tokens_mean": 1990.1,
     "cost_usd_total": 0.0,
     "cost_per_success_usd": 0.0,
+    "list_cost_usd_total": 0.08185,
+    "list_cost_per_success_usd": 0.009094,
+    "list_price_missing": [],
     "seconds_p50": 2.7,
     "seconds_p95": 6.5,
     "agent_errors": 0,
@@ -11322,6 +12099,9 @@
     "tokens_mean": 2592.0,
     "cost_usd_total": 0.0,
     "cost_per_success_usd": null,
+    "list_cost_usd_total": 0.00282,
+    "list_cost_per_success_usd": null,
+    "list_price_missing": [],
     "seconds_p50": 7.2,
     "seconds_p95": 11.2,
     "agent_errors": 0,
@@ -11349,6 +12129,9 @@
     "tokens_mean": 2123.2,
     "cost_usd_total": 0.008,
     "cost_per_success_usd": 0.00089,
+    "list_cost_usd_total": 0.08203,
+    "list_cost_per_success_usd": 0.009115,
+    "list_price_missing": [],
     "seconds_p50": 2.8,
     "seconds_p95": 5.0,
     "agent_errors": 0,
@@ -11378,6 +12161,9 @@
     "tokens_mean": 2846.29,
     "cost_usd_total": 0.0,
     "cost_per_success_usd": 0.0,
+    "list_cost_usd_total": 0.05933,
+    "list_cost_per_success_usd": 0.011867,
+    "list_price_missing": [],
     "seconds_p50": 12.3,
     "seconds_p95": 13.3,
     "agent_errors": 0,
@@ -11405,6 +12191,9 @@
     "tokens_mean": 0.0,
     "cost_usd_total": 0.0,
     "cost_per_success_usd": null,
+    "list_cost_usd_total": 0.0,
+    "list_cost_per_success_usd": null,
+    "list_price_missing": [],
     "seconds_p50": 0.1,
     "seconds_p95": 0.1,
     "agent_errors": 10,
@@ -11432,6 +12221,9 @@
     "tokens_mean": 2124.5,
     "cost_usd_total": 0.0,
     "cost_per_success_usd": null,
+    "list_cost_usd_total": 0.00394,
+    "list_cost_per_success_usd": null,
+    "list_price_missing": [],
     "seconds_p50": 9.7,
     "seconds_p95": 13.0,
     "agent_errors": 0,
@@ -11459,6 +12251,9 @@
     "tokens_mean": 2841.3,
     "cost_usd_total": 0.0,
     "cost_per_success_usd": 0.0,
+    "list_cost_usd_total": 0.08482,
+    "list_cost_per_success_usd": 0.010603,
+    "list_price_missing": [],
     "seconds_p50": 13.4,
     "seconds_p95": 20.4,
     "agent_errors": 0,
@@ -11510,6 +12305,7 @@
   "questions_file": "suites/fresh-arena2.json",
   "live_searches": 8,
   "tool_cache": "suites/toolcache-fresh-arena2.json",
-  "rescored": "2026-11-15: runs where the grader itself failed are excluded (grader_errors), like quota kills"
+  "rescored": "2026-11-15: runs where the grader itself failed are excluded (grader_errors), like quota kills",
+  "list_prices": "list-prices.json"
  }
 }

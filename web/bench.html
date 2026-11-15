@@ -55,6 +55,11 @@ a{color:var(--accent)}
 </main>
 <script>
 const $ = s => document.querySelector(s);
+const fmtUsd = v => v==null ? "?" : (v<0.0001 && v>0 ? v.toExponential(1) : v.toFixed(4));
+// Free tiers log $0, so also show the same tokens at list price (bench/list-prices.json, from Bifrost's pricing table).
+const listCost = s => s.list_cost_usd_total==null
+  ? (s.list_price_missing&&s.list_price_missing.length ? `list price ? (no price for ${esc(s.list_price_missing.join(", "))}) · ` : "")
+  : `<b>list price $${fmtUsd(s.list_cost_usd_total)}</b>${s.list_cost_per_success_usd!=null?" ($"+fmtUsd(s.list_cost_per_success_usd)+"/success)":""} · `;
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const safeUrl = u => /^https?:\/\//i.test(u||"") ? u : "#";
 const CONDS = ["normal","model_outage","tool_error","misleading"];
@@ -93,17 +98,17 @@ function renderBoard(){
         <span class="small">(${Math.round(s.success_ci95[0]*100)}–${Math.round(s.success_ci95[1]*100)}%)</span>
         ${s.drop_vs_normal?`<span class="pill ${s.drop_vs_normal>0?"fault":""}">${s.drop_vs_normal>0?"−":"+"}${Math.abs(Math.round(s.drop_vs_normal*100))} pts</span>`:""}<br>
         <span class="small">pass^${s.k}: ${s.pass_all_k}/${s.tasks} · steps ${s.steps_mean} · tools ${s.tool_calls_mean} · tokens ${s.tokens_mean}<br>
-        $${s.cost_usd_total} total · ${s.cost_per_success_usd!=null?"$"+s.cost_per_success_usd+"/success · ":""}${s.seconds_p50}s p50 · ${s.seconds_p95}s p95
+        $${s.cost_usd_total} total · ${s.cost_per_success_usd!=null?"$"+s.cost_per_success_usd+"/success · ":""}${listCost(s)}${s.seconds_p50}s p50 · ${s.seconds_p95}s p95
         ${s.agent_errors?` · <span class="bad">${s.agent_errors} errors</span>`:""}${s.followed_planted?` · <span class="bad">followed planted ${s.followed_planted}×</span>`:""}${s.infra_errors?` · <span class="small">${s.infra_errors} quota/rate-limit runs excluded</span>`:""}${s.grader_errors?` · <span class="small">${s.grader_errors} grader-failure runs excluded</span>`:""}</span></td>`;
     }).join("")+"</tr>").join("")+"</table>";
   document.querySelectorAll("td.cell").forEach(td=>td.onclick=()=>{ document.querySelectorAll("td.sel").forEach(x=>x.classList.remove("sel")); td.classList.add("sel"); renderRuns(td.dataset.a, td.dataset.c); });
 }
 function renderRuns(agent, cond){
   const rs = DATA.runs.filter(r=>r.agent===agent && r.condition===cond);
-  $("#runs").innerHTML = `<div class="meta" style="margin-bottom:6px"><b>${esc(agent)}</b> · ${esc(CLABEL[cond])}</div><table><tr><th>task</th><th>rep</th><th>result</th><th>steps</th><th>tools</th><th>tokens</th><th>$</th><th>s</th></tr>`+
+  $("#runs").innerHTML = `<div class="meta" style="margin-bottom:6px"><b>${esc(agent)}</b> · ${esc(CLABEL[cond])}</div><table><tr><th>task</th><th>rep</th><th>result</th><th>steps</th><th>tools</th><th>tokens</th><th>$</th><th title="same tokens at each model's paid list price, plus $0.008 per search">list $</th><th>s</th></tr>`+
     rs.map((r,i)=>`<tr class="run" data-i="${DATA.runs.indexOf(r)}"><td>${esc(r.task_id)}</td><td>${r.repeat}</td>
       <td class="${r.success?"ok":(r.grader_error||r.infra_error?"small":"bad")}">${r.grader_error?"grader failed (excluded)":r.infra_error?"quota hit (excluded)":r.success?"✓ correct":(r.grade==="correct"?"✗ check failed":esc(r.grade||"fail"))}${r.followed_planted?' <span class="pill fault">planted</span>':""}</td>
-      <td>${r.steps}</td><td>${r.tool_calls}</td><td>${r.tokens}</td><td>${r.cost_usd}</td><td>${r.seconds}</td></tr>`).join("")+"</table>";
+      <td>${r.steps}</td><td>${r.tool_calls}</td><td>${r.tokens}</td><td>${r.cost_usd}</td><td>${r.list_cost_usd==null?(r.list_price_missing&&r.list_price_missing.length?'<span title="no list price for '+esc(r.list_price_missing.join(", "))+'">?</span>':"-"):fmtUsd(r.list_cost_usd)}</td><td>${r.seconds}</td></tr>`).join("")+"</table>";
   document.querySelectorAll("tr.run").forEach(tr=>tr.onclick=()=>{ document.querySelectorAll("tr.run.sel").forEach(x=>x.classList.remove("sel")); tr.classList.add("sel"); renderTrace(DATA.runs[+tr.dataset.i]); });
 }
 function renderTrace(r){
@@ -112,7 +117,7 @@ function renderTrace(r){
       const err = s.status!=="success";
       return `<div class="step"><div class="dot ${err?"err":"model"}">${i+1}</div><div><b>model call</b> <span class="small">${esc(s.model)}</span>
         ${s.fallback_index?`<span class="pill fault">fallback #${s.fallback_index}</span>`:""}<br>
-        <span class="small">${esc(s.status)} · ${s.tokens_in} in / ${s.tokens_out} out tokens · ${s.ms} ms · $${s.cost_usd}</span>
+        <span class="small">${esc(s.status)} · ${s.tokens_in} in / ${s.tokens_out} out tokens · ${s.ms} ms · $${s.cost_usd}${s.list_cost_usd!=null?` (list price $${fmtUsd(s.list_cost_usd)})`:""}</span>
         ${s.error?`<br><span class="bad small">${esc(s.error)}</span>`:""}</div></div>`;
     }
     const err = s.status!==200;

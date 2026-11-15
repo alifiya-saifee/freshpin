@@ -1816,6 +1816,125 @@ class MiscTests(unittest.TestCase):
         self.assertEqual(len(out), 1)
 
 
+class ListPriceTests(unittest.TestCase):
+    """Free tiers log $0, so FreshPin also reports cost at list price, from Bifrost's own pricing table."""
+
+    ROWS = [("gemini", "gemini-3.5-flash", 1.5e-6, 9e-6), ("gemini", "gemini-3.5-flash-lite", 3e-7, 2.5e-6),
+            ("openrouter", "google/gemini-3.5-flash-lite:free", 0.0, 0.0),
+            ("openrouter", "google/gemini-3.5-flash-lite:batch", 1.5e-7, 1.25e-6),
+            ("openrouter", "google/gemini-3.5-flash-lite", 3.1e-7, 2.6e-6),
+            ("mistral", "mistral-large-4", 7e-7, 2.1e-6), ("mistral", "mistral-large", 2e-6, 6e-6),
+            ("openrouter", "openai/gpt-oss-120b", 1.5e-7, 6e-7), ("cloudflare", "@cf/openai/gpt-oss-120b", 3.5e-7, 7.5e-7),
+            ("wandb", "nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B", 7e-8, 2e-7),
+            ("gmi", "nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-BF16", 1.5e-7, 1e-6),
+            ("deepinfra", "x/qwen-9", 1e-7, 1e-7), ("nebius", "y/qwen-9", 3e-7, 3e-7), ("gmi", "z/qwen-9", 2e-7, 5e-7)]
+
+    def test_pick_price_rules(self):
+        from freshpin.prices import pick_price
+        p = pick_price("gemini/gemini-3.5-flash-lite", self.ROWS)               # maker beats openrouter; free/batch ignored
+        self.assertEqual((p["input"], p["output"]), (3e-7, 2.5e-6))
+        self.assertIn("maker", p["source"])
+        p = pick_price("gemini/gemini-3.5-flash", self.ROWS)                    # "-lite" is a different model
+        self.assertEqual(p["input"], 1.5e-6)
+        p = pick_price("openai/mistralai/mistral-large-4-1t-a52b", self.ROWS)   # size suffix allowed, not older model
+        self.assertEqual(p["input"], 7e-7)
+        p = pick_price("groq/openai/gpt-oss-120b", self.ROWS)                   # no maker seller: openrouter
+        self.assertEqual(p["input"], 1.5e-7)
+        p = pick_price("openai/nvidia/nemotron-3.5-lightning-30b-a3b", self.ROWS)  # exact name beats -BF16 variant
+        self.assertEqual(p["input"], 7e-8)
+        p = pick_price("prov/qwen-9", self.ROWS)                                # otherwise the median
+        self.assertEqual((p["input"], p["output"]), (2e-7, 3e-7))
+        self.assertIsNone(pick_price("openai/poolside/laguna-xs-2.1", self.ROWS))
+
+    def test_build_from_bifrost_reads_its_pricing_table_read_only(self):
+        import sqlite3
+        from freshpin.prices import build_from_bifrost
+        with tempfile.TemporaryDirectory() as tmp:
+            db = Path(tmp) / "config.db"
+            con = sqlite3.connect(db)
+            con.execute("CREATE TABLE governance_model_pricing (provider TEXT, model TEXT, mode TEXT, "
+                        "input_cost_per_token REAL, output_cost_per_token REAL)")
+            con.executemany("INSERT INTO governance_model_pricing VALUES (?,?,?,?,?)",
+                            [(a, b, "chat", c, d) for a, b, c, d in self.ROWS] +
+                            [("mistral", "mistral-large-4", "embedding", 9.0, 9.0)])
+            con.commit()
+            con.close()
+            got = build_from_bifrost(db, ["openai/mistralai/mistral-large-4-1t-a52b", "openai/poolside/laguna-xs-2.1"])
+        self.assertEqual(got["openai/mistralai/mistral-large-4-1t-a52b"]["input"], 7e-7)  # chat rows only
+        self.assertIsNone(got["openai/poolside/laguna-xs-2.1"])
+
+    def test_run_list_cost_counts_tokens_and_searches_and_never_hides_unknowns(self):
+        from freshpin.agentbench import leaderboard_markdown, summarize
+        from freshpin.prices import apply_list_prices
+        prices = {"p/a": {"input": 1e-6, "output": 2e-6}}
+        def run(trace, success=True):
+            return {"agent": "x", "condition": "normal", "task_id": "t", "success": success, "grade": "correct",
+                    "steps": 1, "model_calls": 1, "tool_calls": 0, "tokens": 0, "cost_usd": 0.0, "seconds": 1.0,
+                    "followed_planted": False, "trace": trace}
+        ok = run([{"kind": "model", "model": "p/a", "tokens_in": 1000, "tokens_out": 500},
+                  {"kind": "model", "model": "p/model-that-does-not-exist", "tokens_in": 0, "tokens_out": 0},
+                  {"kind": "tool", "status": 200, "source": "replay"}, {"kind": "tool", "status": 503}])
+        unknown = run([{"kind": "model", "model": "p/b", "tokens_in": 10, "tokens_out": 10}])
+        apply_list_prices([ok, unknown], prices, 0.008)
+        self.assertAlmostEqual(ok["list_cost_usd"], 1000 * 1e-6 + 500 * 2e-6 + 0.008)  # replayed search counts, 503 not
+        self.assertEqual(ok["searches"], 1)
+        self.assertEqual(ok["trace"][1]["list_cost_usd"], 0.0)                      # refused call, no tokens
+        self.assertIsNone(unknown["list_cost_usd"])
+        self.assertEqual(unknown["list_price_missing"], ["p/b"])
+        s = summarize([ok], 1)["x"]["normal"]
+        self.assertAlmostEqual(s["list_cost_usd_total"], 0.01)
+        self.assertAlmostEqual(s["list_cost_per_success_usd"], 0.01)
+        s2 = summarize([ok, unknown], 1)["x"]["normal"]
+        self.assertIsNone(s2["list_cost_usd_total"])                               # one unknown: total is unknown
+        self.assertEqual(s2["list_price_missing"], ["p/b"])
+        md = leaderboard_markdown({"meta": {}, "summary": summarize([ok, unknown], 1)})
+        self.assertIn("| ? | ? |", md)
+        md = leaderboard_markdown({"meta": {}, "summary": summarize([dict(ok, success=False)], 1)})
+        self.assertIn("| 0.0100 | - |", md)                                         # no success: no $/success
+
+    def test_old_results_without_traces_still_summarise(self):
+        from freshpin.agentbench import summarize
+        r = {"agent": "x", "condition": "normal", "task_id": "t", "success": True, "grade": "correct", "steps": 1,
+             "model_calls": 1, "tool_calls": 0, "tokens": 5, "cost_usd": 0.0, "seconds": 1.0, "followed_planted": False}
+        self.assertIsNone(summarize([r], 1)["x"]["normal"]["list_cost_usd_total"])
+
+    def test_committed_price_file_and_sample_agree(self):
+        """Every model in the published sample has a list price, and each run's list cost is what its trace gives."""
+        from freshpin.agentbench import TAVILY_USD_PER_CREDIT
+        from freshpin.prices import PRICES_FILE, call_list_cost, load_prices
+        root = Path(__file__).resolve().parent.parent
+        prices = load_prices(PRICES_FILE)
+        self.assertTrue(all(p["source"].startswith("bifrost pricing") for p in prices.values()))
+        d = json.loads((root / "bench/samples/agentbench-20261115-155950.json").read_text(encoding="utf-8"))
+        for r in d["runs"]:
+            model = sum(call_list_cost(c, prices) for c in r["trace"] if c["kind"] == "model")
+            searches = sum(1 for c in r["trace"] if c["kind"] == "tool" and c["status"] == 200)
+            self.assertAlmostEqual(r["list_cost_usd"], model + searches * TAVILY_USD_PER_CREDIT, places=7)
+        self.assertEqual(d["summary"]["tool_agent"]["normal"]["list_price_missing"], [])
+
+    def test_prices_command_writes_the_file(self):
+        import contextlib
+        import io
+        import sqlite3
+        from freshpin.__main__ import main
+        with tempfile.TemporaryDirectory() as tmp:
+            db, out = Path(tmp) / "config.db", Path(tmp) / "prices.json"
+            con = sqlite3.connect(db)
+            con.execute("CREATE TABLE governance_model_pricing (provider TEXT, model TEXT, mode TEXT, "
+                        "input_cost_per_token REAL, output_cost_per_token REAL)")
+            con.execute("INSERT INTO governance_model_pricing VALUES ('openrouter','openai/gpt-oss-120b','chat',1e-7,5e-7)")
+            con.commit()
+            con.close()
+            buf = io.StringIO()
+            with contextlib.redirect_stdout(buf):
+                self.assertEqual(main(["prices", "--models", "groq/openai/gpt-oss-120b,x/none", "--bifrost-config",
+                                       str(db), "--out", str(out)]), 0)
+                self.assertEqual(main(["prices", "--models", "a/b", "--bifrost-config", str(Path(tmp) / "no.db")]), 2)
+            data = json.loads(out.read_text())
+            self.assertEqual(list(data["prices"]), ["groq/openai/gpt-oss-120b"])   # unknown models are not written
+            self.assertIn("no paid list price", buf.getvalue())
+
+
 if __name__ == "__main__":
     os.environ.setdefault("FRESHPIN_MODE", "replay")
     unittest.main()

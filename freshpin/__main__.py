@@ -16,6 +16,7 @@ USAGE = """usage:
                                            test models on facts that change; print a freshness scorecard
   python -m freshpin agentbench [...]      benchmark AGENTS (any framework) on a task suite: repeats, failure
                                            conditions, steps/tools/tokens/$/time, step-by-step traces (see --help)
+  python -m freshpin prices --models a,b   write bench/list-prices.json from Bifrost's pricing table (list-price $)
   python -m freshpin bench-build [--n 8]   build a fresh-events question set (gold answers + quotes) from this week's news
   python -m freshpin watch [--all]         re-check pinned facts past their half-life; alert on reopened decisions
   python -m freshpin check "answer text"   check an answer and print the JSON report
@@ -43,6 +44,8 @@ def main(argv: list[str]) -> int:
         return agentbench_cmd(argv[1:])
     if cmd == "watch":
         return watch_cmd(argv[1:])
+    if cmd == "prices":
+        return prices_cmd(argv[1:])
     app = FreshPin(settings())
     if cmd == "check" and len(argv) > 1:
         print(json.dumps(app.check(" ".join(argv[1:])), indent=2, ensure_ascii=False))
@@ -330,7 +333,8 @@ def agentbench_cmd(args: list[str]) -> int:
             "repeats": a.repeats, "conditions": conds, "grader": judges[0], "grader_independent": independent,
             "agents": [{"name": ag.name, "description": ag.description,
                         "how": "command" if ag.command else "http"} for ag in agents],
-            "questions_file": Path(a.questions).name, "tool_cache": cache.name, "replay_only": a.replay_only}
+            "questions_file": Path(a.questions).name, "tool_cache": cache.name, "replay_only": a.replay_only,
+            "list_prices": "list-prices.json"}
     done: list = []
 
     def on_progress(rec: dict) -> None:
@@ -361,6 +365,41 @@ def agentbench_cmd(args: list[str]) -> int:
     print()
     print(leaderboard_markdown(result))
     print(f"Saved: {path}\nOpen the comparison page: python -m freshpin serve, then http://127.0.0.1:{s.port}/bench")
+    return 0
+
+
+def prices_cmd(args: list[str]) -> int:
+    """Pick one list price per model from Bifrost's own pricing table and save bench/list-prices.json."""
+    import argparse
+    import os
+    from datetime import date
+    from pathlib import Path
+
+    from .prices import PRICES_FILE, build_from_bifrost, load_prices
+
+    ap = argparse.ArgumentParser(prog="python -m freshpin prices")
+    ap.add_argument("--models", required=True, help="comma-separated Bifrost provider/model names")
+    ap.add_argument("--bifrost-config", default=os.environ.get("FRESHPIN_BIFROST_CONFIG_DB", ""),
+                    help="Bifrost's config.db (default: next to FRESHPIN_BIFROST_LOGS_DB)")
+    ap.add_argument("--out", default=str(PRICES_FILE))
+    a = ap.parse_args(args)
+    cfg = a.bifrost_config or (str(Path(settings().bifrost_logs_db).with_name("config.db"))
+                               if settings().bifrost_logs_db else "")
+    if not cfg or not Path(cfg).exists():
+        print("Needs Bifrost's config.db: pass --bifrost-config PATH (or set FRESHPIN_BIFROST_LOGS_DB).")
+        return 2
+    models = [m.strip() for m in a.models.split(",") if m.strip()]
+    found = build_from_bifrost(cfg, models)
+    out = Path(a.out)
+    prices = dict(load_prices(out)) if out.exists() else {}
+    prices.update({m: p for m, p in found.items() if p})
+    out.write_text(json.dumps({"built_on": date.today().isoformat(), "unit": "USD per token",
+                               "from": "Bifrost governance_model_pricing (python -m freshpin prices)",
+                               "prices": dict(sorted(prices.items()))}, indent=1) + "\n", encoding="utf-8")
+    for m, p in found.items():
+        print(f"{m:55} " + (f"${p['input'] * 1e6:.3f} in / ${p['output'] * 1e6:.3f} out per 1M tokens  ({p['source']})"
+                            if p else "no paid list price in Bifrost's table"))
+    print(f"Saved: {out}")
     return 0
 
 
@@ -425,7 +464,8 @@ def bench_cmd(args: list[str]) -> int:
         import json as _json
         saved = _json.loads(Path(a.show).read_text(encoding="utf-8"))
         if "runs" in saved and "summary" in saved:          # an agentbench result
-            from .agentbench import leaderboard_markdown, summarize
+            from .agentbench import add_list_cost, leaderboard_markdown, summarize
+            add_list_cost(saved["runs"])
             saved["summary"] = summarize(saved["runs"], saved.get("meta", {}).get("repeats", 1))
             print(leaderboard_markdown(saved))
             return 0
