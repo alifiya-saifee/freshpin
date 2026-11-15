@@ -77,6 +77,14 @@ class FreshPin:
             report["ledger"] = self.ledger.state()
             return report
 
+    def ground(self, question: str) -> dict[str, Any]:
+        """Dated sources for a question BEFORE it is answered (no ledger changes)."""
+        from .pipeline import ground_question
+        if not question.strip():
+            raise ValueError("question is empty")
+        return ground_question(question, chat=self.chat, search=self.search, models=self.s.extractor_models,
+                               max_sources=self.s.max_sources_per_claim)
+
     def approve(self, decision_id: str, by: str, note: str = "") -> dict[str, Any]:
         with self.lock:
             self.ledger.approve(decision_id, by, note)

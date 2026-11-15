@@ -455,6 +455,45 @@ class EventSearchTests(unittest.TestCase):
         self.assertEqual(search.calls[1][0], "Which company had a major outage on Friday 14 November affecting 11,500 companies?")
 
 
+class GroundTests(unittest.TestCase):
+    class Chat:
+        def __init__(self, reply):
+            self.reply = reply
+
+        def chat_json(self, step, models, system, user, budget, simulate_outage=False):
+            return dict(self.reply)
+
+    def test_live_value_without_todays_source_says_do_not_state_a_number(self):
+        from freshpin.pipeline import ground_question
+        rows = {"gold spot price": [{"title": "Gold", "url": "https://m.example.com/g", "snippet": "Gold rose.",
+                                     "published_date": "2026-11-01", "relevance": 1}]}
+        g = ground_question("Gold price today?", chat=self.Chat({"time_sensitive": True, "type": "live_data",
+                                                                 "search_query": "gold spot price"}),
+                            search=StubSearch(rows), models=["m"], today=TODAY)
+        self.assertIn("Do not state a number", g["advice"])
+        self.assertEqual(len(g["sources"]), 1)
+
+    def test_regulation_sources_ranked_official_first_and_event_searches_question(self):
+        from freshpin.pipeline import ground_question
+        rows = {"dubai building safety law": [
+            {"title": "Blog", "url": "https://blog.example.com/x", "snippet": "b", "published_date": "2026-11-10", "relevance": 1},
+            {"title": "Law", "url": "https://dlp.dubai.gov.ae/law3", "snippet": "l", "published_date": None, "relevance": 1}]}
+        g = ground_question("Dubai rule?", chat=self.Chat({"time_sensitive": True, "type": "regulation",
+                                                           "search_query": "dubai building safety law"}),
+                            search=StubSearch(rows), models=["m"], today=TODAY)
+        self.assertEqual(g["sources"][0]["authority"], "official")
+        self.assertIn("Answer only from these sources", g["advice"])
+        s = StubSearch({})
+        e = ground_question("What happened Friday?", chat=self.Chat({"time_sensitive": True, "type": "event",
+                                                                     "search_query": "outage friday"}),
+                            search=s, models=["m"], today=TODAY)
+        self.assertEqual([q for q, _ in s.calls], ["outage friday", "What happened Friday?"])
+        self.assertIn("could not find recent information", e["advice"])
+        n = ground_question("What is 2+2?", chat=self.Chat({"time_sensitive": False, "type": "other"}),
+                            search=StubSearch({}), models=["m"], today=TODAY)
+        self.assertEqual((n["time_sensitive"], n["sources"]), (False, []))
+
+
 class EfficiencyTests(unittest.TestCase):
     def test_cache_reuses_until_it_expires(self):
         from freshpin.search import CachedSearch
@@ -734,7 +773,7 @@ class McpTests(unittest.TestCase):
         self.assertEqual(len(replies), 2)  # the notification gets no reply
         self.assertEqual(replies[0]["result"]["serverInfo"]["name"], "freshpin")
         names = [t["name"] for t in replies[1]["result"]["tools"]]
-        self.assertEqual(names, ["check_answer", "get_ledger"])
+        self.assertEqual(names, ["check_answer", "ground_question", "get_ledger"])
         self.assertNotIn("approve", " ".join(names))  # only people re-approve
 
     def test_check_answer_reports_stale_claims_and_reopens(self):

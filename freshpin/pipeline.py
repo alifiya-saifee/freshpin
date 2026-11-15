@@ -417,3 +417,57 @@ def run_check(answer: str, *, chat: ChatBackend, search: SearchBackend, ledger: 
         "tavily_searches": len(checkable) + sum(do_recheck),
         "elapsed_ms": int((time.monotonic() - t0) * 1000),
     }
+
+
+# --- Ground before answering: give the model dated sources BEFORE it answers, so it doesn't answer from old
+# training data and then need fixing (that spends tokens twice).
+GROUND_SYSTEM = """Classify a question before an AI assistant answers it.
+Return ONLY JSON: {"time_sensitive": bool, "type": str, "search_query": str}
+- type is one of: pricing, api_version, regulation, company, statistic, event, live_data, other.
+- time_sensitive is true when the right answer could have changed recently (news, live values, prices, laws,
+  versions, who runs or owns something, counts).
+- search_query: a short web query that finds the CURRENT answer. Describe the topic; do not guess the answer."""
+
+
+def ground_question(question: str, *, chat: ChatBackend, search: SearchBackend, models: list[str],
+                    today: date | None = None, max_sources: int = 5) -> dict[str, Any]:
+    today = today or date.today()
+    budget = RunBudget(10000)
+    try:
+        c = chat.chat_json("ground", models, GROUND_SYSTEM, f"TODAY: {today.isoformat()}\nQUESTION: {question}", budget)
+    except (LLMUnavailable, BudgetExceeded):
+        c = {"time_sensitive": True, "type": "other", "search_query": question}  # safe default: look it up
+    ctype = c.get("type") if c.get("type") in CLAIM_TYPES else "other"
+    time_sensitive = bool(c.get("time_sensitive")) or ctype != "other"
+    out: dict[str, Any] = {"question": question, "type": ctype, "time_sensitive": time_sensitive,
+                           "search_query": None, "sources": [], "tokens": budget.used_tokens}
+    if not time_sensitive:
+        out["advice"] = "Not time-sensitive: answer normally."
+        return out
+    queries = [str(c.get("search_query") or question)[:300]]
+    if ctype == "event":
+        queries.append(question[:300])  # the question itself describes the event, without any guess
+    seen, found = set(), []
+    for q in queries:
+        try:
+            for s in search.search(q, ctype, max_sources):
+                if s.url not in seen:
+                    seen.add(s.url)
+                    found.append(grade(s.as_dict(), ctype, today))
+        except SearchUnavailable:
+            continue
+    found.sort(key=rank_key)
+    out["search_query"] = queries[0]
+    out["sources"] = [{k: g.get(k) for k in ("title", "url", "published_date", "authority", "age_days")}
+                      | {"snippet": (g.get("snippet") or "")[:500]} for g in found[:max_sources]]
+    fresh_today = [g for g in found if g.get("age_days") is not None and g["age_days"] <= 1]
+    if ctype == "live_data" and not fresh_today:
+        out["advice"] = ("No source dated today states this live value. Do not state a number; say it needs a live "
+                         "data feed and point to where to check.")
+    elif not found:
+        out["advice"] = "No recent sources found. Say you could not find recent information; do not guess."
+    else:
+        out["advice"] = ("Answer only from these sources, cite them with their dates, and say what they do not cover. "
+                         "Then check your answer with check_answer.")
+    out["tokens"] = budget.used_tokens
+    return out

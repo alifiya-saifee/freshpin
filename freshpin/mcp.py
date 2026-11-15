@@ -47,6 +47,18 @@ TOOLS = [
         "annotations": {"title": "Check an answer for stale facts", "readOnlyHint": False, "openWorldHint": True},
     },
     {
+        "name": "ground_question",
+        "description": (
+            "Call BEFORE answering a question whose answer may have changed recently (news, this week's events, "
+            "live prices, laws, versions, who runs a company). Returns dated web sources ranked by authority and "
+            "advice on how to answer, so you answer from current facts instead of training data. For live values "
+            "with no source dated today it tells you not to state a number."
+        ),
+        "inputSchema": {"type": "object", "properties": {
+            "question": {"type": "string", "description": "The user's question."}}, "required": ["question"]},
+        "annotations": {"title": "Ground a question before answering", "readOnlyHint": True, "openWorldHint": True},
+    },
+    {
         "name": "get_ledger",
         "description": "Show the pin ledger: facts and their versions, decisions and their status "
                        "(approved, reopened, at risk), and recent audit events. Read-only.",
@@ -136,6 +148,14 @@ class Server:
                 compact = {k: v for k, v in report.items() if k != "ledger"}
                 return _text_result(summarize(report) + "\n\nFull report (JSON):\n"
                                     + json.dumps(compact, ensure_ascii=False))
+            if name == "ground_question":
+                g = self.app.ground(str(args.get("question", "")))
+                lines = [f"Question type: {g['type']} ({'time-sensitive' if g['time_sensitive'] else 'not time-sensitive'})",
+                         f"Advice: {g['advice']}"]
+                for i, s in enumerate(g["sources"], 1):
+                    lines.append(f"[{i}] {s['title']} ({s.get('authority')}, {s.get('published_date') or 'undated'})\n"
+                                 f"    {s['url']}\n    {s['snippet']}")
+                return _text_result("\n".join(lines))
             if name == "get_ledger":
                 return _text_result(json.dumps(self.app.ledger.state(), ensure_ascii=False))
         except Exception as exc:  # noqa: BLE001 - reported to the assistant instead of crashing the server
