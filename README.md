@@ -1,12 +1,18 @@
 # FreshPin
 
-**A stale-answer detector that knows what depends on the answer.**
+**Benchmarks AI agents, not just models, on facts that changed after their training.**
 
-FreshPin checks an AI-generated answer claim by claim against the live web (Tavily), scores how fresh each claim is, and, when a fact has changed, **reopens every decision that was approved on the old version** so a person can review it. All model calls go through the Bifrost gateway, with fallbacks across providers and a spend limit on every run.
+AI answers go stale quietly: last week's outage, this year's law, today's price. FreshPin measures how different **agent configurations** of the same model cope (the model alone, the model with search first, a tool-using agent that decides for itself whether to look things up, and the model after being told what was wrong) on questions built from **this week's news**, each with a gold answer and a quote found word for word in its source. Its **stale-answer detector** is the grader: Tavily evidence, two blind judges from different model families through Bifrost, and fixed rules in code. Its **pin ledger** shows what a stale answer would have broken: approved decisions that relied on the old fact reopen for a named person.
 
-**Four ways in:** a web app for people, an **MCP tool** so AI assistants (Claude Code, Claude Desktop, Cursor) can check their own answer before they reply, a command line, and a JSON API for other apps.
+Built for the Geek Room AI Global Hackathon 2026. **Primary problem statement:** *Build a Benchmarking Platform for AI Agents, Not Just Models* (Bifrost track). **Integrated:** *Build a Stale-Answer Detector for AI Applications* (Tavily track).
 
-Built for the Geek Room AI Global Hackathon 2026, for the **"Build a Stale-Answer Detector for AI Applications"** problem statement (Tavily + Bifrost).
+```bash
+python -m freshpin bench-build --n 12                      # this week's news -> questions with gold answers + quotes
+python -m freshpin bench --arms bare,grounded,agent,repair --models <bifrost models> --questions bench/fresh-<date>.json
+python -m unittest discover -s tests                        # no keys needed; offline replay mode
+```
+
+**Four ways in:** the agent arena above (CLI), an **MCP server** so AI assistants (Claude Code, Claude Desktop, Cursor) ground a question before answering and check a draft before replying, a web app for people, and a JSON API.
 
 ![FreshPin screenshot](docs/screenshot.png)
 
@@ -33,7 +39,7 @@ One model's verdict is not enough to change money, budgets or approvals. After t
 
 1. **Source check (fixed rules, no AI).** Each source is graded by authority (official/government, vendor docs, major news, other) and age against the claim type's half-life. Old, undated or unofficial sources that agree with the original answer are flagged: that is usually where outdated information comes from.
 2. **A second search that hunts for change.** The first judge writes a confirm query. If it said "current" or "unverifiable", the query looks for a *recent change* (new law, price change, new version, acquisition); otherwise it looks for the official, newest source of today's fact. Pages already seen are skipped.
-3. **An independent second judge.** A model on a **different provider** (Gemini if the first judge was Groq) reads the first verdict and every source, old and new, and returns its own verdict, the best reference, *why the answer was out of date*, and one sentence copied from the best source.
+3. **An independent second judge.** A model from a **different provider and model family** judges **blind**: it never sees the first verdict. It reads every source, old and new, and returns its own verdict, the best reference, *why the answer was out of date*, and one sentence copied from the best source.
 4. **Fixed rules decide (not AI).**
    - *No quote, no verdict:* the quote must appear word for word in the source text, or the verdict is not accepted.
    - *Silence is not proof:* both judges are told that a page which doesn't mention a requirement is not evidence that none exists.
@@ -90,6 +96,19 @@ python -m freshpin bench --models groq/openai/gpt-oss-120b,gemini/gemini-3.5-fla
 - **Scorecard per model:** claims checked, % fresh / stale / disputed / unverified, average score, and **honest on live data**: for price and news questions, the answer either checks out or says plainly that the model can't know live values.
 - The bench prints a Tavily credit estimate first and needs `--yes` above 40 credits. `--no-recheck` halves the cost. Results are saved to `bench/results/` and never touch the pin ledger.
 
+### Agent arena: agents, not just models
+
+`bench --arms` runs the same model as different **agent configurations** on the same fresh questions:
+
+| Arm | What the agent can do |
+|---|---|
+| `bare` | Answer from training data only |
+| `grounded` | FreshPin's `ground_question` runs first; the dated sources go into the prompt |
+| `agent` | A real tool loop through Bifrost: the model **decides** whether to call `search_web` (Tavily via FreshPin), up to two calls |
+| `repair` | The bare answer is checked by FreshPin; the model is told what was wrong (with sources and evidence) and rewrites |
+
+Per arm: accuracy and "said it doesn't know" rate with **Wilson 95% intervals**, how often the agent **chose to search**, tool calls, tokens, Tavily searches, p50/p95 latency. Between arms: per-item flips (fixed / broke) with an **exact sign test**. To avoid self-preference, the gold grader and FreshPin's own judges always come from a **different model family than the agent** under test, and a string backstop (a gold key term must appear) has to agree before an answer counts as correct. Results are saved as JSON and a markdown scorecard in `bench/results/`.
+
 ### Fresh-events benchmark ("what happened on Friday?")
 
 Models fail most on things that happened after their training. `bench-build` makes a dated question set from this week's news, with a gold answer for each question and a quote that must appear word for word in the article (otherwise the item is dropped):
@@ -105,7 +124,7 @@ python -m freshpin bench --questions bench/fresh-<date>.json --models x --self-t
 - **`--self-test`: how often is FreshPin itself right?** Each gold answer should pass; a deliberately wrong version (a changed number or year) should fail. It reports the counts, not a guess.
 - Auto-built sets are marked `review: auto` and git-ignored until a person has read them (`git add -f` after review).
 
-**Live result, 15 Nov 2026.** The set found Friday's real events: a Workday outage affecting 11,500 companies (New York Post, Fox Business) and the Microsoft Outlook/Teams/Copilot outage (BBC, Reuters, NYT). Asked which company had Friday's outage, `gpt-oss-120b` answered "ServiceNow": **wrong** against gold. Told what FreshPin found, it rewrote its answer to "Workday": **correct**. That run also exposed four FreshPin bugs, all fixed with tests: an honesty rule that misread "users unable to access email" as the model admitting ignorance; a question that leaked its answer; event searches that used the model's wrong guess ("ServiceNow outage") instead of the event; and feedback without evidence.
+**Live result, 15 Nov 2026.** The set found Friday's real events: a Workday outage affecting 11,500 companies (New York Post, Fox Business) and the Microsoft Outlook/Teams/Copilot outage (BBC, Reuters, NYT). Asked which company had Friday's outage, `gpt-oss-120b` answered "ServiceNow": **wrong** against gold (FreshPin itself rated that claim *unverifiable*: its searches found no ServiceNow outage, and silence is not proof). Told what FreshPin found, it rewrote its answer to name "Workday": graded **partly** correct (right company; the 11,500 figure left unconfirmed). That run also exposed four FreshPin bugs, all fixed with tests: an honesty rule that misread "users unable to access email" as the model admitting ignorance; a question that leaked its answer; event searches that used the model's wrong guess ("ServiceNow outage") instead of the event; and feedback without evidence.
 
 First live run (15 Nov 2026, 3 questions): `gpt-oss-120b` on Groq said the latest Python is 3.15.0 (confirmed current), said honestly that it has no real-time gold price, and described the Dubai rule as applying to buildings "10 years or older" (the law says 20), which FreshPin flagged. Gemini's free daily quota had run out, so its rows show the 429 error instead of a score.
 
@@ -134,18 +153,18 @@ Two research agents argued for and against each free candidate (strengths, weakn
 
 - Claims that can't go out of date are skipped before any search.
 - **Search cache:** identical searches are reused for 10 minutes (live data), 1 hour (events) or 24 hours (everything else), so repeat checks and the bench don't spend Tavily credits twice.
-- The second judge sees only the 6 best sources (most official, then newest), with snippets cut to 500 characters; quotes are still matched against the full text.
+- The second judge sees only the 6 best sources (most official, then newest), with snippets cut to 500 characters; quotes are matched against the stored snippet text (about 700 characters per source, not the full page).
 - The report shows tokens per step (`extract`, `verify`, `recheck`) and the gateway trace shows every call.
 
 ## What's new about it
 
-Most stale-answer checkers stop at a score for each claim. FreshPin adds a **pin ledger**: a record of which approved decisions relied on which version of which fact. "This sentence is outdated" then becomes "these two approvals are now unsafe, here's what changed, and here's who has to sign again". Decisions that relied only on facts that are still current are left alone.
+Most stale-answer checkers stop at a score for each claim. FreshPin adds a **pin ledger**: a record of which approved decisions relied on which version of which fact. The idea is classic *truth maintenance* (versioned beliefs whose dependants are re-examined when a belief changes, as in Doyle 1979 and de Kleer's ATMS); what is new here is applying it to AI answers, with a named person required to re-approve. "This sentence is outdated" then becomes "these two approvals are now unsafe, here's what changed, and here's who has to sign again". Decisions that relied only on facts that are still current are left alone.
 
 ## How Tavily and Bifrost are used
 
 | | Role in FreshPin |
 |---|---|
-| **Tavily** | Live evidence for every claim: `search_depth: advanced`, recent time range for fast-changing claim types, published dates feed the recency part of the score. |
+| **Tavily** | Live evidence for every claim: a basic first search (1 credit) and an advanced recheck search (2 credits); `topic` news/finance and a time range by claim type; `include_published_date` so publish dates feed the recency score; `ground_question` searches before an agent answers, and the arena's agent calls it as its `search_web` tool. |
 | **Bifrost** | Every model call goes through Bifrost's OpenAI-compatible endpoint. Each request carries a `fallbacks` list, so a failing provider is replaced automatically. The extractor and verifier use different primary providers. An optional virtual key (`x-bf-vk`) adds gateway-side budgets and rate limits. The UI shows a trace of every call: model asked for, model that served it, tokens, latency, errors. |
 
 **Resilience, in three layers:**
@@ -311,6 +330,9 @@ tests/          unittest suite
 
 ## Limits
 
+- **Small samples.** The arena runs on about 10–20 fresh questions per set, so a 95% interval is roughly ±20 points; compare arms with the paired sign test, not by eye. Gold answers are built and graded by models (with a quote found word for word and a string backstop); no human-labelled set yet.
+- **Login is off by default** (`FRESHPIN_API_TOKEN` turns it on). The local API refuses non-JSON and cross-site requests either way.
+- **Search coverage.** One search provider (Tavily); quotes are matched against ~700-character snippets, not full pages. Non-Latin scripts now match, but prompts are English-only.
 - Verdicts depend on what Tavily finds. When sources are thin or undated, FreshPin says so (the "check" band, "unverifiable") rather than guessing, and it never reopens a decision on unclear evidence.
 - Claim keys are produced by the extractor model and matched to known facts; two different wordings of the same fact can occasionally get different keys.
 - Free provider tiers have rate limits. Bifrost's fallbacks cover short bursts; heavy use needs paid keys or more providers.
