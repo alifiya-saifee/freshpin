@@ -67,9 +67,24 @@ def make_handler(app: FreshPin):
             else:
                 self._json(404, {"error": "not found"})
 
+        def _same_origin_json(self) -> bool:
+            """Blocks cross-site requests from other web pages: a POST must be JSON (forms can't send that without
+            a CORS preflight, which this server never approves) and, if the browser sends an Origin, it must be
+            this server's own address."""
+            ctype = (self.headers.get("Content-Type") or "").split(";")[0].strip().lower()
+            if ctype != "application/json":
+                self._json(415, {"error": "send JSON (Content-Type: application/json)"})
+                return False
+            origin = self.headers.get("Origin")
+            host = self.headers.get("Host") or ""
+            if origin and origin not in (f"http://{host}", f"https://{host}"):
+                self._json(403, {"error": "cross-site request refused"})
+                return False
+            return True
+
         def do_POST(self) -> None:  # noqa: N802
             path = self.path.split("?")[0]
-            if not self._authorised(path):
+            if not self._authorised(path) or not self._same_origin_json():
                 return
             try:
                 b = self._body()
@@ -78,6 +93,8 @@ def make_handler(app: FreshPin):
                 elif path == "/api/load_sample":
                     self._json(200, app.load_sample(b["id"]))
                 elif path == "/api/approve":
+                    if b.get("ack") is not True:  # the person must confirm they read the new facts (checked here too)
+                        raise ValueError("confirm you have read the new facts and their sources (ack)")
                     self._json(200, app.approve(b["id"], b.get("by", ""), b.get("note", "")))
                 elif path == "/api/decisions":
                     self._json(200, app.pin_decision(b.get("title", ""), b.get("owner", ""), b.get("keys", []), b.get("by", "")))

@@ -88,8 +88,9 @@ _CORRECTIONS = ("stale", "contradicted", "partly_current")
 
 
 def _norm(text: str) -> str:
-    """Lower case, letters and digits only: copied quotes often differ in dashes, quote marks or commas."""
-    return re.sub(r"[^0-9a-z]+", " ", unicodedata.normalize("NFKC", text or "").lower()).strip()
+    """Letters (any script: Latin, Arabic, Chinese...) and digits only, case-folded: copied quotes often differ in
+    dashes, quote marks or commas."""
+    return re.sub(r"[\W_]+", " ", unicodedata.normalize("NFKC", text or "").casefold()).strip()
 
 
 _INVISIBLE = re.compile("[\u200b-\u200f\u202a-\u202e\u2060-\u2064\ufeff]")
@@ -127,7 +128,8 @@ def _stem(w: str) -> str:
 
 
 def _words(text: str) -> set[str]:
-    return {_stem(w) for w in re.findall(r"[a-z0-9]+", (text or "").lower()) if len(w) > 3 and w not in _STOP}
+    return {_stem(w) for w in re.findall(r"[^\W_]+", unicodedata.normalize("NFKC", text or "").casefold())
+            if len(w) > 3 and w not in _STOP}
 
 
 def quote_states_claim(claim: str, quote: str) -> bool:

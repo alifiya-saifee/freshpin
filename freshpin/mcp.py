@@ -41,6 +41,10 @@ TOOLS = [
             "properties": {
                 "answer": {"type": "string", "description": "The answer text to check (max 12,000 characters)."},
                 "context": {"type": "string", "description": "Optional: the question or topic, to sharpen the search."},
+                "apply_to_ledger": {"type": "boolean", "description": "Default false. True only when a person wants this "
+                                    "check to update the shared pin ledger (it can reopen approved decisions)."},
+                "include_report": {"type": "boolean", "description": "Default false. True adds the full JSON report "
+                                   "(large: every source and call trace)."},
             },
             "required": ["answer"],
         },
@@ -145,10 +149,13 @@ class Server:
     def call_tool(self, name: str, args: dict[str, Any]) -> dict[str, Any]:
         try:
             if name == "check_answer":
-                report = self.app.check(str(args.get("answer", "")), str(args.get("context", "")))
-                compact = {k: v for k, v in report.items() if k != "ledger"}
-                return _text_result(summarize(report) + "\n\nFull report (JSON):\n"
-                                    + json.dumps(compact, ensure_ascii=False))
+                report = self.app.check(str(args.get("answer", "")), str(args.get("context", "")),
+                                        apply_to_ledger=bool(args.get("apply_to_ledger", False)))
+                text = summarize(report)
+                if args.get("include_report"):
+                    compact = {k: v for k, v in report.items() if k != "ledger"}
+                    text += "\n\nFull report (JSON):\n" + json.dumps(compact, ensure_ascii=False)
+                return _text_result(text)
             if name == "ground_question":
                 g = self.app.ground(str(args.get("question", "")))
                 lines = [f"Question type: {g['type']} ({'time-sensitive' if g['time_sensitive'] else 'not time-sensitive'})",
@@ -175,8 +182,11 @@ class Server:
                     "protocolVersion": params.get("protocolVersion") or DEFAULT_PROTOCOL,
                     "capabilities": {"tools": {"listChanged": False}},
                     "serverInfo": {"name": "freshpin", "version": __version__},
-                    "instructions": "Use check_answer before stating facts that may have changed "
-                                    "(prices, versions, laws, company facts, statistics).",
+                    "instructions": ("FreshPin keeps answers current. BEFORE answering a question whose answer may have "
+                                     "changed recently (news, this week's events, prices, laws, versions, who runs a "
+                                     "company), call ground_question and answer from its dated sources. AFTER drafting "
+                                     "an answer with such facts, call check_answer and fix anything stale or "
+                                     "unverified before replying. Never present an UNVERIFIED or DISPUTED claim as fact."),
                 }
             elif method == "ping":
                 result = {}

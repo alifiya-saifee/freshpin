@@ -15,7 +15,15 @@ from .scoring import HALF_LIFE_DAYS, _parse_date
 _OFFICIAL_SUFFIXES = (
     ".gov", ".gov.ae", ".gov.uk", ".gov.au", ".gov.in", ".gov.sg", ".gc.ca", ".gouv.fr", ".go.jp",
     ".gov.sa", ".mil", ".int", ".europa.eu", ".un.org", ".who.int",
+    # more national governments (the list is a start, not complete)
+    ".gov.cn", ".gov.br", ".go.kr", ".gov.za", ".gov.ng", ".go.id", ".gov.ph", ".gov.my", ".gov.pk", ".gov.eg",
+    ".gov.qa", ".gov.bh", ".gov.om", ".gov.kw", ".gov.tr", ".gov.it", ".gov.pl", ".govt.nz", ".gob.mx", ".gob.es",
+    ".gob.ar", ".gob.cl", ".gouv.qc.ca", ".admin.ch", ".bund.de", ".overheid.nl", ".gv.at",
 )
+_OFFICIAL_EXACT = ("bundesregierung.de", "gouvernement.fr", "regjeringen.no", "government.se")
+# Hosts that look like vendor docs but are open to anyone (one page there must not count as an official source).
+_DOCS_DENY = ("docs.google.com", "sites.google.com", "medium.com", "notion.site", "github.io", "gitbook.io",
+              "readthedocs.io", "substack.com", "blogspot.com", "wordpress.com")
 _OFFICIAL_HOSTS = ("u.ae", "dubai.ae", "dm.ae", "rta.ae", "dld.ae", "mediaoffice.ae", "wam.ae")
 _NEWS_HOSTS = (
     "reuters.com", "apnews.com", "bloomberg.com", "ft.com", "bbc.com", "bbc.co.uk", "nytimes.com",
@@ -35,10 +43,13 @@ def authority_of(url: str) -> str:
     host = _host(url)
     if not host:
         return "other"
-    if host.endswith(_OFFICIAL_SUFFIXES) or host in _OFFICIAL_HOSTS or any(host.endswith("." + h) for h in _OFFICIAL_HOSTS):
+    if (host.endswith(_OFFICIAL_SUFFIXES) or any(host == s[1:] for s in _OFFICIAL_SUFFIXES)  # e.g. "gov.cn" itself
+            or host in _OFFICIAL_HOSTS + _OFFICIAL_EXACT
+            or any(host.endswith("." + h) for h in _OFFICIAL_HOSTS + _OFFICIAL_EXACT)):
         return "official"
-    if host.startswith(("docs.", "developer.", "developers.", "learn.", "api.")) or "/docs" in urlparse(url).path:
-        return "vendor_docs"
+    if host.startswith(("docs.", "developer.", "developers.")) and not any(
+            host == d or host.endswith("." + d) for d in _DOCS_DENY):
+        return "vendor_docs"  # a vendor's own docs host; "/docs" in a path or learn./api. hosts don't qualify
     if host in _NEWS_HOSTS or any(host.endswith("." + h) for h in _NEWS_HOSTS):
         return "news"
     return "other"

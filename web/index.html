@@ -349,7 +349,7 @@ window.approve = async (id, btn) => {
   showErr("");
   const box = btn.closest(".approve-form");
   if(!box.querySelector(".ack").checked){ showErr("Tick the box to confirm you've read the new facts first."); return; }
-  try{ renderLedger(await api("/api/approve",{id, by:box.querySelector(".by").value, note:box.querySelector(".note").value})); }
+  try{ renderLedger(await api("/api/approve",{id, ack:true, by:box.querySelector(".by").value, note:box.querySelector(".note").value})); }
   catch(e){ showErr(e.message); }
 };
 init().catch(e=>showErr(e.message));

@@ -1077,6 +1077,57 @@ class SafetyOpsTests(unittest.TestCase):
                 httpd.server_close()
 
 
+class HardeningTests(unittest.TestCase):
+    def test_arabic_and_chinese_quotes_can_match(self):
+        from freshpin.pipeline import find_quote
+        ar = [{"title": "", "snippet": "يجب على المالك الحصول على شهادة جودة وسلامة المبنى بعد مرور 20 عاماً."}]
+        self.assertEqual(find_quote("الحصول على شهادة جودة وسلامة المبنى بعد مرور 20 عاماً", ar), 0)
+        zh = [{"title": "", "snippet": "建筑物竣工满二十年后，业主必须取得建筑质量与安全证书。"}]
+        self.assertEqual(find_quote("业主必须取得建筑质量与安全证书", zh), 0)
+        self.assertIsNone(find_quote("业主不需要任何证书和许可文件", zh))
+
+    def test_authority_grading_is_not_gameable(self):
+        from freshpin.sources import authority_of
+        for url in ("https://docs.google.com/document/d/x", "https://randomblog.com/docs/guide",
+                    "https://learn.randomblog.io/x", "https://api.evil.com/x", "https://medium.com/@x/docs-guide"):
+            self.assertNotEqual(authority_of(url), "vendor_docs", url)
+        self.assertEqual(authority_of("https://docs.python.org/3/whatsnew/"), "vendor_docs")
+        for url in ("https://www.gov.cn/zhengce/x", "https://www.gob.mx/x", "https://www.planalto.gov.br/x",
+                    "https://www.bundesregierung.de/x", "https://www.admin.ch/x"):
+            self.assertEqual(authority_of(url), "official", url)
+
+    def test_local_api_refuses_cross_site_and_unconfirmed_approvals(self):
+        import urllib.error
+        import urllib.request
+        from freshpin.server import make_handler
+        with tempfile.TemporaryDirectory() as tmp:
+            app = replay_app(tmp)
+            app.load_sample("dubai_building_law")
+            httpd = ThreadingHTTPServer(("127.0.0.1", 0), make_handler(app))
+            threading.Thread(target=httpd.serve_forever, daemon=True).start()
+            base = f"http://127.0.0.1:{httpd.server_port}"
+
+            def post(path, body, ctype="application/json", origin=None):
+                h = {"Content-Type": ctype}
+                if origin:
+                    h["Origin"] = origin
+                req = urllib.request.Request(base + path, data=json.dumps(body).encode(), headers=h, method="POST")
+                try:
+                    with urllib.request.urlopen(req, timeout=5) as r:
+                        return r.status
+                except urllib.error.HTTPError as exc:
+                    return exc.code
+            try:
+                self.assertEqual(post("/api/load_sample", {"id": "dubai_building_law"}, ctype="text/plain"), 415)
+                self.assertEqual(post("/api/load_sample", {"id": "dubai_building_law"}, origin="https://evil.example"), 403)
+                self.assertEqual(post("/api/approve", {"id": "Q-112", "by": "Ann"}), 400)          # no ack
+                self.assertEqual(post("/api/approve", {"id": "Q-112", "by": "Ann", "ack": True}), 200)
+                self.assertEqual(post("/api/load_sample", {"id": "dubai_building_law"}, origin=base), 200)
+            finally:
+                httpd.shutdown()
+                httpd.server_close()
+
+
 class ArenaTests(unittest.TestCase):
     """Agent arena: arms, statistics and independence of graders."""
 
@@ -1201,11 +1252,18 @@ class McpTests(unittest.TestCase):
     def test_check_answer_reports_stale_claims_and_reopens(self):
         self.app.load_sample("dubai_building_law")
         answer = self.app.samples()["dubai_building_law"]["answer"]
-        (reply,) = self.talk({"jsonrpc": "2.0", "id": 3, "method": "tools/call",
+        # By default an agent's check leaves the shared ledger alone, and the reply is the compact summary.
+        (quiet,) = self.talk({"jsonrpc": "2.0", "id": 2, "method": "tools/call",
                               "params": {"name": "check_answer", "arguments": {"answer": answer}}})
+        self.assertNotIn("Full report (JSON)", quiet["result"]["content"][0]["text"])
+        self.assertEqual({d["status"] for d in self.app.ledger.state()["decisions"]}, {"approved"})
+        (reply,) = self.talk({"jsonrpc": "2.0", "id": 3, "method": "tools/call",
+                              "params": {"name": "check_answer",
+                                         "arguments": {"answer": answer, "apply_to_ledger": True, "include_report": True}}})
         res = reply["result"]
         self.assertFalse(res["isError"])
         text = res["content"][0]["text"]
+        self.assertIn("Full report (JSON)", text)
         self.assertIn("2 stale or contradicted", text)
         self.assertIn("Q-112", text)
         self.assertIn("PB-LEASE-3", text)
