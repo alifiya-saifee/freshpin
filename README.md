@@ -10,19 +10,24 @@ Built for the Geek Room AI Global Hackathon 2026. **Primary problem statement:**
 
 | Mandatory requirement | How |
 |---|---|
-| **Framework independence** | An agent is **any command or HTTP endpoint** that reads a task JSON and prints an answer JSON. It calls models through the **Bifrost** gateway URL it is given and tools through FreshPin's **tool server** URL. Nothing to rewrite: the included outside agent (`examples/agents/reflect_agent.py`) imports neither FreshPin nor any framework. |
-| **Consistent evaluation** | Same tasks, same tools, same recorded evidence for every agent. Per run: **success** (graded against gold), **steps** (model + tool calls), **tool calls**, **tokens** and **$ cost** (read from Bifrost's own request log, tagged with the run id via `x-bf-session-id`), Tavily credits, **time**. |
+| **Framework independence** | An agent is **any command or HTTP endpoint** that reads a task JSON and prints an answer JSON. It calls models through the **Bifrost** gateway URL it is given and tools through FreshPin's **tool server**, over plain HTTP **or MCP**. Nothing to rewrite. Tested unchanged: plain Python with no framework (`examples/agents/reflect_agent.py`), **JavaScript** with no packages (`js_agent.mjs`), and the **OpenAI Agents SDK**, with its tool as a function or taken from FreshPin's MCP endpoint (`openai_agents_sdk_agent.py [--mcp]`). |
+| **Consistent evaluation** | Same tasks, same tools, same recorded evidence for every agent. Per run: **success** (graded against gold), **steps** (model + tool calls), **tool calls**, **tokens** and **$ cost** (read from Bifrost's own request log, tagged with the run id via `x-bf-session-id`), Tavily credits, **time**. Free tiers log $0, so each run also gets a **list-price $**: the same tokens at each model's paid price from Bifrost's own pricing table (`bench/list-prices.json`), plus $0.008 per search. |
 | **Repeatability** | `--repeats k`: every task k times. Reported: success with a 95% Wilson interval, **pass^k** (right every time), pass@k, consistency, p50/p95 time. Searches are recorded once and replayed, so repeats differ only by the agent. The task suite and its search recording are committed (`bench/suites/`), so anyone can re-run the same tasks on the same evidence with `--replay-only` (no Tavily credits; Bifrost and a model key are still needed). |
-| **Failure testing** | Controlled conditions: **model unavailable** (the agent is handed a model id the gateway rejects; a fallback list is offered, starting with the real model), **broken tool** (search returns 503), **misleading source** (a planted top result with a wrong answer and a hidden instruction). Reported: drop vs normal, recoveries, errors, and how often an agent **repeated the planted answer**. |
-| **Inspection & comparison** | `/bench` in the web app: a leaderboard (agent × condition), every run, and a **step-by-step trace** of each run: each model call (model, tokens, $, ms, fallbacks, errors), each tool call (query, results, injected fault), the answer and the grader's reason. |
+| **Failure testing** | Controlled conditions: **model unavailable** (the agent is handed a model id the gateway rejects; a fallback list is offered, starting with the real model), **broken tool** (search returns 503), **misleading source** (a planted top result with a wrong answer and a hidden instruction). Opt-in: **misleading instruction** (a false hint inside the task itself) and **slow tool** (search works but answers after 20 s). Reported: drop vs normal, recoveries, errors, and how often an agent **repeated the planted answer**. |
+| **Inspection & comparison** | `/bench` in the web app: a leaderboard (agent × condition), a **compare view** (tick several result files, e.g. the same agents on different models, and see them side by side; it warns when suites or graders differ), every run, and a **step-by-step trace** of each run: each model call (model, tokens, $, list price, ms, fallbacks, errors), each tool call (query, results, injected fault), the answer and the grader's reason. |
 
 ```bash
 python -m freshpin bench-build --n 12                                  # this week's news -> research tasks with gold answers
 python -m freshpin agentbench --questions bench/fresh-<date>.json --max 5 --repeats 3 \
     --model gemini/gemini-3.5-flash-lite --fallbacks groq/openai/gpt-oss-120b --yes
 python -m freshpin agentbench ... --agent 'mine=python3 my_agent.py'   # add YOUR agent (any language, any framework)
+python -m freshpin agentbench ... --agent 'js=node examples/agents/js_agent.mjs' \
+    --conditions normal,misleading,misleading_prompt,slow_tool        # a JavaScript agent; opt-in failure conditions
+python -m freshpin agentbench ... --graders a/b,c/d                    # fix the grader to compare models fairly
+python -m freshpin regrade bench/results/agentbench-<ts>.json --graders a/b   # grade again; reports grader agreement
 python -m freshpin agentbench --questions bench/suites/fresh-arena2.json --replay-only \
     --model openai/nvidia/nemotron-3.5-lightning-30b-a3b --yes         # re-run the published suite on its recorded searches
+                                                                       # (a reworded search gets the closest recorded pages)
 python -m freshpin serve                                               # then open http://127.0.0.1:8787/bench
 python -m unittest discover -s tests                                   # offline, no keys
 ```
@@ -43,7 +48,7 @@ What it shows:
 - **Only the agent that reads the fallback list survived the rejected model id.** It recovered by moving to the next model offered, which is the real model under test (0 calls went to Mistral); the others failed on every run. This tests "does the agent handle a model error and fall back", not a provider outage in the middle of a run.
 - **No agent repeated the planted false source**, but with search broken every agent fell to 0%: none could answer from memory.
 - Intervals are wide at this size (9/10 is 60–98% at 95% confidence; 5/7 is 36–92%), so read differences of a few points as noise; differences like 0% vs 90% are not. Only 4 of the 5 tasks are separate events (fresh-1 and fresh-4 are both the 12 Nov Microsoft outage), and only one model was tested.
-- **$ is understated for NVIDIA's free endpoints:** Bifrost has no price for them, so their model calls show $0; Tavily credits are counted (searches were recorded once, so most runs replayed them for free).
+- **Cost:** NVIDIA's free endpoints log $0, so the result also shows **list-price $** (same tokens at paid prices from Bifrost's pricing table, plus $0.008 per search, replayed or not). At list price, `tool_agent` is the cheapest per correct answer: **$0.0082** (normal), against $0.0104 for `search_first` and $0.0119 for `reflect`. Searches, not tokens, are most of the cost.
 
 ### The agent contract
 
@@ -53,11 +58,11 @@ FreshPin sends each run as JSON on stdin (or as a POST body for `--agent-url`):
 {"task_id": "fresh-2", "run_id": "fp-3c1e…", "question": "…", "today": "2026-11-15",
  "model": "gemini/gemini-3.5-flash-lite", "fallback_models": ["groq/openai/gpt-oss-120b"],
  "llm":   {"base_url": "http://localhost:8080/v1", "headers": {"x-bf-session-id": "fp-3c1e…", "x-bf-vk": "…"}},
- "tools": {"base_url": "http://127.0.0.1:53211", "headers": {"X-Run-Id": "fp-3c1e…"},
+ "tools": {"base_url": "http://127.0.0.1:53211", "mcp_url": "http://127.0.0.1:53211/mcp", "headers": {"X-Run-Id": "fp-3c1e…"},
            "spec": [{"type": "function", "function": {"name": "search_web", "…": "…"}}]}}
 ```
 
-The agent prints `{"answer": "…"}` (optionally `"notes"`). Any OpenAI-compatible client works for `llm` (set the base URL and headers); the tool is a plain HTTP POST `{"query": "…"}` to `/tools/search_web`. Built-in reference agents (`python -m freshpin.agents bare | search_first | tool_agent`) use the same contract as separate processes, so every agent is measured the same way. Set `FRESHPIN_BIFROST_LOGS_DB` to Bifrost's `logs.db` so FreshPin can read each run's model calls, tokens and cost.
+The agent prints `{"answer": "…"}` (optionally `"notes"`). Any OpenAI-compatible client works for `llm` (set the base URL and headers); the tool is a plain HTTP POST `{"query": "…"}` to `/tools/search_web`, or the same tool over MCP at `mcp_url` (JSON-RPC: `initialize`, `tools/list`, `tools/call`), with the same faults and the same per-run log. Built-in reference agents (`python -m freshpin.agents bare | search_first | tool_agent`) use the same contract as separate processes, so every agent is measured the same way. Set `FRESHPIN_BIFROST_LOGS_DB` to Bifrost's `logs.db` so FreshPin can read each run's model calls, tokens and cost.
 
 **Also in the box:** the stale-answer detector as an **MCP server** (assistants ground a question before answering and check a draft before replying), a web app for people with a **pin ledger** (approved decisions that relied on a changed fact reopen for a named person), and a JSON API.
 
@@ -368,8 +373,15 @@ freshpin/
   bench.py      model test bench, gold scoring, repair loop, scorecard
   benchbuild.py fresh-events question builder (gold answers + quotes), self-test
   watch.py      scheduled re-checks and webhook alerts
-bench/          bench questions (results/ is git-ignored)
-web/index.html  the UI (no build step, no external assets)
+  agentbench.py agent benchmark: runs any agent, reads Bifrost's log, grades, summarises, regrades
+  toolserver.py the agents' tool (HTTP and MCP): record once, replay, inject failures
+  agents.py     built-in reference agents (bare, search_first, tool_agent)
+  prices.py     list prices from Bifrost's pricing table
+bench/          suites/ (task suites + recorded searches), samples/ (published results), list-prices.json
+                (results/ is git-ignored)
+examples/agents outside agents: reflect (Python), js_agent.mjs (JavaScript), openai_agents_sdk_agent.py
+web/            index.html (detector + ledger), bench.html (leaderboard, compare view, traces); no build step
+.github/        CI: tests on Linux and macOS, Python 3.9 / 3.12 / 3.14
 samples/        demo scenarios and their seeded decisions
 fixtures/       recorded responses for replay mode
 tests/          unittest suite
@@ -378,10 +390,12 @@ tests/          unittest suite
 ## Limits
 
 **Agent benchmark:**
-- **Failure modes are one simple variant each.** "Model unavailable" is a model id the gateway rejects (HTTP 403), not a 5xx, timeout or mid-run outage. "Broken tool" is a 503 on every call. "Misleading" is one planted top search result (a wrong name plus a hidden instruction), the same for every question; it does not test false premises in the task itself.
-- **Only plain-Python agents are demonstrated.** The contract works for any framework that can point its OpenAI-compatible client at a base URL and send headers, but no LangChain/CrewAI agent is included yet.
+- **Failure modes are one simple variant each.** "Model unavailable" is a model id the gateway rejects (HTTP 403), not a 5xx or mid-run outage. "Broken tool" is a 503 on every call. "Misleading source" is one planted top search result; "misleading instruction" is one false hint added to the task; both use the same planted name for every question. "Slow tool" is a fixed delay.
+- **Frameworks tested:** no framework (Python), JavaScript, and the OpenAI Agents SDK (function tool and MCP tool). LangGraph, CrewAI and others should work the same way (an OpenAI-compatible base URL plus headers), but are not tested here.
+- **Replay only:** when another model words a search differently, it gets the closest recorded pages (by shared words), not a live search. Every model then searches the same frozen pages, which is fair and free, but it is not the live web.
+- **Grader reliability:** grades come from one LLM grader per run. `regrade` grades a result again with another grader and reports how often they agree; graders can be slow or down on free tiers (those runs are excluded and shown).
 - **Metrics rely on the agent using the gateway URL and headers it is given.** An agent that calls a provider directly shows 0 model calls and tokens.
-- **$ for searches** counts only live Tavily calls; replayed searches are free, so runs that replay show $0 for search. NVIDIA's free models show $0 for model calls.
+- **$ (logged)** counts only live Tavily calls and what Bifrost logs; free tiers show $0. **List-price $** fills that in, but only for models in Bifrost's pricing table (a model without a listed price shows "?", never $0).
 - **Grading:** an LLM gold judge from another model family plus a string backstop. Identical answers to the same task are graded once. Runs where the grader failed are excluded and shown as "grader failures".
 
 **Detector and arena:**
