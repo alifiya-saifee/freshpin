@@ -1,0 +1,2 @@
+# Only for examples/agents/openai_agents_sdk_agent.py. FreshPin itself needs nothing beyond the Python standard library.
+openai-agents==0.24.0

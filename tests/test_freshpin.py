@@ -1353,13 +1353,20 @@ class FakeGateway(BaseHTTPRequestHandler):
         msgs = body["messages"]
         tool_msgs = [m for m in msgs if m.get("role") == "tool"]
         if body.get("tools") and not tool_msgs:
-            msg = {"content": None, "tool_calls": [{"id": "c1", "function": {"name": "search_web",
-                                                                              "arguments": '{"query": "outage"}'}}]}
+            msg = {"role": "assistant", "content": None,
+                   "tool_calls": [{"id": "c1", "type": "function",
+                                   "function": {"name": "search_web", "arguments": '{"query": "outage"}'}}]}
+            finish = "tool_calls"
         else:
             seen = " ".join(str(m.get("content")) for m in msgs)
-            msg = {"content": "It was Workday." if "Workday" in seen else "I am not sure."}
-        data = json.dumps({"model": body["model"], "choices": [{"message": msg}]}).encode()
+            msg = {"role": "assistant", "content": "It was Workday." if "Workday" in seen else "I am not sure."}
+            finish = "stop"
+        # The full OpenAI chat-completion shape (as Bifrost returns it), so strict framework clients parse it too.
+        data = json.dumps({"id": "chatcmpl-test", "object": "chat.completion", "created": 1763200000,
+                           "model": body["model"], "choices": [{"index": 0, "message": msg, "finish_reason": finish}],
+                           "usage": {"prompt_tokens": 10, "completion_tokens": 5, "total_tokens": 15}}).encode()
         self.send_response(200)
+        self.send_header("Content-Type", "application/json")
         self.send_header("Content-Length", str(len(data)))
         self.end_headers()
         self.wfile.write(data)
@@ -1428,6 +1435,54 @@ class AgentBenchTests(unittest.TestCase):
                 self.assertEqual(agents.search_first(t5)["answer"], "I am not sure.")  # broken tool, no crash
             finally:
                 ts.stop()
+
+    def _run_outside(self, agent):
+        from freshpin.agentbench import Agent, run_suite  # noqa: F401
+
+        class NoLog:
+            def settle(self, run_ids):
+                return 0
+
+            def read(self, run_id):
+                return []
+        tasks = [{"id": "t1", "question": "Which company had the outage on Friday?", "gold_answer": "Workday."}]
+        with tempfile.TemporaryDirectory() as tmp:
+            ts = self.tools(tmp)
+            try:
+                return run_suite(tasks, [agent], ["normal", "model_outage", "tool_error", "misleading"], 1, "m/good",
+                                 [], ts, {"base_url": f"http://127.0.0.1:{self.gw.server_port}/v1"},
+                                 lambda ans, t: {"result": "correct" if "Workday" in ans else "wrong", "reason": ""},
+                                 NoLog())
+            finally:
+                ts.stop()
+
+    def _assert_behaves(self, res, name):
+        s = res["summary"][name]
+        self.assertEqual(s["normal"]["success"], 1)
+        self.assertEqual(s["model_outage"]["success"], 1)          # moved on to the fallback model
+        self.assertEqual(s["tool_error"]["success"], 0)            # broken search: not sure
+        self.assertEqual(s["misleading"]["followed_planted"], 0)
+        for r in res["runs"]:
+            self.assertFalse(r.get("agent_error"), r)
+            self.assertTrue(any(st["kind"] == "tool" for st in r["trace"]), r["condition"])
+
+    @unittest.skipUnless(__import__("shutil").which("node"), "Node.js not installed")
+    def test_a_javascript_agent_runs_unchanged(self):
+        from freshpin.agentbench import Agent
+        root = Path(__file__).resolve().parent.parent
+        res = self._run_outside(Agent("js", ["node", str(root / "examples/agents/js_agent.mjs")]))
+        self._assert_behaves(res, "js")
+
+    def test_an_openai_agents_sdk_agent_runs_unchanged(self):
+        """Needs the SDK in its own venv: set FRESHPIN_SDK_PYTHON to that venv's python (skipped otherwise)."""
+        import subprocess
+        from freshpin.agentbench import Agent
+        py = os.environ.get("FRESHPIN_SDK_PYTHON", str(Path.home() / "Downloads/Assignment/agents-sdk-venv/bin/python"))
+        if not Path(py).exists() or subprocess.run([py, "-c", "import agents"], capture_output=True).returncode:
+            self.skipTest("OpenAI Agents SDK not installed (set FRESHPIN_SDK_PYTHON)")
+        root = Path(__file__).resolve().parent.parent
+        res = self._run_outside(Agent("sdk", [py, str(root / "examples/agents/openai_agents_sdk_agent.py")]))
+        self._assert_behaves(res, "sdk")
 
     def test_a_planted_or_unbacked_answer_is_never_a_success(self):
         """Closes two gaps the break-on-purpose run found: a lenient grader says "correct" to everything, yet an
