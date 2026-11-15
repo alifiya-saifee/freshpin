@@ -149,7 +149,8 @@ class FakeBifrost(BaseHTTPRequestHandler):
             self.wfile.write(b'{"error":"down"}')
             return
         served = body["fallbacks"][0] if body["model"] == "bad/model" else body["model"]
-        out = {"model": served.split("/")[1], "extra_fields": {"provider": served.split("/")[0]},
+        provider, _, model = served.partition("/")
+        out = {"model": model, "extra_fields": {"provider": provider},
                "usage": {"prompt_tokens": 10, "completion_tokens": 5},
                "choices": [{"message": {"content": "```json\n{\"ok\": true}\n```"}}]}
         data = json.dumps(out).encode()
@@ -178,6 +179,13 @@ class BifrostClientTests(unittest.TestCase):
         self.assertEqual(FakeBifrost.calls[-1]["fallbacks"], ["good/model"])
         self.assertTrue(b.traces[-1].fallback_used)
         self.assertEqual(b.used_tokens, 15)
+
+    def test_model_name_with_slash_is_not_a_fallback(self):
+        # Groq serves "openai/gpt-oss-120b"; that is the model we asked for, not a fallback.
+        b = RunBudget(1000)
+        BifrostClient(self.url).chat_json("x", ["groq/openai/gpt-oss-120b"], "s", "u", b)
+        self.assertEqual(b.traces[-1].served_by, "groq/openai/gpt-oss-120b")
+        self.assertFalse(b.traces[-1].fallback_used)
 
     def test_raises_when_everything_is_down(self):
         c = BifrostClient(self.url)

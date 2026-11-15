@@ -132,7 +132,10 @@ class BifrostClient:
                 extra = data.get("extra_fields") or {}
                 served = data.get("model") or primary
                 provider = extra.get("provider")
-                trace.served_by = f"{provider}/{served}" if provider and "/" not in served else served
+                # Bifrost reports the provider separately. Always prefix it, because some model names
+                # contain a slash themselves (Groq serves "openai/gpt-oss-120b").
+                trace.served_by = (f"{provider}/{served}"
+                                   if provider and not served.startswith(f"{provider}/") else served)
                 trace.fallback_used = _model_differs(primary, trace.served_by)
                 budget.charge(trace.prompt_tokens + trace.completion_tokens)
                 budget.log(trace)
