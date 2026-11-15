@@ -45,7 +45,8 @@ class ReplayChat:
             result = next((self.d.data["extract"][sid] for sid, s in self.d.samples.items()
                            if s["answer"].strip() in user), None)
         else:
-            result = self.d.data["verify"].get(step.split(":", 1)[1])
+            kind, _, key = step.partition(":")  # "verify:<key>" or "recheck:<key>"
+            result = self.d.data.get(kind, {}).get(key)
         if result is None:
             budget.log(CallTrace(step=step, requested_model=models[0], ok=False,
                                  error="replay: no recording for this input"))

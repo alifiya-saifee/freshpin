@@ -37,11 +37,20 @@ def main(argv: list[str]) -> int:
         rep = app.check(app.samples()[argv[1]]["answer"])
         for c in rep["claims"]:
             f = c["freshness"]
-            print(f"[{f['band'].upper():5}] {f['score']:3}  {c['text']}")
+            label = {"unverifiable": "UNVER", "disputed": "DISPU"}.get(c["verdict"], f["band"].upper())
+            print(f"[{label:5}] {f['score']:3}  {c['text']}")
             if c["verdict"] in ("stale", "contradicted"):
                 print(f"         now: {c['current_statement']}")
+            r = c.get("recheck") or {}
+            if r.get("status") not in (None, "skipped"):
+                ref = r.get("best_reference") or {}
+                print(f"         recheck: {r['status']} | best ref: {ref.get('authority', '-')} {ref.get('url', '-')}")
+                if r.get("why_outdated") and c["verdict"] != "current":
+                    print(f"         why old: {r['why_outdated']}")
         print("reopened:", rep["summary"]["decisions_reopened"] or "none")
         g = rep["gateway"]
+        s = rep["summary"]
+        print(f"recheck: {s['confirmed']} confirmed, {s['disputed']} disputed, {rep['tavily_searches']} Tavily searches")
         print(f"gateway: {g['calls']} calls, {g['failed_attempts']} failed, {g['fallbacks_used']} fallbacks, {g['tokens']} tokens")
         return 0
     print(USAGE)

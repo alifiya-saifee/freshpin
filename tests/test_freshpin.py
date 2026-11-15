@@ -200,6 +200,106 @@ class BifrostClientTests(unittest.TestCase):
             BifrostClient(self.url).chat_json("x", ["good/model"], "s", "u", b)
 
 
+class RecheckTests(unittest.TestCase):
+    """The recheck layer: second search, second judge, exact-quote rule and fixed decision rules."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.app = replay_app(self.tmp.name)
+        self.app.load_sample("dubai_building_law")
+        self.answer = self.app.samples()["dubai_building_law"]["answer"]
+        self.recheck = self.app.chat.d.data["recheck"]
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def test_every_claim_is_rechecked_and_confirmed(self):
+        rep = self.app.check(self.answer)
+        self.assertEqual(rep["summary"]["rechecked"], 3)
+        self.assertEqual(rep["summary"]["confirmed"], 3)
+        self.assertEqual(rep["tavily_searches"], 6)  # one first search + one recheck search per claim
+        cert = next(c for c in rep["claims"] if c["key"] == "dubai.old_buildings.safety_certificate_required")
+        r = cert["recheck"]
+        self.assertTrue(r["quote_found"])
+        self.assertEqual(r["best_reference"]["authority"], "official")
+        self.assertIn("dlp.dubai.gov.ae", r["best_reference"]["url"])
+        self.assertIn("before Law No. 3 of 2026", r["why_outdated"])
+        steps = [t["step"] for t in rep["gateway"]["traces"]]
+        self.assertEqual(sum(s.startswith("recheck:") for s in steps), 3)
+
+    def test_disagreement_marks_at_risk_and_never_reopens(self):
+        for key in ("dubai.old_buildings.safety_certificate_required",
+                    "dubai.ejari.attestation_needs_building_certificate"):
+            self.recheck[key] = {**self.recheck[key], "agree": False, "verdict": "current"}
+        rep = self.app.check(self.answer)
+        self.assertEqual(rep["summary"]["decisions_reopened"], [])
+        self.assertIn("Q-112", rep["summary"]["decisions_at_risk"])
+        cert = next(c for c in rep["claims"] if c["key"] == "dubai.old_buildings.safety_certificate_required")
+        self.assertEqual(cert["verdict"], "disputed")
+        self.assertEqual(cert["first_verdict"], "stale")
+        self.assertEqual(cert["freshness"]["band"], "check")
+        self.assertIn("disagree", cert["recheck"]["reason"])
+
+    def test_correction_without_exact_quote_is_not_accepted(self):
+        key = "dubai.old_buildings.safety_certificate_required"
+        self.recheck[key] = {**self.recheck[key], "evidence_quote": "Owners of old buildings now need a safety certificate"}
+        rep = self.app.check(self.answer)
+        cert = next(c for c in rep["claims"] if c["key"] == key)
+        self.assertEqual(cert["verdict"], "disputed")
+        self.assertFalse(cert["recheck"]["quote_found"])
+        self.assertIn("no exact quote", cert["recheck"]["reason"])
+
+    def test_current_verdict_also_needs_a_quote(self):
+        key = "dubai.building_permits.issuing_authority"
+        self.recheck[key] = {**self.recheck[key], "evidence_quote": "The municipality handles all permits everywhere"}
+        rep = self.app.check(self.answer)
+        claim = next(c for c in rep["claims"] if c["key"] == key)
+        self.assertEqual(claim["verdict"], "disputed")
+
+    def test_wrong_current_verdict_is_caught(self):
+        # The first judge says "current"; the second judge disagrees. Rechecking every claim catches it.
+        key = "dubai.building_permits.issuing_authority"
+        self.recheck[key] = {**self.recheck[key], "agree": False, "verdict": "stale"}
+        rep = self.app.check(self.answer)
+        claim = next(c for c in rep["claims"] if c["key"] == key)
+        self.assertEqual(claim["verdict"], "disputed")
+
+    def test_find_quote_and_decide_rules(self):
+        from freshpin.pipeline import decide, find_quote
+        srcs = [{"title": "Law", "snippet": "Owners must obtain a certificate once a building is 20 years old."}]
+        self.assertEqual(find_quote("owners must  obtain a certificate", srcs), 0)  # case and spacing ignored
+        self.assertIsNone(find_quote("owners need a permit", srcs))
+        self.assertIsNone(find_quote("Owners", srcs))  # too short to count
+        first = {"verdict": "stale"}
+        self.assertEqual(decide(first, {"agree": True, "verdict": "contradicted"}, True)[1], "confirmed")
+        self.assertEqual(decide(first, {"agree": True, "verdict": "stale"}, False)[0], "disputed")
+        self.assertEqual(decide(first, {"agree": False, "verdict": "stale"}, True)[0], "disputed")
+        self.assertEqual(decide(first, None, False), ("disputed", "unavailable",
+                                                      "Second check could not run, so the change is not confirmed."))
+        self.assertEqual(decide({"verdict": "current"}, None, False)[0], "current")
+        self.assertEqual(decide({"verdict": "unverifiable"}, {"agree": True, "verdict": "unverifiable"}, False)[1],
+                         "confirmed")  # agreeing that nothing can be verified needs no quote
+
+    def test_source_grading_and_notes(self):
+        from freshpin.sources import authority_of, grade, source_notes
+        self.assertEqual(authority_of("https://dlp.dubai.gov.ae/x"), "official")
+        self.assertEqual(authority_of("https://www.mediaoffice.ae/en/news"), "official")
+        self.assertEqual(authority_of("https://docs.getbifrost.ai/x"), "vendor_docs")
+        self.assertEqual(authority_of("https://www.thenationalnews.com/a"), "news")
+        self.assertEqual(authority_of("https://someblog.example.com/a"), "other")
+        g = [grade({"url": "https://blog.example.com/a", "published_date": "2023-01-01"}, "regulation", TODAY)]
+        self.assertTrue(g[0]["is_old"])
+        notes = source_notes(g, ["https://blog.example.com/a"])
+        self.assertTrue(any("old, undated or unofficial" in n for n in notes))
+        self.assertTrue(any("No official source" in n for n in notes))
+
+    def test_disputed_score_stays_in_check_band(self):
+        srcs = [{"url": "a", "published_date": "2026-11-01"}]
+        for sup in (["a"], []):
+            s = freshness_score("disputed", "regulation", srcs, sup, [], TODAY)
+            self.assertEqual(s.band, "check")
+
+
 class McpTests(unittest.TestCase):
     """The MCP server, driven the way an AI assistant drives it: JSON lines in, JSON lines out."""
 

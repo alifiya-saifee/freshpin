@@ -35,6 +35,7 @@ VERDICT_POINTS = {
     "unverifiable": 45,
     "stale": 15,
     "contradicted": 5,
+    "disputed": 45,  # the two judges disagree, or the correction has no exact quote in its source
 }
 
 BANDS = [(70, "fresh"), (40, "check")]
@@ -118,6 +119,12 @@ def freshness_score(verdict: str, claim_type: str, sources: list[dict[str, Any]]
         raw, capped_by = 35, "verdict is stale or contradicted"
     if n_sources == 0 and raw > 50:
         raw, capped_by = 50, "no usable sources"
+    if verdict == "disputed":
+        # Always lands in the "check" band: the ledger marks decisions at risk, never reopens them.
+        clamped = min(max(raw, 40), 69)
+        if clamped != raw:
+            capped_by = "the two judges disagree"
+        raw = clamped
     score = int(round(max(0, min(100, raw))))
     return ScoreBreakdown(score, band_for(score), v_points, round(recency, 1), round(agreement, 1),
                           newest_age, half_life, capped_by)

@@ -1,82 +1,275 @@
 {
-  "_note": "Recorded responses for OFFLINE TESTS ONLY (FRESHPIN_MODE=replay). Source URLs are real; snippets are short summaries, not quotes. Run in live mode to check against the web today.",
+  "_note": "Recorded responses for OFFLINE TESTS ONLY (FRESHPIN_MODE=replay). Source URLs are real; snippets are short summaries, not quotes. Run in live mode to check against the web today. The 'recheck' entries are the second judge's recorded answers; every evidence_quote is copied word for word from the recorded source text.",
   "extract": {
-    "dubai_building_law": {"claims": [
-      {"text": "Dubai does not require owners of older buildings to obtain a periodic building quality or safety certificate.",
-       "key": "dubai.old_buildings.safety_certificate_required", "type": "regulation", "time_sensitive": true,
-       "search_query": "Dubai building quality and safety certificate requirement older buildings law 2026"},
-      {"text": "Leases for flats in older Dubai buildings can be attested on Ejari without any building safety certificate.",
-       "key": "dubai.ejari.attestation_needs_building_certificate", "type": "regulation", "time_sensitive": true,
-       "search_query": "Dubai building safety law Ejari lease attestation suspension non-compliant buildings"},
-      {"text": "Dubai Municipality is the authority that issues building permits in Dubai.",
-       "key": "dubai.building_permits.issuing_authority", "type": "regulation", "time_sensitive": true,
-       "search_query": "which authority issues building permits in Dubai 2026"}
-    ]},
-    "ai_vendor_register": {"claims": [
-      {"text": "Tavily is an independent web search API startup with no parent company.",
-       "key": "tavily.ownership", "type": "company", "time_sensitive": true,
-       "search_query": "Tavily search API parent company ownership"},
-      {"text": "Bifrost is an open-source AI gateway built by Maxim AI.",
-       "key": "bifrost.maker_and_license", "type": "company", "time_sensitive": true,
-       "search_query": "Bifrost AI gateway Maxim AI open source"}
-    ]}
+    "dubai_building_law": {
+      "claims": [
+        {
+          "text": "Dubai does not require owners of older buildings to obtain a periodic building quality or safety certificate.",
+          "key": "dubai.old_buildings.safety_certificate_required",
+          "type": "regulation",
+          "time_sensitive": true,
+          "search_query": "Dubai building quality and safety certificate requirement older buildings law 2026"
+        },
+        {
+          "text": "Leases for flats in older Dubai buildings can be attested on Ejari without any building safety certificate.",
+          "key": "dubai.ejari.attestation_needs_building_certificate",
+          "type": "regulation",
+          "time_sensitive": true,
+          "search_query": "Dubai building safety law Ejari lease attestation suspension non-compliant buildings"
+        },
+        {
+          "text": "Dubai Municipality is the authority that issues building permits in Dubai.",
+          "key": "dubai.building_permits.issuing_authority",
+          "type": "regulation",
+          "time_sensitive": true,
+          "search_query": "which authority issues building permits in Dubai 2026"
+        }
+      ]
+    },
+    "ai_vendor_register": {
+      "claims": [
+        {
+          "text": "Tavily is an independent web search API startup with no parent company.",
+          "key": "tavily.ownership",
+          "type": "company",
+          "time_sensitive": true,
+          "search_query": "Tavily search API parent company ownership"
+        },
+        {
+          "text": "Bifrost is an open-source AI gateway built by Maxim AI.",
+          "key": "bifrost.maker_and_license",
+          "type": "company",
+          "time_sensitive": true,
+          "search_query": "Bifrost AI gateway Maxim AI open source"
+        }
+      ]
+    }
   },
   "search": {
     "dubai.old_buildings.safety_certificate_required": [
-      {"title": "Law No. (3) of 2026 Concerning the Quality and Safety of Buildings", "url": "https://dlp.dubai.gov.ae/Legislation%20Reference/2026/Law%20No.%20(3)%20of%202026%20Concerning%20the%20Quality%20and%20Safety%20of%20Buildings.html",
-       "snippet": "Official text. Owners must obtain a building quality and safety certificate once a building is 20 years past its completion certificate, based on a technical report by a registered engineering office. Valid 10 years, or 5 years where the building is 40 or more years old.", "published_date": null, "relevance": 0.91},
-      {"title": "Mohammed bin Rashid issues law on quality and safety of buildings in Dubai", "url": "https://www.mediaoffice.ae/en/news/2026/march/10-03/mohammed-bin-rashid",
-       "snippet": "Dubai Media Office announces the new law regulating the quality and safety of buildings across the emirate, including periodic certification of older buildings.", "published_date": "2026-03-10", "relevance": 0.88},
-      {"title": "Dubai Municipality sets 10-year and 5-year validity for building quality and safety certificates", "url": "https://www.emirates247.com/uae/dubai-municipality-sets-10-year-and-5-year-validity-for-building-quality-and-safety-certificates-under-2026-law/6534",
-       "snippet": "A municipality circular says owners of buildings completed 20 or more years ago must obtain the certificate; 10-year validity for buildings aged 20 to under 40, 5 years for 40 and over. Notices go out in stages, starting with multi-storey buildings over 40 years old.", "published_date": "2026-10-09", "relevance": 0.86},
-      {"title": "Dubai Municipality sets validity rules for building safety certificates", "url": "https://www.lexisnexis.com/blogs/ae-legal/b/insights/posts/dubai-municipality-sets-validity-rules-for-building-safety-certificates",
-       "snippet": "Summary of the October 2026 circular: certificate required for buildings 20+ years old, renewal in the final 90 days before expiry, submissions through the Dubai Building Platform.", "published_date": "2026-10-16", "relevance": 0.8}
+      {
+        "title": "Law No. (3) of 2026 Concerning the Quality and Safety of Buildings",
+        "url": "https://dlp.dubai.gov.ae/Legislation%20Reference/2026/Law%20No.%20(3)%20of%202026%20Concerning%20the%20Quality%20and%20Safety%20of%20Buildings.html",
+        "snippet": "Official text. Owners must obtain a building quality and safety certificate once a building is 20 years past its completion certificate, based on a technical report by a registered engineering office. Valid 10 years, or 5 years where the building is 40 or more years old.",
+        "published_date": null,
+        "relevance": 0.91
+      },
+      {
+        "title": "Mohammed bin Rashid issues law on quality and safety of buildings in Dubai",
+        "url": "https://www.mediaoffice.ae/en/news/2026/march/10-03/mohammed-bin-rashid",
+        "snippet": "Dubai Media Office announces the new law regulating the quality and safety of buildings across the emirate, including periodic certification of older buildings.",
+        "published_date": "2026-03-10",
+        "relevance": 0.88
+      },
+      {
+        "title": "Dubai Municipality sets 10-year and 5-year validity for building quality and safety certificates",
+        "url": "https://www.emirates247.com/uae/dubai-municipality-sets-10-year-and-5-year-validity-for-building-quality-and-safety-certificates-under-2026-law/6534",
+        "snippet": "A municipality circular says owners of buildings completed 20 or more years ago must obtain the certificate; 10-year validity for buildings aged 20 to under 40, 5 years for 40 and over. Notices go out in stages, starting with multi-storey buildings over 40 years old.",
+        "published_date": "2026-10-09",
+        "relevance": 0.86
+      },
+      {
+        "title": "Dubai Municipality sets validity rules for building safety certificates",
+        "url": "https://www.lexisnexis.com/blogs/ae-legal/b/insights/posts/dubai-municipality-sets-validity-rules-for-building-safety-certificates",
+        "snippet": "Summary of the October 2026 circular: certificate required for buildings 20+ years old, renewal in the final 90 days before expiry, submissions through the Dubai Building Platform.",
+        "published_date": "2026-10-16",
+        "relevance": 0.8
+      }
     ],
     "dubai.ejari.attestation_needs_building_certificate": [
-      {"title": "Law No. (3) of 2026, Article 16", "url": "https://dlp.dubai.gov.ae/Legislation%20Reference/2026/Law%20No.%20(3)%20of%202026%20Concerning%20the%20Quality%20and%20Safety%20of%20Buildings.html",
-       "snippet": "Besides fines of AED 100 to AED 1 million, the municipality may, with Dubai Land Department, suspend or reject applications related to a non-compliant building, including lease contract attestation.", "published_date": null, "relevance": 0.84},
-      {"title": "Dubai issues law to boost building safety with fines of up to Dh2 million", "url": "https://www.thenationalnews.com/news/uae/2026/03/10/dubai-issues-law-to-boost-building-safety-with-fines-of-up-to-dh2-million",
-       "snippet": "News report on the new building safety law: fines up to Dh1 million, doubled to Dh2 million for repeat violations, plus other measures against owners who do not comply.", "published_date": "2026-03-10", "relevance": 0.72},
-      {"title": "Dubai Law No. 3 compliance", "url": "https://www.newnordic.ae/dubai-law-no3",
-       "snippet": "Engineering firm page warning owners that non-compliance can lead to Ejari suspension, DLD transaction freezes and permit halts.", "published_date": null, "relevance": 0.6}
+      {
+        "title": "Law No. (3) of 2026, Article 16",
+        "url": "https://dlp.dubai.gov.ae/Legislation%20Reference/2026/Law%20No.%20(3)%20of%202026%20Concerning%20the%20Quality%20and%20Safety%20of%20Buildings.html",
+        "snippet": "Besides fines of AED 100 to AED 1 million, the municipality may, with Dubai Land Department, suspend or reject applications related to a non-compliant building, including lease contract attestation.",
+        "published_date": null,
+        "relevance": 0.84
+      },
+      {
+        "title": "Dubai issues law to boost building safety with fines of up to Dh2 million",
+        "url": "https://www.thenationalnews.com/news/uae/2026/03/10/dubai-issues-law-to-boost-building-safety-with-fines-of-up-to-dh2-million",
+        "snippet": "News report on the new building safety law: fines up to Dh1 million, doubled to Dh2 million for repeat violations, plus other measures against owners who do not comply.",
+        "published_date": "2026-03-10",
+        "relevance": 0.72
+      },
+      {
+        "title": "Dubai Law No. 3 compliance",
+        "url": "https://www.newnordic.ae/dubai-law-no3",
+        "snippet": "Engineering firm page warning owners that non-compliance can lead to Ejari suspension, DLD transaction freezes and permit halts.",
+        "published_date": null,
+        "relevance": 0.6
+      }
     ],
     "dubai.building_permits.issuing_authority": [
-      {"title": "Consultants, contractors and suppliers data", "url": "https://www.dm.gov.ae/municipality-business/consultants-contractors-and-suppliers-data/",
-       "snippet": "Dubai Municipality business services for building permits, registered engineering consultants and contractors.", "published_date": null, "relevance": 0.7},
-      {"title": "Dubai Law No. 18 of 2026 puts the Municipality over every zone, DIFC included", "url": "https://www.castilion-estates.com/journal/dubai-law-no-18-of-2026-puts-the-municipality-over-every-zone-difc-included",
-       "snippet": "Commentary that a 2026 law extends Dubai Municipality's building oversight across special development and free zones.", "published_date": null, "relevance": 0.66}
+      {
+        "title": "Consultants, contractors and suppliers data",
+        "url": "https://www.dm.gov.ae/municipality-business/consultants-contractors-and-suppliers-data/",
+        "snippet": "Dubai Municipality business services for building permits, registered engineering consultants and contractors.",
+        "published_date": null,
+        "relevance": 0.7
+      },
+      {
+        "title": "Dubai Law No. 18 of 2026 puts the Municipality over every zone, DIFC included",
+        "url": "https://www.castilion-estates.com/journal/dubai-law-no-18-of-2026-puts-the-municipality-over-every-zone-difc-included",
+        "snippet": "Commentary that a 2026 law extends Dubai Municipality's building oversight across special development and free zones.",
+        "published_date": null,
+        "relevance": 0.66
+      }
     ],
     "tavily.ownership": [
-      {"title": "Geek Room AI Global Hackathon: partners", "url": "https://hackculture.io/hackathons/ai-global-hackathon",
-       "snippet": "Partners and sponsors list the track partner as 'Tavily (By Nebius)': one secure API for real-time web access.", "published_date": null, "relevance": 0.7}
+      {
+        "title": "Geek Room AI Global Hackathon: partners",
+        "url": "https://hackculture.io/hackathons/ai-global-hackathon",
+        "snippet": "Partners and sponsors list the track partner as 'Tavily (By Nebius)': one secure API for real-time web access.",
+        "published_date": null,
+        "relevance": 0.7
+      }
     ],
     "bifrost.maker_and_license": [
-      {"title": "Geek Room AI Global Hackathon: partners", "url": "https://hackculture.io/hackathons/ai-global-hackathon",
-       "snippet": "Title partner listed as 'Bifrost (By Maxim AI)', an enterprise AI gateway; participants are pointed to the Bifrost GitHub repository.", "published_date": null, "relevance": 0.74},
-      {"title": "maximhq/bifrost on GitHub", "url": "https://github.com/maximhq/bifrost",
-       "snippet": "Open-source AI gateway by Maxim: one OpenAI-compatible API over many providers, with fallbacks, load balancing, budgets and caching.", "published_date": null, "relevance": 0.81}
+      {
+        "title": "Geek Room AI Global Hackathon: partners",
+        "url": "https://hackculture.io/hackathons/ai-global-hackathon",
+        "snippet": "Title partner listed as 'Bifrost (By Maxim AI)', an enterprise AI gateway; participants are pointed to the Bifrost GitHub repository.",
+        "published_date": null,
+        "relevance": 0.74
+      },
+      {
+        "title": "maximhq/bifrost on GitHub",
+        "url": "https://github.com/maximhq/bifrost",
+        "snippet": "Open-source AI gateway by Maxim: one OpenAI-compatible API over many providers, with fallbacks, load balancing, budgets and caching.",
+        "published_date": null,
+        "relevance": 0.81
+      }
     ]
   },
   "verify": {
-    "dubai.old_buildings.safety_certificate_required": {"verdict": "stale",
+    "dubai.old_buildings.safety_certificate_required": {
+      "verdict": "stale",
       "current_statement": "Under Dubai Law No. 3 of 2026, owners of buildings 20 or more years past completion must obtain a building quality and safety certificate (valid 10 years, or 5 years at 40+ years).",
-      "supporting": [], "contradicting": [1, 2, 3, 4], "changed_on": "2026-03",
-      "explanation": "The claim matches the position before 2026. Law No. 3 of 2026 [1][2] and the October 2026 municipality circular [3][4] now require a certificate for buildings 20+ years old."},
-    "dubai.ejari.attestation_needs_building_certificate": {"verdict": "stale",
+      "supporting": [],
+      "contradicting": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "changed_on": "2026-03",
+      "explanation": "The claim matches the position before 2026. Law No. 3 of 2026 [1][2] and the October 2026 municipality circular [3][4] now require a certificate for buildings 20+ years old."
+    },
+    "dubai.ejari.attestation_needs_building_certificate": {
+      "verdict": "stale",
       "current_statement": "Under Law No. 3 of 2026, Dubai Municipality with DLD may suspend or reject lease (Ejari) attestation for buildings that do not comply.",
-      "supporting": [], "contradicting": [1, 3], "changed_on": "2026-03",
-      "explanation": "Article 16 of the new law [1] lets authorities suspend lease attestation for non-compliant buildings; an engineering firm [3] warns owners of the same. Source [2] covers fines only."},
-    "dubai.building_permits.issuing_authority": {"verdict": "current",
+      "supporting": [],
+      "contradicting": [
+        1,
+        3
+      ],
+      "changed_on": "2026-03",
+      "explanation": "Article 16 of the new law [1] lets authorities suspend lease attestation for non-compliant buildings; an engineering firm [3] warns owners of the same. Source [2] covers fines only."
+    },
+    "dubai.building_permits.issuing_authority": {
+      "verdict": "current",
       "current_statement": "Dubai Municipality is the authority that issues building permits in Dubai.",
-      "supporting": [1, 2], "contradicting": [], "changed_on": null,
-      "explanation": "Municipality services [1] and 2026 commentary [2] confirm Dubai Municipality's permit role, now extended across zones."},
-    "tavily.ownership": {"verdict": "stale",
+      "supporting": [
+        1,
+        2
+      ],
+      "contradicting": [],
+      "changed_on": null,
+      "explanation": "Municipality services [1] and 2026 commentary [2] confirm Dubai Municipality's permit role, now extended across zones."
+    },
+    "tavily.ownership": {
+      "verdict": "stale",
       "current_statement": "Tavily is now presented as 'Tavily (By Nebius)', indicating it is part of or owned by Nebius.",
-      "supporting": [], "contradicting": [1], "changed_on": null,
-      "explanation": "A current partner listing names it 'Tavily (By Nebius)' [1]. Only one source, so a person should confirm the deal."},
-    "bifrost.maker_and_license": {"verdict": "current",
+      "supporting": [],
+      "contradicting": [
+        1
+      ],
+      "changed_on": null,
+      "explanation": "A current partner listing names it 'Tavily (By Nebius)' [1]. Only one source, so a person should confirm the deal."
+    },
+    "bifrost.maker_and_license": {
+      "verdict": "current",
       "current_statement": "Bifrost is an open-source AI gateway built by Maxim AI.",
-      "supporting": [1, 2], "contradicting": [], "changed_on": null,
-      "explanation": "The partner listing [1] and the public GitHub repository [2] both confirm it."}
+      "supporting": [
+        1,
+        2
+      ],
+      "contradicting": [],
+      "changed_on": null,
+      "explanation": "The partner listing [1] and the public GitHub repository [2] both confirm it."
+    }
+  },
+  "recheck": {
+    "dubai.old_buildings.safety_certificate_required": {
+      "agree": true,
+      "verdict": "stale",
+      "current_statement": "Under Dubai Law No. 3 of 2026, owners must obtain a building quality and safety certificate once a building is 20 years past its completion certificate (valid 10 years, or 5 years at 40+ years).",
+      "best_source": 1,
+      "evidence_quote": "Owners must obtain a building quality and safety certificate once a building is 20 years past its completion certificate",
+      "supporting": [],
+      "contradicting": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "why_outdated": "The claim describes the rules before Law No. 3 of 2026 (announced 10 March 2026). A model trained before then would still repeat the old position.",
+      "explanation": "The official law text [1] and the October 2026 circular [3] require the certificate for buildings 20+ years old."
+    },
+    "dubai.ejari.attestation_needs_building_certificate": {
+      "agree": true,
+      "verdict": "stale",
+      "current_statement": "Under Law No. 3 of 2026, the municipality may, with Dubai Land Department, suspend or reject lease contract attestation (Ejari) for a non-compliant building.",
+      "best_source": 1,
+      "evidence_quote": "the municipality may, with Dubai Land Department, suspend or reject applications related to a non-compliant building, including lease contract attestation",
+      "supporting": [],
+      "contradicting": [
+        1,
+        3
+      ],
+      "why_outdated": "Before 2026 there was no link between building safety certification and Ejari. Law No. 3 of 2026 added it, so older answers miss it.",
+      "explanation": "The official law text [1] lets authorities suspend lease attestation for non-compliant buildings; [3] repeats this."
+    },
+    "dubai.building_permits.issuing_authority": {
+      "agree": true,
+      "verdict": "current",
+      "current_statement": "Dubai Municipality is the authority that issues building permits in Dubai.",
+      "best_source": 1,
+      "evidence_quote": "Dubai Municipality business services for building permits",
+      "supporting": [
+        1,
+        2
+      ],
+      "contradicting": [],
+      "why_outdated": "",
+      "explanation": "Dubai Municipality's own site [1] offers building permit services; [2] notes its role was extended in 2026."
+    },
+    "tavily.ownership": {
+      "agree": true,
+      "verdict": "stale",
+      "current_statement": "Tavily is presented as 'Tavily (By Nebius)'.",
+      "best_source": 1,
+      "evidence_quote": "Partners and sponsors list the track partner as 'Tavily (By Nebius)'",
+      "supporting": [],
+      "contradicting": [
+        1
+      ],
+      "why_outdated": "The claim predates Tavily being presented under Nebius.",
+      "explanation": "The hackathon page [1] lists the partner as 'Tavily (By Nebius)'."
+    },
+    "bifrost.maker_and_license": {
+      "agree": true,
+      "verdict": "current",
+      "current_statement": "Bifrost is an open-source AI gateway built by Maxim AI.",
+      "best_source": 2,
+      "evidence_quote": "Open-source AI gateway by Maxim",
+      "supporting": [
+        1,
+        2
+      ],
+      "contradicting": [],
+      "why_outdated": "",
+      "explanation": "The GitHub repository [2] and the hackathon page [1] agree."
+    }
   }
 }

@@ -41,6 +41,12 @@ class Settings:
         "FRESHPIN_EXTRACTOR_MODELS", "gemini/gemini-2.5-flash,groq/openai/gpt-oss-120b"))
     verifier_models: list[str] = field(default_factory=lambda: _list(
         "FRESHPIN_VERIFIER_MODELS", "groq/openai/gpt-oss-120b,gemini/gemini-2.5-flash"))
+    # The second, independent judge in the recheck layer. Its primary should be a different provider
+    # from the verifier's primary, so one model's blind spot can't confirm itself.
+    checker_models: list[str] = field(default_factory=lambda: _list(
+        "FRESHPIN_CHECKER_MODELS", "gemini/gemini-2.5-flash,groq/openai/gpt-oss-120b"))
+    # Recheck every claim with a second search and a second judge (costs one extra Tavily search per claim).
+    recheck: bool = field(default_factory=lambda: os.environ.get("FRESHPIN_RECHECK", "1") not in ("0", "false", "no"))
     # Used by the "simulate outage" switch: a model that will fail, so Bifrost must fall back.
     outage_model: str = field(default_factory=lambda: os.environ.get("FRESHPIN_OUTAGE_MODEL", "groq/model-that-does-not-exist"))
 

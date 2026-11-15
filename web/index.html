@@ -54,6 +54,12 @@ textarea{min-height:120px;resize:vertical}
 .meta{font-size:12px;color:var(--muted)}
 .now{margin-top:10px;padding:10px 12px;background:#0f1a16;border:1px solid #1f4a3b;border-radius:8px;font-size:14px}
 .now b{color:var(--fresh)}
+.recheck{margin-top:10px;padding:10px 12px;background:var(--panel2);border:1px solid var(--line);border-radius:8px;font-size:13px}
+.recheck .pill{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px;margin-right:6px}
+.recheck .pill.confirmed{background:#123a2e;color:var(--fresh)}.recheck .pill.disputed,.recheck .pill.unavailable{background:#3a2f12;color:var(--check)}
+.recheck p{margin:6px 0 0}.recheck a{color:var(--accent)}.recheck q{color:var(--muted);font-style:italic}
+.auth{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:1px 6px;border-radius:5px;background:#1b2230;color:var(--muted);margin-left:4px}
+.auth.official{background:#123a2e;color:var(--fresh)}
 .expl{margin-top:8px;color:#c6ccd8;font-size:14px}
 details{margin-top:10px}summary{cursor:pointer;color:var(--accent);font-size:13px}
 .bars{display:grid;grid-template-columns:110px 1fr 40px;gap:6px 10px;align-items:center;font-size:12px;color:var(--muted);margin-top:8px}
@@ -153,6 +159,7 @@ td.err{color:var(--stale)}td.fb{color:var(--check)}
         <li>An AI model (via <b>Bifrost</b>) splits the answer into time-sensitive claims.</li>
         <li><b>Tavily</b> searches the live web for the current value of each claim.</li>
         <li>A second model, via Bifrost, judges each claim using only those sources.</li>
+        <li><b>Recheck:</b> Tavily searches again for the official, newest source; a third model on a different provider judges again. A correction counts only if both agree and its quote appears word for word in the source. Otherwise the claim is disputed and nothing is reopened.</li>
         <li>A fixed formula turns the evidence into a 0 to 100 freshness score.</li>
         <li>Stale facts get a new version, and every decision pinned to the old one is reopened for a person to re-approve.</li>
       </ol>
@@ -217,13 +224,30 @@ function ring(score, band){
   const col = {fresh:"var(--fresh)",check:"var(--check)",stale:"var(--stale)"}[band];
   return `<div class="ring" style="background:conic-gradient(${col} ${score*3.6}deg,#0d1119 0)"><span>${score}</span></div>`;
 }
-const VERDICT = {current:"Still current", partly_current:"Partly current", stale:"Out of date", contradicted:"Contradicted", unverifiable:"Could not verify"};
+const VERDICT = {current:"Still current", partly_current:"Partly current", stale:"Out of date", contradicted:"Contradicted", unverifiable:"Could not verify", disputed:"Disputed: the two checks disagree"};
+const BADGE = {unverifiable:"unverified", disputed:"disputed"};
+const RECHECK = {confirmed:"✓ Confirmed by a second check", disputed:"⚠ Disputed", unavailable:"⚠ Second check could not run"};
+function authTag(a){ return a ? `<span class="auth ${esc(a)}">${esc(a.replace("_"," "))}</span>` : ""; }
+function recheckBox(c, traces){
+  const r = c.recheck || {};
+  if(!RECHECK[r.status]) return "";
+  const t = traces.find(x=>x.step==="recheck:"+c.key && x.ok);
+  const ref = r.best_reference;
+  return `<div class="recheck"><span class="pill ${esc(r.status)}">${RECHECK[r.status]}</span><span class="meta">${t?`second judge: ${esc(t.served_by)} · `:""}${r.extra_sources} new source${r.extra_sources===1?"":"s"} from a targeted search</span>
+    <p>${esc(r.reason||"")}</p>
+    ${r.why_outdated && c.verdict!=="current" ? `<p><b>Why it was out of date:</b> ${esc(r.why_outdated)}</p>` : ""}
+    ${ref ? `<p><b>Best reference:</b> <a href="${esc(ref.url)}" target="_blank" rel="noopener">${esc(ref.title)}</a>${authTag(ref.authority)} <span class="meta">${esc(ref.published_date||"undated")}</span></p>` : ""}
+    ${r.evidence_quote ? `<p><q>${esc(r.evidence_quote)}</q></p>` : ""}
+    ${(r.source_notes||[]).length ? `<p class="meta">${r.source_notes.map(esc).join(" ")}</p>` : ""}
+  </div>`;
+}
 
 function renderReport(rep){
   $("#resultsCard").style.display="block";
   const s = rep.summary, g = rep.gateway;
   $("#summary").innerHTML = [
     [s.claims,"claims checked"],[s.fresh,"fresh"],[s.check,"need a look"],[s.stale,"stale"],
+    [`${s.confirmed??0}/${s.claims}`,"confirmed by 2nd check"],[s.disputed??0,"disputed"],
     [s.decisions_reopened.length,"decisions reopened"],[`${g.tokens.toLocaleString()}`,`tokens of ${g.token_budget.toLocaleString()}`]
   ].map(([b,t])=>`<div class="stat"><b>${esc(b)}</b><span>${t}</span></div>`).join("");
   $("#claims").innerHTML = rep.claims.map(c => {
@@ -233,11 +257,12 @@ function renderReport(rep){
     return `<div class="claim ${f.band}">
       <div class="claim-top">${ring(f.score,f.band)}
         <div style="min-width:0">
-          <div><span class="badge ${f.band}">${f.band}</span><span class="meta">${VERDICT[c.verdict]||c.verdict} · ${esc(c.type.replace("_"," "))}${c.changed_on?` · changed ${esc(c.changed_on)}`:""}</span></div>
+          <div><span class="badge ${f.band}">${BADGE[c.verdict]||f.band}</span><span class="meta">${VERDICT[c.verdict]||c.verdict} · ${esc(c.type.replace("_"," "))}${c.changed_on?` · changed ${esc(c.changed_on)}`:""}</span></div>
           <div style="margin-top:4px">${esc(c.text)}</div>
         </div></div>
       ${changed?`<div class="now"><b>Now:</b> ${esc(c.current_statement)}</div>`:""}
       <div class="expl">${esc(c.explanation)}</div>
+      ${recheckBox(c, g.traces)}
       ${!c.ai_available?`<div class="meta" style="color:var(--check)">AI verifier was unavailable. The ledger was not changed.</div>`:""}
       ${eff.reopened&&eff.reopened.length?`<div class="meta" style="color:var(--stale);margin-top:6px">Reopened: ${eff.reopened.map(esc).join(", ")}</div>`:""}
       ${eff.at_risk&&eff.at_risk.length?`<div class="meta" style="color:var(--check);margin-top:6px">At risk: ${eff.at_risk.map(esc).join(", ")}</div>`:""}
@@ -249,7 +274,7 @@ function renderReport(rep){
         </div>
         <div class="meta" style="margin:6px 0 8px">Half-life for ${esc(c.type.replace("_"," "))} facts: ${f.half_life_days} days${f.newest_source_age_days!=null?` · newest backing source ${f.newest_source_age_days} days old`:""}${f.capped_by?` · capped: ${esc(f.capped_by)}`:""}</div>
         ${c.sources.map(src=>`<div class="src"><span class="mark ${sup.has(src.url)?"sup":con.has(src.url)?"con":""}">${sup.has(src.url)?"agrees":con.has(src.url)?"disagrees":"context"}</span>
-          <div style="min-width:0"><a href="${esc(src.url)}" target="_blank" rel="noopener">${esc(src.title)}</a> <span class="meta">${esc(src.published_date||"undated")}</span><p>${esc(src.snippet)}</p></div></div>`).join("") || `<div class="empty">No sources found.</div>`}
+          <div style="min-width:0"><a href="${esc(src.url)}" target="_blank" rel="noopener">${esc(src.title)}</a>${authTag(src.authority)} <span class="meta">${esc(src.published_date||"undated")}</span><p>${esc(src.snippet)}</p></div></div>`).join("") || `<div class="empty">No sources found.</div>`}
       </details>
     </div>`;
   }).join("") || `<div class="empty">No time-sensitive claims found.</div>`;

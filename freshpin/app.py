@@ -41,6 +41,7 @@ class FreshPin:
         return {"mode": self.s.mode, "bifrost_url": self.s.bifrost_url, "bifrost_reachable": bifrost_ok,
                 "tavily_key_set": bool(self.s.tavily_api_key) or self.s.mode == "replay",
                 "extractor_models": self.s.extractor_models, "verifier_models": self.s.verifier_models,
+                "checker_models": self.s.checker_models, "recheck": self.s.recheck,
                 "run_token_budget": self.s.run_token_budget, "virtual_key_set": bool(self.s.bifrost_virtual_key)}
 
     def samples(self) -> dict[str, Any]:
@@ -67,7 +68,8 @@ class FreshPin:
             report = run_check(answer, chat=self.chat, search=self.search, ledger=self.ledger,
                                extractor_models=self.s.extractor_models, verifier_models=self.s.verifier_models,
                                token_budget=self.s.run_token_budget, max_sources=self.s.max_sources_per_claim,
-                               context=context, simulate_outage=simulate_outage)
+                               context=context, simulate_outage=simulate_outage,
+                               checker_models=self.s.checker_models, recheck=self.s.recheck)
             report["mode"] = self.s.mode
             report["ledger"] = self.ledger.state()
             return report

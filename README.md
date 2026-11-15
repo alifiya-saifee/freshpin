@@ -23,8 +23,28 @@ Example used in the demo: until 2026, older Dubai buildings had no general perio
 1. **Splits the answer into claims.** A model (via Bifrost) extracts atomic, standalone claims, tags their type (pricing, API version, regulation, company, statistic) and decides which are time-sensitive.
 2. **Searches the live web.** Tavily searches for the *current* value of each claim. Fast-changing types (prices, versions, company facts) are limited to the last year.
 3. **Verifies against sources only.** A second model (via Bifrost) judges each claim using only the sources Tavily returned: `current`, `partly_current`, `stale`, `contradicted` or `unverifiable`. It also states the fact as it stands today and cites the sources it used.
-4. **Scores freshness with a fixed formula** (0 to 100), so the same evidence always gives the same score and every point can be explained (see below).
-5. **Reopens what depended on it.** Facts are versioned. A stale verdict creates a new version, and every decision pinned to the old version is **reopened**. Unclear evidence marks decisions **at risk** instead. Only a person can re-approve, after confirming they've read the new evidence; the approval is pinned to the new fact version and its evidence hash.
+4. **Rechecks every claim before anything changes** (see *The recheck layer* below): a second, targeted Tavily search, an independent judge on a different provider, an authority and date check on every source, and an exact-quote rule.
+5. **Scores freshness with a fixed formula** (0 to 100), so the same evidence always gives the same score and every point can be explained (see below).
+6. **Reopens what depended on it.** Facts are versioned. A stale verdict creates a new version, and every decision pinned to the old version is **reopened**. Unclear evidence marks decisions **at risk** instead. Only a person can re-approve, after confirming they've read the new evidence; the approval is pinned to the new fact version and its evidence hash.
+
+## The recheck layer
+
+One model's verdict is not enough to change money, budgets or approvals. After the first judgement, every claim goes through a second pass:
+
+1. **Source check (fixed rules, no AI).** Each source is graded by authority (official/government, vendor docs, major news, other) and age against the claim type's half-life. Old, undated or unofficial sources that agree with the original answer are flagged: that is usually where outdated information comes from.
+2. **A second search that hunts for change.** The first judge writes a confirm query. If it said "current" or "unverifiable", the query looks for a *recent change* (new law, price change, new version, acquisition); otherwise it looks for the official, newest source of today's fact. Pages already seen are skipped.
+3. **An independent second judge.** A model on a **different provider** (Gemini if the first judge was Groq) reads the first verdict and every source, old and new, and returns its own verdict, the best reference, *why the answer was out of date*, and one sentence copied from the best source.
+4. **Fixed rules decide (not AI).**
+   - *No quote, no verdict:* the quote must appear word for word in the source text, or the verdict is not accepted.
+   - *Silence is not proof:* both judges are told that a page which doesn't mention a requirement is not evidence that none exists.
+   - Both judges agree and the quote is found → **confirmed**, and the ledger acts.
+   - They disagree, the quote is missing, or the second check can't run on a change → **disputed**: the score stays in the "check" band, dependent decisions are marked **at risk**, and nothing is reopened. A person decides.
+
+The UI, the MCP tool and the CLI show the second check's result, the best reference (with its authority and date), the quote and "why it was out of date".
+
+**A real catch.** In one live run, both searches for "Ejari attestation does not depend on any building safety certificate" returned only Ejari service pages that don't mention the 2026 law, and an earlier version of FreshPin rated the claim *fresh*. With the recheck rules it comes back **disputed** and the dependent decision is marked at risk, instead of being silently confirmed.
+
+**Cost:** one extra Tavily search and one extra model call per claim (the Dubai sample uses 8 searches instead of 4). Turn it off with `FRESHPIN_RECHECK=0`.
 
 ## What's new about it
 
@@ -51,12 +71,12 @@ The **Simulate primary model outage** switch in the UI puts a model that will fa
 ## Freshness score
 
 ```
-score = 0.55 × verdict points   (current 100, partly 60, unverifiable 45, stale 15, contradicted 5)
+score = 0.55 × verdict points   (current 100, partly 60, unverifiable 45, disputed 45, stale 15, contradicted 5)
       + 0.25 × recency points   (age of the newest backing source vs. the claim type's half-life)
       + 0.20 × agreement points (share of sources that back the verdict)
 ```
 
-Half-lives: pricing 45 days, API versions 60, company facts 120, statistics 180, regulations 240, other 365. Caps: stale or contradicted claims can never score above 35, and claims with no sources can never score above 50. Bands: **fresh** 70 and above, **check** 40 to 69, **stale** below 40. Click "Why N?" on any claim to see the breakdown and every source.
+Half-lives: pricing 45 days, API versions 60, company facts 120, statistics 180, regulations 240, other 365. Caps: stale or contradicted claims can never score above 35, claims with no sources can never score above 50, and disputed claims always stay between 40 and 69 (the "check" band), so they mark decisions at risk but never reopen them. Bands: **fresh** 70 and above, **check** 40 to 69, **stale** below 40. Click "Why N?" on any claim to see the breakdown and every source.
 
 ## Architecture
 
@@ -154,7 +174,7 @@ Then ask, for example: *"Check this answer with freshpin before you use it: Duba
 python -m unittest discover -s tests -v
 ```
 
-The tests cover the scoring formula, the ledger's reopen and re-approve rules, the full pipeline in replay mode, outage handling and degradation, the Bifrost client against a fake gateway (fallback detection, including model names that contain a slash, failure and budget), and the MCP server (tool list, a full check that reopens decisions, unverified labels, and errors that don't crash it).
+The tests cover the scoring formula, the ledger's reopen and re-approve rules, the full pipeline in replay mode, outage handling and degradation, the Bifrost client against a fake gateway (fallback detection, including model names that contain a slash, failure and budget), the recheck layer (every claim rechecked, disagreement marks at risk and never reopens, no quote no verdict for corrections and "current" alike, a wrong "current" caught, source grading), and the MCP server (tool list, a full check that reopens decisions, unverified labels, and errors that don't crash it).
 
 ## JSON API
 
@@ -175,8 +195,9 @@ freshpin/
   config.py     settings from env / .env
   llm.py        Bifrost client: fallbacks, client failover, budget, call traces
   search.py     Tavily client
-  pipeline.py   extract -> search -> verify -> score -> ledger
+  pipeline.py   extract -> search -> verify -> recheck -> score -> ledger
   scoring.py    the freshness formula
+  sources.py    source authority and age grading, rule-based evidence notes
   ledger.py     versioned facts, decisions, pins, audit log (SQLite)
   replay.py     offline backends for tests
   app.py        wiring for the UI and CLI

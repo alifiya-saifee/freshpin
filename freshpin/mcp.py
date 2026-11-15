@@ -30,7 +30,9 @@ TOOLS = [
         "description": (
             "Check an AI answer for stale or wrong facts before relying on it. Splits the answer into "
             "time-sensitive claims (prices, API versions, laws, company facts, statistics), searches the "
-            "live web with Tavily, has a second model judge each claim using only those sources, and gives "
+            "live web with Tavily, has a second model judge each claim using only those sources, then rechecks "
+            "every claim (a second search for recent changes, an independent judge on another provider, and an "
+            "exact quote from the best source; disagreements come back DISPUTED), and gives "
             "each claim a 0-100 freshness score. Also reopens any approved decision that relied on a fact "
             "that has changed. Use it before stating facts that may have changed since your training data."
         ),
@@ -61,20 +63,34 @@ def summarize(report: dict[str, Any]) -> str:
     # Label by verdict, not only by score band: a claim nobody could verify is "unverified", never "stale".
     stale = sum(c["verdict"] in ("stale", "contradicted") for c in claims)
     unverified = sum(c["verdict"] == "unverifiable" for c in claims)
+    disputed = sum(c["verdict"] == "disputed" for c in claims)
     lines = [f"FreshPin checked {len(claims)} claim(s): {s['fresh']} fresh, {stale} stale or contradicted, "
-             f"{unverified} could not be verified."]
+             f"{disputed} disputed, {unverified} could not be verified. "
+             f"{s.get('confirmed', 0)} of {len(claims)} confirmed by an independent second check."]
     if report.get("degraded") or any(not c.get("ai_available", True) for c in claims):
         lines.append("Note: the AI models were unavailable for some claims, so those are unverified "
                      "and the ledger was not changed for them.")
     for i, c in enumerate(claims, 1):
         f = c["freshness"]
-        label = "UNVERIFIED" if c["verdict"] == "unverifiable" else f["band"].upper()
+        label = {"unverifiable": "UNVERIFIED", "disputed": "DISPUTED"}.get(c["verdict"], f["band"].upper())
         lines.append(f"\n{i}. [{label} {f['score']}/100] {c['text']}")
-        if c["verdict"] in ("stale", "contradicted") and c.get("current_statement"):
+        if c["verdict"] in ("stale", "contradicted", "partly_current") and c.get("current_statement"):
             lines.append(f"   Now: {c['current_statement']}")
-        urls = c.get("supporting_urls") or c.get("contradicting_urls") or [x.get("url") for x in c.get("sources", [])[:2]]
-        for u in [u for u in urls if u][:2]:
-            lines.append(f"   Source: {u}")
+        r = c.get("recheck") or {}
+        if r.get("status") in ("confirmed", "disputed", "unavailable"):
+            lines.append(f"   Second check: {r['status']}. {r.get('reason', '')}")
+        if r.get("why_outdated") and c["verdict"] != "current":
+            lines.append(f"   Why it was out of date: {r['why_outdated']}")
+        ref = r.get("best_reference")
+        if ref:
+            when = ref.get("published_date") or "undated"
+            lines.append(f"   Best reference ({ref.get('authority')}, {when}): {ref.get('url')}")
+            if r.get("evidence_quote"):
+                lines.append(f"   Quote: \"{r['evidence_quote']}\"")
+        else:
+            urls = c.get("supporting_urls") or c.get("contradicting_urls") or [x.get("url") for x in c.get("sources", [])[:2]]
+            for u in [u for u in urls if u][:2]:
+                lines.append(f"   Source: {u}")
     if s["decisions_reopened"]:
         lines.append("\nDecisions reopened (a person must re-approve them in the FreshPin web app): "
                      + ", ".join(s["decisions_reopened"]))
@@ -84,6 +100,8 @@ def summarize(report: dict[str, Any]) -> str:
         lines.append("\nDo not repeat the stale claims as current. Use the 'Now' statements and cite the sources.")
     if unverified:
         lines.append("Treat unverified claims as unconfirmed; say so rather than stating them as fact.")
+    if disputed:
+        lines.append("Disputed claims: the two checks disagree. Show both views and let a person decide.")
     return "\n".join(lines)
 
 
