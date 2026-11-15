@@ -144,7 +144,7 @@ def quote_states_claim(claim: str, quote: str) -> bool:
 _FAMILIES = [("nemotron", "nvidia-nemotron"), ("gpt-oss", "openai-gpt-oss"), ("gemini", "google-gemini"),
              ("gemma", "google-gemma"), ("mistral", "mistral"), ("mixtral", "mistral"), ("llama", "meta-llama"),
              ("deepseek", "deepseek"), ("qwen", "qwen"), ("glm", "zhipu-glm"), ("claude", "anthropic-claude"),
-             ("kimi", "moonshot-kimi"), ("minimax", "minimax"), ("gpt-", "openai-gpt")]
+             ("kimi", "moonshot-kimi"), ("minimax", "minimax"), ("laguna", "poolside"), ("gpt-", "openai-gpt")]
 
 
 def model_family(model: str | None) -> str | None:

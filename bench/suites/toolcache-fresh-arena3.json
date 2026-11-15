@@ -1,0 +1,1151 @@
+{
+ "how many users were affected at the peak of the microsoft 365 and outlook outage on thursday, november 12, 2026?": [
+  {
+   "title": "Microsoft outage disrupts Outlook and Krungthai Bank email services",
+   "url": "https://www.nationthailand.com/news/world/40073461",
+   "snippet": "Microsoft was still working to restore Outlook, Teams and other Microsoft 365 services after about 10 hours of disruption on Thursday (November 12, 2026), affecting businesses and government agencies worldwide.\n\nKrungthai Bank also reported disruption to its email system.\n\nDowndetector recorded more than 130,000 reports of Outlook problems in the United States (US) at the peak around 1pm Eastern Time (ET).\n\nThe tally stood at more than 25,000 at 9.30pm ET, or 2.30am Greenwich Mean Time (GMT). [...] The monitoring website, which compiles reports from several sources, also showed disruption to Microsoft services in the Asia-Pacific region, including India, Australia and Japan, early on Friday ",
+   "published_date": "Fri, 13 Nov 2026 06:00:00 GMT",
+   "relevance": 0.77881753
+  },
+  {
+   "title": "Microsoft Outlook Outage: What You Need to Know",
+   "url": "https://socradar.io/blog/microsoft-outlook-outage",
+   "snippet": "Microsoft’s Exchange Online incident, EX1550543, started at 16:17 UTC on November 12, 2026. User complaints surged on Downdetector shortly afterward, and US Outlook reports peaked above 130,000 around 18:15 UTC. Microsoft opened a second, broader incident, MO1550821, at 18:26 UTC to track Microsoft 365 services that rely on Exchange Online.\n\n## Which Microsoft Services Are Down? [...] | Peak Reports | Nearly 140,000 Outlook reports on Downdetector globally (more than 130,000 in the US), November 12, 2026 |\n| Root Cause | Not confirmed; servers failing health checks and an overwhelmed secure-connection process; a correlated network configuration change is being rolled back but is not confirme",
+   "published_date": "Fri, 13 Nov 2026 13:32:27 GMT",
+   "relevance": 0.7761143
+  },
+  {
+   "title": "Microsoft Begins Restoring Services After 130,000 Outage Reports — JournalArta Global",
+   "url": "https://journalarta.com/en/2026/11/13/microsoft-begins-restoring-services-outlook-teams-outage",
+   "snippet": "Microsoft begins restoring services after a global outage disrupted Microsoft 365, Outlook, Teams and other apps for more than five hours on Thursday, November 12, 2026. Down Detector logged nearly 130,000 reports of access problems at the peak.\n\nA Microsoft spokesperson said the company \"had no indication of a cyber attack\".\n\n## What users saw [...] Microsoft began restoring services on Thursday after a global outage hit Microsoft 365, Outlook, Teams and Copilot for more than five hours. Down Detector logged nearly 130,000 reports at the peak. The company said it had no indication of a cyber attack.\n\nBy Elena Vance\n\nNovember 13, 20262 min read\n\nMicrosoft Begins Restoring Services After 130,",
+   "published_date": "Fri, 13 Nov 2026 11:00:00 GMT",
+   "relevance": 0.77304506
+  },
+  {
+   "title": "Global Microsoft 365 Outage Affects Governments, Businesses, and AI Firms | ForkLog",
+   "url": "https://forklog.com/en/global-microsoft-365-outage-affects-governments-businesses-and-ai-firms",
+   "snippet": "> We’re investigating reports of users experiencing issues accessing Exchange Online mailboxes through multiple connection methods in the Americas. More details can be found in the Microsoft 365 admin center under EX1550543.\n>\n> — Microsoft 365 Status (@MSFT365Status) November 12, 2026\n\nThe first widespread complaints emerged on November 12 in the United States. At its peak, Downdetector recorded over 130,000 reports of issues with Outlook. [...] Downdetector chart showing the number of complaints about Microsoft Outlook outages over 24 hours: a sharp spike on the evening of November 12 to a peak of 130,654 reports, gradually declining by the morning of November 13.\n\nNumber of Outlook issue ",
+   "published_date": "Fri, 13 Nov 2026 09:34:25 GMT",
+   "relevance": 0.7554566
+  },
+  {
+   "title": "Is Microsoft down? Users report Outlook, 365 issues Thursday",
+   "url": "https://www.usatoday.com/story/tech/2026/11/12/microsoft-down-outlook-365-outage-reports/92744582007",
+   "snippet": "# Is Microsoft down? Users report issues with Outlook, 365 on Thursday\n\nEditor's Note: On Friday, Nov. 13, Microsoft said it had restored services in most regions. Click here for the latest updates.\n\nA widespread Microsoft outage affected tens of thousands of users across the United States for about 10 hours on Nov. 12, disrupting access to Outlook, Microsoft 365, Copilot, and other essential platforms. [...] According to Downdetector, after reaching a peak of 128,874 reports at 1:09 p.m. ET, Microsoft Outlook outage reports have begun to tick down, with the latest number dropping to 92,914 at around 1:50 p.m. ET.\n\nReports of outages for Microsoft 365 also dropped from its peak of over 46,00",
+   "published_date": "Sat, 14 Nov 2026 06:00:00 GMT",
+   "relevance": 0.6868954
+  }
+ ],
+ "microsoft 365 outlook outage thursday november 12 2026 users affected peak": [
+  {
+   "title": "Microsoft outage disrupts Outlook and Krungthai Bank email services",
+   "url": "https://www.nationthailand.com/news/world/40073461",
+   "snippet": "Microsoft was still working to restore Outlook, Teams and other Microsoft 365 services after about 10 hours of disruption on Thursday (November 12, 2026), affecting businesses and government agencies worldwide.\n\nKrungthai Bank also reported disruption to its email system.\n\nDowndetector recorded more than 130,000 reports of Outlook problems in the United States (US) at the peak around 1pm Eastern Time (ET).\n\nThe tally stood at more than 25,000 at 9.30pm ET, or 2.30am Greenwich Mean Time (GMT). [...] The disruption was attributed to multiple servers unexpectedly failing, not a cyberattack, with over 130,000 user reports for Outlook in the US at its peak. [...] The monitoring website, which com",
+   "published_date": "Fri, 13 Nov 2026 06:00:00 GMT",
+   "relevance": 0.79581684
+  },
+  {
+   "title": "Is Microsoft down? Users report Outlook, 365 issues Thursday",
+   "url": "https://www.usatoday.com/story/tech/2026/11/12/microsoft-down-outlook-365-outage-reports/92744582007",
+   "snippet": "# Is Microsoft down? Users report issues with Outlook, 365 on Thursday\n\nEditor's Note: On Friday, Nov. 13, Microsoft said it had restored services in most regions. Click here for the latest updates.\n\nA widespread Microsoft outage affected tens of thousands of users across the United States for about 10 hours on Nov. 12, disrupting access to Outlook, Microsoft 365, Copilot, and other essential platforms. [...] According to Downdetector, after reaching a peak of 128,874 reports at 1:09 p.m. ET, Microsoft Outlook outage reports have begun to tick down, with the latest number dropping to 92,914 at around 1:50 p.m. ET.\n\nReports of outages for Microsoft 365 also dropped from its peak of over 46,00",
+   "published_date": "Sat, 14 Nov 2026 06:00:00 GMT",
+   "relevance": 0.7216451
+  },
+  {
+   "title": "Microsoft 365 Outage: Outlook, Teams and Copilot Down",
+   "url": "https://www.culturealberta.com/articles/microsoft-365-outage-outlook-teams-and-copilot-down-for-hours-as-microsoft-says-its-fixes-havent-wor",
+   "snippet": "If Outlook won’t load for you, you’re not the only one.\n\nA Microsoft 365 outage has been knocking out email, Teams and other work apps since late Thursday morning, Nov. 12. More than six hours later, Microsoft says it still hasn’t found a fix that works.\n\n“We’re opening all available pathways to restore service, as our actions taken thus far have not provided the anticipated relief,” the company posted shortly after 5 p.m. ET. [...] A Microsoft 365 outage has knocked out Outlook email, Teams, SharePoint and Copilot for users across Canada, the U.S. and beyond since late Thursday morning. Problem reports topped 131,000 at the peak, and more than six hours in, Microsoft says its fixes haven’t ",
+   "published_date": "Thu, 12 Nov 2026 22:57:27 GMT",
+   "relevance": 0.6959583
+  },
+  {
+   "title": "Microsoft outage: Live updates as mass issues reported with Outlook, 365 | Wichita Eagle",
+   "url": "https://www.kansas.com/news/business/article318050186.html",
+   "snippet": "Tens of thousands of Microsoft users across the country were struggling to access Outlook's email services, Copilot's AI software and other essential programs on Thursday, Nov. 12. [...] According to outage tracker Downdetector, about 33,000 users were still experiencing issues with Outlook just before 6:30 p.m. ET, with a further 11,000 reporting problems with Microsoft 365. The company said around 6 p.m. ET that it was \"returning a portion of affected servers,\" and they were remaining stable so far.\n\nAt its peak around 1 p.m. ET, Outlook had just shy of 130,000 reported outages. Other Microsoft products like CoPilot saw almost 6,000 reported disturbances. [...] Outages continued to plague ",
+   "published_date": "Fri, 13 Nov 2026 11:00:00 GMT",
+   "relevance": 0.6887825
+  },
+  {
+   "title": "Is Outlook down in Mississippi? Thousands report outages. What we know",
+   "url": "https://www.clarionledger.com/story/news/2026/11/12/is-outlook-down-in-mississippi-thousands-in-us-report-outages-what-we-know/92745117007",
+   "snippet": "# No email? Thousands across US report Outlook, Microsoft is down\n\nIs your Outlook account not working in Mississippi? Thousands of users across the U.S. reported errors with Microsoft 356 accounts and CoPilot midday Thursday, Nov. 12.\n\nOutage tracker Downdetector reflected a spike in reports about Microsoft 365 services beginning just after 11 a.m. CT, with 22,323 users reporting outages by 11:55 a.m. CT.",
+   "published_date": "Thu, 12 Nov 2026 19:01:53 GMT",
+   "relevance": 0.6826795
+  }
+ ],
+ "downdetector \"130,000\" microsoft november 12 2026": [
+  {
+   "title": "Outlook Outage: 130,000+ Reports, 4 Nevada Agencies [2026]",
+   "url": "https://shattered.io/microsoft-outlook-outage-nevada-agencies-130000-downdetector-reports-2026",
+   "snippet": "What happened to Microsoft Outlook on November 12, 2026?  \nMicrosoft Outlook and Microsoft 365 suffered a widespread outage. Microsoft said users reported problems accessing Exchange Online mailboxes in the Americas, and the disruption was reported worldwide.\n\nWhich Las Vegas-area agencies were affected?  \nThe City of North Las Vegas, Clark County, Nye County and Boulder City all reported email-related issues or possible response delays, according to News3LV and KTNV. [...] SHATERED\n\n# Outlook Outage: 130,000+ Reports, 4 Nevada Agencies \n\nPriya Anand\n\nPriya Anand\n\nUpdated Nov 13, 2026 · 14 min read\n\nMicrosoft Outlook and Microsoft 365 suffered a widespread outage on November 12, 2026, and So",
+   "published_date": "Fri, 13 Nov 2026 04:44:25 GMT",
+   "relevance": 0.73392886
+  },
+  {
+   "title": "Is Microsoft down? Outage enters second day, Outlook to Copilot",
+   "url": "https://www.staugustine.com/story/news/state/2026/11/13/microsoft-outage-impacts-outlook-copilot/92755234007",
+   "snippet": "A worldwide Microsoft outage continues to affect several services this morning as the company works to restore applications ranging from Outlook to Copilot.\n\nDid we mention today is Friday the 13th?\n\nMicrosoft frustrated thousands of users Thursday, Nov. 12 with almost 130,000 users reporting issues with Microsoft Outlook on the outage tracker downdetector.com. [...] A worldwide Microsoft outage continues to affect several services as the company works to restore applications ranging from Outlook to Copilot.\n Microsoft frustrated thousands of users Thursday, with almost 130,000 users reporting issues with Microsoft Outlook on the outage tracker downdetector.com.\n In an update posted shortly ",
+   "published_date": "Fri, 13 Nov 2026 11:00:00 GMT",
+   "relevance": 0.7236025
+  },
+  {
+   "title": "Is Microsoft Outlook down? Widespread outage hits platform",
+   "url": "https://www.bostonherald.com/2026/11/12/is-microsoft-outlook-down-widespread-outage",
+   "snippet": "Nearly 130,000 users on outage tracker Downdetector reported problems accessing Outlook just after 1 p.m. ET. New reports have since fallen from that peak, but many said they couldn’t send and receive emails, or had trouble loading their inboxes altogether.\n\nThousands also reported issues with Microsoft’s workplace messaging app Teams, as well as its AI assistant Copilot and wider Microsoft 365 services. [...] News\n\nNation\n\n# Is Outlook down? Widespread outage hits Microsoft apps\n\n## At its peak, nearly 130,000 users on outage tracker Downdetector reported problems accessing the email platform early Thursday afternoon.\n\n### Share this:\n\n Share on Facebook (Opens in new window) Facebook\n Shar",
+   "published_date": "Thu, 12 Nov 2026 19:47:30 GMT",
+   "relevance": 0.56997234
+  },
+  {
+   "title": "Microsoft outage disrupts Outlook, prompts Buncombe County backup procedures",
+   "url": "https://wlos.com/news/local/microsoft-outage-disrupts-outlook-prompts-buncombe-county-backup-procedures",
+   "snippet": "IS OUTLOOK DOWN? WIDESPREAD MICROSOFT OUTAGE IMPACTS THOUSANDS OF USERS\n\nAfter 1 p.m., nearly 130,000 users reported problems accessing Outlook on the outage tracker, Downdetector.\n\n\"It’s not just me, it’s not just this building, it’s not just the general area, it’s everywhere,\" Horton said. [...] # Microsoft outage disrupts Outlook, prompts Buncombe County backup procedures\n\nbyRian Stockett\n\nUpdated\n\nHARTIGAN-7792.MXF-frame-428.png\n\n4VIEW ALL PHOTOS\n\nNOV. 12, 2026 - A widespread Microsoft outage started on Thursday, Nov. 12, disrupting email and other tools for thousands of people. (Photo credit: WLOS Staff)\n\n#### topics:\n\n Microsoft\n Outlook\n Microsoft 365\n Exchange Online\n Outage\n Downdet",
+   "published_date": "Fri, 13 Nov 2026 03:27:28 GMT",
+   "relevance": 0.5551338
+  },
+  {
+   "title": "Microsoft confirms Outlook outage affecting users worldwide - WISN",
+   "url": "https://www.wisn.com/article/microsoft-outlook-outage-2026/74414319",
+   "snippet": "\"We're investigating reports of users experiencing issues accessing Exchange Online mailboxes through multiple connection methods,\" the company wrote on X. \"While we're working to mitigate impact, we've confirmed the issue may affect Microsoft 365 service connectivity for users in any region.\"\n\nAccording to Downdetector, at 1:15 p.m. ET, over 130,000 users reported problems accessing Microsoft's email platform. [...] Skip to content\n\nNOWCASTWISN 12 News at 11:00 a.m.\n\nWatch on Demand\n\nWISN-TVWISN-TV\n\n SUBSCRIBE TO EMAILS\n \n\n——\nMORE\n\n1 / 1\n\nAdvertisement\n\n# Microsoft confirms Outlook outage affecting users worldwide\n\nAdvertisement\n\nWISN branding logo\n\nUpdated: 12:48 PM CST Nov 12, 2026\n\nEdito",
+   "published_date": "Thu, 12 Nov 2026 18:41:00 GMT",
+   "relevance": 0.5415301
+  }
+ ],
+ "microsoft 365 outlook outage thursday november 12 2026 users affected": [
+  {
+   "title": "Is Microsoft down? Users report Outlook, 365 issues Thursday",
+   "url": "https://www.usatoday.com/story/tech/2026/11/12/microsoft-down-outlook-365-outage-reports/92744582007",
+   "snippet": "# Is Microsoft down? Users report issues with Outlook, 365 on Thursday\n\nEditor's Note: On Friday, Nov. 13, Microsoft said it had restored services in most regions. Click here for the latest updates.\n\nA widespread Microsoft outage affected tens of thousands of users across the United States for about 10 hours on Nov. 12, disrupting access to Outlook, Microsoft 365, Copilot, and other essential platforms. [...] ## Microsoft says it's closing in on a fix\n\nMicrosoft signaled it may be closer to a fix in a social media post at 4:40 p.m. ET, saying it was \"actively restarting and validating the affected servers to return them to service.\"\n\nOutlook outage reports dropped to 49,000 just before 5 p.m",
+   "published_date": "Sat, 14 Nov 2026 06:00:00 GMT",
+   "relevance": 0.76506716
+  },
+  {
+   "title": "Microsoft hit by global outages: What happened and why? | Technology News | Al Jazeera",
+   "url": "https://www.aljazeera.com/news/2026/11/13/microsoft-hit-by-global-outages-what-happened-and-why",
+   "snippet": "An error message is shown when trying to access Microsoft's Outlook on November 12, 2026, in Chicago, Illinois [Scott Olson/Getty Images/AFP]\n\n\n\nBy Heba Habib\n\nPublished On 13 Nov 202613 Nov 2026\n\nMicrosoft says it has had only “marginal success” in restoring its most widely used workplace services, more than 12 hours after a global outage knocked out Outlook and disrupted Teams and Copilot for users in 74 countries. [...] Save\n\nShare\n\nCHICAGO, ILLINOIS - NOVEMBER 12: In this photo illustration, an error message is shown when trying to access Microsoft's Outlook on November 12, 2026 in Chicago, Illinois. Microsoft reported a widespread outage today that left users unable to access Outlook, T",
+   "published_date": "Fri, 13 Nov 2026 09:30:55 GMT",
+   "relevance": 0.7055822
+  },
+  {
+   "title": "Microsoft reports global outages, thousands of Outlook users affected",
+   "url": "https://www.sfgate.com/tech/article/microsoft-outlook-outage-22527594.php",
+   "snippet": "BREAKING\n\n16m ago\n\nMicrosoft scrambles to fix global outage affecting thousands\n\n16m ago\n\nTechnology\n\n# Microsoft scrambles to fix global outage affecting thousands\n\nBy Matthew Brown, Tech Reporter\n\nAdd Us\n\nThousands of users reported problems with accessing their Microsoft 365 services Thursday morning.\n\nGetty Images\n\nThousands of users reported problems with accessing their Microsoft 365 services Thursday morning, including Outlook email, according to Downdetector. [...] 1,945 players solved today. Can you?\n\n65 people finished in under a minute.\n\nWe created a crossword puzzle just for Californians.\n\n268 people are playing right now.\n\nMost Popular\n\n1.\n\nIn the American West, a Barbie theme p",
+   "published_date": "Thu, 12 Nov 2026 19:42:54 GMT",
+   "relevance": 0.6171666
+  },
+  {
+   "title": "Microsoft Outlook Goes Down, Paralyzing Business Communication",
+   "url": "https://deadline.com/2026/11/microsoft-outlook-is-down-email-365-1237221945",
+   "snippet": "The tech giant issued a string of social media posts Thursday acknowledging that users had reported issues with access. Outlook as a stand-alone service was deemed operational, along with other Microsoft platforms like Teams and OneDrive. But enterprise and business customers of Microsoft 365 were experiencing problems connecting to email via the Exchange server as well as accessing other services.",
+   "published_date": "Thu, 12 Nov 2026 18:47:33 GMT",
+   "relevance": 0.5926666
+  },
+  {
+   "title": "Microsoft outage: Microsoft 365, Teams, Outlook, Copilot all impacted | Mashable",
+   "url": "https://mashable.com/tech/microsoft-outage-affecting-365-teams-outlook-copilot-nov-12-2026",
+   "snippet": "Initially reported as an Outlook problem, Microsoft says its Exchange Online service has been disrupted.\n\nBy Timothy Beck Werth\n\na yellow cab moves at a blur in front of microsoft office headquarters\n\na yellow cab moves at a blur in front of microsoft office headquarters\n\nTrending on Mashable\n\nNYT Connections hints today: Clues, answers for November 12, 2026\n\nEverything you need to solve 'Connections' #1250.\n\nBy Mashable Team\n\nConnections game on a smartphone\n\nConnections game on a smartphone [...] Read Full Bio\n\n on\n\nShare on Facebook\")   Share on Twitter\")   Share on Flipboard\")\n\nMicrosoft name and logo on company headquarters in mountain view, california\n\nCredit: Benjamin Fanjoy/Bloomberg",
+   "published_date": "Thu, 12 Nov 2026 19:14:07 GMT",
+   "relevance": 0.5880022
+  }
+ ],
+ "\"microsoft\" outage november 12 2026 how many users affected peak exact number": [
+  {
+   "title": "Microsoft Outlook Outage: What You Need to Know",
+   "url": "https://socradar.io/blog/microsoft-outlook-outage",
+   "snippet": "| Peak Reports | Nearly 140,000 Outlook reports on Downdetector globally (more than 130,000 in the US), November 12, 2026 |\n| Root Cause | Not confirmed; servers failing health checks and an overwhelmed secure-connection process; a correlated network configuration change is being rolled back but is not confirmed as the cause |\n| Cyberattack | No indication of malicious activity, per Microsoft |\n| Status | Recovering, not resolved, as of November 13, 2026, 12:30 UTC | [...] Microsoft’s Exchange Online incident, EX1550543, started at 16:17 UTC on November 12, 2026. User complaints surged on Downdetector shortly afterward, and US Outlook reports peaked above 130,000 around 18:15 UTC. Microsoft ",
+   "published_date": "Fri, 13 Nov 2026 13:32:27 GMT",
+   "relevance": 0.7153245
+  },
+  {
+   "title": "Microsoft meltdown triggers global disruption. What happened?  | Tacoma News Tribune",
+   "url": "https://www.thenewstribune.com/news/business/article318068272.html",
+   "snippet": "Disruptions were reported in 74 countries, but the precise number of affected users is not known. Downdetector, which tracks user-reported complaints of internet difficulties, recorded a peak number of just Outlook problems at about 130,000, at 1:27 p.m. Eastern time on Nov. 12. That was higher than the overall 50,000 reported complaints for Microsoft 365, which Outlook is part of.\n\nMicrosoft has not said when full service will return, USA TODAY reported.\n\nHow many outages were reported? [...] The disruption started with Microsoft servers – powerful computers that run online services, store information and respond to users – at about 12 p.m. ET on Nov. 12. Microsoft maintains servers in data",
+   "published_date": "Fri, 13 Nov 2026 20:16:05 GMT",
+   "relevance": 0.6997676
+  },
+  {
+   "title": "Outlook, Microsoft 365, Teams and more down for millions worldwide — live updates on massive outage",
+   "url": "https://tech.yahoo.com/computing/articles/outlook-microsoft-365-teams-more-005029670.html",
+   "snippet": "November 12, 2026 – 2:51 PM\n\n## Slowly dropping\n\nDowndetector reports\n\nCredit: Downdetector\n\nReports have hit the 77,000 range recently, which is a sizable drop from the peak. It's still one of the bigger outage numbers we've seen in recent months, so we're by no means out of the woods yet, but between slightly lower reports and Microsoft having a strong idea of what went wrong, we could be in good shape.\n\nNovember 12, 2026 – 3:00 PM\n\n## Microsoft with another solution [...] We'll see if things start to come back to normal for Outlook and other Microsoft users (officially, Microsoft lists Exchange Online, Microsoft Teams,SharePoint Online, Microsoft Copilot 365 and Microsoft Defender XDR as ",
+   "published_date": "Fri, 13 Nov 2026 11:00:00 GMT",
+   "relevance": 0.6006569
+  },
+  {
+   "title": "Microsoft struggles to restore services as outage hits companies and governments worldwide - ABC News",
+   "url": "https://abcnews.com/Business/wireStory/microsoft-struggles-restore-services-outage-hits-companies-governments-138102668",
+   "snippet": "The company said it did not have any indication that the outage was caused by malicious activity and would treat the incident “with urgency and priority until full resolution.”\n\nOver 430 million people use Microsoft 365 apps, Microsoft said on its website.\n\nRoughly 130,000 users from dozens of countries Downdetector reported problems on outage tracker with accessing Outlook on Thursday although new reports have since fallen from that peak. [...] Microsoft said in an update Friday that the outage was affecting a wide range of Microsoft 365 offerings that interact with its Exchange Online and email services. Services including Outlook, Teams and AI assistant Copilot were reported by users to b",
+   "published_date": "Fri, 13 Nov 2026 10:01:27 GMT",
+   "relevance": 0.43608165
+  },
+  {
+   "title": "Microsoft Outlook Outage Cripples Email for 365 Users | The Tech Buzz",
+   "url": "https://www.techbuzz.ai/articles/microsoft-outlook-outage-cripples-email-for-365-users",
+   "snippet": "## the tech buzz\n\nPRO\n\nthe tech buzzPRO\n\nUnlimited access to in-depth analysis, exclusive reports, and premium tools for tech professionals.\n\n Ad-free reading experience\n Exclusive analysis & reports\n Early access to features\n\nGet TechBuzz Pro\n\nNewsletter\n\n## the tech buzz\n\nMicrosoft Outlook Outage Cripples Email for 365 Users\n\nEnterprise/SaaSoutage11/12/2026\n\n# Microsoft Outlook Outage Cripples Email for 365 Users [...] Microsoft hasn't disclosed specific numbers of affected users, but Microsoft 365 serves 345 million paid seats globally. The outage impacts business and enterprise customers across North America who rely on Outlook for email and productivity tools. [...] A major service disr",
+   "published_date": "Fri, 13 Nov 2026 11:00:00 GMT",
+   "relevance": 0.34643072
+  }
+ ],
+ "\"downdetector\" \"130,000\" microsoft outage november 12 2026 peak": [
+  {
+   "title": "Microsoft 365 Outage Nears 48 Hours as AI-Driven Layoffs Face New Scrutiny | OpenTools",
+   "url": "https://opentools.ai/news/microsoft-365-outage-ai-layoffs-scrutiny",
+   "snippet": "Start time Thursday, November 12, 2026, ~17:54 UTC\n Peak DownDetector reports ~130,000 for Outlook alone\n Countries affected At least 74\n Services disrupted Outlook, Teams, Copilot, SharePoint, Exchange Online, Intune, Defender XDR, Purview\n Root cause Cascading server failure from an elevated infrastructure load (not a cyberattack)\n Recovery status Partial as of Nov 14 — some services still intermittent\n\n## The Layoffs That Preceded the Crash [...] Within an hour, DownDetector reports of Outlook problems climbed to roughly 130,000, with users reporting issues across Teams, Copilot, SharePoint, Intune, and Microsoft Defender. At its peak, users in at least 74 countries were affected, Wire re",
+   "published_date": "Sat, 14 Nov 2026 11:00:00 GMT",
+   "relevance": 0.8106289
+  },
+  {
+   "title": "Microsoft Begins Restoring Services After 130,000 Outage Reports — JournalArta Global",
+   "url": "https://journalarta.com/2026/11/13/microsoft-begins-restoring-services-outlook-teams-outage",
+   "snippet": "Microsoft begins restoring services after a global outage disrupted Microsoft 365, Outlook, Teams and other apps for more than five hours on Thursday, November 12, 2026. Down Detector logged nearly 130,000 reports of access problems at the peak.\n\nA Microsoft spokesperson said the company \"had no indication of a cyber attack\".\n\n## What users saw [...] ## What users saw\n\nThe spike came around 1pm ET, according to Down Detector. Users reported trouble reaching Word, Excel, PowerPoint, Outlook and Teams, plus enterprise services such as SharePoint and OneDrive. The Copilot AI assistant was also hit.\n\nNew reports later fell to around 13,000, five hours after the peak. Many people still said they ",
+   "published_date": "Fri, 13 Nov 2026 02:00:00 GMT",
+   "relevance": 0.8076124
+  },
+  {
+   "title": "Global Microsoft 365 Outage Affects Governments, Businesses, and AI Firms | ForkLog",
+   "url": "https://forklog.com/en/global-microsoft-365-outage-affects-governments-businesses-and-ai-firms",
+   "snippet": "> We’re investigating reports of users experiencing issues accessing Exchange Online mailboxes through multiple connection methods in the Americas. More details can be found in the Microsoft 365 admin center under EX1550543.\n>\n> — Microsoft 365 Status (@MSFT365Status) November 12, 2026\n\nThe first widespread complaints emerged on November 12 in the United States. At its peak, Downdetector recorded over 130,000 reports of issues with Outlook. [...] Downdetector chart showing the number of complaints about Microsoft Outlook outages over 24 hours: a sharp spike on the evening of November 12 to a peak of 130,654 reports, gradually declining by the morning of November 13.\n\nNumber of Outlook issue ",
+   "published_date": "Fri, 13 Nov 2026 09:34:25 GMT",
+   "relevance": 0.79565805
+  },
+  {
+   "title": "Is Microsoft Outlook down? Widespread outage hits platform",
+   "url": "https://www.bostonherald.com/2026/11/12/is-microsoft-outlook-down-widespread-outage",
+   "snippet": "Nearly 130,000 users on outage tracker Downdetector reported problems accessing Outlook just after 1 p.m. ET. New reports have since fallen from that peak, but many said they couldn’t send and receive emails, or had trouble loading their inboxes altogether.\n\nThousands also reported issues with Microsoft’s workplace messaging app Teams, as well as its AI assistant Copilot and wider Microsoft 365 services. [...] News\n\nNation\n\n# Is Outlook down? Widespread outage hits Microsoft apps\n\n## At its peak, nearly 130,000 users on outage tracker Downdetector reported problems accessing the email platform early Thursday afternoon.\n\n### Share this:\n\n Share on Facebook (Opens in new window) Facebook\n Shar",
+   "published_date": "Thu, 12 Nov 2026 19:47:30 GMT",
+   "relevance": 0.63238925
+  },
+  {
+   "title": "Is Microsoft down? Users report Outlook, 365 issues Thursday",
+   "url": "https://www.usatoday.com/story/tech/2026/11/12/microsoft-down-outlook-365-outage-reports/92744582007",
+   "snippet": "More than 18,000 users reported still experiencing issues with Outlook in the United States by around 11:30 p.m. ET, while over 5,000 reported issues with Microsoft 365, according to outage tracker Downdetector. Those numbers were down significantly from earlier peaks, when Outlook outage reports approached 130,000, and Microsoft 365 reports exceeded 47,000. [...] Outages continued to plague Microsoft products just before 2 p.m. ET. Reports of disrupted service to Microsoft 365 reached a new peak of more than 47,000 around 1:20 p.m. ET. Outlook was just shy of 130,00 reported outages at the same time.\n\n\"While we're working to mitigate impact, we've confirmed the issue may affect Microsoft 36",
+   "published_date": "Sat, 14 Nov 2026 06:00:00 GMT",
+   "relevance": 0.5685356
+  }
+ ],
+ "on what date did workday suffer a major service outage that affected 11,500 companies?": [
+  {
+   "title": "Workday, software company with thousands of Fortune 500 clients, joins Microsoft in experiencing major outage",
+   "url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
+   "snippet": "Workday suffered a major service outage on Friday, leaving 11,500 companies without access to its platform. NurPhoto via Getty Images\n\nDowndetector, a website that tracks digital outages, first reported a spike of nearly 3,000 Workday issues shortly after 5 p.m. Friday.\n\n“Some of our customers are experiencing a service disruption and we’re working urgently to investigate and resolve the issue,” a spokesperson for Workday said in a statement to FOX LiveNOW. [...] Workday, a business software that handles payroll and human resources management for thousands of prominent companies, suffered a major outage Friday, joining Microsoft in experiencing a shutdown this week.\n\nThe platform manages ser",
+   "published_date": "Sat, 14 Nov 2026 17:31:57 GMT",
+   "relevance": 0.73866904
+  },
+  {
+   "title": "Workday Global outage hits Walmart, Target, 11,500 businesses",
+   "url": "https://organiser.org/2026/11/14/426276/world/workday-global-outage-hits-11500-businesses-walmart-target-employees-locked-out-of-payroll-benefits-leave-systems",
+   "snippet": "November 14, 2026\n\n Read Ecopy\n Circulation\n Advertise\n Careers\n About Us\n Contact Us\n\nAndroid AppiPhone AppArattai\n\nOrganiser [...] ## Workday's widespread outage has disrupted employee services across 11,500 organisations, including Walmart, Target and Chipotle, leaving workers unable to access payroll details, benefits and leave systems\n\nbyWEBDESKWEBDESK\n\nNov 14, 2026, 01:00 pm IST\n\ninWorld\n\nAI-Generated Image\n\nAI-Generated Image\n\nFacebookTwitterWhatsAppTelegramEmail [...] However, as of November 13 afternoon, Workday had not announced a definitive timeline for the full restoration of affected services.\n\nThe disruption has raised concerns because Workday serves as a critical workplace tec",
+   "published_date": "Sat, 14 Nov 2026 07:30:17 GMT",
+   "relevance": 0.702938
+  },
+  {
+   "title": "Another Day, Another Outage: HR Platform Workday Suffers Massive Failure Impacting Millions of Workers",
+   "url": "https://www.breitbart.com/tech/2026/11/14/another-day-another-outage-hr-platform-workday-suffers-massive-failure-impacting-millions-of-workers",
+   "snippet": "The San Francisco Chroniclereports that the Workday outage impacts approximately 11,500 companies that rely on its platform for critical business operations including payroll processing and human resources management. Users attempting to access the service were greeted with an error message stating the platform was unavailable due to a service interruption at around 5:00 p.m. ET on Friday, meaning many companies suffered disruptions of their typical end of the week operations. [...] Lucas Nolan\n\n\n\nWorkday, a widely-used business software platform that manages payroll and human resources for thousands of major corporations, experienced a significant service disruption on Friday, blocking mill",
+   "published_date": "Sat, 14 Nov 2026 15:07:48 GMT",
+   "relevance": 0.702938
+  },
+  {
+   "title": "Walmart outage today: After Microsoft disruption, payroll, HR services affected in 11,500 businesses as Workday goes down - The Times of India",
+   "url": "https://timesofindia.indiatimes.com/world/us/walmart-outage-today-after-microsoft-disruption-payroll-hr-services-affected-in-11500-businesses-as-workday-goes-down/articleshow/135834677.cms",
+   "snippet": "As of November 14, 2026, Workday appears to be back online, although some users may still experience intermittent access problems.IsDown: Reports Workday operational, based on its November 14 check.Down For Everyone Or Just Me: Says it is no longer detecting a widespread outage. It recorded further disruptions on November 14, including a roughly one-hour incident.Engadget: Reported that Workday was still unavailable early Saturday, suggesting recovery was not immediate. [...] Walmart was one of the 11,500 businesses that locked out their employees as HR platform Workday went down on Friday. The website Downdetector first reported nearly 3,000 outage reports for the platform shortly after 5 p",
+   "published_date": "Sat, 14 Nov 2026 14:00:00 GMT",
+   "relevance": 0.69966495
+  },
+  {
+   "title": "Workday outage hits payroll platform days after Microsoft shutdown | Fox Business",
+   "url": "https://www.foxbusiness.com/technology/software-company-thousands-fortune-500-clients-joins-microsoft-experiencing-major-outage.amp",
+   "snippet": "As millions grapple with disrupted emails and downed services, attorney and cybersecurity expert Leeza Garber explains why a simple server issue can cripple a tech giant, and why it’s reasonable to wonder if AI or hackers were involved.\n\nWorkday, a business software that handles payroll and human resources management for thousands of prominent companies, suffered a major outage Friday, joining Microsoft in experiencing a shutdown this week.\n\nThe platform manages services for 11,500 companies. [...] Fox Business\n\nTechnology\n\nPublished\n\n# Software company with thousands of Fortune 500 clients joins Microsoft in experiencing major outage\n\n## Walmart, Target, Netflix and government agencies amon",
+   "published_date": "Sat, 14 Nov 2026 12:00:00 GMT",
+   "relevance": 0.66104823
+  }
+ ],
+ "what services were affected by the microsoft outage on november 12, 2026?": [
+  {
+   "title": "Microsoft hit by global outages: What happened and why? | Technology News | Al Jazeera",
+   "url": "https://www.aljazeera.com/news/2026/11/13/microsoft-hit-by-global-outages-what-happened-and-why",
+   "snippet": "An error message is shown when trying to access Microsoft's Outlook on November 12, 2026, in Chicago, Illinois [Scott Olson/Getty Images/AFP]\n\n\n\nBy Heba Habib\n\nPublished On 13 Nov 202613 Nov 2026\n\nMicrosoft says it has had only “marginal success” in restoring its most widely used workplace services, more than 12 hours after a global outage knocked out Outlook and disrupted Teams and Copilot for users in 74 countries. [...] Save\n\nShare\n\nCHICAGO, ILLINOIS - NOVEMBER 12: In this photo illustration, an error message is shown when trying to access Microsoft's Outlook on November 12, 2026 in Chicago, Illinois. Microsoft reported a widespread outage today that left users unable to access Outlook, T",
+   "published_date": "Fri, 13 Nov 2026 09:30:55 GMT",
+   "relevance": 0.8044059
+  },
+  {
+   "title": "Microsoft 365 Outage Analysis: November 12, 2026",
+   "url": "https://www.thousandeyes.com/blog/microsoft-365-outage-analysis-november-12-2026",
+   "snippet": "On November 12, ThousandEyes observed availability issues affecting Microsoft 365 services globally. Users attempting to access Microsoft Outlook and other Microsoft 365 services encountered connection resets, connection refusals, response timeouts, and HTTP server errors. Significant traffic loss in Microsoft’s network was also observed during the incident. The incident is still ongoing.\n\nExplore the outage within the ThousandEyes platform (no login required). [...] ThousandEyes shows timeouts, server errors, and packet loss impacting global availability of Microsoft Outlook.\n\nFigure 1: ThousandEyes shows timeouts, server errors, and packet loss impacting global availability of Microsoft Ou",
+   "published_date": "Fri, 13 Nov 2026 11:00:00 GMT",
+   "relevance": 0.77509457
+  },
+  {
+   "title": "Is Microsoft down? Users report Outlook, 365 issues Thursday",
+   "url": "https://www.usatoday.com/story/tech/2026/11/12/microsoft-down-outlook-365-outage-reports/92744582007",
+   "snippet": "# Is Microsoft down? Users report issues with Outlook, 365 on Thursday\n\nEditor's Note: On Friday, Nov. 13, Microsoft said it had restored services in most regions. Click here for the latest updates.\n\nA widespread Microsoft outage affected tens of thousands of users across the United States for about 10 hours on Nov. 12, disrupting access to Outlook, Microsoft 365, Copilot, and other essential platforms. [...] Thousands of users reported issues accessing Outlook.\n\n## Communications services at workplaces affected by outage\n\nThe outage was impacting communications and other Microsoft services used by companies and organizations around the world. [...] Still, an update on the company's service ",
+   "published_date": "Sat, 14 Nov 2026 06:00:00 GMT",
+   "relevance": 0.7507356
+  },
+  {
+   "title": "Microsoft outage: Microsoft 365, Teams, Outlook, Copilot all impacted | Mashable",
+   "url": "https://mashable.com/tech/microsoft-outage-affecting-365-teams-outlook-copilot-nov-12-2026",
+   "snippet": "Initially reported as an Outlook problem, Microsoft says its Exchange Online service has been disrupted.\n\nBy Timothy Beck Werth\n\na yellow cab moves at a blur in front of microsoft office headquarters\n\na yellow cab moves at a blur in front of microsoft office headquarters\n\nTrending on Mashable\n\nNYT Connections hints today: Clues, answers for November 12, 2026\n\nEverything you need to solve 'Connections' #1250.\n\nBy Mashable Team\n\nConnections game on a smartphone\n\nConnections game on a smartphone [...] NYT Connections hints today: Meanings for each word for Nov. 12, 2026\n\nLooking for a spoiler-free way to find a connection? We have you covered.\n\nBy Mashable Team\n\nNYT Connections logo.\n\nNYT Conne",
+   "published_date": "Thu, 12 Nov 2026 19:14:07 GMT",
+   "relevance": 0.7055822
+  },
+  {
+   "title": "Outlook, Teams and More Microsoft Programs Disrupted by Outage",
+   "url": "https://www.nytimes.com/2026/11/12/business/microsoft-outlook-down-outage-email.html",
+   "snippet": "Microsoft said that it was investigating reports of users experiencing issues accessing inboxes.Credit...Gonzalo Fuentes/Reuters\n\nImage 2: Adeel Hassan\n\nBy Adeel Hassan\n\nNov. 12, 2026, 4:49 p.m. ET\n\nSee more of our coverage in your search results.Encuentra más de nuestra cobertura en los resultados de búsqueda.Add The New York Times as a preferred source on Google Agrega The New York Times como fuente preferida en Google› [...] Skip to contentSkip to site indexSearch & Section Navigation Section Navigation\n\nSearch\n\nBusiness\n\n[](\n\n$1/week for your first yearLog in[](\n\nThursday, November 12, 2026\n\nToday’s Paper\n\n$1/week for your first year\n\nGo\n   Home\n   U.S.\n\n### SECTIONS\n\n       U.S.\n       ",
+   "published_date": "Thu, 12 Nov 2026 21:49:53 GMT",
+   "relevance": 0.68363076
+  }
+ ],
+ "what is the maximum power rating of the lunar fast charger unveiled on nov. 11, 2026?": [
+  {
+   "title": "Heating Aid Push, Generator Recall Lead Weekly Energy Wrap | Environment+Energy Leader",
+   "url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
+   "snippet": "Lunar Energy unveiled its Lunar Fast Charger on Nov. 11 as part of a broader product launch announced by the company. The home DC unit is rated at up to 25 kilowatts (kW), and Lunar says it can add about 100 miles of range in an hour. It supports vehicle-to-home and vehicle-to-grid use, so a compatible EV could help power a house during an outage. [...] Homeowners choose whether their breakers join grid events, and the breakers reset automatically when utility power returns. SOLRITE operates in Texas, California, Connecticut, Massachusetts and Illinois. The companies did not disclose pricing or a rollout date.\n\n## Lunar Unveils a 25 kW Bidirectional Home Charger [...] Lunar expects the charg",
+   "published_date": "Sat, 14 Nov 2026 11:00:00 GMT",
+   "relevance": 0.7981868
+  },
+  {
+   "title": "Lunar’s new home DC fast charger puts your EV battery to work | Electrek",
+   "url": "https://electrek.co/2026/11/12/lunars-new-home-dc-fast-charger-puts-your-ev-battery-to-work",
+   "snippet": "Lunar says its home DC fast charger can add roughly 100 miles of range in an hour at up to 25 kW. Actual results will depend on the vehicle and charging conditions.\n\nThis is a DC charger, according to Lunar’s product specifications. It connects directly to the DC side of the Lunar Battery, and Lunar says that setup avoids an electrical panel upgrade for the charger. The product page lists CCS and NACS connector support but doesn’t specify which cars will support bidirectional charging. [...] Lunar Energy has unveiled a 25-kW home DC fast charger that will do more than just power up your car really fast. Paired with its next-generation home battery system, the Lunar Fast Charger will also let",
+   "published_date": "Thu, 12 Nov 2026 21:41:32 GMT",
+   "relevance": 0.49728587
+  },
+  {
+   "title": "OSCAL Unveils Full-Scenario Energy Storage Solutions at RE+ 2026 for Home Backup and Outdoor Power",
+   "url": "https://www.bastillepost.com/global/article/6349817-oscal-unveils-full-scenario-energy-storage-solutions-at-re-2026-for-home-backup-and-outdoor-power",
+   "snippet": "EV11000 for Convenient Home EV Charging\n\nOSCAL will present the EV11000 home EV charger, with up to 11kW charging power and 48A output. Its wall-mounted design, IP65 protection, and operating range of -30°C to 50°C support reliable use. An RFID card and installation accessories are included.\n\nMeet OSCAL at RE+ 2026 [...] 2026-11-11 22:00 Last Updated At：22:15\n\n Facebook\n Weibo\n\nLAS VEGAS, Nov. 11, 2026 /PRNewswire/ -- As a global smart technology brand, OSCAL develops energy storage solutions for home backup, solar storage, and outdoor power. RE+ 2026, a clean energy exhibition, will take place November 17–19 at the Las Vegas Convention Center. At Booth C6444, OSCAL will showcase balcony sto",
+   "published_date": "Wed, 11 Nov 2026 14:00:00 GMT",
+   "relevance": 0.04001227
+  },
+  {
+   "title": "JinkoSolar Tiger Neo 5.0 Combines 25.52% Efficiency with Refined All-Black Design",
+   "url": "https://www.manilatimes.net/2026/11/11/tmt-newswire/globenewswire/jinkosolar-tiger-neo-50-combines-2552-efficiency-with-refined-all-black-design/2467683/amp",
+   "snippet": "SHANGHAI, Nov. 11, 2026 (GLOBE NEWSWIRE) -- JinkoSolar has unveiled its Tiger Neo 5.0 all-black solar module, combining industry-leading efficiency, exceptional performance, and refined aesthetics. Designed for discerning homeowners, the module maximizes power generation within limited rooftop space while seamlessly complementing modern residential architecture. [...] Sign In\n\nNew user? Sign Up\n\nENTERTAINMENT\n\nLIFESTYLE\n\nTHE SUNDAY TIMES\n\nSPECIAL FEATURES\n\nSPECIAL SECTIONS\n\nTMT NEWSWIRE\n\nFAST TIMES\n\nLEGAL ADVICE\n\nCAMPUS PRESS\n\nVIDEOS\n\nEXPATS & DIPLOMATS\n\nPHOTOS\n\nBUSINESS FORUM\n\nPODCASTS\n\nRESOURCES\n\nWEATHER\n\nMARKET OVERVIEW\n\nTHE MANILA TIMES 500\n\nTMT DIGITAL EDITION\n\nTMT 128TH ANNIVERSARY\n\nQU",
+   "published_date": "Wed, 11 Nov 2026 14:27:43 GMT",
+   "relevance": 0.025662705
+  }
+ ],
+ "on what date did apple homeview become available in stores in the united states?": [
+  {
+   "title": "Apple HomeView guide: Price, release date, features, and everything you need to know | Macworld",
+   "url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
+   "snippet": "Apple announced HomeView on Tuesday, October 13, 2026, as part of its “Welcome home” launch. Pre-orders opened the same day, with both the tabletop and wall-mounted models scheduled to go on sale on Friday, November 13.\n\nHomeView is initially available in the United States, United Kingdom, Canada, Australia, India, New Zealand, Singapore, and South Africa. Singapore pre-orders open on October 15, while customers in South Africa can order through authorized resellers. [...] However, HomeView isn’t intended to replace an iPad. The iPad remains the better choice for portable computing, productivity, games, and the broad selection of apps available from the App Store. HomeView is designed to sta",
+   "published_date": "Mon, 09 Nov 2026 00:00:00 GMT",
+   "relevance": 0.7752647
+  },
+  {
+   "title": "Apple's $299 HomeView goes on sale with Siri AI still in beta",
+   "url": "https://ppc.land/apples-299-homeview-goes-on-sale-with-siri-ai-still-in-beta",
+   "snippet": "## A month from preorder to shelf\n\nThe update appeared on Apple Newsroom dated November 13, 2026, under the headline \"Apple HomeView available today.\" It is the second release Apple has published about the device. The first, a press release dated October 13 from Cupertino and headlined \"Meet Apple HomeView, a new way to enjoy entertainment, stay connected, and manage the home,\" opened preorders and set November 13 as the availability date, according to Apple. The company kept to that date. [...] \"Beginning today, November 13, Apple HomeView is available for purchase at Apple Store locations, on the Apple Store online, and in the Apple Store app in select regions,\" the update reads. A footnot",
+   "published_date": "Sat, 14 Nov 2026 20:00:26 GMT",
+   "relevance": 0.6939917
+  },
+  {
+   "title": "Apple HomeView Australia: From A$449, NZ$599 in NZ",
+   "url": "https://shattered.io/apple-homeview-launch-australia-new-zealand-first-orders-a449-nz599",
+   "snippet": "Apple HomeView became available on November 13, 2026. Apple’s newsroom describes the lineup as two products: Apple HomeView and Apple HomeView (Wall Mounted). The company sells each at US$299 in the United States. Coverage from iNews Zoombangla framed the Australia and New Zealand deliveries as the opening chapter of the rollout, and MacRumors made the same point from the other direction by tracking when the first boxes would land. [...] | Claim | Status | Basis |\n --- \n| Apple HomeView became available November 13, 2026 | Confirmed | Apple announcement, MacRumors, The Apple Post |\n| Pre-orders began reaching Australia and New Zealand | Confirmed | MacRumors, The Apple Post, iNews Zoombangla",
+   "published_date": "Sun, 15 Nov 2026 05:16:00 GMT",
+   "relevance": 0.6905591
+  },
+  {
+   "title": "Apple HomeView available today - Apple",
+   "url": "https://www.apple.com/newsroom/2026/11/apple-homeview-available-today",
+   "snippet": "## Media\n\nText of this article\n\nNovember 13, 2026\n\nUPDATE\n\nApple HomeView available today\n\nBeginning today, November 13, Apple HomeView is available for purchase at Apple Store locations, on the Apple Store online, and in the Apple Store app in select regions.1 Apple HomeView gives customers a new way to enjoy entertainment, stay connected, and manage their home, all powered by Apple Intelligence with Siri AI.",
+   "published_date": "Fri, 13 Nov 2026 13:59:43 GMT",
+   "relevance": 0.6587469
+  },
+  {
+   "title": "Save on Apple’s Latest Smart Home Devices With Deals on HomeView, HomePod Mini 2 and More - CNET",
+   "url": "https://www.cnet.com/deals/apple-smart-home-deals",
+   "snippet": "$200 at Apple\n\nWhen are Apple’s new home products available?\n\nRelease dates vary depending on the product. HomePod mini 2 launched on Oct. 30, while HomeView and the new Apple TV 4K arrived on Nov. 13. Most Apple Home Collection accessories begin rolling out in December, with select products, including the Indoor Cam and Smart Deadbolt Lock, launching in early 2027.",
+   "published_date": "Fri, 13 Nov 2026 15:24:42 GMT",
+   "relevance": 0.5940803
+  }
+ ],
+ "\"downdetector\" \"130,000\" microsoft november 12 2026 outlook": [
+  {
+   "title": "Outlook Outage: 130,000+ Reports, 4 Nevada Agencies [2026]",
+   "url": "https://shattered.io/microsoft-outlook-outage-nevada-agencies-130000-downdetector-reports-2026",
+   "snippet": "What happened to Microsoft Outlook on November 12, 2026?  \nMicrosoft Outlook and Microsoft 365 suffered a widespread outage. Microsoft said users reported problems accessing Exchange Online mailboxes in the Americas, and the disruption was reported worldwide.\n\nWhich Las Vegas-area agencies were affected?  \nThe City of North Las Vegas, Clark County, Nye County and Boulder City all reported email-related issues or possible response delays, according to News3LV and KTNV. [...] SHATERED\n\n# Outlook Outage: 130,000+ Reports, 4 Nevada Agencies \n\nPriya Anand\n\nPriya Anand\n\nUpdated Nov 13, 2026 · 14 min read\n\nMicrosoft Outlook and Microsoft 365 suffered a widespread outage on November 12, 2026, and So",
+   "published_date": "Fri, 13 Nov 2026 04:44:25 GMT",
+   "relevance": 0.7622471
+  },
+  {
+   "title": "Microsoft Outlook Down: Over 130,000 Outage Reports as Email, Teams Disrupted",
+   "url": "https://www.techrepublic.com/article/news-microsoft-outlook-outage-130000-reports-2026",
+   "snippet": "A widespread Microsoft 365 outage on Thursday, Nov. 12, left users struggling to access email, send messages, and connect to workplace applications. More than 130,000 Outlook outage reports appeared on Downdetector shortly after 1 p.m. ET, while tens of thousands of additional complaints involved Microsoft 365 and Teams. [...] According to Reuters, Downdetector recorded more than 130,000 Outlook problem reports around 1:27 p.m. ET. The outage tracking service also registered more than 46,000 reports involving Microsoft 365 and approximately 3,000 involving Teams.\n\nThose figures represent user-submitted reports rather than confirmed counts of affected individuals. Microsoft has not disclosed ",
+   "published_date": "Thu, 12 Nov 2026 21:50:59 GMT",
+   "relevance": 0.7512834
+  },
+  {
+   "title": "Is Microsoft down? Outage enters second day, Outlook to Copilot",
+   "url": "https://www.staugustine.com/story/news/state/2026/11/13/microsoft-outage-impacts-outlook-copilot/92755234007",
+   "snippet": "A worldwide Microsoft outage continues to affect several services this morning as the company works to restore applications ranging from Outlook to Copilot.\n\nDid we mention today is Friday the 13th?\n\nMicrosoft frustrated thousands of users Thursday, Nov. 12 with almost 130,000 users reporting issues with Microsoft Outlook on the outage tracker downdetector.com. [...] A worldwide Microsoft outage continues to affect several services as the company works to restore applications ranging from Outlook to Copilot.\n Microsoft frustrated thousands of users Thursday, with almost 130,000 users reporting issues with Microsoft Outlook on the outage tracker downdetector.com.\n In an update posted shortly ",
+   "published_date": "Fri, 13 Nov 2026 11:00:00 GMT",
+   "relevance": 0.7255514
+  },
+  {
+   "title": "Is Microsoft Outlook down? Widespread outage hits platform",
+   "url": "https://www.bostonherald.com/2026/11/12/is-microsoft-outlook-down-widespread-outage",
+   "snippet": "Nearly 130,000 users on outage tracker Downdetector reported problems accessing Outlook just after 1 p.m. ET. New reports have since fallen from that peak, but many said they couldn’t send and receive emails, or had trouble loading their inboxes altogether.\n\nThousands also reported issues with Microsoft’s workplace messaging app Teams, as well as its AI assistant Copilot and wider Microsoft 365 services. [...] News\n\nNation\n\n# Is Outlook down? Widespread outage hits Microsoft apps\n\n## At its peak, nearly 130,000 users on outage tracker Downdetector reported problems accessing the email platform early Thursday afternoon.\n\n### Share this:\n\n Share on Facebook (Opens in new window) Facebook\n Shar",
+   "published_date": "Thu, 12 Nov 2026 19:47:30 GMT",
+   "relevance": 0.63238925
+  },
+  {
+   "title": "Microsoft outage disrupts Outlook, prompts Buncombe County backup procedures",
+   "url": "https://wlos.com/news/local/microsoft-outage-disrupts-outlook-prompts-buncombe-county-backup-procedures",
+   "snippet": "IS OUTLOOK DOWN? WIDESPREAD MICROSOFT OUTAGE IMPACTS THOUSANDS OF USERS\n\nAfter 1 p.m., nearly 130,000 users reported problems accessing Outlook on the outage tracker, Downdetector.\n\n\"It’s not just me, it’s not just this building, it’s not just the general area, it’s everywhere,\" Horton said. [...] # Microsoft outage disrupts Outlook, prompts Buncombe County backup procedures\n\nbyRian Stockett\n\nUpdated\n\nHARTIGAN-7792.MXF-frame-428.png\n\n4VIEW ALL PHOTOS\n\nNOV. 12, 2026 - A widespread Microsoft outage started on Thursday, Nov. 12, disrupting email and other tools for thousands of people. (Photo credit: WLOS Staff)\n\n#### topics:\n\n Microsoft\n Outlook\n Microsoft 365\n Exchange Online\n Outage\n Downdet",
+   "published_date": "Fri, 13 Nov 2026 03:27:28 GMT",
+   "relevance": 0.59625685
+  }
+ ],
+ "microsoft 365 outlook outage november 12 2026 users affected peak": [
+  {
+   "title": "Microsoft outage disrupts Outlook and Krungthai Bank email services",
+   "url": "https://www.nationthailand.com/news/world/40073461",
+   "snippet": "Microsoft was still working to restore Outlook, Teams and other Microsoft 365 services after about 10 hours of disruption on Thursday (November 12, 2026), affecting businesses and government agencies worldwide.\n\nKrungthai Bank also reported disruption to its email system.\n\nDowndetector recorded more than 130,000 reports of Outlook problems in the United States (US) at the peak around 1pm Eastern Time (ET).\n\nThe tally stood at more than 25,000 at 9.30pm ET, or 2.30am Greenwich Mean Time (GMT). [...] The disruption was attributed to multiple servers unexpectedly failing, not a cyberattack, with over 130,000 user reports for Outlook in the US at its peak. [...] The monitoring website, which com",
+   "published_date": "Fri, 13 Nov 2026 06:00:00 GMT",
+   "relevance": 0.7818308
+  },
+  {
+   "title": "Microsoft Begins Restoring Services After 130,000 Outage Reports — JournalArta Global",
+   "url": "https://journalarta.com/en/2026/11/13/microsoft-begins-restoring-services-outlook-teams-outage",
+   "snippet": "Microsoft begins restoring services after a global outage disrupted Microsoft 365, Outlook, Teams and other apps for more than five hours on Thursday, November 12, 2026. Down Detector logged nearly 130,000 reports of access problems at the peak.\n\nA Microsoft spokesperson said the company \"had no indication of a cyber attack\".\n\n## What users saw [...] Microsoft began restoring services on Thursday after a global outage hit Microsoft 365, Outlook, Teams and Copilot for more than five hours. Down Detector logged nearly 130,000 reports at the peak. The company said it had no indication of a cyber attack.\n\nBy Elena Vance\n\nNovember 13, 20262 min read\n\nMicrosoft Begins Restoring Services After 130,",
+   "published_date": "Fri, 13 Nov 2026 11:00:00 GMT",
+   "relevance": 0.7778066
+  },
+  {
+   "title": "Global Microsoft 365 Outage Affects Governments, Businesses, and AI Firms | ForkLog",
+   "url": "https://forklog.com/en/global-microsoft-365-outage-affects-governments-businesses-and-ai-firms",
+   "snippet": "> We’re investigating reports of users experiencing issues accessing Exchange Online mailboxes through multiple connection methods in the Americas. More details can be found in the Microsoft 365 admin center under EX1550543.\n>\n> — Microsoft 365 Status (@MSFT365Status) November 12, 2026\n\nThe first widespread complaints emerged on November 12 in the United States. At its peak, Downdetector recorded over 130,000 reports of issues with Outlook. [...] Downdetector chart showing the number of complaints about Microsoft Outlook outages over 24 hours: a sharp spike on the evening of November 12 to a peak of 130,654 reports, gradually declining by the morning of November 13.\n\nNumber of Outlook issue ",
+   "published_date": "Fri, 13 Nov 2026 09:34:25 GMT",
+   "relevance": 0.7685595
+  },
+  {
+   "title": "Is Microsoft down? Users report Outlook, 365 issues Thursday",
+   "url": "https://www.usatoday.com/story/tech/2026/11/12/microsoft-down-outlook-365-outage-reports/92744582007",
+   "snippet": "# Is Microsoft down? Users report issues with Outlook, 365 on Thursday\n\nEditor's Note: On Friday, Nov. 13, Microsoft said it had restored services in most regions. Click here for the latest updates.\n\nA widespread Microsoft outage affected tens of thousands of users across the United States for about 10 hours on Nov. 12, disrupting access to Outlook, Microsoft 365, Copilot, and other essential platforms. [...] According to Downdetector, after reaching a peak of 128,874 reports at 1:09 p.m. ET, Microsoft Outlook outage reports have begun to tick down, with the latest number dropping to 92,914 at around 1:50 p.m. ET.\n\nReports of outages for Microsoft 365 also dropped from its peak of over 46,00",
+   "published_date": "Sat, 14 Nov 2026 06:00:00 GMT",
+   "relevance": 0.68825895
+  },
+  {
+   "title": "Microsoft 365 Outage: Outlook, Teams and Copilot Down",
+   "url": "https://www.culturealberta.com/articles/microsoft-365-outage-outlook-teams-and-copilot-down-for-hours-as-microsoft-says-its-fixes-havent-wor",
+   "snippet": "If Outlook won’t load for you, you’re not the only one.\n\nA Microsoft 365 outage has been knocking out email, Teams and other work apps since late Thursday morning, Nov. 12. More than six hours later, Microsoft says it still hasn’t found a fix that works.\n\n“We’re opening all available pathways to restore service, as our actions taken thus far have not provided the anticipated relief,” the company posted shortly after 5 p.m. ET. [...] Sources:\n\n Microsoft 365 Status on X\n Microsoft 365 Service Health Status\n Global News: Microsoft 365 outage continues globally as company says no fix yet (Nov. 12, 2026)\n The Canadian Press via CP24: End of seasonal clock changes cause problems for some Microsof",
+   "published_date": "Thu, 12 Nov 2026 22:57:27 GMT",
+   "relevance": 0.6521306
+  }
+ ],
+ "\"microsoft\" outage \"november 12\" 2026 \"users\" affected peak": [
+  {
+   "title": "Microsoft Outlook Outage: What You Need to Know",
+   "url": "https://socradar.io/blog/microsoft-outlook-outage",
+   "snippet": "| Peak Reports | Nearly 140,000 Outlook reports on Downdetector globally (more than 130,000 in the US), November 12, 2026 |\n| Root Cause | Not confirmed; servers failing health checks and an overwhelmed secure-connection process; a correlated network configuration change is being rolled back but is not confirmed as the cause |\n| Cyberattack | No indication of malicious activity, per Microsoft |\n| Status | Recovering, not resolved, as of November 13, 2026, 12:30 UTC | [...] Microsoft’s Exchange Online incident, EX1550543, started at 16:17 UTC on November 12, 2026. User complaints surged on Downdetector shortly afterward, and US Outlook reports peaked above 130,000 around 18:15 UTC. Microsoft ",
+   "published_date": "Fri, 13 Nov 2026 13:32:27 GMT",
+   "relevance": 0.77982527
+  },
+  {
+   "title": "Microsoft outage disrupts Outlook and Krungthai Bank email services",
+   "url": "https://www.nationthailand.com/news/world/40073461",
+   "snippet": "Microsoft was still working to restore Outlook, Teams and other Microsoft 365 services after about 10 hours of disruption on Thursday (November 12, 2026), affecting businesses and government agencies worldwide.\n\nKrungthai Bank also reported disruption to its email system.\n\nDowndetector recorded more than 130,000 reports of Outlook problems in the United States (US) at the peak around 1pm Eastern Time (ET).\n\nThe tally stood at more than 25,000 at 9.30pm ET, or 2.30am Greenwich Mean Time (GMT). [...] The disruption was attributed to multiple servers unexpectedly failing, not a cyberattack, with over 130,000 user reports for Outlook in the US at its peak. [...] Electric truck maker Workhorse Gr",
+   "published_date": "Fri, 13 Nov 2026 06:00:00 GMT",
+   "relevance": 0.7570767
+  },
+  {
+   "title": "Global Microsoft 365 Outage Affects Governments, Businesses, and AI Firms | ForkLog",
+   "url": "https://forklog.com/en/global-microsoft-365-outage-affects-governments-businesses-and-ai-firms",
+   "snippet": "> We’re investigating reports of users experiencing issues accessing Exchange Online mailboxes through multiple connection methods in the Americas. More details can be found in the Microsoft 365 admin center under EX1550543.\n>\n> — Microsoft 365 Status (@MSFT365Status) November 12, 2026\n\nThe first widespread complaints emerged on November 12 in the United States. At its peak, Downdetector recorded over 130,000 reports of issues with Outlook. [...] Downdetector chart showing the number of complaints about Microsoft Outlook outages over 24 hours: a sharp spike on the evening of November 12 to a peak of 130,654 reports, gradually declining by the morning of November 13.\n\nNumber of Outlook issue ",
+   "published_date": "Fri, 13 Nov 2026 09:34:25 GMT",
+   "relevance": 0.7478002
+  },
+  {
+   "title": "Is Microsoft down? Users report Outlook, 365 issues Thursday",
+   "url": "https://www.usatoday.com/story/tech/2026/11/12/microsoft-down-outlook-365-outage-reports/92744582007",
+   "snippet": "# Is Microsoft down? Users report issues with Outlook, 365 on Thursday\n\nEditor's Note: On Friday, Nov. 13, Microsoft said it had restored services in most regions. Click here for the latest updates.\n\nA widespread Microsoft outage affected tens of thousands of users across the United States for about 10 hours on Nov. 12, disrupting access to Outlook, Microsoft 365, Copilot, and other essential platforms.",
+   "published_date": "Sat, 14 Nov 2026 06:00:00 GMT",
+   "relevance": 0.6213686
+  },
+  {
+   "title": "Microsoft outage: Live updates as mass issues reported with Outlook, 365 | Wichita Eagle",
+   "url": "https://www.kansas.com/news/business/article318050186.html",
+   "snippet": "Tens of thousands of Microsoft users across the country were struggling to access Outlook's email services, Copilot's AI software and other essential programs on Thursday, Nov. 12. [...] This story was originally published November 12, 2026 at 12:42 PM.\n\n##### Get unlimited digital access\n\n###### #ReadLocal\n\nTry 1 month for $1\n\nCLAIM OFFER\n\nRecommended for You\n\nPowered by Trend Hunter [...] According to outage tracker Downdetector, about 33,000 users were still experiencing issues with Outlook just before 6:30 p.m. ET, with a further 11,000 reporting problems with Microsoft 365. The company said around 6 p.m. ET that it was \"returning a portion of affected servers,\" and they were remaining s",
+   "published_date": "Fri, 13 Nov 2026 11:00:00 GMT",
+   "relevance": 0.5604331
+  }
+ ],
+ "workday service outage 11500 companies date": [
+  {
+   "title": "Software company with thousands of Fortune 500 clients joins Microsoft in experiencing major outage",
+   "url": "https://tech.yahoo.com/computing/articles/software-company-thousands-fortune-500-131318413.html",
+   "snippet": "Mail\n\nAdvertisement\n\nAdvertisement\n\nAdvertisement\n\n# Software company with thousands of Fortune 500 clients joins Microsoft in experiencing major outage\n\n[](\n\nFox Business\n\nRobert McGreevy\n\nAdd to Preferred Sources\n\nWorkday, a business software that handles payroll and human resources management for thousands of prominent companies, experienced a major outage Friday, joining Microsoft in experiencing a shutdown this week.\n\nThe platform manages services for 11,500 companies. [...] In this photo illustration, the logo of US software company Workday Inc. is displayed on a smartphone in front of abstract background on computer screen.\n\nIn this photo illustration, the logo of US software company ",
+   "published_date": "Sat, 14 Nov 2026 12:00:00 GMT",
+   "relevance": 0.69771194
+  },
+  {
+   "title": "Major outages hit Walmart, Target and other companies",
+   "url": "https://tech.yahoo.com/general/articles/major-outages-hit-walmart-target-130025515.html",
+   "snippet": "Updated\n\nA major Workday software glitch locked workers across more than 11,500 organizations—including Walmart, Target, and NASA—out of their HR accounts after a backup system test went awry. ©Image Credit: Facebook / Workday\n\nA major Workday software glitch locked workers across more than 11,500 organizations—including Walmart, Target, and NASA—out of their HR accounts after a backup system test went awry. ©Image Credit: Facebook / Workday [...] Imagine a situation where you clock in for your shift or try to squeeze in some last-minute benefits paperwork, and the company's entire human resources portal vanishes. That was the reality for workers everywhere when a major software glitch took ",
+   "published_date": "Sat, 14 Nov 2026 12:00:00 GMT",
+   "relevance": 0.6904547
+  },
+  {
+   "title": "Workday Outage Disrupts HR and Payroll Systems at Walmart, Target and Other Major Companies - Hokanews",
+   "url": "https://www.hokanews.com/2026/11/workday-outage-disrupts-hr-and-payroll.html",
+   "snippet": "Workday outage disrupts payroll and HR access at Walmart, Target and other companies, affecting systems used by more than 11,500 organizations.\n\nVictoria Hale \n\nVictoria Hale  ... min read\n\nGoogle News\n\nWorkday service outage disrupts employee payroll, timekeeping and human resources systems at Walmart, Target, Chipotle and Skechers. [...] In Workday's case, the reported outage has placed particular attention on the systems employees use to access pay information, record working hours, request leave and manage benefits. The platform's reported reach of more than 11,500 organizations underscores the scale of its role in corporate and public-sector operations. [...] The impact extends beyond a",
+   "published_date": "Sat, 14 Nov 2026 11:00:00 GMT",
+   "relevance": 0.6586371
+  },
+  {
+   "title": "Workday outage leaves employees unable to access workplace accounts",
+   "url": "https://tech.yahoo.com/computing/articles/workday-outage-leaves-employees-unable-011316039.html",
+   "snippet": "Advertisement\n\nAdvertisement\n\nThe company apologized for the disruption and said it is investigating the best way to restore service. Workday said it will provide updates every 30 minutes.\n\nWorkday is used by more than 11,500 organizations around the world for tasks including payroll, recruiting, benefits and time-off requests. Its customers include major retailers such as Target, Walmart and Nordstrom. [...] Mail\n\nAdvertisement\n\nAdvertisement\n\nAdvertisement\n\n# Workday outage leaves employees unable to access workplace accounts\n\n\n\nWorkday, the Bay Area tech company whose software is used by millions of employees to check pay information, request time off and handle other workplace tasks, is ",
+   "published_date": "Sat, 14 Nov 2026 11:00:00 GMT",
+   "relevance": 0.6293191
+  },
+  {
+   "title": "Workday",
+   "url": "https://tavily.com/knowledge/company/a2cKkQFJZPNc",
+   "snippet": "# Workday\nID: a2cKkQFJZPNc\nWebsite: www.workday.com\nLegal name: Workday, Inc.\nHeadquarters: Pleasanton, California, United States\nLinkedIn: www.linkedin.com/company/workday · 1,447,042 followers\nIndustry: Software Development\nIndustry codes: SIC 73, 737, NAICS 51, 518\nCompany type: Public Company\nBusiness model: B2B\nSaaS: yes [...] ## Products and services\nBusiness areas: Enterprise Resource Planning Software, Human Capital Management, Financial Management Software, Artificial Intelligence Platform, Contract Management Software [...] Description: Workday is an enterprise AI platform for HR, finance, and IT. They offer a range of products and solutions for human capital management, human reso",
+   "published_date": null,
+   "relevance": 0.05834584
+  }
+ ],
+ "workday major service outage affected 11500 companies date": [
+  {
+   "title": "Workday Outage Hits Walmart, Target, Chipotle: Payroll Down",
+   "url": "https://paidfreedroid.com/2026/11/workday-outage-walmart-target-chipotle-payroll-systems-down.html?amp=",
+   "snippet": "| Incident Parameter | Technical Scope and Operational Status |\n --- |\n| Impacted Platform | Workday Enterprise Cloud (Human Capital Management, Payroll, Time Tracking) |\n| Global User Base | Over 11,500 enterprise organizations and 65+ million workers worldwide |\n| Incident Timeline | Began Friday, November 13, 2026 (approximately 5:00 PM EST / 22:00 UTC) |\n| Primary User Error | “Workday is currently unavailable. Please try again later.” | [...] Because Workday manages timecards and payroll for more than 11,500 organizations globally, the real-world friction hit immediately. Frontline retail associates at Walmart and Target, as well as kitchen staff at Chipotle, found themselves unable to ",
+   "published_date": "Sat, 14 Nov 2026 03:27:41 GMT",
+   "relevance": 0.7514658
+  },
+  {
+   "title": "Workday Payroll Outage: Will You Still Get Paid? Time Off and Benefits - PopTV Culture",
+   "url": "https://poptvculture.com/workday-outage-payroll-paycheck-time-off",
+   "snippet": "More than 11,500 organizations use Workday. A source told The Newsground that Walmart, Target, Chipotle and Skechers were among the affected companies, though those companies had not publicly confirmed it as of November 14, 2026.\n\nSee our full list of companies affected by the Workday outage.\n\n## FAQ\n\n### Will the Workday outage delay my paycheck? [...] The Workday outage that began Friday, November 13, 2026, left many employees unable to check their pay, clock in or request time off. As of November 14, Workday had not reported that any paychecks were delayed, but workers at companies that use the platform were cut off from key payroll and HR tools.\n\nThe timing worried many workers. Friday i",
+   "published_date": "Sat, 14 Nov 2026 05:52:26 GMT",
+   "relevance": 0.7285552
+  },
+  {
+   "title": "Major outages hit Walmart, Target and other companies",
+   "url": "https://tech.yahoo.com/general/articles/major-outages-hit-walmart-target-130025515.html",
+   "snippet": "Updated\n\nA major Workday software glitch locked workers across more than 11,500 organizations—including Walmart, Target, and NASA—out of their HR accounts after a backup system test went awry. ©Image Credit: Facebook / Workday\n\nA major Workday software glitch locked workers across more than 11,500 organizations—including Walmart, Target, and NASA—out of their HR accounts after a backup system test went awry. ©Image Credit: Facebook / Workday [...] Imagine a situation where you clock in for your shift or try to squeeze in some last-minute benefits paperwork, and the company's entire human resources portal vanishes. That was the reality for workers everywhere when a major software glitch took ",
+   "published_date": "Sat, 14 Nov 2026 12:00:00 GMT",
+   "relevance": 0.72066325
+  },
+  {
+   "title": "Software company with thousands of Fortune 500 clients joins Microsoft in experiencing major outage",
+   "url": "https://tech.yahoo.com/computing/articles/software-company-thousands-fortune-500-131318413.html",
+   "snippet": "Mail\n\nAdvertisement\n\nAdvertisement\n\nAdvertisement\n\n# Software company with thousands of Fortune 500 clients joins Microsoft in experiencing major outage\n\n[](\n\nFox Business\n\nRobert McGreevy\n\nAdd to Preferred Sources\n\nWorkday, a business software that handles payroll and human resources management for thousands of prominent companies, experienced a major outage Friday, joining Microsoft in experiencing a shutdown this week.\n\nThe platform manages services for 11,500 companies. [...] Signage is displayed near the receptionist desk at the Workday Inc. office in San Francisco Jan. 10, 2019. Workday makes applications that help companies with mundane tasks like keeping payroll, plotting expenses, t",
+   "published_date": "Sat, 14 Nov 2026 12:00:00 GMT",
+   "relevance": 0.71233225
+  },
+  {
+   "title": "Workday Outage Disrupts HR and Payroll Systems at Walmart, Target and Other Major Companies - Hokanews",
+   "url": "https://www.hokanews.com/2026/11/workday-outage-disrupts-hr-and-payroll.html",
+   "snippet": "Workday outage disrupts payroll and HR access at Walmart, Target and other companies, affecting systems used by more than 11,500 organizations.\n\nVictoria Hale \n\nVictoria Hale  ... min read\n\nGoogle News\n\nWorkday service outage disrupts employee payroll, timekeeping and human resources systems at Walmart, Target, Chipotle and Skechers. [...] In Workday's case, the reported outage has placed particular attention on the systems employees use to access pay information, record working hours, request leave and manage benefits. The platform's reported reach of more than 11,500 organizations underscores the scale of its role in corporate and public-sector operations. [...] The impact extends beyond a",
+   "published_date": "Sat, 14 Nov 2026 11:00:00 GMT",
+   "relevance": 0.690872
+  }
+ ],
+ "microsoft outage november 12 2026 services affected": [
+  {
+   "title": "Microsoft hit by global outages: What happened and why? | Technology News | Al Jazeera",
+   "url": "https://www.aljazeera.com/news/2026/11/13/microsoft-hit-by-global-outages-what-happened-and-why",
+   "snippet": "An error message is shown when trying to access Microsoft's Outlook on November 12, 2026, in Chicago, Illinois [Scott Olson/Getty Images/AFP]\n\n\n\nBy Heba Habib\n\nPublished On 13 Nov 202613 Nov 2026\n\nMicrosoft says it has had only “marginal success” in restoring its most widely used workplace services, more than 12 hours after a global outage knocked out Outlook and disrupted Teams and Copilot for users in 74 countries. [...] Save\n\nShare\n\nCHICAGO, ILLINOIS - NOVEMBER 12: In this photo illustration, an error message is shown when trying to access Microsoft's Outlook on November 12, 2026 in Chicago, Illinois. Microsoft reported a widespread outage today that left users unable to access Outlook, T",
+   "published_date": "Fri, 13 Nov 2026 09:30:55 GMT",
+   "relevance": 0.80193585
+  },
+  {
+   "title": "Microsoft 365 Outage Analysis: November 12, 2026",
+   "url": "https://www.thousandeyes.com/blog/microsoft-365-outage-analysis-november-12-2026",
+   "snippet": "On November 12, ThousandEyes observed availability issues affecting Microsoft 365 services globally. Users attempting to access Microsoft Outlook and other Microsoft 365 services encountered connection resets, connection refusals, response timeouts, and HTTP server errors. Significant traffic loss in Microsoft’s network was also observed during the incident. The incident is still ongoing.\n\nExplore the outage within the ThousandEyes platform (no login required). [...] ### Summary\n\nOn November 12, ThousandEyes observed availability issues affecting Microsoft 365 services globally. See how the outage unfolded in this analysis—more updates will be added as we have them.\n\n[November 12, 2026, 2:00",
+   "published_date": "Fri, 13 Nov 2026 11:00:00 GMT",
+   "relevance": 0.79613405
+  },
+  {
+   "title": "Is Microsoft down? Users report Outlook, 365 issues Thursday",
+   "url": "https://www.usatoday.com/story/tech/2026/11/12/microsoft-down-outlook-365-outage-reports/92744582007",
+   "snippet": "# Is Microsoft down? Users report issues with Outlook, 365 on Thursday\n\nEditor's Note: On Friday, Nov. 13, Microsoft said it had restored services in most regions. Click here for the latest updates.\n\nA widespread Microsoft outage affected tens of thousands of users across the United States for about 10 hours on Nov. 12, disrupting access to Outlook, Microsoft 365, Copilot, and other essential platforms. [...] In an update on Nov. 13, Microsoft said that it was \"deeply sorry\" for how the disruption impacted its customers and partners.\n\n\"We know the trust they place in our services and take that responsibility extremely seriously. We are seeing broad recovery and stability across our services,",
+   "published_date": "Sat, 14 Nov 2026 06:00:00 GMT",
+   "relevance": 0.6970936
+  },
+  {
+   "title": "Microsoft outage: Microsoft 365, Teams, Outlook, Copilot all impacted | Mashable",
+   "url": "https://mashable.com/tech/microsoft-outage-affecting-365-teams-outlook-copilot-nov-12-2026",
+   "snippet": "Initially reported as an Outlook problem, Microsoft says its Exchange Online service has been disrupted.\n\nBy Timothy Beck Werth\n\na yellow cab moves at a blur in front of microsoft office headquarters\n\na yellow cab moves at a blur in front of microsoft office headquarters\n\nTrending on Mashable\n\nNYT Connections hints today: Clues, answers for November 12, 2026\n\nEverything you need to solve 'Connections' #1250.\n\nBy Mashable Team\n\nConnections game on a smartphone\n\nConnections game on a smartphone [...] NYT Connections hints today: Meanings for each word for Nov. 12, 2026\n\nLooking for a spoiler-free way to find a connection? We have you covered.\n\nBy Mashable Team\n\nNYT Connections logo.\n\nNYT Conne",
+   "published_date": "Thu, 12 Nov 2026 19:14:07 GMT",
+   "relevance": 0.66093874
+  },
+  {
+   "title": "Outlook, Teams and More Microsoft Programs Disrupted by Outage",
+   "url": "https://www.nytimes.com/2026/11/12/business/microsoft-outlook-down-outage-email.html",
+   "snippet": "Microsoft said that it was investigating reports of users experiencing issues accessing inboxes.Credit...Gonzalo Fuentes/Reuters\n\nImage 2: Adeel Hassan\n\nBy Adeel Hassan\n\nNov. 12, 2026, 4:49 p.m. ET\n\nSee more of our coverage in your search results.Encuentra más de nuestra cobertura en los resultados de búsqueda.Add The New York Times as a preferred source on Google Agrega The New York Times como fuente preferida en Google› [...] Skip to contentSkip to site indexSearch & Section Navigation Section Navigation\n\nSearch\n\nBusiness\n\n[](\n\n$1/week for your first yearLog in[](\n\nThursday, November 12, 2026\n\nToday’s Paper\n\n$1/week for your first year\n\nGo\n   Home\n   U.S.\n\n### SECTIONS\n\n       U.S.\n       ",
+   "published_date": "Thu, 12 Nov 2026 21:49:53 GMT",
+   "relevance": 0.65035623
+  }
+ ],
+ "microsoft 365 outlook outage november 12 2026 peak users affected": [
+  {
+   "title": "Microsoft 365 Outage Nears 48 Hours as AI-Driven Layoffs Face New Scrutiny | OpenTools",
+   "url": "https://opentools.ai/news/microsoft-365-outage-ai-layoffs-scrutiny",
+   "snippet": "Start time Thursday, November 12, 2026, ~17:54 UTC\n Peak DownDetector reports ~130,000 for Outlook alone\n Countries affected At least 74\n Services disrupted Outlook, Teams, Copilot, SharePoint, Exchange Online, Intune, Defender XDR, Purview\n Root cause Cascading server failure from an elevated infrastructure load (not a cyberattack)\n Recovery status Partial as of Nov 14 — some services still intermittent\n\n## The Layoffs That Preceded the Crash [...] The outage began Thursday, November 12 at approximately 17:54 UTC when a \"core process\" in Exchange Online failed, triggering cascading failures across Microsoft's infrastructure, according to Forbes. Microsoft confirmed the issue was \"not a cybe",
+   "published_date": "Sat, 14 Nov 2026 12:00:00 GMT",
+   "relevance": 0.81873685
+  },
+  {
+   "title": "Microsoft 365 Outage Hits Outlook, Teams and Copilot; ChatGPT ...",
+   "url": "https://www.ibtimes.sg/microsoft-365-outage-hits-outlook-teams-copilot-chatgpt-claude-also-affected-hits-74-countries-96190",
+   "snippet": "Microsoft's global Microsoft 365 outage disrupted Outlook, Teams and Copilot on Thursday, November 12, with Downdetector recording 138,058 reports of Outlook problems in the US at the peak.\n\nThe disruption also affected ChatGPT and Claude integrations, while businesses and government organisations reported difficulties accessing services. The outage reports on Downdetector spread across 74 countries and territories within about an hour on Nov. 12. [...] > Microsoft's outage reports on November 12 reached 74 countries and territories in about an hour on Downdetector.Microsoft says its Exchange Online incident began at 16:17 UTC. Reports to Downdetector about Outlook began climbing at about 17",
+   "published_date": "Fri, 13 Nov 2026 06:19:28 GMT",
+   "relevance": 0.78082967
+  },
+  {
+   "title": "Microsoft Begins Restoring Services After 130,000 Outage Reports — JournalArta Global",
+   "url": "https://journalarta.com/en/2026/11/13/microsoft-begins-restoring-services-outlook-teams-outage",
+   "snippet": "Microsoft begins restoring services after a global outage disrupted Microsoft 365, Outlook, Teams and other apps for more than five hours on Thursday, November 12, 2026. Down Detector logged nearly 130,000 reports of access problems at the peak.\n\nA Microsoft spokesperson said the company \"had no indication of a cyber attack\".\n\n## What users saw [...] Microsoft began restoring services on Thursday after a global outage hit Microsoft 365, Outlook, Teams and Copilot for more than five hours. Down Detector logged nearly 130,000 reports at the peak. The company said it had no indication of a cyber attack.\n\nBy Elena Vance\n\nNovember 13, 20262 min read\n\nMicrosoft Begins Restoring Services After 130,",
+   "published_date": "Fri, 13 Nov 2026 12:00:00 GMT",
+   "relevance": 0.7725307
+  },
+  {
+   "title": "Microsoft outage disrupts Outlook and Krungthai Bank email services",
+   "url": "https://www.nationthailand.com/news/world/40073461",
+   "snippet": "Microsoft was still working to restore Outlook, Teams and other Microsoft 365 services after about 10 hours of disruption on Thursday (November 12, 2026), affecting businesses and government agencies worldwide.\n\nKrungthai Bank also reported disruption to its email system.\n\nDowndetector recorded more than 130,000 reports of Outlook problems in the United States (US) at the peak around 1pm Eastern Time (ET).\n\nThe tally stood at more than 25,000 at 9.30pm ET, or 2.30am Greenwich Mean Time (GMT).",
+   "published_date": "Fri, 13 Nov 2026 06:00:00 GMT",
+   "relevance": 0.77218723
+  },
+  {
+   "title": "Is Microsoft down? Users report Outlook, 365 issues Thursday",
+   "url": "https://www.usatoday.com/story/tech/2026/11/12/microsoft-down-outlook-365-outage-reports/92744582007",
+   "snippet": "# Is Microsoft down? Users report issues with Outlook, 365 on Thursday\n\nEditor's Note: On Friday, Nov. 13, Microsoft said it had restored services in most regions. Click here for the latest updates.\n\nA widespread Microsoft outage affected tens of thousands of users across the United States for about 10 hours on Nov. 12, disrupting access to Outlook, Microsoft 365, Copilot, and other essential platforms. [...] According to Downdetector, after reaching a peak of 128,874 reports at 1:09 p.m. ET, Microsoft Outlook outage reports have begun to tick down, with the latest number dropping to 92,914 at around 1:50 p.m. ET.\n\nReports of outages for Microsoft 365 also dropped from its peak of over 46,00",
+   "published_date": "Sat, 14 Nov 2026 06:00:00 GMT",
+   "relevance": 0.68647516
+  }
+ ],
+ "workday major service outage affected 11,500 companies date": [
+  {
+   "title": "Workday Outage Hits Walmart, Target, Chipotle: Payroll Down",
+   "url": "https://paidfreedroid.com/2026/11/workday-outage-walmart-target-chipotle-payroll-systems-down.html?amp=",
+   "snippet": "| Incident Parameter | Technical Scope and Operational Status |\n --- |\n| Impacted Platform | Workday Enterprise Cloud (Human Capital Management, Payroll, Time Tracking) |\n| Global User Base | Over 11,500 enterprise organizations and 65+ million workers worldwide |\n| Incident Timeline | Began Friday, November 13, 2026 (approximately 5:00 PM EST / 22:00 UTC) |\n| Primary User Error | “Workday is currently unavailable. Please try again later.” | [...] Because Workday manages timecards and payroll for more than 11,500 organizations globally, the real-world friction hit immediately. Frontline retail associates at Walmart and Target, as well as kitchen staff at Chipotle, found themselves unable to ",
+   "published_date": "Sat, 14 Nov 2026 03:27:41 GMT",
+   "relevance": 0.761893
+  },
+  {
+   "title": "Workday Payroll Outage: Will You Still Get Paid? Time Off and Benefits - PopTV Culture",
+   "url": "https://poptvculture.com/workday-outage-payroll-paycheck-time-off",
+   "snippet": "More than 11,500 organizations use Workday. A source told The Newsground that Walmart, Target, Chipotle and Skechers were among the affected companies, though those companies had not publicly confirmed it as of November 14, 2026.\n\nSee our full list of companies affected by the Workday outage.\n\n## FAQ\n\n### Will the Workday outage delay my paycheck? [...] The Workday outage that began Friday, November 13, 2026, left many employees unable to check their pay, clock in or request time off. As of November 14, Workday had not reported that any paychecks were delayed, but workers at companies that use the platform were cut off from key payroll and HR tools.\n\nThe timing worried many workers. Friday i",
+   "published_date": "Sat, 14 Nov 2026 05:52:26 GMT",
+   "relevance": 0.7277821
+  },
+  {
+   "title": "Major outages hit Walmart, Target and other companies",
+   "url": "https://tech.yahoo.com/general/articles/major-outages-hit-walmart-target-130025515.html",
+   "snippet": "Updated\n\nA major Workday software glitch locked workers across more than 11,500 organizations—including Walmart, Target, and NASA—out of their HR accounts after a backup system test went awry. ©Image Credit: Facebook / Workday\n\nA major Workday software glitch locked workers across more than 11,500 organizations—including Walmart, Target, and NASA—out of their HR accounts after a backup system test went awry. ©Image Credit: Facebook / Workday [...] Imagine a situation where you clock in for your shift or try to squeeze in some last-minute benefits paperwork, and the company's entire human resources portal vanishes. That was the reality for workers everywhere when a major software glitch took ",
+   "published_date": "Sat, 14 Nov 2026 13:00:00 GMT",
+   "relevance": 0.7194822
+  },
+  {
+   "title": "Software company with thousands of Fortune 500 clients joins Microsoft in experiencing major outage",
+   "url": "https://tech.yahoo.com/computing/articles/software-company-thousands-fortune-500-131318413.html",
+   "snippet": "Mail\n\nAdvertisement\n\nAdvertisement\n\nAdvertisement\n\n# Software company with thousands of Fortune 500 clients joins Microsoft in experiencing major outage\n\n[](\n\nFox Business\n\nRobert McGreevy\n\nAdd to Preferred Sources\n\nWorkday, a business software that handles payroll and human resources management for thousands of prominent companies, experienced a major outage Friday, joining Microsoft in experiencing a shutdown this week.\n\nThe platform manages services for 11,500 companies. [...] Signage is displayed near the receptionist desk at the Workday Inc. office in San Francisco Jan. 10, 2019. Workday makes applications that help companies with mundane tasks like keeping payroll, plotting expenses, t",
+   "published_date": "Sat, 14 Nov 2026 13:00:00 GMT",
+   "relevance": 0.713132
+  },
+  {
+   "title": "Workday Outage Disrupts HR and Payroll Systems at Walmart, Target and Other Major Companies - Hokanews",
+   "url": "https://www.hokanews.com/2026/11/workday-outage-disrupts-hr-and-payroll.html",
+   "snippet": "Workday outage disrupts payroll and HR access at Walmart, Target and other companies, affecting systems used by more than 11,500 organizations.\n\nVictoria Hale \n\nVictoria Hale  ... min read\n\nGoogle News\n\nWorkday service outage disrupts employee payroll, timekeeping and human resources systems at Walmart, Target, Chipotle and Skechers. [...] In Workday's case, the reported outage has placed particular attention on the systems employees use to access pay information, record working hours, request leave and manage benefits. The platform's reported reach of more than 11,500 organizations underscores the scale of its role in corporate and public-sector operations. [...] The impact extends beyond a",
+   "published_date": "Sat, 14 Nov 2026 12:00:00 GMT",
+   "relevance": 0.6904547
+  }
+ ],
+ "workday major service outage 11,500 companies date": [
+  {
+   "title": "Workday Outage Hits Walmart, Target, Chipotle: Payroll Down",
+   "url": "https://paidfreedroid.com/2026/11/workday-outage-walmart-target-chipotle-payroll-systems-down.html",
+   "snippet": "| Incident Parameter | Technical Scope and Operational Status |\n --- |\n| Impacted Platform | Workday Enterprise Cloud (Human Capital Management, Payroll, Time Tracking) |\n| Global User Base | Over 11,500 enterprise organizations and 65+ million workers worldwide |\n| Incident Timeline | Began Friday, November 13, 2026 (approximately 5:00 PM EST / 22:00 UTC) |\n| Primary User Error | “Workday is currently unavailable. Please try again later.” | [...] Because Workday manages timecards and payroll for more than 11,500 organizations globally, the real-world friction hit immediately. Frontline retail associates at Walmart and Target, as well as kitchen staff at Chipotle, found themselves unable to ",
+   "published_date": "Sat, 14 Nov 2026 03:27:41 GMT",
+   "relevance": 0.7479843
+  },
+  {
+   "title": "Major outages hit Walmart, Target and other companies",
+   "url": "https://tech.yahoo.com/general/articles/major-outages-hit-walmart-target-130025515.html",
+   "snippet": "Updated\n\nA major Workday software glitch locked workers across more than 11,500 organizations—including Walmart, Target, and NASA—out of their HR accounts after a backup system test went awry. ©Image Credit: Facebook / Workday\n\nA major Workday software glitch locked workers across more than 11,500 organizations—including Walmart, Target, and NASA—out of their HR accounts after a backup system test went awry. ©Image Credit: Facebook / Workday [...] Imagine a situation where you clock in for your shift or try to squeeze in some last-minute benefits paperwork, and the company's entire human resources portal vanishes. That was the reality for workers everywhere when a major software glitch took ",
+   "published_date": "Sat, 14 Nov 2026 13:00:00 GMT",
+   "relevance": 0.71183175
+  },
+  {
+   "title": "Software company with thousands of Fortune 500 clients joins Microsoft in experiencing major outage",
+   "url": "https://tech.yahoo.com/computing/articles/software-company-thousands-fortune-500-131318413.html",
+   "snippet": "Mail\n\nAdvertisement\n\nAdvertisement\n\nAdvertisement\n\n# Software company with thousands of Fortune 500 clients joins Microsoft in experiencing major outage\n\n[](\n\nFox Business\n\nRobert McGreevy\n\nAdd to Preferred Sources\n\nWorkday, a business software that handles payroll and human resources management for thousands of prominent companies, experienced a major outage Friday, joining Microsoft in experiencing a shutdown this week.\n\nThe platform manages services for 11,500 companies. [...] Signage is displayed near the receptionist desk at the Workday Inc. office in San Francisco Jan. 10, 2019. Workday makes applications that help companies with mundane tasks like keeping payroll, plotting expenses, t",
+   "published_date": "Sat, 14 Nov 2026 13:00:00 GMT",
+   "relevance": 0.70831347
+  },
+  {
+   "title": "Workday Outage Disrupts HR and Payroll Systems at Walmart, Target and Other Major Companies - Hokanews",
+   "url": "https://www.hokanews.com/2026/11/workday-outage-disrupts-hr-and-payroll.html",
+   "snippet": "In Workday's case, the reported outage has placed particular attention on the systems employees use to access pay information, record working hours, request leave and manage benefits. The platform's reported reach of more than 11,500 organizations underscores the scale of its role in corporate and public-sector operations. [...] Workday outage disrupts payroll and HR access at Walmart, Target and other companies, affecting systems used by more than 11,500 organizations.\n\nVictoria Hale \n\nVictoria Hale  ... min read\n\nGoogle News\n\nWorkday service outage disrupts employee payroll, timekeeping and human resources systems at Walmart, Target, Chipotle and Skechers. [...] The impact extends beyond a",
+   "published_date": "Sat, 14 Nov 2026 12:00:00 GMT",
+   "relevance": 0.6696368
+  },
+  {
+   "title": "Workday outage leaves employees unable to access workplace accounts",
+   "url": "https://tech.yahoo.com/computing/articles/workday-outage-leaves-employees-unable-011316039.html",
+   "snippet": "Advertisement\n\nAdvertisement\n\nThe company apologized for the disruption and said it is investigating the best way to restore service. Workday said it will provide updates every 30 minutes.\n\nWorkday is used by more than 11,500 organizations around the world for tasks including payroll, recruiting, benefits and time-off requests. Its customers include major retailers such as Target, Walmart and Nordstrom. [...] Mail\n\nAdvertisement\n\nAdvertisement\n\nAdvertisement\n\n# Workday outage leaves employees unable to access workplace accounts\n\n\n\nWorkday, the Bay Area tech company whose software is used by millions of employees to check pay information, request time off and handle other workplace tasks, is ",
+   "published_date": "Sat, 14 Nov 2026 12:00:00 GMT",
+   "relevance": 0.6371437
+  }
+ ],
+ "lunar fast charger unveiled november 11 2026 maximum power rating": [
+  {
+   "title": "Heating Aid Push, Generator Recall Lead Weekly Energy Wrap | Environment+Energy Leader",
+   "url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
+   "snippet": "Lunar Energy unveiled its Lunar Fast Charger on Nov. 11 as part of a broader product launch announced by the company. The home DC unit is rated at up to 25 kilowatts (kW), and Lunar says it can add about 100 miles of range in an hour. It supports vehicle-to-home and vehicle-to-grid use, so a compatible EV could help power a house during an outage. [...] Homeowners choose whether their breakers join grid events, and the breakers reset automatically when utility power returns. SOLRITE operates in Texas, California, Connecticut, Massachusetts and Illinois. The companies did not disclose pricing or a rollout date.\n\n## Lunar Unveils a 25 kW Bidirectional Home Charger [...] Lunar expects the charg",
+   "published_date": "Sat, 14 Nov 2026 12:00:00 GMT",
+   "relevance": 0.7973991
+  },
+  {
+   "title": "Lunar’s new home DC fast charger puts your EV battery to work | Electrek",
+   "url": "https://electrek.co/2026/11/12/lunars-new-home-dc-fast-charger-puts-your-ev-battery-to-work",
+   "snippet": "Lunar says its home DC fast charger can add roughly 100 miles of range in an hour at up to 25 kW. Actual results will depend on the vehicle and charging conditions.\n\nThis is a DC charger, according to Lunar’s product specifications. It connects directly to the DC side of the Lunar Battery, and Lunar says that setup avoids an electrical panel upgrade for the charger. The product page lists CCS and NACS connector support but doesn’t specify which cars will support bidirectional charging. [...] Lunar Energy has unveiled a 25-kW home DC fast charger that will do more than just power up your car really fast. Paired with its next-generation home battery system, the Lunar Fast Charger will also let",
+   "published_date": "Thu, 12 Nov 2026 21:41:32 GMT",
+   "relevance": 0.5429844
+  },
+  {
+   "title": "OSCAL Unveils Full-Scenario Energy Storage Solutions at RE+ 2026 for Home Backup and Outdoor Power",
+   "url": "https://www.bastillepost.com/global/article/6349817-oscal-unveils-full-scenario-energy-storage-solutions-at-re-2026-for-home-backup-and-outdoor-power",
+   "snippet": "EV11000 for Convenient Home EV Charging\n\nOSCAL will present the EV11000 home EV charger, with up to 11kW charging power and 48A output. Its wall-mounted design, IP65 protection, and operating range of -30°C to 50°C support reliable use. An RFID card and installation accessories are included.\n\nMeet OSCAL at RE+ 2026 [...] 2026-11-11 22:00 Last Updated At：22:15\n\n Facebook\n Weibo\n\nLAS VEGAS, Nov. 11, 2026 /PRNewswire/ -- As a global smart technology brand, OSCAL develops energy storage solutions for home backup, solar storage, and outdoor power. RE+ 2026, a clean energy exhibition, will take place November 17–19 at the Las Vegas Convention Center. At Booth C6444, OSCAL will showcase balcony sto",
+   "published_date": "Wed, 11 Nov 2026 14:00:00 GMT",
+   "relevance": 0.08404061
+  }
+ ],
+ "lunar fast charger unveiled nov 11 2026 maximum power rating": [
+  {
+   "title": "Heating Aid Push, Generator Recall Lead Weekly Energy Wrap | Environment+Energy Leader",
+   "url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
+   "snippet": "Lunar Energy unveiled its Lunar Fast Charger on Nov. 11 as part of a broader product launch announced by the company. The home DC unit is rated at up to 25 kilowatts (kW), and Lunar says it can add about 100 miles of range in an hour. It supports vehicle-to-home and vehicle-to-grid use, so a compatible EV could help power a house during an outage. [...] Homeowners choose whether their breakers join grid events, and the breakers reset automatically when utility power returns. SOLRITE operates in Texas, California, Connecticut, Massachusetts and Illinois. The companies did not disclose pricing or a rollout date.\n\n## Lunar Unveils a 25 kW Bidirectional Home Charger [...] Lunar expects the charg",
+   "published_date": "Sat, 14 Nov 2026 12:00:00 GMT",
+   "relevance": 0.7989722
+  },
+  {
+   "title": "Lunar’s new home DC fast charger puts your EV battery to work | Electrek",
+   "url": "https://electrek.co/2026/11/12/lunars-new-home-dc-fast-charger-puts-your-ev-battery-to-work",
+   "snippet": "Lunar says its home DC fast charger can add roughly 100 miles of range in an hour at up to 25 kW. Actual results will depend on the vehicle and charging conditions.\n\nThis is a DC charger, according to Lunar’s product specifications. It connects directly to the DC side of the Lunar Battery, and Lunar says that setup avoids an electrical panel upgrade for the charger. The product page lists CCS and NACS connector support but doesn’t specify which cars will support bidirectional charging. [...] Lunar Energy has unveiled a 25-kW home DC fast charger that will do more than just power up your car really fast. Paired with its next-generation home battery system, the Lunar Fast Charger will also let",
+   "published_date": "Thu, 12 Nov 2026 21:41:32 GMT",
+   "relevance": 0.5442867
+  },
+  {
+   "title": "OSCAL Unveils Full-Scenario Energy Storage Solutions at RE+ 2026 for Home Backup and Outdoor Power",
+   "url": "https://www.bastillepost.com/global/article/6349817-oscal-unveils-full-scenario-energy-storage-solutions-at-re-2026-for-home-backup-and-outdoor-power",
+   "snippet": "EV11000 for Convenient Home EV Charging\n\nOSCAL will present the EV11000 home EV charger, with up to 11kW charging power and 48A output. Its wall-mounted design, IP65 protection, and operating range of -30°C to 50°C support reliable use. An RFID card and installation accessories are included.\n\nMeet OSCAL at RE+ 2026 [...] 2026-11-11 22:00 Last Updated At：22:15\n\n Facebook\n Weibo\n\nLAS VEGAS, Nov. 11, 2026 /PRNewswire/ -- As a global smart technology brand, OSCAL develops energy storage solutions for home backup, solar storage, and outdoor power. RE+ 2026, a clean energy exhibition, will take place November 17–19 at the Las Vegas Convention Center. At Booth C6444, OSCAL will showcase balcony sto",
+   "published_date": "Wed, 11 Nov 2026 14:00:00 GMT",
+   "relevance": 0.08555635
+  }
+ ],
+ "apple homeview release date united states stores": [
+  {
+   "title": "Apple HomeView guide: Price, release date, features, and everything you need to know | Macworld",
+   "url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
+   "snippet": "Apple announced HomeView on Tuesday, October 13, 2026, as part of its “Welcome home” launch. Pre-orders opened the same day, with both the tabletop and wall-mounted models scheduled to go on sale on Friday, November 13.\n\nHomeView is initially available in the United States, United Kingdom, Canada, Australia, India, New Zealand, Singapore, and South Africa. Singapore pre-orders open on October 15, while customers in South Africa can order through authorized resellers. [...] However, HomeView isn’t intended to replace an iPad. The iPad remains the better choice for portable computing, productivity, games, and the broad selection of apps available from the App Store. HomeView is designed to sta",
+   "published_date": "Mon, 09 Nov 2026 00:00:00 GMT",
+   "relevance": 0.78727776
+  },
+  {
+   "title": "Apple Plans HomeView Siri AI Fix in December | The Apple Post",
+   "url": "https://www.theapplepost.com/2026/11/12/74181/apple-says-homeview-siri-ai-update-will-fix-missing-security-controls",
+   "snippet": "HomeView is Apple’s new shared smart-home display, combining Siri AI, FaceTime, entertainment and a dashboard for compatible cameras, thermostats and locks. It officially launches Friday, November 13, starting at $299 in the United States and £299 in the United Kingdom. Our complete HomeView guide covers its capabilities and availability.",
+   "published_date": "Thu, 12 Nov 2026 20:00:46 GMT",
+   "relevance": 0.7636601
+  },
+  {
+   "title": "Apple's $299 HomeView goes on sale with Siri AI still in beta",
+   "url": "https://ppc.land/apples-299-homeview-goes-on-sale-with-siri-ai-still-in-beta",
+   "snippet": "Products: Apple HomeView; Apple HomeView (Wall Mounted)\n Mounts: Power Mount USB-C Wall Connector (from $59.95), Power Mount AC Wired (from $79.95), Power Mount PoE Wired ($129.95, early 2027), all from Schneider Home\n Price: $299 (U.S.) for both models\n On sale: November 13, 2026, at Apple Store locations, apple.com/store and the Apple Store app in Australia, Canada, India, New Zealand, Singapore, the UK and the U.S.\n Not for sale: European Union [...] When: On sale from November 13, 2026, a month after Apple unveiled the device and opened preorders on October 13. The PoE mount follows in early 2027, and Canadian French support comes later via a software update with no date.\n\nWhere: Apple S",
+   "published_date": "Sat, 14 Nov 2026 20:00:26 GMT",
+   "relevance": 0.7325918
+  },
+  {
+   "title": "Apple HomeView Preorder Drops to $289.99 [2026]",
+   "url": "https://shattered.io/apple-homeview-preorder-289-99-space-gray-amazon-2026",
+   "snippet": "The Gadgeteer reports a price of $289.99 for the Space Gray model at Amazon. Apple’s list price in the United States is $299, so the reported saving is $9.01.\n\n### When does Apple HomeView launch?\n\nApple lists November 13, 2026 as the official availability date. Preorders began on October 13, 2026.\n\n### Does the $289.99 price apply to every HomeView color? [...] SHATERED\n\n# HomeView Preorder Falls to $289.99, $9.01 Off \n\nDr. Elena Marchetti\n\nDr. Elena Marchetti\n\nUpdated Nov 11, 2026 · 14 min read\n\nThe Apple HomeView preorder just got cheaper. The Gadgeteer reports that the Space Gray model now sits at $289.99 at Amazon, two days before the Friday, November 13, 2026 launch. Apple lists the de",
+   "published_date": "Wed, 11 Nov 2026 18:11:19 GMT",
+   "relevance": 0.71711093
+  },
+  {
+   "title": "Apple HomeView Coming Soon, Price, Limits and Italy • Meteora Web",
+   "url": "https://meteoraweb.com/en/news/apple-homeview-le-premier-ecran-intelligent-arrive-a-299-dollars-mais-pas-en-europe",
+   "snippet": "### When does Apple HomeView come out?\n\nDeliveries start November 13. According to Apple, pre-orders were open with that date. In Australia and New Zealand the launch falls on November 13, before the United States.\n\n### Can I buy Apple HomeView in Italy?\n\nNo, at least at launch. MacRumors reports it is not available in the European Union because Siri AI is missing. No arrival dates have been announced.\n\n### How much does HomeView cost? [...] Apple is bringing HomeView, its first smart display, to market with the first deliveries starting November 13. It costs $299 and revolves around Siri AI. According to MacRumors it will not be sold in the European Union, because Siri AI is not available t",
+   "published_date": "Fri, 13 Nov 2026 06:42:01 GMT",
+   "relevance": 0.71012604
+  }
+ ],
+ "apple homeview release date united states": [
+  {
+   "title": "Apple HomeView guide: Price, release date, features, and everything you need to know | Macworld",
+   "url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
+   "snippet": "Apple announced HomeView on Tuesday, October 13, 2026, as part of its “Welcome home” launch. Pre-orders opened the same day, with both the tabletop and wall-mounted models scheduled to go on sale on Friday, November 13.\n\nHomeView is initially available in the United States, United Kingdom, Canada, Australia, India, New Zealand, Singapore, and South Africa. Singapore pre-orders open on October 15, while customers in South Africa can order through authorized resellers. [...] However, HomeView isn’t intended to replace an iPad. The iPad remains the better choice for portable computing, productivity, games, and the broad selection of apps available from the App Store. HomeView is designed to sta",
+   "published_date": "Mon, 09 Nov 2026 00:00:00 GMT",
+   "relevance": 0.8134608
+  },
+  {
+   "title": "Apple Plans HomeView Siri AI Fix in December | The Apple Post",
+   "url": "https://www.theapplepost.com/2026/11/12/74181/apple-says-homeview-siri-ai-update-will-fix-missing-security-controls",
+   "snippet": "HomeView is Apple’s new shared smart-home display, combining Siri AI, FaceTime, entertainment and a dashboard for compatible cameras, thermostats and locks. It officially launches Friday, November 13, starting at $299 in the United States and £299 in the United Kingdom. Our complete HomeView guide covers its capabilities and availability. [...] That distinction matters because unlocking a door is more sensitive than switching on a light. Requiring user recognition is intended to prevent anyone within speaking distance from gaining access to the home. Apple has not announced the exact software version or December release date.",
+   "published_date": "Thu, 12 Nov 2026 20:00:46 GMT",
+   "relevance": 0.81316423
+  },
+  {
+   "title": "Apple HomeView Coming Soon, Price, Limits and Italy • Meteora Web",
+   "url": "https://meteoraweb.com/en/news/apple-homeview-le-premier-ecran-intelligent-arrive-a-299-dollars-mais-pas-en-europe",
+   "snippet": "### When does Apple HomeView come out?\n\nDeliveries start November 13. According to Apple, pre-orders were open with that date. In Australia and New Zealand the launch falls on November 13, before the United States.\n\n### Can I buy Apple HomeView in Italy?\n\nNo, at least at launch. MacRumors reports it is not available in the European Union because Siri AI is missing. No arrival dates have been announced.\n\n### How much does HomeView cost? [...] Apple is bringing HomeView, its first smart display, to market with the first deliveries starting November 13. It costs $299 and revolves around Siri AI. According to MacRumors it will not be sold in the European Union, because Siri AI is not available t",
+   "published_date": "Fri, 13 Nov 2026 06:42:01 GMT",
+   "relevance": 0.7559974
+  },
+  {
+   "title": "Apple's $299 HomeView goes on sale with Siri AI still in beta",
+   "url": "https://ppc.land/apples-299-homeview-goes-on-sale-with-siri-ai-still-in-beta",
+   "snippet": "| Product | US price | Colours | Availability, according to Apple |\n ---  --- |\n| Apple HomeView (tabletop) | $299 | Silver, starlight, rose pink, space gray | On sale from November 13, 2026 |\n| Apple HomeView (Wall Mounted) | $299 | Space gray, silver | On sale from November 13, 2026 |\n| Power Mount USB-C Wall Connector (Schneider Home) | From $59.95 | Not stated | Orderable from November 13, 2026 | [...] ## A month from preorder to shelf\n\nThe update appeared on Apple Newsroom dated November 13, 2026, under the headline \"Apple HomeView available today.\" It is the second release Apple has published about the device. The first, a press release dated October 13 from Cupertino and headlined \"Me",
+   "published_date": "Sat, 14 Nov 2026 20:00:26 GMT",
+   "relevance": 0.72076154
+  },
+  {
+   "title": "Apple HomeView Australia: From A$449, NZ$599 in NZ",
+   "url": "https://shattered.io/apple-homeview-launch-australia-new-zealand-first-orders-a449-nz599",
+   "snippet": "Apple HomeView became available on November 13, 2026. Apple’s newsroom describes the lineup as two products: Apple HomeView and Apple HomeView (Wall Mounted). The company sells each at US$299 in the United States. Coverage from iNews Zoombangla framed the Australia and New Zealand deliveries as the opening chapter of the rollout, and MacRumors made the same point from the other direction by tracking when the first boxes would land. [...] Image: Apple\n\nApple HomeView went on sale on November 13, 2026, and the first pre-orders began reaching customers in Australia and New Zealand around that date, according to Apple’s own announcement and launch coverage. Apple lists seven markets for the devi",
+   "published_date": "Sun, 15 Nov 2026 05:16:00 GMT",
+   "relevance": 0.71977776
+  }
+ ],
+ "workday service outage affected 11,500 companies date": [
+  {
+   "title": "Workday Payroll Outage: Will You Still Get Paid? Time Off and Benefits - PopTV Culture",
+   "url": "https://poptvculture.com/workday-outage-payroll-paycheck-time-off",
+   "snippet": "More than 11,500 organizations use Workday. A source told The Newsground that Walmart, Target, Chipotle and Skechers were among the affected companies, though those companies had not publicly confirmed it as of November 14, 2026.\n\nSee our full list of companies affected by the Workday outage.\n\n## FAQ\n\n### Will the Workday outage delay my paycheck? [...] The Workday outage that began Friday, November 13, 2026, left many employees unable to check their pay, clock in or request time off. As of November 14, Workday had not reported that any paychecks were delayed, but workers at companies that use the platform were cut off from key payroll and HR tools.\n\nThe timing worried many workers. Friday i",
+   "published_date": "Sat, 14 Nov 2026 05:52:26 GMT",
+   "relevance": 0.74706274
+  },
+  {
+   "title": "Major outages hit Walmart, Target and other companies",
+   "url": "https://tech.yahoo.com/general/articles/major-outages-hit-walmart-target-130025515.html",
+   "snippet": "Updated\n\nA major Workday software glitch locked workers across more than 11,500 organizations—including Walmart, Target, and NASA—out of their HR accounts after a backup system test went awry. ©Image Credit: Facebook / Workday\n\nA major Workday software glitch locked workers across more than 11,500 organizations—including Walmart, Target, and NASA—out of their HR accounts after a backup system test went awry. ©Image Credit: Facebook / Workday [...] Imagine a situation where you clock in for your shift or try to squeeze in some last-minute benefits paperwork, and the company's entire human resources portal vanishes. That was the reality for workers everywhere when a major software glitch took ",
+   "published_date": "Sat, 14 Nov 2026 13:00:00 GMT",
+   "relevance": 0.7107287
+  },
+  {
+   "title": "Software company with thousands of Fortune 500 clients joins Microsoft in experiencing major outage",
+   "url": "https://tech.yahoo.com/computing/articles/software-company-thousands-fortune-500-131318413.html",
+   "snippet": "Mail\n\nAdvertisement\n\nAdvertisement\n\nAdvertisement\n\n# Software company with thousands of Fortune 500 clients joins Microsoft in experiencing major outage\n\n[](\n\nFox Business\n\nRobert McGreevy\n\nAdd to Preferred Sources\n\nWorkday, a business software that handles payroll and human resources management for thousands of prominent companies, experienced a major outage Friday, joining Microsoft in experiencing a shutdown this week.\n\nThe platform manages services for 11,500 companies. [...] Signage is displayed near the receptionist desk at the Workday Inc. office in San Francisco Jan. 10, 2019. Workday makes applications that help companies with mundane tasks like keeping payroll, plotting expenses, t",
+   "published_date": "Sat, 14 Nov 2026 13:00:00 GMT",
+   "relevance": 0.7088176
+  },
+  {
+   "title": "Workday Outage Disrupts HR and Payroll Systems at Walmart, Target and Other Major Companies - Hokanews",
+   "url": "https://www.hokanews.com/2026/11/workday-outage-disrupts-hr-and-payroll.html",
+   "snippet": "Workday outage disrupts payroll and HR access at Walmart, Target and other companies, affecting systems used by more than 11,500 organizations.\n\nVictoria Hale \n\nVictoria Hale  ... min read\n\nGoogle News\n\nWorkday service outage disrupts employee payroll, timekeeping and human resources systems at Walmart, Target, Chipotle and Skechers. [...] In Workday's case, the reported outage has placed particular attention on the systems employees use to access pay information, record working hours, request leave and manage benefits. The platform's reported reach of more than 11,500 organizations underscores the scale of its role in corporate and public-sector operations. [...] The impact extends beyond a",
+   "published_date": "Sat, 14 Nov 2026 12:00:00 GMT",
+   "relevance": 0.6954414
+  },
+  {
+   "title": "Workday outage leaves employees unable to access workplace accounts",
+   "url": "https://tech.yahoo.com/computing/articles/workday-outage-leaves-employees-unable-011316039.html",
+   "snippet": "Advertisement\n\nAdvertisement\n\nThe company apologized for the disruption and said it is investigating the best way to restore service. Workday said it will provide updates every 30 minutes.\n\nWorkday is used by more than 11,500 organizations around the world for tasks including payroll, recruiting, benefits and time-off requests. Its customers include major retailers such as Target, Walmart and Nordstrom. [...] Mail\n\nAdvertisement\n\nAdvertisement\n\nAdvertisement\n\n# Workday outage leaves employees unable to access workplace accounts\n\n\n\nWorkday, the Bay Area tech company whose software is used by millions of employees to check pay information, request time off and handle other workplace tasks, is ",
+   "published_date": "Sat, 14 Nov 2026 12:00:00 GMT",
+   "relevance": 0.6670392
+  }
+ ],
+ "what was the name of the ai technology company that worker.ai acquired on 12 november 2026?": [
+  {
+   "title": "Worker.ai: DeltaGen acquisition and AI launch — CASRAI",
+   "url": "https://casrai.org/news/worker-ai-deltagen-acquisition-platform-launch-2026",
+   "snippet": "Worker.ai announced its acquisition of DeltaGen and launched a company operating system for small businesses on 12 November 2026. The announcement brings DeltaGen’s conversational AI technology into a platform that assigns work while retaining human approval of business decisions.\n\n## What Worker.ai announced [...] v2026.1CASRAI Dictionary 1,986 entries across 29 domains · CC-BY 4.01,986 entries · CC-BY 4.0\n\nRelease notes·Cite·Licence·EN-GB\n\nCASRAIStandards · Research administration\n\nBecome a memberJoin a groupJoin a working group→\n\nEditorial · CASRAI· AI and ML research outputs\n\n# Worker.ai announces DeltaGen acquisition and AI operating-system launch\n\nWorker.ai announced its DeltaGen acqui",
+   "published_date": "Sun, 15 Nov 2026 00:08:50 GMT",
+   "relevance": 0.77848095
+  },
+  {
+   "title": "Worker.ai Buys DeltaGen and Debuts Small-Business AI Operating System – Unite.AI",
+   "url": "https://www.unite.ai/worker-ai-buys-deltagen-and-debuts-small-business-ai-operating-system",
+   "snippet": "My Feed\n\n### Acquisitions\n\n# Worker.ai Buys DeltaGen and Debuts Small-Business AI Operating System\n\nPublished\n\nBy\n\n Evan Mercer, AI Startups & Venture Capital AI Research Agent\n\nAdd Unite.AI to your preferred sources on Google \n\nWorker.ai announced on November 12, 2026 that it had acquired Techstars-backed DeltaGen and launched a company operating system that uses AI workers to support small businesses, with backing from Veeam founder Ratmir Timashev. [...] Worker was founded by former private equity operator John Roberts and DeltaGen founder Rene Bystron. Roberts serves as CEO and Bystron as COO. Bystron established DeltaGen with Michal Studnicka and Matus Ondreicka. The company is targetin",
+   "published_date": "Thu, 12 Nov 2026 12:57:04 GMT",
+   "relevance": 0.7767923
+  },
+  {
+   "title": "Billionaire-Backed Worker.ai Launches in Raleigh with Acquisition of DeltaGen – GrepBeat",
+   "url": "https://grepbeat.com/2026/11/12/billionaire-backed-worker-ai-launches-in-raleigh-with-acquisition-of-deltagen",
+   "snippet": "# Billionaire-Backed Worker.ai Launches in Raleigh with Acquisition of DeltaGen\n\nNovember 12, 2026 David Schwartz Triangle\n\n \n\nMembers of the now-combined Worker.ai and DeltaGen teams: Worker.ai Founder and CEO John Roberts is second left and DeltaGen Co-Founder and CEO Rene Bystron is far right. [...] [[ November 12, 2026 ]   Billionaire-Backed Worker.ai Launches in Raleigh with Acquisition of DeltaGen   Triangle]( \"Billionaire-Backed Worker.ai Launches in Raleigh with Acquisition of DeltaGen\")\n [[ November 11, 2026 ]   Raleigh’s Outplacer Provides All-in-One Platform for Recruiters and Career Coaches   Triangle]( \"Raleigh’s Outplacer Provides All-in-One Platform for Recruiters and Career C",
+   "published_date": "Thu, 12 Nov 2026 12:50:17 GMT",
+   "relevance": 0.685318
+  },
+  {
+   "title": "Worker.ai Acquires Czech Voice AI Startup DeltaGen",
+   "url": "https://www.therecursive.com/worker-ai-acquires-czech-voice-ai-startup-deltagen-plans-to-grow-its-prague-team",
+   "snippet": "Editor’s Choice   \n\n### MeOut Summit 2026   \n\n### Can Europe Fix a 20-Year Angel Investing Gap Before Its Best Founders Leave for the US?   \n\n### How Public Funding Prepares Deep Tech Startups for VCs and Builds Company Value\n\nWorker.ai, a company operating system for small businesses backed by Veeam founder Ratmir Timashev, has acquired DeltaGen, a Prague-based startup that builds real-time voice AI. The financial terms of the deal were not disclosed. [...] DeltaGen’s technology listens to conversations as they happen and picks out decisions, commitments and next steps. Worker then turns those into assigned tasks. If a team agrees to send a proposal once pricing is approved, for example, an",
+   "published_date": "Thu, 12 Nov 2026 12:00:00 GMT",
+   "relevance": 0.5672176
+  },
+  {
+   "title": "Ex-Seattle startup DeltaGen acquired by new AI company backed by Veeam co-founder – GeekWire",
+   "url": "https://www.geekwire.com/2026/ex-seattle-startup-deltagen-acquired-by-new-ai-company-backed-by-veeam-co-founder",
+   "snippet": "DeltaGen, an AI startup that got its start in Seattle before moving to San Francisco this year, has been acquired by Worker.ai, a new small-business software company backed by Veeam founder Ratmir Timashev.\n\nWorker, which launched Thursday, acquired all of DeltaGen for an undisclosed price that included a substantial cash component and equity in Worker, DeltaGen co-founder and CEO Rene Bystron told GeekWire.",
+   "published_date": "Thu, 12 Nov 2026 13:51:34 GMT",
+   "relevance": 0.5608841
+  }
+ ],
+ "what is the name of the new ai marketing product launched by constant contact for small businesses?": [
+  {
+   "title": "Constant Contact Catalyst AI marketing explained",
+   "url": "https://www.contentgrip.com/constant-contact-catalyst-ai-marketing",
+   "snippet": "Constant Contact has introduced Catalyst, an AI marketing product intended to move small-business owners from writing campaign prompts to approving entire marketing plans. Unveiled on November 12, 2026 at the company's GURU Conference, it promises to handle planning, content and execution across multiple channels while owners remain in control. [...] ### Key Takeaways\n\n Constant Contact says Catalyst can propose and execute coordinated small-business marketing after owner approval.\n The announcement covers multiple channels but does not establish independent ROI results or complete public deployment details.\n Buyers should test approval controls, account permissions, performance reporting an",
+   "published_date": "Fri, 13 Nov 2026 05:00:00 GMT",
+   "relevance": 0.83346015
+  },
+  {
+   "title": "Constant Contact Unveils Catalyst AI Agent for Small Businesses – Unite.AI",
+   "url": "https://www.unite.ai/constant-contact-unveils-catalyst-ai-agent-for-small-businesses",
+   "snippet": "Constant Contact announced Catalyst on November 12, 2026, an AI marketing agent for small businesses that plans campaigns, creates content, distributes it across channels, and uses results to shape later work. The company is inviting users to join a free early-access waitlist, with owner review and approval built into the workflow. [...] Catalyst turns that information into a customized marketing plan each week, which the customer can review and approve. Its channel support spans email, social media, SMS, advertising, website content, and Google Business Profile. Constant Contact’s demonstration used a small mug shop to show a multi-week launch moving from a teaser to the launch itself and t",
+   "published_date": "Thu, 12 Nov 2026 18:58:03 GMT",
+   "relevance": 0.8292156
+  },
+  {
+   "title": "Constant Contact Introduces Catalyst, a Leading-Edge AI Marketing Solution That Does the Work While You Stay in Control",
+   "url": "https://www.prnewswire.com/news-releases/constant-contact-introduces-catalyst-a-leading-edge-ai-marketing-solution-that-does-the-work-while-you-stay-in-control-302937969.html",
+   "snippet": "WALTHAM, Mass., Nov. 12, 2026 /PRNewswire/ -- Constant Contact, the marketing platform that helps small businesses (SMBs) grow, today announced Constant Contact Catalyst, an AI marketing solution that plans, executes, and drives growth across marketing channels, giving small business owners expert-level work while maintaining control. Launched during the GURU Conference presented by Constant Contact, Catalyst works like an expert that owners hired rather than another tool they need to learn. [...] Catalyst draws on Constant Contact's 30 years of experience working with over a million small businesses to help inform what to do, what actions to take, what to say, and why. As an AI marketing so",
+   "published_date": "Thu, 12 Nov 2026 18:00:00 GMT",
+   "relevance": 0.81669897
+  },
+  {
+   "title": "Constant Contact Launches AI Marketing Product for Small Businesses - CPA Practice Advisor",
+   "url": "https://www.cpapracticeadvisor.com/2026/11/12/constant-contact-launches-ai-marketing-product-for-small-businesses/193776",
+   "snippet": "Jason Bramwell\n\nShare on LinkedIn   Share on Twitter   Share on FaceBook   Print this article;)\n\nConstant Contact, a marketing solutions provider for small businesses, announced Thursday the release of Catalyst, a new agentic AI marketing product that the company says works like an expert that owners hired rather than another tool they need to learn. [...] Unlike traditional AI marketing tools that generate content or recommendations, Catalyst is designed to do the marketing work analyzing a business’s digital presence, identifying growth opportunities, building personalized campaigns, and executing across email, social, SMS and other channels, all with the business owner’s approval.\n\n## Rec",
+   "published_date": "Thu, 12 Nov 2026 16:43:00 GMT",
+   "relevance": 0.8080672
+  },
+  {
+   "title": "Constant Contact",
+   "url": "https://tavily.com/knowledge/company/98shCPx33cey",
+   "snippet": "# Constant Contact\nID: 98shCPx33cey\nWebsite: www.constantcontact.com\nLegal name: Constant Contact, Inc.\nHeadquarters: Waltham, MA, United States\nLinkedIn: www.linkedin.com/company/constant-contact · 46,423 followers\nIndustry: Technology, Information and Internet\nCompany type: Privately Held\nFounded: 1996 [...] ## Products and services\nKeywords: digital marketing, email marketing software, constant contact, ai writing assistant, survey, social media management, website builder, sms marketing, social media advertising, email deliverability, email marketing, email template builder [...] Founded: 1996\nSocial profiles: www.facebook.com/constantcontact, www.twitter.com/constantcontact, www.crunchb",
+   "published_date": null,
+   "relevance": 0.22101425
+  }
+ ],
+ "what two pump brands did xylem inc. acquire in november 2026?": [
+  {
+   "title": "What Did Xylem (NYSE:XYL) Complete in Its Acquisition of Cornell Pump and Roper Pump?",
+   "url": "https://kalkine.com.au/news/industrials/what-did-xylem-nysexyl-complete-in-its-acquisition-of-cornell-pump-and-roper-pump",
+   "snippet": "Xylem completed its acquisition of Cornell Pump and its acquisition of Roper Pump. The announcement confirms completion of both transactions, and the company's filings set out the terms of each acquisition.\n\nThe announcement is dated November 9, 2026.\n\n## Company Scale\n\nXylem reported revenue of $9 billion in 2025, according to its announcement. The company has 22,000 employees.\n\nThe company describes its Business as optimizing water and resource management with innovation and expertise. [...] 10 November 2026 06:56 PM AEDT\n\nImage 16: share article Share \n\nImage 17: share by Twitter X (Formerly Twitter)Image 18: share by Whatsapp WhatsappImage 19: share by Facebook FacebookImage 20: share by",
+   "published_date": "Tue, 10 Nov 2026 07:56:00 GMT",
+   "relevance": 0.736211
+  },
+  {
+   "title": "Xylem completes acquisition of Cornell Pump and Roper Pump.",
+   "url": "https://inspenet.com/en/news/xylem-acquisition-of-cornell-roper-pump",
+   "snippet": "Skip to content\n\nThe global knowledge network for professionals in the energy and industry\n\nEN ES\n\n# Xylem expands its industrial pumping capabilities with the acquisition of Cornell Pump and Roper Pump\n\nThe acquisition of Cornell Pump and Roper Pump strengthens Xylem's capabilities in specialized pumping, solids handling, and demanding industrial applications.\n\nBy José López on November 15, 2026\n\nXylem integrates Cornell Pump and Roper Pump\n\nTable of Contents [...] Xylem has completed the acquisition of Cornell Pump and Roper Pump, two manufacturers specializing in pumping technologies, expanding its ability to serve industrial processes that require hydraulic solutions engineered for deman",
+   "published_date": "Sun, 15 Nov 2026 09:47:00 GMT",
+   "relevance": 0.69884354
+  },
+  {
+   "title": "Xylem completes $1.46B acquisition, expands pumping portfolio - Canadian Mining Journal",
+   "url": "https://www.canadianminingjournal.com/news/xylem-completes-1-46b-acquisition-expands-pumping-portfolio",
+   "snippet": "# Xylem completes $1.46B acquisition, expands pumping portfolio\n\nXylem (NYSE: XYL) has completed the acquisition of Cornell Pump and Roper Pump, furthering the company’s portfolio transformation. The news follows Xylem’s […]\n\nBy David Cassels November 12, 2026 At 1:32 pm\n\n### Topics\n\n Mining\n\n### Regions\n\n United States\n\n### Tags\n\n Acquisition\n Cornell Pump\n Equipment & Suppliers\n Pumping\n Roper Pump\n Supplier\n technology and innovation\n Water\n Xylem\n\n### Companies [...] ### Companies\n\n Canadian Mining Journal\n Xylem Water Solutions\n\nView of a water treatment facility at copper mine. Credit: Adobe Stock.\n\nXylem (NYSE: XYL) has completed the acquisition of Cornell Pump and Roper Pump, further",
+   "published_date": "Thu, 12 Nov 2026 18:32:40 GMT",
+   "relevance": 0.6950276
+  },
+  {
+   "title": "Xylem Acquires Cornell Pump and Roper Pump to Expand Portfolio — TradingView News",
+   "url": "https://www.tradingview.com/news/zacks:c2eacb9c6094b:0-xylem-acquires-cornell-pump-and-roper-pump-to-expand-portfolio",
+   "snippet": "Zacks\nZacks\n\n# Xylem Acquires Cornell Pump and Roper Pump to Expand Portfolio\n\nXylem Inc. XYL recently completed its acquisition of Cornell Pump and Roper Pump, expanding its portfolio of engineered pumping technologies. The financial terms of the transaction were not disclosed. [...] The acquisition is part of Xylem's ongoing portfolio transformation, following the acquisitions of WaterFleet, which closed on Sept. 2, 2026 and TriOS, which completed on July 1, 2026. Cornell Pump and Roper Pump will initially be integrated into Xylem's Water Infrastructure segment. Beginning in January 2027, the businesses will be reported under XYL’s Flow Solutions segment.\n\nXYL’s Zacks Rank & Price Performa",
+   "published_date": "Thu, 12 Nov 2026 14:36:00 GMT",
+   "relevance": 0.55419904
+  },
+  {
+   "title": "Xylem declares 43-cent fourth-quarter dividend | XYL Stock News",
+   "url": "https://www.stocktitan.net/news/XYL/xylem-declares-fourth-quarter-dividend-of-43-cents-per-a1num2vt3rnp.html",
+   "snippet": "### Forcendra Holding Limited Announces 1-for-5 Reverse Share Split\n\n### Xylem Inc. Announces $1.5 Billion Share Repurchase Authorization\n\n### Xylem Completes Acquisition of Cornell Pump and Roper Pump\n\n### Bloom Energy Supports Louisiana Disaster Relief Ahead of Texas-LSU Matchup\n\n### Cheetah Net Supply Chain Service Inc. Announces Third Quarter 2026 Results and Provides Corporate Update\n\n### Liberty Defense Clarifies Previously Announced Credit Facility and Term Loan [...] WASHINGTON--(BUSINESS WIRE)--\nThe Board of Directors of Xylem Inc. (NYSE: XYL) has declared a fourth quarter dividend of $0.43 per share payable on December 22, 2026, to shareholders of record as of November 24, 2026.\n\nA",
+   "published_date": "Fri, 13 Nov 2026 21:15:00 GMT",
+   "relevance": 0.39729518
+  }
+ ],
+ "which ai code review startup did cohere acquire in november 2026?": [
+  {
+   "title": "Cohere Acquires AISLE and Cubic for Cyber Defense — CASRAI",
+   "url": "https://casrai.org/news/cohere-acquires-aisle-cubic-cyber-defense-secure-coding-2026",
+   "snippet": "Enterprise artificial intelligence company Cohere completed its acquisition of Prague-based vulnerability discovery startup AISLE and acquired London-based AI code-review platform cubic on November 10–13, 2026. The twin transactions establish a dedicated cybersecurity division named Cohere Cyber alongside a new secure coding vertical, embedding automated zero-day detection and source-code auditing into Cohere’s sovereign, private-cloud, and air-gapped enterprise AI platform. [...] ## Cubic Acquisition and the Secure Coding Vertical\n\nComplementing the AISLE transaction, Cohere announced the acquisition of London-based code-review platform cubic on November 13, 2026. Founded by chief executive",
+   "published_date": "Sat, 14 Nov 2026 17:53:33 GMT",
+   "relevance": 0.81047887
+  },
+  {
+   "title": "Cohere Acquires AISLE and Cubic to Add Cyber Defense and Secure Coding – Unite.AI",
+   "url": "https://www.unite.ai/cohere-acquires-aisle-and-cubic-to-add-cyber-defense-and-secure-coding",
+   "snippet": "Cohere announced on November 13, 2026 that it had completed its acquisition of vulnerability-discovery company AISLE and acquired AI code-review company cubic, adding cyber defense and secure software development to its sovereign AI platform. The additions bring Cohere’s completed strategic M&A transactions in 2026 to four. [...] AISLE had already disclosed on November 10, 2026 that its acquisition formally closed that morning and that it would serve customers as Cohere Cyber from that day. cubic separately confirmed its acquisition on November 13, so Cohere’s announcement combines the new cubic disclosure with an AISLE transaction that had already closed.\n\n## AISLE Becomes Cohere Cyber [...",
+   "published_date": "Fri, 13 Nov 2026 14:51:04 GMT",
+   "relevance": 0.80240077
+  },
+  {
+   "title": "Cohere Buys Code Reviewer Cubic, Its Fourth Deal of 2026 - FourWeekMBA",
+   "url": "https://fourweekmba.com/ai-cohere-buys-code-reviewer-cubic-its-fourth-deal-of-2026",
+   "snippet": "Cohere has acquired cubic, an AI code review startup, and completed its purchase of the cybersecurity company AISLE, the Toronto-based model maker said in a blog post on 13 November. Cohere says the two deals mean “we’ve completed four strategic M&A transactions this year”, after Aleph Alpha and Reliant AI. Neither company disclosed financial terms. [...] A note on sourcing. The deal facts come from Cohere’s and cubic’s blog posts of 13 November 2026, read in full; headcount, cubic’s location and the Aleph Alpha status are as reported by BetaKit. Series E and growth figures are from Cohere’s 29 October release. Day counts and the headcount share are our arithmetic. We did not contact Cohere ",
+   "published_date": "Fri, 13 Nov 2026 21:27:41 GMT",
+   "relevance": 0.79565805
+  },
+  {
+   "title": "Tech M&A deals: Cohere, Cubic, AISLE, GCI, Quintillion, Dialpad, Ada - InfotechLead",
+   "url": "https://infotechlead.com/analytics/tech-ma-deals-cohere-cubic-aisle-gci-quintillion-dialpad-ada-99660",
+   "snippet": "Canadian enterprise AI company Cohere acquired AI-powered code review platform Cubic on November 13, expanding its software engineering and application security business. Cubic’s technology analyses software changes, identifies coding defects and detects potential security vulnerabilities during development. The acquisition adds Cubic’s engineering team and code review technology to Cohere’s enterprise AI portfolio. Cubic’s existing platform will remain operational and supported for customers.",
+   "published_date": "Sat, 14 Nov 2026 05:16:23 GMT",
+   "relevance": 0.7588682
+  },
+  {
+   "title": "Cohere IPO: Status, Valuation and What to Know",
+   "url": "https://admiralmarkets.com/education/articles/shares/cohere-ipo",
+   "snippet": "Cohere and Aleph Alpha announce merger in Berlin, The Next Web, accessed 14 November 2026.\n Cohere and German AI company Aleph Alpha sign definitive agreement, Leaders League, accessed 14 November 2026.\n Cohere buys AI code review startup Cubic as acquisition spree continues, BetaKit, accessed 14 November 2026.\n Anthropic sets IPO price range, revealing scale of Bay Area windfall, The San Francisco Standard, accessed 14 November 2026.",
+   "published_date": "Sat, 14 Nov 2026 22:00:00 GMT",
+   "relevance": 0.72603726
+  }
+ ],
+ "worker.ai acquired ai technology company 12 november 2026": [
+  {
+   "title": "Worker.ai: DeltaGen acquisition and AI launch — CASRAI",
+   "url": "https://casrai.org/news/worker-ai-deltagen-acquisition-platform-launch-2026",
+   "snippet": "Worker.ai announced its acquisition of DeltaGen and launched a company operating system for small businesses on 12 November 2026. The announcement brings DeltaGen’s conversational AI technology into a platform that assigns work while retaining human approval of business decisions.\n\n## What Worker.ai announced [...] v2026.1CASRAI Dictionary 1,986 entries across 29 domains · CC-BY 4.01,986 entries · CC-BY 4.0\n\nRelease notes·Cite·Licence·EN-GB\n\nCASRAIStandards · Research administration\n\nBecome a memberJoin a groupJoin a working group→\n\nEditorial · CASRAI· AI and ML research outputs\n\n# Worker.ai announces DeltaGen acquisition and AI operating-system launch\n\nWorker.ai announced its DeltaGen acqui",
+   "published_date": "Sun, 15 Nov 2026 00:08:50 GMT",
+   "relevance": 0.7889086
+  },
+  {
+   "title": "Worker.ai Buys DeltaGen and Debuts Small-Business AI Operating System – Unite.AI",
+   "url": "https://www.unite.ai/worker-ai-buys-deltagen-and-debuts-small-business-ai-operating-system",
+   "snippet": "My Feed\n\n### Acquisitions\n\n# Worker.ai Buys DeltaGen and Debuts Small-Business AI Operating System\n\nPublished\n\nBy\n\n Evan Mercer, AI Startups & Venture Capital AI Research Agent\n\nAdd Unite.AI to your preferred sources on Google \n\nWorker.ai announced on November 12, 2026 that it had acquired Techstars-backed DeltaGen and launched a company operating system that uses AI workers to support small businesses, with backing from Veeam founder Ratmir Timashev. [...] The acquisition gives Worker a route from spoken agreements to tasks with owners, while the launch pairs that workflow with free pricing and managed setup. The small-group rollout now becomes a test of whether this structured delegation c",
+   "published_date": "Thu, 12 Nov 2026 12:57:04 GMT",
+   "relevance": 0.77321637
+  },
+  {
+   "title": "Billionaire-Backed Worker.ai Launches in Raleigh with Acquisition of DeltaGen – GrepBeat",
+   "url": "https://grepbeat.com/2026/11/12/billionaire-backed-worker-ai-launches-in-raleigh-with-acquisition-of-deltagen",
+   "snippet": "# Billionaire-Backed Worker.ai Launches in Raleigh with Acquisition of DeltaGen\n\nNovember 12, 2026 David Schwartz Triangle\n\n \n\nMembers of the now-combined Worker.ai and DeltaGen teams: Worker.ai Founder and CEO John Roberts is second left and DeltaGen Co-Founder and CEO Rene Bystron is far right. [...] [[ November 12, 2026 ]   Billionaire-Backed Worker.ai Launches in Raleigh with Acquisition of DeltaGen   Triangle]( \"Billionaire-Backed Worker.ai Launches in Raleigh with Acquisition of DeltaGen\")\n [[ November 11, 2026 ]   Raleigh’s Outplacer Provides All-in-One Platform for Recruiters and Career Coaches   Triangle]( \"Raleigh’s Outplacer Provides All-in-One Platform for Recruiters and Career C",
+   "published_date": "Thu, 12 Nov 2026 12:50:17 GMT",
+   "relevance": 0.6910806
+  },
+  {
+   "title": "Billionaire-Backed AI Startup Worker.ai Is Hiring in Raleigh",
+   "url": "https://www.hypepotamus.com/worker-ai-deltagen-launches-raleigh",
+   "snippet": "RALEIGH, November 12 (Hypepotamus) - Worker.ai, a Raleigh-based startup building an AI operating system for small businesses, is launching publicly with an acquisition announcement as well backing from billionaire tech founder Ratmir Timashev.\n\n## Tech News, In Your Inbox\n\nOriginal reporting. Regional insight. No endless scrolling required. [...] Alongside its launch, Worker announced it has acquired DeltaGen, a B2B AI startup that is backed by Techstars, Forward Venture Capital, and the NC Tweener Fund. DeltaGen and Worker.ai joined forces this summer CEO and co-founder John Roberts told Hypepotamus, and then spent the last several months “building the platform and working with early custom",
+   "published_date": "Thu, 12 Nov 2026 16:47:16 GMT",
+   "relevance": 0.6072557
+  },
+  {
+   "title": "Ex-Seattle startup DeltaGen acquired by new AI company backed by Veeam co-founder – GeekWire",
+   "url": "https://www.geekwire.com/2026/ex-seattle-startup-deltagen-acquired-by-new-ai-company-backed-by-veeam-co-founder",
+   "snippet": "DeltaGen, an AI startup that got its start in Seattle before moving to San Francisco this year, has been acquired by Worker.ai, a new small-business software company backed by Veeam founder Ratmir Timashev.\n\nWorker, which launched Thursday, acquired all of DeltaGen for an undisclosed price that included a substantial cash component and equity in Worker, DeltaGen co-founder and CEO Rene Bystron told GeekWire.",
+   "published_date": "Thu, 12 Nov 2026 13:51:34 GMT",
+   "relevance": 0.51979554
+  }
+ ],
+ "constant contact new ai marketing product small businesses launched": [
+  {
+   "title": "Constant Contact Catalyst AI marketing explained",
+   "url": "https://www.contentgrip.com/constant-contact-catalyst-ai-marketing",
+   "snippet": "Constant Contact has introduced Catalyst, an AI marketing product intended to move small-business owners from writing campaign prompts to approving entire marketing plans. Unveiled on November 12, 2026 at the company's GURU Conference, it promises to handle planning, content and execution across multiple channels while owners remain in control. [...] ### Key Takeaways\n\n Constant Contact says Catalyst can propose and execute coordinated small-business marketing after owner approval.\n The announcement covers multiple channels but does not establish independent ROI results or complete public deployment details.\n Buyers should test approval controls, account permissions, performance reporting an",
+   "published_date": "Fri, 13 Nov 2026 05:00:00 GMT",
+   "relevance": 0.8062431
+  },
+  {
+   "title": "Constant Contact Launches AI Marketing Product for Small Businesses - CPA Practice Advisor",
+   "url": "https://www.cpapracticeadvisor.com/2026/11/12/constant-contact-launches-ai-marketing-product-for-small-businesses/193776",
+   "snippet": "Handles the marketing work: Helps businesses show up across email, social sites like Facebook and Instagram, SMS, ads, Google business profile, and their website. Catalyst creates the content, humans approve it, and Catalyst handles the execution on their behalf.\n Optimizes actions based on results: Marketing won’t remain static, as Catalyst ties to your business outcomes with system integrations that feed results from one week to the next, getting smarter each time. [...] Catalyst plans, executes, and drives growth across marketing channels, giving small business owners expert-level work while maintaining control, Waltham, MA-based Constant Contact says in a media release. [...] Unlike trad",
+   "published_date": "Thu, 12 Nov 2026 16:43:00 GMT",
+   "relevance": 0.8017807
+  },
+  {
+   "title": "Constant Contact Introduces Catalyst, a Leading-Edge AI Marketing Solution That Does the Work While You Stay in Control",
+   "url": "https://www.prnewswire.com/news-releases/constant-contact-introduces-catalyst-a-leading-edge-ai-marketing-solution-that-does-the-work-while-you-stay-in-control-302937969.html",
+   "snippet": "WALTHAM, Mass., Nov. 12, 2026 /PRNewswire/ -- Constant Contact, the marketing platform that helps small businesses (SMBs) grow, today announced Constant Contact Catalyst, an AI marketing solution that plans, executes, and drives growth across marketing channels, giving small business owners expert-level work while maintaining control. Launched during the GURU Conference presented by Constant Contact, Catalyst works like an expert that owners hired rather than another tool they need to learn. [...] Catalyst draws on Constant Contact's 30 years of experience working with over a million small businesses to help inform what to do, what actions to take, what to say, and why. As an AI marketing so",
+   "published_date": "Thu, 12 Nov 2026 18:00:00 GMT",
+   "relevance": 0.7973991
+  },
+  {
+   "title": "Constant Contact Unveils Catalyst AI Agent for Small Businesses – Unite.AI",
+   "url": "https://www.unite.ai/constant-contact-unveils-catalyst-ai-agent-for-small-businesses",
+   "snippet": "Constant Contact announced Catalyst on November 12, 2026, an AI marketing agent for small businesses that plans campaigns, creates content, distributes it across channels, and uses results to shape later work. The company is inviting users to join a free early-access waitlist, with owner review and approval built into the workflow. [...] Catalyst turns that information into a customized marketing plan each week, which the customer can review and approve. Its channel support spans email, social media, SMS, advertising, website content, and Google Business Profile. Constant Contact’s demonstration used a small mug shop to show a multi-week launch moving from a teaser to the launch itself and t",
+   "published_date": "Thu, 12 Nov 2026 18:58:03 GMT",
+   "relevance": 0.79645085
+  },
+  {
+   "title": "Constant Contact",
+   "url": "https://tavily.com/knowledge/company/98shCPx33cey",
+   "snippet": "# Constant Contact\nID: 98shCPx33cey\nWebsite: www.constantcontact.com\nLegal name: Constant Contact, Inc.\nHeadquarters: Waltham, MA, United States\nLinkedIn: www.linkedin.com/company/constant-contact · 46,423 followers\nIndustry: Technology, Information and Internet\nCompany type: Privately Held\nFounded: 1996 [...] ## Products and services\nKeywords: digital marketing, email marketing software, constant contact, ai writing assistant, survey, social media management, website builder, sms marketing, social media advertising, email deliverability, email marketing, email template builder [...] Founded: 1996\nSocial profiles: www.facebook.com/constantcontact, www.twitter.com/constantcontact, www.crunchb",
+   "published_date": null,
+   "relevance": 0.2672169
+  }
+ ],
+ "xylem inc. acquired pump brands november 2026": [
+  {
+   "title": "Xylem Acquires Cornell Pump and Roper Pump to Expand Portfolio - November 12, 2026 - Zacks.com",
+   "url": "https://www.zacks.com/stock/news/3028779/xylem-acquires-cornell-pump-and-roper-pump-to-expand-portfolio",
+   "snippet": "The acquisition is part of Xylem's ongoing portfolio transformation, following the acquisitions of WaterFleet, which closed on Sept. 2, 2026 and TriOS, which completed on July 1, 2026. Cornell Pump and Roper Pump will initially be integrated into Xylem's Water Infrastructure segment. Beginning in January 2027, the businesses will be reported under XYL’s Flow Solutions segment. [...] The latest acquisitions align with XYL’s strategy of acquiring businesses to expand its market share and customer base. The businesses bring engineered pumping technologies for challenging applications, including slurry transport, solids handling and suction-lift operations. The addition of Cornell Pump and Roper",
+   "published_date": "Thu, 12 Nov 2026 00:00:00 GMT",
+   "relevance": 0.78464925
+  },
+  {
+   "title": "Xylem Completes Acquisition of Cornell Pump and Roper Pump",
+   "url": "https://finance.yahoo.com/markets/stocks/articles/xylem-completes-acquisition-cornell-pump-211500162.html",
+   "snippet": "Adds differentiated capabilities across industrial markets benefiting from infrastructure investment, industrial modernization and growing resource demand\n\nWASHINGTON, November 09, 2026--(BUSINESS WIRE)--Xylem Inc. (NYSE: XYL), a leading global water technology company, today announced it has completed its previously announced acquisition of Cornell Pump and Roper Pump, advancing the company's strategy to sharpen its portfolio and increase its exposure to higher-growth markets. [...] The acquisition is the latest step in Xylem's ongoing portfolio transformation, focused on businesses and end markets with strong growth and margin potential. Businesses like Cornell/Roper, WaterFleet (closed Se",
+   "published_date": "Tue, 10 Nov 2026 16:00:00 GMT",
+   "relevance": 0.75976056
+  },
+  {
+   "title": "What Did Xylem (NYSE:XYL) Complete in Its Acquisition of Cornell Pump and Roper Pump?",
+   "url": "https://kalkine.com.au/news/industrials/what-did-xylem-nysexyl-complete-in-its-acquisition-of-cornell-pump-and-roper-pump",
+   "snippet": "Xylem completed its acquisition of Cornell Pump and its acquisition of Roper Pump. The announcement confirms completion of both transactions, and the company's filings set out the terms of each acquisition.\n\nThe announcement is dated November 9, 2026.\n\n## Company Scale\n\nXylem reported revenue of $9 billion in 2025, according to its announcement. The company has 22,000 employees.\n\nThe company describes its Business as optimizing water and resource management with innovation and expertise. [...] 10 November 2026 06:56 PM AEDT\n\nImage 16: share article Share \n\nImage 17: share by Twitter X (Formerly Twitter)Image 18: share by Whatsapp WhatsappImage 19: share by Facebook FacebookImage 20: share by",
+   "published_date": "Tue, 10 Nov 2026 07:56:00 GMT",
+   "relevance": 0.7501869
+  },
+  {
+   "title": "Xylem completes acquisition of Cornell Pump and Roper Pump.",
+   "url": "https://inspenet.com/en/news/xylem-acquisition-of-cornell-roper-pump",
+   "snippet": "Skip to content\n\nThe global knowledge network for professionals in the energy and industry\n\nEN ES\n\n# Xylem expands its industrial pumping capabilities with the acquisition of Cornell Pump and Roper Pump\n\nThe acquisition of Cornell Pump and Roper Pump strengthens Xylem's capabilities in specialized pumping, solids handling, and demanding industrial applications.\n\nBy José López on November 15, 2026\n\nXylem integrates Cornell Pump and Roper Pump\n\nTable of Contents [...] The acquisition agreement announced in August valued the transaction at $1.46 billion. For 2026, Xylem projected that the acquired businesses would generate more than $260 million in revenue, with EBITDA margins above 30%.\n\nThese",
+   "published_date": "Sun, 15 Nov 2026 09:47:00 GMT",
+   "relevance": 0.70720255
+  },
+  {
+   "title": "Xylem completes $1.46B acquisition, expands pumping portfolio - Canadian Mining Journal",
+   "url": "https://www.canadianminingjournal.com/news/xylem-completes-1-46b-acquisition-expands-pumping-portfolio",
+   "snippet": "# Xylem completes $1.46B acquisition, expands pumping portfolio\n\nXylem (NYSE: XYL) has completed the acquisition of Cornell Pump and Roper Pump, furthering the company’s portfolio transformation. The news follows Xylem’s […]\n\nBy David Cassels November 12, 2026 At 1:32 pm\n\n### Topics\n\n Mining\n\n### Regions\n\n United States\n\n### Tags\n\n Acquisition\n Cornell Pump\n Equipment & Suppliers\n Pumping\n Roper Pump\n Supplier\n technology and innovation\n Water\n Xylem\n\n### Companies [...] ### Companies\n\n Canadian Mining Journal\n Xylem Water Solutions\n\nView of a water treatment facility at copper mine. Credit: Adobe Stock.\n\nXylem (NYSE: XYL) has completed the acquisition of Cornell Pump and Roper Pump, further",
+   "published_date": "Thu, 12 Nov 2026 18:32:40 GMT",
+   "relevance": 0.70079243
+  }
+ ],
+ "cohere acquisition november 2026 ai code review startup": [
+  {
+   "title": "Cohere Acquires AISLE and Cubic for Cyber Defense — CASRAI",
+   "url": "https://casrai.org/news/cohere-acquires-aisle-cubic-cyber-defense-secure-coding-2026",
+   "snippet": "Enterprise artificial intelligence company Cohere completed its acquisition of Prague-based vulnerability discovery startup AISLE and acquired London-based AI code-review platform cubic on November 10–13, 2026. The twin transactions establish a dedicated cybersecurity division named Cohere Cyber alongside a new secure coding vertical, embedding automated zero-day detection and source-code auditing into Cohere’s sovereign, private-cloud, and air-gapped enterprise AI platform. [...] ## Cubic Acquisition and the Secure Coding Vertical\n\nComplementing the AISLE transaction, Cohere announced the acquisition of London-based code-review platform cubic on November 13, 2026. Founded by chief executive",
+   "published_date": "Sat, 14 Nov 2026 17:53:33 GMT",
+   "relevance": 0.80942667
+  },
+  {
+   "title": "Cohere Acquires AISLE and Cubic to Add Cyber Defense and Secure Coding – Unite.AI",
+   "url": "https://www.unite.ai/cohere-acquires-aisle-and-cubic-to-add-cyber-defense-and-secure-coding",
+   "snippet": "Cohere announced on November 13, 2026 that it had completed its acquisition of vulnerability-discovery company AISLE and acquired AI code-review company cubic, adding cyber defense and secure software development to its sovereign AI platform. The additions bring Cohere’s completed strategic M&A transactions in 2026 to four. [...] AISLE had already disclosed on November 10, 2026 that its acquisition formally closed that morning and that it would serve customers as Cohere Cyber from that day. cubic separately confirmed its acquisition on November 13, so Cohere’s announcement combines the new cubic disclosure with an AISLE transaction that had already closed.\n\n## AISLE Becomes Cohere Cyber [...",
+   "published_date": "Fri, 13 Nov 2026 14:51:04 GMT",
+   "relevance": 0.7937462
+  },
+  {
+   "title": "Cohere Buys Code Reviewer Cubic, Its Fourth Deal of 2026 - FourWeekMBA",
+   "url": "https://fourweekmba.com/ai-cohere-buys-code-reviewer-cubic-its-fourth-deal-of-2026",
+   "snippet": "Cohere has acquired cubic, an AI code review startup, and completed its purchase of the cybersecurity company AISLE, the Toronto-based model maker said in a blog post on 13 November. Cohere says the two deals mean “we’ve completed four strategic M&A transactions this year”, after Aleph Alpha and Reliant AI. Neither company disclosed financial terms. [...] A note on sourcing. The deal facts come from Cohere’s and cubic’s blog posts of 13 November 2026, read in full; headcount, cubic’s location and the Aleph Alpha status are as reported by BetaKit. Series E and growth figures are from Cohere’s 29 October release. Day counts and the headcount share are our arithmetic. We did not contact Cohere ",
+   "published_date": "Fri, 13 Nov 2026 21:27:41 GMT",
+   "relevance": 0.7937462
+  },
+  {
+   "title": "Cohere IPO: Status, Valuation and What to Know",
+   "url": "https://admiralmarkets.com/education/articles/shares/cohere-ipo",
+   "snippet": "Cohere and Aleph Alpha announce merger in Berlin, The Next Web, accessed 14 November 2026.\n Cohere and German AI company Aleph Alpha sign definitive agreement, Leaders League, accessed 14 November 2026.\n Cohere buys AI code review startup Cubic as acquisition spree continues, BetaKit, accessed 14 November 2026.\n Anthropic sets IPO price range, revealing scale of Bay Area windfall, The San Francisco Standard, accessed 14 November 2026.",
+   "published_date": "Sat, 14 Nov 2026 22:00:00 GMT",
+   "relevance": 0.7288448
+  },
+  {
+   "title": "Cohere buys AI code review startup Cubic as acquisition spree continues | BetaKit",
+   "url": "https://betakit.com/cohere-buys-ai-code-review-startup-cubic-as-acquisition-spree-continues",
+   "snippet": "BetaKit - Canadian Startup News & Tech Innovation\n\nCanadian Tech & Startup News\n\nBetaKit - Canadian Tech & Startup News\n\nCanadian Tech & Startup News\n\n# Cohere buys AI code review startup Cubic as acquisition spree continues\n\nBy Josh Scott  November 13, 2026\n\nEmail   Share on LinkedIn   Share on X   Share on Reddit   Share on BlueSky\n\n \n\nCohere CEO Aidan Gomez at ALL IN 2025 in Montréal.\n\nToronto AI firm has also completed purchase of Czech cybersecurity company Aisle. [...] The news: Toronto-based Cohere announced the close of both deals on Friday but did not disclose financial terms. The deals mark the AI model developer’s third and fourth strategic acquisitions of 2026, following its purc",
+   "published_date": "Fri, 13 Nov 2026 20:58:00 GMT",
+   "relevance": 0.72095805
+  }
+ ]
+}

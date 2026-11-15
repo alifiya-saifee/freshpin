@@ -6,6 +6,9 @@
 Why it exists:
   * Identical evidence: each query is searched live ONCE (Tavily via FreshPin) and recorded; repeats and failure
     runs replay the recording, so every agent and every repeat sees the same results and no credits are spent twice.
+  * Replay only (--replay-only): no live searches at all. A query that was never recorded gets the closest recorded
+    pages (by shared words, source "replay_nearest"), so a model that words its searches differently still searches
+    the same frozen set of pages instead of getting nothing. That keeps model-vs-model runs fair and free.
   * Every tool call is logged per run, for the step-by-step trace.
   * Controlled failures, switched on per run:
       tool_error   the search tool is broken (HTTP 503)
@@ -14,6 +17,7 @@ Why it exists:
 from __future__ import annotations
 
 import json
+import re
 import threading
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -42,6 +46,35 @@ FAULTS = ("normal", "model_outage", "tool_error", "misleading")
 
 def _norm_query(q: str) -> str:
     return " ".join((q or "").casefold().split())
+
+
+_STOP = set("the and for with that this what which who whom whose when where how did does was were are is has have had "
+            "from into about after before over under its their his her our your new latest recent recently news "
+            "report reports reported 2025 2026 2027 than then more most".split())
+
+
+def _words(text: str) -> set[str]:
+    return {w for w in re.findall(r"\w+", (text or "").casefold()) if (len(w) >= 3 or w.isdigit()) and w not in _STOP}
+
+
+def nearest_results(cache: dict[str, list[dict[str, Any]]], query: str, k: int = 5) -> list[dict[str, Any]]:
+    """The recorded pages closest to a query that was never recorded: ranked by how many of the query's words appear
+    in the page's own title and snippet (not the query it was recorded under: that query may have returned
+    off-topic pages too). Needs at least 2 shared words and 40% of the
+    query's words, so an off-topic query still gets nothing. Deterministic: ties go by URL."""
+    q = _words(query)
+    if not q:
+        return []
+    best: dict[str, tuple[int, dict[str, Any]]] = {}
+    for results in cache.values():
+        for r in results:
+            score = len(q & (_words(r.get("title", "")) | _words(r.get("snippet", ""))))  # the page's own words
+            url = r.get("url") or r.get("title") or ""
+            if score > best.get(url, (-1, None))[0]:
+                best[url] = (score, r)
+    need = max(2, -(-len(q) * 2 // 5))  # ceil(40%)
+    ranked = sorted(((sc, url, r) for url, (sc, r) in best.items() if sc >= need), key=lambda x: (-x[0], x[1]))
+    return [r for _, _, r in ranked[:k]]
 
 
 class ToolServer:
@@ -144,7 +177,9 @@ class ToolServer:
                         self.cache[key] = results
                         self.live_searches += 1
                 else:
-                    results, source = [], "not_recorded"
+                    with self._lock:
+                        results = nearest_results(self.cache, query)
+                    source = "replay_nearest" if results else "not_recorded"
             results = list(results)
             if fault == "misleading":
                 rec["fault"] = "misleading"

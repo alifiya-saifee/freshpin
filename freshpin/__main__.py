@@ -279,8 +279,10 @@ def agentbench_cmd(args: list[str]) -> int:
     ap.add_argument("--tool-cache", default="", help="recorded searches to replay (default: toolcache-<suite>.json "
                     "next to the suite file, else in bench/)")
     ap.add_argument("--replay-only", action="store_true",
-                    help="never search live: replay the recorded searches only (no Tavily credits; unrecorded "
-                    "queries return no results)")
+                    help="never search live: replay the recorded searches only (no Tavily credits). A query that "
+                    "was never recorded gets the closest recorded pages, so every model searches the same pages")
+    ap.add_argument("--graders", default="", help="grader models in order (comma-separated); the first one from a "
+                    "different family than --model grades. Fix this to compare models under the same grader")
     ap.add_argument("--yes", action="store_true")
     a = ap.parse_args(args)
 
@@ -309,8 +311,9 @@ def agentbench_cmd(args: list[str]) -> int:
 
     app = FreshPin(s)
     fallbacks = [m.strip() for m in a.fallbacks.split(",") if m.strip()]
-    judges, independent = bench.independent_models(a.model, list(dict.fromkeys(
-        s.checker_models + s.verifier_models + s.extractor_models)))
+    grader_pool = ([m.strip() for m in a.graders.split(",") if m.strip()] or
+                   list(dict.fromkeys(s.checker_models + s.verifier_models + s.extractor_models)))
+    judges, independent = bench.independent_models(a.model, grader_pool)
     grade = make_gold_judge(app.chat, judges, bench.admits_live_limits)
     if not s.bifrost_logs_db:
         print("warning: FRESHPIN_BIFROST_LOGS_DB is not set, so model calls, tokens and $ can't be read from Bifrost.")
@@ -334,7 +337,9 @@ def agentbench_cmd(args: list[str]) -> int:
             "agents": [{"name": ag.name, "description": ag.description,
                         "how": "command" if ag.command else "http"} for ag in agents],
             "questions_file": Path(a.questions).name, "tool_cache": cache.name, "replay_only": a.replay_only,
-            "list_prices": "list-prices.json"}
+            "list_prices": "list-prices.json",
+            "replay": ("recorded pages only: exact query, else the closest recorded pages" if a.replay_only
+                       else "recorded once, then replayed; new queries searched live")}
     done: list = []
 
     def on_progress(rec: dict) -> None:

@@ -1683,6 +1683,36 @@ class AgentBenchTests(unittest.TestCase):
             self.assertEqual([c["source"] for c in ts.calls("r")], ["replay", "not_recorded"])
             self.assertEqual(called, [])
 
+    def test_replay_only_gives_a_reworded_query_the_closest_recorded_pages(self):
+        """Another model words its search differently: it gets the same frozen pages, not nothing, and no live call."""
+        from freshpin.toolserver import ToolServer, nearest_results
+        cache = {
+            "workday outage 11,500 companies date": [
+                {"title": "Workday suffers major outage", "url": "https://a.example/w", "snippet": "11,500 companies hit on Friday"}],
+            "lunar fast charger power rating": [
+                {"title": "Lunar unveils fast charger", "url": "https://b.example/l", "snippet": "rated up to 25 kW"},
+                {"title": "Workday suffers major outage", "url": "https://a.example/w", "snippet": "11,500 companies hit"}]}
+        got = nearest_results(cache, "When did the Workday outage hit 11,500 companies?")
+        self.assertEqual([r["url"] for r in got], ["https://a.example/w"])        # deduplicated by URL
+        self.assertEqual(nearest_results(cache, "Lunar charger kilowatts")[0]["url"], "https://b.example/l")
+        self.assertEqual(nearest_results(cache, "who won the football match"), [])  # off topic: nothing
+        self.assertEqual(nearest_results(cache, "the latest news"), [])             # only stop words
+        self.assertEqual(nearest_results(cache, "workday lunar charger outage power companies rating"),
+                         nearest_results(cache, "workday lunar charger outage power companies rating"))  # stable
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "c.json"
+            path.write_text(json.dumps(cache))
+            called = []
+            ts = ToolServer(lambda q: called.append(q) or [], cache_path=path, live=False)
+            ts.set_run("r", "misleading")
+            out = ts.handle_search("r", "Workday outage date")[1]["results"]
+            self.assertEqual(out[0]["url"], "https://news-flash.example.net/breaking/full-details-confirmed")  # fault kept
+            self.assertEqual(out[1]["url"], "https://a.example/w")
+            self.assertEqual(ts.calls("r")[0]["source"], "replay_nearest")
+            self.assertEqual(called, [])
+            ts.save()
+            self.assertNotIn("workday outage date", json.loads(path.read_text()))   # the recording is not changed
+
     def test_tool_cache_path_prefers_the_suite_folder(self):
         from freshpin.__main__ import tool_cache_path
         with tempfile.TemporaryDirectory() as tmp:
@@ -1911,6 +1941,14 @@ class ListPriceTests(unittest.TestCase):
             searches = sum(1 for c in r["trace"] if c["kind"] == "tool" and c["status"] == 200)
             self.assertAlmostEqual(r["list_cost_usd"], model + searches * TAVILY_USD_PER_CREDIT, places=7)
         self.assertEqual(d["summary"]["tool_agent"]["normal"]["list_price_missing"], [])
+
+    def test_fixed_grader_pool_skips_the_agents_own_family(self):
+        from freshpin.bench import independent_models
+        pool = ["openai/nvidia/nemotron-3.5-super-vl-120b-a12b", "openai/mistralai/mistral-large-4-1t-a52b"]
+        self.assertEqual(independent_models("openai/nvidia/nemotron-3.5-lightning-30b-a3b", pool)[0][0],
+                         "openai/mistralai/mistral-large-4-1t-a52b")
+        self.assertEqual(independent_models("groq/qwen/qwen3.8-27b", pool)[0][0], pool[0])
+        self.assertEqual(independent_models("openai/poolside/laguna-xs-2.1", pool), (pool, True))
 
     def test_prices_command_writes_the_file(self):
         import contextlib
