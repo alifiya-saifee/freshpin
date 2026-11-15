@@ -208,7 +208,10 @@ def run_check(answer: str, *, chat: ChatBackend, search: SearchBackend, ledger: 
               extractor_models: list[str], verifier_models: list[str], token_budget: int,
               max_sources: int = 5, context: str = "", simulate_outage: bool = False,
               apply_to_ledger: bool = True, today: date | None = None,
-              checker_models: list[str] | None = None, recheck: bool = True) -> dict[str, Any]:
+              checker_models: list[str] | None = None, recheck: bool = True,
+              model_concurrency: int = 2) -> dict[str, Any]:
+    # Searches run 6 at a time; model calls run model_concurrency at a time, because free tiers limit
+    # tokens per minute (Groq's free gpt-oss-120b: 8,000) and bursts of parallel calls hit that limit.
     today = today or date.today()
     t0 = time.monotonic()
     budget = RunBudget(limit_tokens=token_budget)
@@ -232,7 +235,7 @@ def run_check(answer: str, *, chat: ChatBackend, search: SearchBackend, ledger: 
         c, srcs = pair
         return verify_claim(c, srcs, chat, verifier_models, budget, simulate_outage, today)
 
-    with ThreadPoolExecutor(max_workers=6) as pool:
+    with ThreadPoolExecutor(max_workers=max(1, model_concurrency)) as pool:
         verdicts = list(pool.map(do_verify, zip(checkable, all_sources)))
 
     # --- Recheck layer: for every claim the first judge could look at, search again (targeted at the
@@ -265,7 +268,7 @@ def run_check(answer: str, *, chat: ChatBackend, search: SearchBackend, ledger: 
             return None
         return recheck_claim(checkable[i], verdicts[i], graded_all[i], chat, checker, budget, simulate_outage, today)
 
-    with ThreadPoolExecutor(max_workers=6) as pool:
+    with ThreadPoolExecutor(max_workers=max(1, model_concurrency)) as pool:
         seconds = list(pool.map(do_second, range(len(checkable))))
 
     results = []

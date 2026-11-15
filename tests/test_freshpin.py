@@ -143,6 +143,12 @@ class FakeBifrost(BaseHTTPRequestHandler):
     def do_POST(self):  # noqa: N802
         body = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
         FakeBifrost.calls.append(body)
+        if body["model"] == "busy/model" and sum(c["model"] == "busy/model" for c in FakeBifrost.calls) == 1:
+            self.send_response(429)
+            self.send_header("Retry-After", "0")
+            self.end_headers()
+            self.wfile.write(b'{"error":"rate limit"}')
+            return
         if body["model"] == "bad/model" and not body.get("fallbacks"):
             self.send_response(503)
             self.end_headers()
@@ -187,6 +193,13 @@ class BifrostClientTests(unittest.TestCase):
         BifrostClient(self.url).chat_json("x", ["groq/openai/gpt-oss-120b"], "s", "u", b)
         self.assertEqual(b.traces[-1].served_by, "groq/openai/gpt-oss-120b")
         self.assertFalse(b.traces[-1].fallback_used)
+
+    def test_rate_limit_is_retried_once(self):
+        b = RunBudget(1000)
+        out = BifrostClient(self.url).chat_json("x", ["busy/model"], "s", "u", b)
+        self.assertEqual(out, {"ok": True})
+        self.assertEqual(sum(c["model"] == "busy/model" for c in FakeBifrost.calls), 2)
+        self.assertTrue(b.traces[-1].ok)
 
     def test_raises_when_everything_is_down(self):
         c = BifrostClient(self.url)

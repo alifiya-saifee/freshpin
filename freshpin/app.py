@@ -71,7 +71,7 @@ class FreshPin:
                                token_budget=self.s.run_token_budget, max_sources=self.s.max_sources_per_claim,
                                context=context, simulate_outage=simulate_outage,
                                checker_models=self.s.checker_models, recheck=self.s.recheck,
-                               apply_to_ledger=apply_to_ledger)
+                               apply_to_ledger=apply_to_ledger, model_concurrency=self.s.model_concurrency)
             report["mode"] = self.s.mode
             report["ledger"] = self.ledger.state()
             return report

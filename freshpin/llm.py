@@ -95,8 +95,24 @@ class BifrostClient:
         self.virtual_key = virtual_key
         self.timeout_s = timeout_s
         self.outage_model = outage_model
+        self.retry_wait_s = 3.0  # wait before the one retry after a rate limit (HTTP 429)
 
     def _post(self, payload: dict[str, Any]) -> dict[str, Any]:
+        """One retry after a short wait when the provider says "rate limit" (HTTP 429). Free tiers reset per minute,
+        so a brief pause usually works, and it beats marking the claim unverified."""
+        try:
+            return self._post_once(payload)
+        except urllib.error.HTTPError as exc:
+            if exc.code != 429:
+                raise
+            try:
+                wait = float(exc.headers.get("Retry-After") or self.retry_wait_s)
+            except (TypeError, ValueError):
+                wait = self.retry_wait_s
+            time.sleep(min(max(wait, 0.0), 10.0))
+            return self._post_once(payload)
+
+    def _post_once(self, payload: dict[str, Any]) -> dict[str, Any]:
         headers = {"Content-Type": "application/json"}
         if self.virtual_key:
             headers["x-bf-vk"] = self.virtual_key
