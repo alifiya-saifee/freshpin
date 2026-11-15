@@ -1425,6 +1425,9 @@ class AgentBenchTests(unittest.TestCase):
         root = Path(__file__).resolve().parent.parent
 
         class FakeLog:
+            def read(self, run_id):
+                return self.calls(run_id)
+
             def calls(self, run_id):
                 return [{"t": "2026-11-15 10:00:00", "kind": "model", "model": "m/good", "status": "success", "ms": 5,
                          "tokens_in": 100, "tokens_out": 20, "cost_usd": 0.001, "fallback_index": 0, "error": None}]

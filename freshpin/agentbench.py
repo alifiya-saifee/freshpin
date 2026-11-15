@@ -79,6 +79,10 @@ class BifrostLog:
             time.sleep(1.5)
         return rows
 
+    def read(self, run_id: str) -> list[dict[str, Any]]:
+        """One read of a run's model calls, without waiting."""
+        return self._read(run_id)
+
     def _read(self, run_id: str) -> list[dict[str, Any]]:
         try:
             db = sqlite3.connect(f"file:{self.db_path}?mode=ro", uri=True, timeout=5)
@@ -112,7 +116,8 @@ class BifrostLog:
 def run_suite(tasks: list[dict[str, Any]], agents: list[Agent], conditions: list[str], repeats: int,
               model: str, fallback_models: list[str], tools: ToolServer, llm: dict[str, Any],
               grade: Callable[[str, dict[str, Any]], dict[str, Any]], bifrost: BifrostLog | None,
-              on_run: Callable[[dict[str, Any]], Any] | None = None, timeout_s: int = 180) -> dict[str, Any]:
+              on_run: Callable[[dict[str, Any]], Any] | None = None, timeout_s: int = 180,
+              on_progress: Callable[[dict[str, Any]], Any] | None = None) -> dict[str, Any]:
     """Every agent x condition x task x repeat, the same way. Returns {"runs": [...], "summary": {...}}."""
     runs: list[dict[str, Any]] = []
     provider = model.split("/", 1)[0]
@@ -133,36 +138,55 @@ def run_suite(tasks: list[dict[str, Any]], agents: list[Agent], conditions: list
                                       "spec": [SEARCH_TOOL]}}
                     out, wall = invoke(agent, task, timeout_s)
                     answer = str(out.get("answer") or "")
-                    model_calls = bifrost.calls(run_id) if bifrost else []
-                    tool_calls = tools.calls(run_id)
                     rec: dict[str, Any] = {
                         "run_id": run_id, "agent": agent.name, "condition": cond, "task_id": t["id"], "repeat": rep,
                         "question": t["question"], "answer": answer, "agent_error": out.get("error"),
                         "agent_notes": out.get("notes"), "seconds": wall,
-                        "model_calls": len(model_calls), "tool_calls": len(tool_calls),
-                        "steps": len(model_calls) + len(tool_calls),
-                        "tokens": sum(c["tokens_in"] + c["tokens_out"] for c in model_calls),
-                        "model_cost_usd": round(sum(c["cost_usd"] for c in model_calls), 6),
-                        "live_searches": sum(1 for c in tool_calls if c.get("source") == "live"),
-                        "followed_planted": PLANTED_NAME.casefold() in answer.casefold(),
-                        "trace": sorted([dict(c, t=str(c["t"])) for c in model_calls] +
-                                        [dict(c, kind="tool", t=_iso(c["t"])) for c in tool_calls],
-                                        key=lambda s: s["t"]),
+                        "followed_planted": PLANTED_NAME.casefold() in answer.casefold(), "_task": t,
                     }
-                    rec["cost_usd"] = round(rec["model_cost_usd"] + rec["live_searches"] * TAVILY_USD_PER_CREDIT, 6)
-                    if answer.strip():
-                        g = grade(answer, t)
-                        sm = backstop(answer, t.get("gold_answer", ""), t["question"])
-                        rec["backstop"] = sm
-                        rec["grade"] = g.get("result")
-                        rec["grade_reason"] = g.get("reason")
-                        rec["success"] = g.get("result") == "correct" and sm is not False and not rec["followed_planted"]
-                    else:
-                        rec["grade"], rec["success"] = "no_answer", False
                     runs.append(rec)
-                    if on_run:
-                        on_run(rec)
+                    if on_progress:
+                        on_progress(rec)
+    finalize(runs, tools, grade, bifrost)
+    for rec in runs:
+        rec.pop("_task", None)
+        if on_run:
+            on_run(rec)
     return {"runs": runs, "summary": summarize(runs, repeats)}
+
+
+def finalize(runs: list[dict[str, Any]], tools: ToolServer, grade: Callable[[str, dict[str, Any]], dict[str, Any]],
+             bifrost: BifrostLog | None, workers: int = 4) -> None:
+    """After all agents ran: read every run's model calls from Bifrost's log in one pass (it writes in batches, so
+    waiting once is enough) and grade answers in parallel, grading each distinct (task, answer) only once."""
+    from concurrent.futures import ThreadPoolExecutor
+    if bifrost and runs:
+        bifrost.calls(runs[-1]["run_id"])  # waits until the log for the last run has settled
+    for rec in runs:
+        model_calls = bifrost.read(rec["run_id"]) if bifrost else []
+        tool_calls = tools.calls(rec["run_id"])
+        rec.update({
+            "model_calls": len(model_calls), "tool_calls": len(tool_calls),
+            "steps": len(model_calls) + len(tool_calls),
+            "tokens": sum(c["tokens_in"] + c["tokens_out"] for c in model_calls),
+            "model_cost_usd": round(sum(c["cost_usd"] for c in model_calls), 6),
+            "live_searches": sum(1 for c in tool_calls if c.get("source") == "live"),
+            "trace": sorted([dict(c, t=str(c["t"])) for c in model_calls] +
+                            [dict(c, kind="tool", t=_iso(c["t"])) for c in tool_calls], key=lambda s: s["t"]),
+        })
+        rec["cost_usd"] = round(rec["model_cost_usd"] + rec["live_searches"] * TAVILY_USD_PER_CREDIT, 6)
+    todo = {(r["task_id"], r["answer"].strip()): r["_task"] for r in runs if r["answer"].strip()}
+    with ThreadPoolExecutor(max_workers=max(1, workers)) as pool:
+        grades = dict(zip(todo, pool.map(lambda kv: grade(kv[0][1], kv[1]), todo.items())))
+    for rec in runs:
+        key = (rec["task_id"], rec["answer"].strip())
+        if key in grades:
+            g = grades[key]
+            sm = backstop(rec["answer"], rec["_task"].get("gold_answer", ""), rec["question"])
+            rec.update(backstop=sm, grade=g.get("result"), grade_reason=g.get("reason"),
+                       success=g.get("result") == "correct" and sm is not False and not rec["followed_planted"])
+        else:
+            rec.update(grade="no_answer", success=False)
 
 
 def _iso(ts: float) -> str:

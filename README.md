@@ -1,18 +1,45 @@
 # FreshPin
 
-**Benchmarks AI agents, not just models, on facts that changed after their training.**
+**A benchmarking platform for AI agents, not just models: research agents, on facts that changed after their training.**
 
-AI answers go stale quietly: last week's outage, this year's law, today's price. FreshPin measures how different **agent configurations** of the same model cope (the model alone, the model with search first, a tool-using agent that decides for itself whether to look things up, and the model after being told what was wrong) on questions built from **this week's news**, each with a gold answer and a quote found word for word in its source. Answers are graded against the **gold answers** by one model from a family none of the contestants belongs to, and a whole-word check of the gold answer's key names and numbers must agree. FreshPin's **stale-answer detector** (Tavily evidence, two blind judges from different model families through Bifrost, fixed rules in code) checks each answer claim by claim, powers the grounding and the repair feedback, and is itself tested against the gold set (`--self-test`). Its **pin ledger** shows what a stale answer would have broken: approved decisions that relied on the old fact reopen for a named person.
+Two agents on the same model can behave very differently because of their prompts, tools, retries and fallbacks. FreshPin runs **any agent, built with any framework or none**, on the same research tasks (questions about *this week's* news, each with a gold answer and a quote found word for word in its source), **several times**, under **normal and failure conditions**, and records **success, steps, tool calls, tokens, $ cost and time** for every run, with a **step-by-step trace** you can inspect and compare in the browser.
 
-Built for the Geek Room AI Global Hackathon 2026. **Primary problem statement:** *Build a Benchmarking Platform for AI Agents, Not Just Models* (Bifrost track). **Integrated:** *Build a Stale-Answer Detector for AI Applications* (Tavily track).
+Built for the Geek Room AI Global Hackathon 2026. **Primary problem statement:** *Build a Benchmarking Platform for AI Agents, Not Just Models* (Bifrost track), category **research agents**. **Integrated:** *Build a Stale-Answer Detector for AI Applications* (Tavily track): FreshPin's detector grounds agents, checks answers claim by claim and is tested against the gold set.
+
+### How FreshPin meets the brief
+
+| Mandatory requirement | How |
+|---|---|
+| **Framework independence** | An agent is **any command or HTTP endpoint** that reads a task JSON and prints an answer JSON. It calls models through the **Bifrost** gateway URL it is given and tools through FreshPin's **tool server** URL. Nothing to rewrite: the included outside agent (`examples/agents/reflect_agent.py`) imports neither FreshPin nor any framework. |
+| **Consistent evaluation** | Same tasks, same tools, same recorded evidence for every agent. Per run: **success** (graded against gold), **steps** (model + tool calls), **tool calls**, **tokens** and **$ cost** (read from Bifrost's own request log, tagged with the run id via `x-bf-session-id`), Tavily credits, **time**. |
+| **Repeatability** | `--repeats k`: every task k times. Reported: success with a 95% Wilson interval, **pass^k** (right every time), pass@k, consistency, p50/p95 time. Searches are recorded once and replayed, so repeats differ only by the agent. |
+| **Failure testing** | Controlled conditions: **model unavailable** (the given model fails; fallbacks are offered), **broken tool** (search returns 503), **misleading source** (a planted top result with a wrong answer and a hidden instruction). Reported: drop vs normal, recoveries, errors, and how often an agent **repeated the planted answer**. |
+| **Inspection & comparison** | `/bench` in the web app: a leaderboard (agent × condition), every run, and a **step-by-step trace** of each run: each model call (model, tokens, $, ms, fallbacks, errors), each tool call (query, results, injected fault), the answer and the grader's reason. |
 
 ```bash
-python -m freshpin bench-build --n 12                      # this week's news -> questions with gold answers + quotes
-python -m freshpin bench --arms bare,grounded,agent,repair --models <bifrost models> --questions bench/fresh-<date>.json
-python -m unittest discover -s tests                        # no keys needed; offline replay mode
+python -m freshpin bench-build --n 12                                  # this week's news -> research tasks with gold answers
+python -m freshpin agentbench --questions bench/fresh-<date>.json --max 5 --repeats 3 \
+    --model gemini/gemini-3.5-flash-lite --fallbacks groq/openai/gpt-oss-120b --yes
+python -m freshpin agentbench ... --agent 'mine=python3 my_agent.py'   # add YOUR agent (any language, any framework)
+python -m freshpin serve                                               # then open http://127.0.0.1:8787/bench
+python -m unittest discover -s tests                                   # offline, no keys
 ```
 
-**Four ways in:** the agent arena above (CLI), an **MCP server** so AI assistants (Claude Code, Claude Desktop, Cursor) ground a question before answering and check a draft before replying, a web app for people, and a JSON API.
+### The agent contract
+
+FreshPin sends each run as JSON on stdin (or as a POST body for `--agent-url`):
+
+```json
+{"task_id": "fresh-2", "run_id": "fp-3c1e…", "question": "…", "today": "2026-11-15",
+ "model": "gemini/gemini-3.5-flash-lite", "fallback_models": ["groq/openai/gpt-oss-120b"],
+ "llm":   {"base_url": "http://localhost:8080/v1", "headers": {"x-bf-session-id": "fp-3c1e…", "x-bf-vk": "…"}},
+ "tools": {"base_url": "http://127.0.0.1:53211", "headers": {"X-Run-Id": "fp-3c1e…"},
+           "spec": [{"type": "function", "function": {"name": "search_web", "…": "…"}}]}}
+```
+
+The agent prints `{"answer": "…"}` (optionally `"notes"`). Any OpenAI-compatible client works for `llm` (set the base URL and headers); the tool is a plain HTTP POST `{"query": "…"}` to `/tools/search_web`. Built-in reference agents (`python -m freshpin.agents bare | search_first | tool_agent`) use the same contract as separate processes, so every agent is measured the same way. Set `FRESHPIN_BIFROST_LOGS_DB` to Bifrost's `logs.db` so FreshPin can read each run's model calls, tokens and cost.
+
+**Also in the box:** the stale-answer detector as an **MCP server** (assistants ground a question before answering and check a draft before replying), a web app for people with a **pin ledger** (approved decisions that relied on a changed fact reopen for a named person), and a JSON API.
 
 ![FreshPin screenshot](docs/screenshot.png)
 

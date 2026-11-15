@@ -312,23 +312,31 @@ def agentbench_cmd(args: list[str]) -> int:
             "questions_file": Path(a.questions).name}
     done: list = []
 
-    def on_run(rec: dict) -> None:
+    def on_progress(rec: dict) -> None:
         done.append(rec)
+        print(f"  ran {len(done)}/{n_runs}: {rec['agent'][:22]:22} {rec['condition']:13} {rec['task_id']:9} "
+              f"r{rec['repeat']} {rec['seconds']}s{' ERROR ' + str(rec['agent_error'])[:60] if rec.get('agent_error') else ''}",
+              flush=True)
+        if len(done) % 20 == 0:  # save raw answers as we go, so a crash doesn't lose them
+            path.with_suffix(".partial.json").write_text(_json.dumps({"meta": meta, "runs": [
+                {k: v for k, v in r.items() if k != "_task"} for r in done]}, indent=1, ensure_ascii=False), encoding="utf-8")
+
+    def on_run(rec: dict) -> None:
         mark = "ok " if rec["success"] else "-- "
         print(f"  {mark}{rec['agent'][:22]:22} {rec['condition']:13} {rec['task_id']:9} r{rec['repeat']} "
               f"steps={rec['steps']} tools={rec['tool_calls']} tokens={rec['tokens']} ${rec['cost_usd']:.4f} "
               f"{rec['seconds']}s {rec['grade']}", flush=True)
-        if len(done) % 5 == 0:  # save as we go
-            partial = {"meta": meta, "runs": done, "summary": summarize(done, a.repeats)}
-            path.write_text(_json.dumps(partial, indent=1, ensure_ascii=False), encoding="utf-8")
 
     try:
-        result = run_suite(tasks, agents, conds, a.repeats, a.model, fallbacks, tools, llm, grade, bifrost, on_run)
+        result = run_suite(tasks, agents, conds, a.repeats, a.model, fallbacks, tools, llm, grade, bifrost, on_run,
+                           on_progress=on_progress)
+        print("All agents ran; reading Bifrost's log and grading (4 at a time)...", flush=True)
     finally:
         tools.stop()
     result["meta"] = dict(meta, live_searches=tools.live_searches)
     path.write_text(_json.dumps(result, indent=1, ensure_ascii=False), encoding="utf-8")
     path.with_suffix(".md").write_text(leaderboard_markdown(result), encoding="utf-8")
+    path.with_suffix(".partial.json").unlink(missing_ok=True)
     print()
     print(leaderboard_markdown(result))
     print(f"Saved: {path}\nOpen the comparison page: python -m freshpin serve, then http://127.0.0.1:{s.port}/bench")
