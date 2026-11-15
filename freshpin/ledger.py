@@ -18,7 +18,7 @@ from __future__ import annotations
 import hashlib
 import json
 import sqlite3
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -65,6 +65,26 @@ class Ledger:
             "SELECT f.key, f.statement, f.claim_type FROM facts f JOIN "
             "(SELECT key, MAX(version) v FROM facts GROUP BY key) m ON f.key=m.key AND f.version=m.v").fetchall()
         return [dict(r) for r in rows]
+
+    def facts_due(self, today: date, half_life_days: dict[str, int], force: bool = False) -> list[dict[str, Any]]:
+        """Pinned facts (latest version) whose last check is older than their type's half-life, or never checked.
+        force=True returns every pinned fact."""
+        rows = self.db.execute(
+            "SELECT f.key, f.statement, f.claim_type, f.checked_at FROM facts f JOIN "
+            "(SELECT key, MAX(version) v FROM facts GROUP BY key) m ON f.key=m.key AND f.version=m.v "
+            "WHERE f.key IN (SELECT fact_key FROM pins) ORDER BY f.key").fetchall()
+        due = []
+        for r in rows:
+            checked = r["checked_at"]
+            age = (today - date.fromisoformat(checked[:10])).days if checked else None
+            limit = half_life_days.get(r["claim_type"], half_life_days.get("other", 365))
+            if force or age is None or age >= limit:
+                due.append({**dict(r), "age_days": age, "half_life_days": limit})
+        return due
+
+    def decision_statuses(self) -> dict[str, dict[str, str]]:
+        return {r["id"]: {"title": r["title"], "owner": r["owner"], "status": r["status"]}
+                for r in self.db.execute("SELECT id, title, owner, status FROM decisions").fetchall()}
 
     def _insert_fact(self, key: str, statement: str, claim_type: str, band: str, score: int | None,
                      evidence: list[dict[str, Any]]) -> int:

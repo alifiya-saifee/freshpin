@@ -15,6 +15,7 @@ USAGE = """usage:
   python -m freshpin bench --models a,b [--max N] [--questions file] [--no-recheck] [--yes]
                                            test models on facts that change; print a freshness scorecard
   python -m freshpin bench-build [--n 8]   build a fresh-events question set (gold answers + quotes) from this week's news
+  python -m freshpin watch [--all]         re-check pinned facts past their half-life; alert on reopened decisions
   python -m freshpin check "answer text"   check an answer and print the JSON report
   python -m freshpin sample <id>           load a sample ledger, check its answer, print a summary
 """
@@ -36,6 +37,8 @@ def main(argv: list[str]) -> int:
         return bench_cmd(argv[1:])
     if cmd == "bench-build":
         return bench_build_cmd(argv[1:])
+    if cmd == "watch":
+        return watch_cmd(argv[1:])
     app = FreshPin(settings())
     if cmd == "check" and len(argv) > 1:
         print(json.dumps(app.check(" ".join(argv[1:])), indent=2, ensure_ascii=False))
@@ -65,6 +68,35 @@ def main(argv: list[str]) -> int:
     print(USAGE)
     return 2
 
+
+
+def watch_cmd(args: list[str]) -> int:
+    import argparse
+    from datetime import date
+
+    from .watch import alert_text, post_webhook, run_watch
+
+    ap = argparse.ArgumentParser(prog="python -m freshpin watch")
+    ap.add_argument("--all", action="store_true", help="re-check every pinned fact, not only those past their half-life")
+    a = ap.parse_args(args)
+    s = settings()
+    app = FreshPin(s)
+
+    def check(statement: str, claim_type: str) -> dict:
+        return app.check(statement, context=f"Re-check of a pinned {claim_type} fact")
+
+    res = run_watch(app.ledger, check, date.today(), force=a.all)
+    print(f"{res['due']} pinned fact(s) due; checked {len(res['checked'])}; errors {len(res['errors'])}.")
+    for e in res["errors"]:
+        print("  error:", e)
+    if not res["alerts"]:
+        print("No decisions changed.")
+        return 0
+    text = alert_text(res["alerts"])
+    print(text)
+    if s.webhook_url:
+        print("Webhook:", post_webhook(s.webhook_url, text))
+    return 0
 
 
 def bench_build_cmd(args: list[str]) -> int:

@@ -748,6 +748,61 @@ class FreshBenchTests(unittest.TestCase):
                                        "wrong_claims": 1, "wrong_caught": 1, "wrong_missed": 0})
 
 
+class WatchTests(unittest.TestCase):
+    def test_due_facts_follow_half_life_and_alerts_fire_once(self):
+        from freshpin.scoring import HALF_LIFE_DAYS
+        from freshpin.watch import alert_text, run_watch
+        with tempfile.TemporaryDirectory() as tmp:
+            app = replay_app(tmp)
+            app.load_sample("dubai_building_law")
+            led = app.ledger
+            led.db.execute("UPDATE facts SET checked_at='2026-11-10T00:00:00Z'")  # checked 4 days before TODAY
+            led.db.commit()
+            self.assertEqual(led.facts_due(TODAY, HALF_LIFE_DAYS), [])  # regulations: half-life 240 days
+            later = date(2027, 8, 1)
+            self.assertTrue(len(led.facts_due(later, HALF_LIFE_DAYS)) >= 2)
+            self.assertTrue(len(led.facts_due(TODAY, HALF_LIFE_DAYS, force=True)) >= 2)
+
+            answer = app.samples()["dubai_building_law"]["answer"]
+            calls = []
+
+            def check(statement, claim_type):  # first call: the full replay check, which reopens decisions
+                calls.append(statement)
+                return app.check(answer) if len(calls) == 1 else {"claims": []}
+
+            res = run_watch(led, check, TODAY, force=True)
+            self.assertEqual(sorted(a["id"] for a in res["alerts"]), ["PB-LEASE-3", "Q-112"])
+            text = alert_text(res["alerts"])
+            self.assertIn("Q-112", text)
+            self.assertNotIn("sk-bf-", text)
+            self.assertNotIn("tvly-", text)
+            again = run_watch(led, lambda s, t: {"claims": []}, TODAY, force=True)
+            self.assertEqual(again["alerts"], [])  # already reopened: no repeat alert
+
+    def test_webhook_posts_text_and_never_raises(self):
+        from freshpin.watch import post_webhook
+        got = []
+
+        class Catch(BaseHTTPRequestHandler):
+            def log_message(self, *a):
+                pass
+
+            def do_POST(self):  # noqa: N802
+                got.append(json.loads(self.rfile.read(int(self.headers["Content-Length"]))))
+                self.send_response(200)
+                self.end_headers()
+
+        httpd = ThreadingHTTPServer(("127.0.0.1", 0), Catch)
+        threading.Thread(target=httpd.serve_forever, daemon=True).start()
+        try:
+            self.assertEqual(post_webhook(f"http://127.0.0.1:{httpd.server_port}/hook", "hello"), "sent")
+        finally:
+            httpd.shutdown()
+            httpd.server_close()
+        self.assertEqual(got, [{"text": "hello"}])
+        self.assertTrue(post_webhook("http://127.0.0.1:9/nothing", "x", timeout_s=2).startswith("not sent"))
+
+
 class McpTests(unittest.TestCase):
     """The MCP server, driven the way an AI assistant drives it: JSON lines in, JSON lines out."""
 

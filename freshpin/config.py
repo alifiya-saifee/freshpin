@@ -50,6 +50,8 @@ class Settings:
     # "provider/" prefixes of models that should run with thinking off (comma-separated), e.g. NVIDIA models
     # reached through Bifrost's OpenAI-compatible provider: "openai/". Gemini and Groq reject the setting.
     no_thinking_prefixes: list[str] = field(default_factory=lambda: _list("FRESHPIN_NO_THINKING_PREFIXES", ""))
+    # Where alerts go (Slack-style incoming webhook). Empty = print only.
+    webhook_url: str = field(default_factory=lambda: os.environ.get("FRESHPIN_WEBHOOK_URL", ""))
     # Model calls at the same time. Free tiers limit tokens per minute, so keep this low.
     model_concurrency: int = field(default_factory=lambda: int(os.environ.get("FRESHPIN_MODEL_CONCURRENCY", "2")))
     # Used by the "simulate outage" switch: a model that will fail, so Bifrost must fall back.
