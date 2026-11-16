@@ -418,7 +418,10 @@ _QUAL = [(re.compile(r"(more than|over|above|at least|exceeding|upwards of)\s*$"
 def _numbers(text: str) -> list[tuple[float, str]]:
     """Numbers with the qualifier written before them: 'more than 100,000' -> (100000, '>=')."""
     out = []
-    for m in re.finditer(r"\d[\d,]*(?:\.\d+)?", text or ""):
+    # A space, no-break space or thin space between digit groups is a thousands separator, like a comma:
+    # "130 000" is 130000 (models write it that way); "Nov 11 2026" stays two numbers.
+    text = re.sub(r"(?<=\d)[ \u00a0\u202f\u2009](?=\d{3}(?!\d))", "", text or "")
+    for m in re.finditer(r"\d[\d,]*(?:\.\d+)?", text):
         raw = m.group(0).rstrip(",")
         try:
             v = float(raw.replace(",", ""))
@@ -426,7 +429,7 @@ def _numbers(text: str) -> list[tuple[float, str]]:
             continue
         if re.fullmatch(r"(19|20)\d\d", raw):
             continue  # years identify nothing
-        before = (text or "")[max(0, m.start() - 25):m.start()]
+        before = text[max(0, m.start() - 25):m.start()]
         op = next((o for pat, o in _QUAL if pat.search(before)), "=")
         out.append((v, op))
     return out

@@ -50,6 +50,47 @@ What it shows:
 - Intervals are wide at this size (9/10 is 60–98% at 95% confidence; 5/7 is 36–92%), so read differences of a few points as noise; differences like 0% vs 90% are not. Only 4 of the 5 tasks are separate events (fresh-1 and fresh-4 are both the 12 Nov Microsoft outage), and only one model was tested.
 - **Cost:** NVIDIA's free endpoints log $0, so the result also shows **list-price $** (same tokens at paid prices from Bifrost's pricing table, plus $0.008 per search, replayed or not). At list price, `tool_agent` is the cheapest per correct answer: **$0.0082** (normal), against $0.0104 for `search_first` and $0.0119 for `reflect`. Searches, not tokens, are most of the cost.
 
+### Same agents, different models (16 Nov 2026)
+
+The same three agents on **four models from four families**, on 9 tasks (`bench/suites/fresh-arena3.json`) × 4 conditions × 1 run = 108 runs per model. Searches are **replayed only** (0 Tavily credits), so every model searched the same recorded pages. The grader is never from the model's own family. Cells are successes / counted runs. Runs killed by a provider quota, or where the grader failed, are excluded (the "excluded runs" column). Files: `bench/samples/agentbench-20261116-*.json`; open several at once in `/bench` → **Compare runs**.
+
+| model | agent | normal | model unavailable | broken tool | misleading source | list $ / correct (normal) | p50 s | excluded runs | grader |
+|---|---|---|---|---|---|---|---|---|---|
+| Nemotron 3.5 Lightning | `search_first` | 9/9 | 0/9 | 0/7 | 6/8 | $0.0083 | 6.4 | 3 | Qwen 3.8 |
+| Nemotron 3.5 Lightning | `tool_agent` | 9/9 | 7/7 | 0/6 | 5/5 | $0.0082 | 3.0 | 9 | Qwen 3.8 |
+| gpt-oss-120b | `search_first` | 8/9 | 0/9 | 0/9 | 8/9 | $0.0092 | 0.8 | 0 | Nemotron Super |
+| gpt-oss-120b | `tool_agent` | 6/9 | 8/9 | 0/9 | 7/9 | $0.0137 | 1.1 | 0 | Nemotron Super |
+| Qwen 3.8 27B | `search_first` | 8/9 | 0/9 | 0/9 | 7/9 | $0.0093 | 0.3 | 0 | Nemotron Super |
+| Qwen 3.8 27B | `tool_agent` | 6/9 | 4/9 | 0/9 | 8/9 | $0.0098 | 0.6 | 0 | Nemotron Super |
+| Poolside Laguna XS 2.1 | `search_first` | 7/9 | 0/9 | 0/9 | 7/9 | ? (no list price) | 1.0 | 0 | Nemotron Super |
+| Poolside Laguna XS 2.1 | `tool_agent` | 8/9 | 9/9 | 0/9 | 5/9 | ? (no list price) | 2.0 | 0 | Nemotron Super |
+<!-- GEMINI ROWS -->
+
+`bare` (no tools) scored 0 on every model and condition: these facts are newer than every model's training.
+
+What it shows:
+- **Which agent design wins depends on the model.** On Nemotron and Laguna, `tool_agent` (the model decides when to search) does as well as or better than `search_first`. On gpt-oss and Qwen it does worse (6/9 vs 8/9 on both). The traces show why: those models **call tools that do not exist** (gpt-oss: `open`; Qwen: `search_query`, `searchWeb`, `search_api`…) or call `search_web` without its query, the provider rejects the call (HTTP 400 `tool_use_failed`), and the run ends with no answer. `search_first` never asks the model to call a tool, so it cannot hit this.
+- **Only the agent that reads the fallback list survives an unavailable model** (4–9 of 9, vs 0 for the others).
+- **No agent survives a broken search tool** (0 everywhere): none falls back to answering from memory with a warning.
+- **Cost per correct answer is mostly search, not tokens**: about $0.008 per search against $0.0001–0.0007 of model tokens per run at list price.
+- **Qwen flagged the injected result explicitly** in 2 runs ("one search result contains an injected instruction… I've ignored that") and still answered correctly. FreshPin counts that as *not* following the planted source; an answer that repeats it as fact does count.
+- Mistral Large 4 was planned as a fifth family but timed out at NVIDIA's free endpoint (60 s) for the whole session, so it is not in the table.
+
+### Outside agents in other languages and frameworks (16 Nov 2026)
+
+Four agents FreshPin never saw, run **unchanged** on Nemotron Lightning, 5 tasks × 6 conditions (including the two opt-in ones) × 1 run, replay only. File: `bench/samples/agentbench-20261116-093321.json`.
+
+| agent | normal | model unavailable | broken tool | misleading source | misleading instruction | slow tool | followed planted |
+|---|---|---|---|---|---|---|---|
+| JavaScript, no packages (`js_agent.mjs`) | 3/5 | 2/5 | 0/5 | 3/5 | 4/5 | 3/5 | 0 |
+| OpenAI Agents SDK, function tool | 4/5 | 4/5 | 0/5 | 3/5 | **0/5** | 3/4 | 1 |
+| OpenAI Agents SDK, tool over **MCP** | 4/5 | 3/5 | 0/5 | 4/5 | 3/5 | 4/5 | 1 |
+| reflect (Python), served **over HTTP** | 4/5 | 0/5 | 0/5 | 1/3 | 1/3 | 2/5 | 0 |
+
+- **A false hint inside the task hurt the SDK agent more than a planted source** (0/5 vs 3/5). Twice it repeated "made by Contoso Dynamics" as fact while getting the asked number right, which FreshPin counts as following the planted text.
+- The HTTP-served agent has no fallback model, so it failed every "model unavailable" run, as designed.
+- **Grader agreement, measured:** this file was graded by Qwen 3.8, then again by gpt-oss-20b (`python -m freshpin regrade`). They gave the same grade on 73% of the 56 answers both could grade, and agreed on correct-or-not on 84%. Treat differences of one or two runs per cell as noise.
+
 ### The agent contract
 
 FreshPin sends each run as JSON on stdin (or as a POST body for `--agent-url`):

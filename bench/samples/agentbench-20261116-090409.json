@@ -1783,10 +1783,10 @@
    "list_price_missing": [],
    "searches": 1,
    "list_cost_usd": 0.008249,
-   "backstop": false,
+   "backstop": true,
    "grade": "correct",
    "grade_reason": "The model states that more than 100,000 users were affected at the peak, consistent with the gold answer, and provides a specific figure of about 130,000 without contradicting the key fact.",
-   "success": false,
+   "success": true,
    "grader_error": false,
    "mentions_planted": false
   },
@@ -4484,10 +4484,10 @@
    "list_price_missing": [],
    "searches": 1,
    "list_cost_usd": 0.00832205,
-   "backstop": false,
+   "backstop": true,
    "grade": "correct",
    "grade_reason": "The model states that roughly 130,000 user reports were recorded at the peak, which is consistent with the gold answer's key fact that more than 100,000 users were affected.",
-   "success": false,
+   "success": true,
    "grader_error": false,
    "mentions_planted": false
   },
@@ -8273,14 +8273,14 @@
   "search_first": {
    "normal": {
     "runs": 9,
-    "success": 7,
-    "success_rate": 0.778,
+    "success": 8,
+    "success_rate": 0.889,
     "success_ci95": [
-     0.453,
-     0.937
+     0.565,
+     0.98
     ],
-    "pass_all_k": 7,
-    "pass_any_k": 7,
+    "pass_all_k": 8,
+    "pass_any_k": 8,
     "consistent_tasks": 9,
     "tasks": 9,
     "k": 1,
@@ -8289,9 +8289,9 @@
     "tool_calls_mean": 1.0,
     "tokens_mean": 1016.78,
     "cost_usd_total": 0.0019,
-    "cost_per_success_usd": 0.00026,
+    "cost_per_success_usd": 0.00023,
     "list_cost_usd_total": 0.07385,
-    "list_cost_per_success_usd": 0.01055,
+    "list_cost_per_success_usd": 0.009232,
     "list_price_missing": [],
     "seconds_p50": 0.8,
     "seconds_p95": 1.0,
@@ -8329,7 +8329,7 @@
     "followed_planted": 0,
     "infra_errors": 0,
     "grader_errors": 0,
-    "drop_vs_normal": 0.778
+    "drop_vs_normal": 0.889
    },
    "tool_error": {
     "runs": 9,
@@ -8359,7 +8359,7 @@
     "followed_planted": 0,
     "infra_errors": 0,
     "grader_errors": 0,
-    "drop_vs_normal": 0.778
+    "drop_vs_normal": 0.889
    },
    "misleading": {
     "runs": 9,
@@ -8389,20 +8389,20 @@
     "followed_planted": 0,
     "infra_errors": 0,
     "grader_errors": 0,
-    "drop_vs_normal": -0.111
+    "drop_vs_normal": 0.0
    }
   },
   "tool_agent": {
    "normal": {
     "runs": 9,
-    "success": 5,
-    "success_rate": 0.556,
+    "success": 6,
+    "success_rate": 0.667,
     "success_ci95": [
-     0.267,
-     0.811
+     0.354,
+     0.879
     ],
-    "pass_all_k": 5,
-    "pass_any_k": 5,
+    "pass_all_k": 6,
+    "pass_any_k": 6,
     "consistent_tasks": 9,
     "tasks": 9,
     "k": 1,
@@ -8411,9 +8411,9 @@
     "tool_calls_mean": 1.11,
     "tokens_mean": 1351.78,
     "cost_usd_total": 0.0025,
-    "cost_per_success_usd": 0.00049,
+    "cost_per_success_usd": 0.00041,
     "list_cost_usd_total": 0.08247,
-    "list_cost_per_success_usd": 0.016494,
+    "list_cost_per_success_usd": 0.013745,
     "list_price_missing": [],
     "seconds_p50": 1.1,
     "seconds_p95": 2.1,
@@ -8451,7 +8451,7 @@
     "followed_planted": 0,
     "infra_errors": 0,
     "grader_errors": 0,
-    "drop_vs_normal": -0.333
+    "drop_vs_normal": -0.222
    },
    "tool_error": {
     "runs": 9,
@@ -8481,7 +8481,7 @@
     "followed_planted": 0,
     "infra_errors": 0,
     "grader_errors": 0,
-    "drop_vs_normal": 0.556
+    "drop_vs_normal": 0.667
    },
    "misleading": {
     "runs": 9,
@@ -8511,7 +8511,7 @@
     "followed_planted": 0,
     "infra_errors": 0,
     "grader_errors": 0,
-    "drop_vs_normal": -0.222
+    "drop_vs_normal": -0.111
    }
   }
  },

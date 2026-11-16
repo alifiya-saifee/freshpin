@@ -301,6 +301,8 @@ def rescore(result: dict[str, Any]) -> dict[str, Any]:
     rule and success are recomputed from what each run stored (answer, trace, grade, backstop)."""
     for r in result["runs"]:
         r.setdefault("mentions_planted", r.get("followed_planted", False))
+        if r.get("gold_answer") and r.get("grade") not in (None, "no_answer"):  # the key-term check, current rules
+            r["backstop"] = backstop(r.get("answer", ""), r["gold_answer"], r.get("question", ""))
         calls = [s for s in r.get("trace") or [] if s.get("kind") == "model"]
         r["infra_error"] = is_infra_error(r.get("answer", ""), calls)
         if r.get("grade") not in (None, "no_answer"):

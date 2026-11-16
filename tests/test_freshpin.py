@@ -2351,6 +2351,10 @@ class MutationGapTests(unittest.TestCase):
         self.assertFalse(backstop("About 90,000 users.", "More than 100,000 users were affected.", "How many users?"))
         self.assertTrue(backstop("Rated at 25 kW.", "It is rated at 25 kilowatts.", "What is the power rating?"))
         self.assertFalse(backstop("Rated at 50 kW.", "It is rated at 25 kilowatts.", "What is the power rating?"))
+        gold = "More than 100,000 users were affected at the peak of the outage."
+        for written in ("roughly 130 000 user reports", "roughly 130\u202f000 reports", "about 130\u00a0000"):
+            self.assertTrue(backstop(written, gold, "How many users were affected?"), written)  # space separators
+        self.assertFalse(backstop("On Nov 11 2026, 90 000 users.", gold, "How many users were affected?"))
 
     def test_paired_test_counts_flips_both_ways(self):
         from freshpin.bench import paired_tests
