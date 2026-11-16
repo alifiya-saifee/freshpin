@@ -78,7 +78,11 @@ def nearest_results(cache: dict[str, list[dict[str, Any]]], query: str, k: int =
         for r in results:
             score = len(q & (_words(r.get("title", "")) | _words(r.get("snippet", ""))))  # the page's own words
             url = r.get("url") or r.get("title") or ""
-            if score > best.get(url, (-1, None))[0]:
+            prev = best.get(url)
+            # The same page is often recorded under several queries with different snippets: among equal scores keep
+            # the same copy whatever the file order (longest snippet, then the text itself), so replay is stable.
+            if prev is None or (score, len(r.get("snippet") or ""), json.dumps(r, sort_keys=True)) > \
+                    (prev[0], len(prev[1].get("snippet") or ""), json.dumps(prev[1], sort_keys=True)):
                 best[url] = (score, r)
     need = max(2, -(-len(q) * 2 // 5))  # ceil(40%)
     ranked = sorted(((sc, url, r) for url, (sc, r) in best.items() if sc >= need), key=lambda x: (-x[0], x[1]))

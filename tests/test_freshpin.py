@@ -1885,6 +1885,9 @@ class AgentBenchTests(unittest.TestCase):
         self.assertEqual(nearest_results(cache, "the latest news"), [])             # only stop words
         self.assertEqual(nearest_results(cache, "workday lunar charger outage power companies rating"),
                          nearest_results(cache, "workday lunar charger outage power companies rating"))  # stable
+        flipped = dict(reversed(list(cache.items())))                                 # file order must not matter
+        for q in ("workday outage companies", "lunar charger rating", "workday 11,500 companies hit"):
+            self.assertEqual(nearest_results(cache, q), nearest_results(flipped, q), q)
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "c.json"
             path.write_text(json.dumps(cache))
