@@ -2496,17 +2496,19 @@ class BenchMutationTests(unittest.TestCase):
         from freshpin.bench import backstop
         self.assertTrue(backstop("About 40 people.", "Fewer than 50 people were hurt.", "How many were hurt?"))
         self.assertFalse(backstop("About 80 people.", "Fewer than 50 people were hurt.", "How many were hurt?"))
+        self.assertTrue(backstop("It costs 27 dollars.", "It costs about 25 dollars.", "What does it cost?"))
+        self.assertFalse(backstop("It costs 50 dollars.", "It costs about 25 dollars.", "What does it cost?"))  # outside 25%
 
     def test_scorecard_counts_contradicted_as_stale_and_fixes_after_feedback(self):
         from freshpin.bench import scorecard
         def c(v):
             return {"verdict": v, "score": 50}
-        rows = [{"claims": [c("stale"), c("contradicted"), c("current"), c("current")],
+        rows = [{"claims": [c("stale"), c("contradicted"), c("current"), c("current"), c("current")],
                  "gold": {"result": "wrong"}, "repair": {"gold": {"result": "correct"}}},
                 {"claims": [], "gold": {"result": "correct"}}]
         sc = scorecard(rows)
-        self.assertEqual(sc["stale_pct"], 50)                               # contradicted counts as stale
-        self.assertEqual(sc["fresh_pct"], 50)
+        self.assertEqual(sc["stale_pct"], 40)                               # contradicted counts as stale
+        self.assertEqual(sc["fresh_pct"], 60)
         self.assertEqual(sc["gold_fixed_after_feedback"], 1)                # wrong before, correct after feedback
 
     def test_paired_tests_cover_every_pair_once(self):
