@@ -72,16 +72,6 @@ class BifrostLog:
     def __init__(self, db_path: str | Path):
         self.db_path = str(db_path)
 
-    def calls(self, run_id: str, settle_s: float = 8.0) -> list[dict[str, Any]]:
-        deadline, last, rows = time.monotonic() + settle_s, -1, []
-        while time.monotonic() < deadline:  # Bifrost writes its log in batches: wait until the count is stable
-            rows = self._read(run_id)
-            if rows and len(rows) == last:
-                break
-            last = len(rows)
-            time.sleep(1.5)
-        return rows
-
     def settle(self, run_ids: list[str], quiet_s: float = 6.0, max_s: float = 45.0, poll_s: float = 1.5) -> int:
         """Wait until Bifrost has finished writing: the number of logged calls for ALL these runs stays the same for
         quiet_s seconds (Bifrost writes in batches, so one stable pair of reads is not enough). Returns the count."""

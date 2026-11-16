@@ -1697,7 +1697,11 @@ class AgentBenchTests(unittest.TestCase):
                         "'{\"prompt_tokens\": 73, \"completion_tokens\": 38}', 3.4e-05, 0, NULL, 'run-1')")
             con.commit()
             con.close()
-            calls = BifrostLog(db).calls("run-1", settle_s=2)
+            log = BifrostLog(db)
+            self.assertEqual(log.settle(["run-1", "run-2"], quiet_s=0.2, poll_s=0.05), 1)  # counts across runs
+            calls = log.read("run-1")
+            self.assertEqual(BifrostLog(Path(tmp) / "missing.db").settle(["run-1"], quiet_s=0.1, max_s=0.3, poll_s=0.05), 0)
+            self.assertFalse((Path(tmp) / "missing.db").exists())                       # read-only, never creates
         self.assertEqual(calls[0]["model"], "groq/openai/gpt-oss-120b")
         self.assertEqual((calls[0]["tokens_in"], calls[0]["tokens_out"]), (73, 38))
         for bad in ("../.env", "agentbench-1.json/../../x", "bench-1.json", "/etc/passwd"):
@@ -1774,7 +1778,7 @@ class AgentBenchTests(unittest.TestCase):
             con.commit()
             con.close()
             log = BifrostLog(db)
-            self.assertEqual([c["tokens_in"] for c in log.calls("run-1", settle_s=1)], [10])  # only its own calls
+            self.assertEqual([c["tokens_in"] for c in log.read("run-1")], [10])  # only its own calls
             self.assertEqual(len(log.read("run-2")), 2)
             self.assertEqual(log.read("run-3"), [])                                          # untagged rows never leak
 
@@ -2392,6 +2396,93 @@ class MutationGapTests(unittest.TestCase):
         rg = res["meta"]["regraded"]
         self.assertEqual(rg["agreement"], round(1 / 3, 3))                 # only r1 gets the same grade
         self.assertEqual(rg["correct_vs_not_agreement"], 1.0)              # but correct-or-not agrees on all three
+
+    def test_rescore_success_needs_correct_and_backstop(self):
+        from freshpin.agentbench import rescore
+        r = {"run_id": "r1", "agent": "a", "condition": "normal", "task_id": "t", "repeat": 1, "answer": "x",
+             "grade": "correct", "backstop": False, "followed_planted": False, "success": True, "steps": 1,
+             "model_calls": 1, "tool_calls": 0, "tokens": 1, "cost_usd": 0.0, "seconds": 1.0, "trace": []}
+        res = rescore({"meta": {"repeats": 1}, "runs": [r, dict(r, run_id="r2", grade="wrong", backstop=True)]})
+        self.assertEqual([x["success"] for x in res["runs"]], [False, False])
+
+    def test_list_cost_counts_each_search_that_returned_results(self):
+        from freshpin.prices import apply_list_prices
+        run = {"trace": [{"kind": "tool", "status": 200}, {"kind": "tool", "status": 200}, {"kind": "tool", "status": 503}]}
+        apply_list_prices([run], {}, 0.008)
+        self.assertEqual(run["searches"], 2)
+        self.assertAlmostEqual(run["list_cost_usd"], 0.016)
+
+    def test_free_and_batch_listings_are_never_the_list_price(self):
+        from freshpin.prices import pick_price
+        self.assertEqual(pick_price("p/model-8", [("openrouter", "x/model-8", 0.0, 5e-7)])["output"], 5e-7)  # output-only price
+        rows = [("openrouter", "x/model-7:batch", 1e-8, 1e-8), ("openrouter", "x/model-7:free", 0.0, 0.0),
+                ("deepinfra", "x/model-7", 2e-7, 4e-7), ("nebius", "x/model-7", 4e-7, 8e-7)]
+        p = pick_price("p/model-7", rows)
+        self.assertEqual((p["input"], p["output"]), (3e-7, 6e-7))             # median of the two paid listings
+
+    def test_stale_claims_get_agreement_inverted(self):
+        today = date.today().isoformat()
+        src = [{"url": f"https://n{i}.example/a", "published_date": today, "authority": "news"} for i in range(3)]
+        cur = freshness_score("current", "other", src, [s["url"] for s in src], [])
+        stale = freshness_score("stale", "other", src, [], [s["url"] for s in src])
+        self.assertGreater(cur.agreement_points, 90)
+        self.assertLess(stale.agreement_points, 10)                        # every source backs the NEWER fact
+
+    def test_bench_routes_and_tool_list_route(self):
+        import urllib.request
+        from freshpin.server import make_handler
+        from freshpin.toolserver import ToolServer
+        with tempfile.TemporaryDirectory() as tmp:
+            httpd = ThreadingHTTPServer(("127.0.0.1", 0), make_handler(replay_app(tmp)))
+            threading.Thread(target=httpd.serve_forever, daemon=True).start()
+            try:
+                base = f"http://127.0.0.1:{httpd.server_port}"
+                names = [f["name"] for f in json.loads(urllib.request.urlopen(base + "/api/bench/list").read())["files"]]
+                self.assertIn("agentbench-20261115-155950.json", names)
+                d = json.loads(urllib.request.urlopen(base + "/api/bench/result?file=agentbench-20261115-155950.json").read())
+                self.assertEqual(len(d["runs"]), 160)
+            finally:
+                httpd.shutdown()
+                httpd.server_close()
+            ts = ToolServer(lambda q: [], cache_path=Path(tmp) / "c.json").start()
+            try:
+                self.assertEqual(json.loads(urllib.request.urlopen(ts.url + "/tools").read())["tools"][0]["function"]["name"],
+                                 "search_web")
+                self.assertEqual(ts.handle_mcp("r", {"jsonrpc": "2.0", "id": 1, "method": "initialize"})["result"]
+                                 ["protocolVersion"], "2025-06-18")            # default when the client sends none
+            finally:
+                ts.stop()
+
+    def test_bifrost_log_is_read_read_only_from_a_real_sqlite_file(self):
+        import sqlite3
+        from freshpin.agentbench import BifrostLog
+        with tempfile.TemporaryDirectory() as tmp:
+            db = Path(tmp) / "logs.db"
+            con = sqlite3.connect(db)
+            con.execute("CREATE TABLE logs (session_id TEXT, timestamp TEXT, provider TEXT, model TEXT, status TEXT, "
+                        "latency REAL, token_usage TEXT, cost REAL, fallback_index INT, error_details TEXT)")
+            con.execute("INSERT INTO logs VALUES ('run1','2026-11-16 09:00:00','groq','m','success',120,"
+                        "'{\"prompt_tokens\": 10, \"completion_tokens\": 5}',0.001,0,NULL)")
+            con.commit()
+            con.close()
+            before = sorted(p.name for p in Path(tmp).iterdir())
+            calls = BifrostLog(db).read("run1")
+            self.assertEqual([(c["model"], c["tokens_in"], c["tokens_out"]) for c in calls], [("groq/m", 10, 5)])
+            self.assertEqual(sorted(p.name for p in Path(tmp).iterdir()), before)   # nothing created or written
+            self.assertEqual(BifrostLog(Path(tmp) / "missing.db").read("run1"), [])
+            self.assertFalse((Path(tmp) / "missing.db").exists())                 # read-only: never creates a db
+
+    def test_tool_agent_reports_all_models_failed(self):
+        import subprocess as sp
+        root = Path(__file__).resolve().parent.parent
+        task = {"question": "q", "today": "2026-11-16", "model": "m/x", "fallback_models": ["m/y"],
+                "llm": {"base_url": "http://127.0.0.1:9/v1", "headers": {}}, "tools": {"base_url": "http://127.0.0.1:9"}}
+        p = sp.run([sys.executable, "-m", "freshpin.agents", "tool_agent"], input=json.dumps(task), capture_output=True,
+                   text=True, cwd=root, timeout=60)
+        out = json.loads(p.stdout)
+        self.assertEqual(out["answer"], "")
+        self.assertEqual(out["notes"][-1], "all models failed")
+        self.assertEqual(len(out["notes"]), 3)                              # one note per model, then the summary
 
 
 if __name__ == "__main__":
