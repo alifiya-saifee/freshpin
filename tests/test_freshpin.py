@@ -2265,6 +2265,135 @@ class ListPriceTests(unittest.TestCase):
             self.assertIn("no paid list price", buf.getvalue())
 
 
+class MutationGapTests(unittest.TestCase):
+    """Each test pins a rule that an automatic bug (flipped comparison, and/or, True/False, +/-) changed without any
+    test noticing, found by the QA mutation layer on 16 Nov."""
+
+    def test_a_refused_request_changes_nothing_and_bearer_works(self):
+        import urllib.error
+        import urllib.request
+        from freshpin.server import make_handler
+        with tempfile.TemporaryDirectory() as tmp:
+            app = replay_app(tmp)
+            app.s.api_token = "s3cret-token"
+            httpd = ThreadingHTTPServer(("127.0.0.1", 0), make_handler(app))
+            threading.Thread(target=httpd.serve_forever, daemon=True).start()
+            base = f"http://127.0.0.1:{httpd.server_port}"
+
+            def call(path, body=None, headers=None):
+                req = urllib.request.Request(base + path, data=json.dumps(body).encode() if body is not None else None,
+                                             method="POST" if body is not None else "GET",
+                                             headers={"Content-Type": "application/json", **(headers or {})})
+                try:
+                    with urllib.request.urlopen(req, timeout=10) as r:
+                        return r.status, r.read()
+                except urllib.error.HTTPError as exc:
+                    return exc.code, exc.read()
+            try:
+                code, body = call("/api/load_sample", {"id": "dubai_building_law"})
+                self.assertEqual(code, 401)
+                self.assertEqual(json.loads(body), {"error": "login required: send the FreshPin API token"})  # one reply
+                self.assertEqual(app.ledger.state()["decisions"], [])          # ...and the action did NOT run
+                code, _ = call("/api/ledger", headers={"Authorization": "Bearer s3cret-token"})
+                self.assertEqual(code, 200)                                    # Bearer alone is enough
+                code, _ = call("/api/ledger", headers={"Authorization": "Bearer wrong"})
+                self.assertEqual(code, 401)
+            finally:
+                httpd.shutdown()
+                httpd.server_close()
+
+    def test_seeded_decisions_get_an_approval_time(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            led = Ledger(Path(tmp) / "l.db")
+            v = led.seed_fact("k", "A fact.", "other")
+            led.add_decision("D-1", "t", "budget", "o", {"k": v}, "Sara")
+            d = led.state()["decisions"][0]
+            self.assertRegex(d["approved_at"] or "", r"^\d{4}-\d\d-\d\dT")
+
+    def test_repeating_an_old_corrected_claim_does_not_reopen_again(self):
+        """The ledger already moved k from v1 to v2. Someone repeats the OLD v1 claim: stale, but the world did not
+        change again, so there is no v3 and no second reopen."""
+        with tempfile.TemporaryDirectory() as tmp:
+            led = Ledger(Path(tmp) / "l.db")
+            v1 = led.seed_fact("permit.fee", "The permit fee is 500 dirhams per unit.", "price")
+            led.add_decision("D-1", "Budget", "budget", "o", {"permit.fee": v1}, "Sara")
+            fresh = {"score": 20, "band": "stale"}
+            src = [{"url": "https://gov.example/fee", "snippet": "The fee is now 750 dirhams per unit."}]
+            first = {"key": "permit.fee", "type": "price", "verdict": "stale", "text": "The permit fee is 500 dirhams per unit.",
+                     "current_statement": "The permit fee is 750 dirhams per unit.", "freshness": fresh, "sources": src}
+            e1 = led.record_check(first)
+            self.assertEqual(e1["reopened"], ["D-1"])
+            led.approve("D-1", "Sara", "updated")
+            again = dict(first, current_statement="")                      # same old claim, no new statement given
+            e2 = led.record_check(again)
+            self.assertTrue(e2.get("repeated"))
+            self.assertEqual(e2["reopened"], [])
+            self.assertEqual(led.current_fact("permit.fee")["version"], 2)
+
+    def test_stale_evidence_pushes_freshness_down_and_disputed_is_labelled(self):
+        today = date.today().isoformat()
+        src = [{"url": "https://gov.example/a", "published_date": today, "authority": "official"}]
+        cur = freshness_score("current", "other", src, ["https://gov.example/a"], [])
+        stale = freshness_score("stale", "other", src, [], ["https://gov.example/a"])
+        self.assertLess(stale.recency_points, 10)                          # brand-new evidence of a NEWER fact
+        self.assertGreater(cur.recency_points, 90)
+        d = freshness_score("disputed", "other", src, ["https://gov.example/a"], [])
+        self.assertTrue(40 <= d.score <= 69)
+        self.assertEqual(d.capped_by, "the two judges disagree")
+
+    def test_backstop_number_rules(self):
+        from freshpin.bench import backstop
+        self.assertTrue(backstop("About 130,000 users.", "More than 100,000 users were affected.", "How many users?"))
+        self.assertFalse(backstop("About 90,000 users.", "More than 100,000 users were affected.", "How many users?"))
+        self.assertTrue(backstop("Rated at 25 kW.", "It is rated at 25 kilowatts.", "What is the power rating?"))
+        self.assertFalse(backstop("Rated at 50 kW.", "It is rated at 25 kilowatts.", "What is the power rating?"))
+
+    def test_paired_test_counts_flips_both_ways(self):
+        from freshpin.bench import paired_tests
+        rows = {"a": [{"id": i, "gold": {}, "correct": c} for i, c in enumerate([True, True, False, False, True])],
+                "b": [{"id": i, "gold": {}, "correct": c} for i, c in enumerate([True, False, True, True, False])]}
+        p = paired_tests(rows, ["a", "b"])[0]
+        self.assertEqual((p["items"], p["fixed_by_b"], p["broken_by_b"]), (5, 2, 2))
+
+    def test_list_cost_of_a_call_with_only_output_tokens(self):
+        from freshpin.prices import call_list_cost, pick_price
+        prices = {"p/a": {"input": 1e-6, "output": 2e-6}}
+        self.assertAlmostEqual(call_list_cost({"model": "p/a", "tokens_in": 0, "tokens_out": 10}, prices), 2e-5)
+        self.assertAlmostEqual(call_list_cost({"model": "p/a", "tokens_in": 10, "tokens_out": 0}, prices), 1e-5)
+        rows = [("aihubmix", "gemini-9-flash", 9e-7, 9e-6), ("gemini", "gemini-9-flash", 3e-7, 2.5e-6)]
+        self.assertEqual(pick_price("gemini/gemini-9-flash", rows)["input"], 3e-7)   # the maker, even if not first
+
+    def test_replay_matching_ignores_stop_words_and_keys_by_url(self):
+        from freshpin.toolserver import nearest_results
+        cache = {"q": [{"title": "What the latest news says about the weather", "url": "https://w.example/1",
+                        "snippet": "the and for with what which"}]}
+        self.assertEqual(nearest_results(cache, "what is the latest news about the outage"), [])  # stop words only
+        two = {"a": [{"title": "Workday outage hits companies", "url": "https://x.example/1"}],
+               "b": [{"title": "Workday outage hits companies", "url": "https://x.example/2"}]}
+        self.assertEqual(len(nearest_results(two, "workday outage companies")), 2)  # different URLs stay separate
+
+    def test_markdown_drop_sign_and_regrade_correct_vs_not(self):
+        from freshpin.agentbench import leaderboard_markdown, regrade, summarize
+        def run(i, cond, ok):
+            return {"run_id": f"r{i}", "agent": "x", "condition": cond, "task_id": "t", "repeat": 1, "answer": "a", "question": "q",
+                    "grade": "correct" if ok else "wrong", "success": ok, "followed_planted": False, "steps": 1,
+                    "model_calls": 1, "tool_calls": 0, "tokens": 1, "cost_usd": 0.0, "seconds": 1.0, "trace": []}
+        runs = [run(1, "normal", False), run(2, "misleading", True), run(3, "tool_error", False)]
+        md = leaderboard_markdown({"meta": {}, "summary": summarize(runs, 1)})
+        self.assertIn("100% (21%–100%) (+100 pts)", md)                    # better than normal: a plus sign
+        runs = [run(1, "normal", True), run(3, "tool_error", False)]
+        md = leaderboard_markdown({"meta": {}, "summary": summarize(runs, 1)})
+        self.assertIn("(−100 pts)", md)
+        tasks = {"t": {"id": "t", "question": "q", "gold_answer": "Workday."}}
+        res = {"meta": {"grader": "g/old", "repeats": 1}, "runs": [
+            dict(run(1, "normal", True), answer="Workday."), dict(run(2, "normal", False), answer="Workday!", grade="partly"),
+            dict(run(3, "normal", False), answer="No.", grade="wrong")]}
+        regrade(res, tasks, lambda ans, t: {"result": "wrong" if ans == "Workday!" else ("correct" if "Workday" in ans else "partly")}, "g/new")
+        rg = res["meta"]["regraded"]
+        self.assertEqual(rg["agreement"], round(1 / 3, 3))                 # only r1 gets the same grade
+        self.assertEqual(rg["correct_vs_not_agreement"], 1.0)              # but correct-or-not agrees on all three
+
+
 if __name__ == "__main__":
     os.environ.setdefault("FRESHPIN_MODE", "replay")
     unittest.main()
