@@ -535,9 +535,9 @@ def bench_cmd(args: list[str]) -> int:
         import json as _json
         saved = _json.loads(Path(a.show).read_text(encoding="utf-8"))
         if "runs" in saved and "summary" in saved:          # an agentbench result
-            from .agentbench import add_list_cost, leaderboard_markdown, summarize
+            from .agentbench import add_list_cost, leaderboard_markdown, rescore
             add_list_cost(saved["runs"])
-            saved["summary"] = summarize(saved["runs"], saved.get("meta", {}).get("repeats", 1))
+            rescore(saved)  # the current rules (quota detection, planted source), no model calls
             print(leaderboard_markdown(saved))
             return 0
         if "arms" in saved:                                 # an agent-arena result: re-score with the current rules

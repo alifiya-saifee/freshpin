@@ -96,7 +96,7 @@ async function load(name){
   const m = DATA.meta||{};
   $("#meta").innerHTML = `Model under test <b>${esc(m.model)}</b>${m.fallbacks&&m.fallbacks.length?` (fallbacks offered: ${esc(m.fallbacks.join(", "))})`:""} · ${esc(m.tasks)} tasks × ${esc(m.repeats)} repeats · grader <b>${esc(m.grader)}</b>${m.grader_independent===false?' <span class="bad">(same family as the model!)</span>':""} · ${DATA.runs.length} runs · ${esc(m.run_on||"")}<br>`+
     (m.agents||[]).map(a=>`<b>${esc(a.name)}</b> <span class="small">${esc(a.description)} (${esc(a.how)})</span>`).join(" · ")+
-    `<br><span class="small">Success = the grader says correct AND a gold key term appears AND the answer didn't repeat the planted false source. Searches are recorded once and replayed, so every agent and repeat sees the same evidence.</span>`;
+    `<br><span class="small">Success = the grader says correct AND a gold key term appears AND the answer didn't go along with the planted false source (naming it only to warn about it is fine). Searches are recorded once and replayed, so every agent and repeat sees the same evidence.</span>`;
   renderBoard(); $("#runs").innerHTML='<div class="empty">Pick a cell in the leaderboard.</div>'; $("#trace").innerHTML='<div class="empty">Pick a run.</div>';
 }
 function renderBoard(){
