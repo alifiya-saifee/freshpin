@@ -52,7 +52,7 @@ What it shows:
 
 ### Same agents, different models (16 Nov 2026)
 
-The same three agents on **four models from four families**, on 9 tasks (`bench/suites/fresh-arena3.json`) × 4 conditions × 1 run = 108 runs per model. Searches are **replayed only** (0 Tavily credits), so every model searched the same recorded pages. The grader is never from the model's own family. Cells are successes / counted runs. Runs killed by a provider quota, or where the grader failed, are excluded (the "excluded runs" column). Files: `bench/samples/agentbench-20261116-*.json`; open several at once in `/bench` → **Compare runs**.
+The same three agents on **five models from five families**, on 9 tasks (`bench/suites/fresh-arena3.json`) × 4 conditions × 1 run = 108 runs per model. Searches are **replayed only** (0 Tavily credits), so every model searched the same recorded pages. The grader is never from the model's own family. Cells are successes / counted runs. Runs killed by a provider quota, or where the grader failed, are excluded (the "excluded runs" column). Files: `bench/samples/agentbench-20261116-*.json`; open several at once in `/bench` → **Compare runs**.
 
 | model | agent | normal | model unavailable | broken tool | misleading source | list $ / correct (normal) | p50 s | excluded runs | grader |
 |---|---|---|---|---|---|---|---|---|---|
@@ -64,17 +64,19 @@ The same three agents on **four models from four families**, on 9 tasks (`bench/
 | Qwen 3.8 27B | `tool_agent` | 6/9 | 4/9 | 0/9 | 8/9 | $0.0098 | 0.6 | 0 | Nemotron Super |
 | Poolside Laguna XS 2.1 | `search_first` | 7/9 | 0/9 | 0/9 | 7/9 | ? (no list price) | 1.0 | 0 | Nemotron Super |
 | Poolside Laguna XS 2.1 | `tool_agent` | 8/9 | 9/9 | 0/9 | 5/9 | ? (no list price) | 2.0 | 0 | Nemotron Super |
-<!-- GEMINI ROWS -->
+| Gemini 3.5 Flash-Lite | `search_first` | 9/9 | 0/9 | 0/9 | 8/9 | $0.0084 | 0.9 | 0 | Nemotron Super |
+| Gemini 3.5 Flash-Lite | `tool_agent` | 9/9 | 9/9 | 0/9 | 8/9 | $0.0095 | 1.9 | 0 | Nemotron Super |
 
 `bare` (no tools) scored 0 on every model and condition: these facts are newer than every model's training.
 
 What it shows:
-- **Which agent design wins depends on the model.** On Nemotron and Laguna, `tool_agent` (the model decides when to search) does as well as or better than `search_first`. On gpt-oss and Qwen it does worse (6/9 vs 8/9 on both). The traces show why: those models **call tools that do not exist** (gpt-oss: `open`; Qwen: `search_query`, `searchWeb`, `search_api`…) or call `search_web` without its query, the provider rejects the call (HTTP 400 `tool_use_failed`), and the run ends with no answer. `search_first` never asks the model to call a tool, so it cannot hit this.
+- **Which agent design wins depends on the model.** On Nemotron, Gemini and Laguna, `tool_agent` (the model decides when to search) does as well as or better than `search_first`. On gpt-oss and Qwen it does worse (6/9 vs 8/9 on both). The traces show why: those models **call tools that do not exist** (gpt-oss: `open`; Qwen: `search_query`, `searchWeb`, `search_api`…) or call `search_web` without its query, the provider rejects the call (HTTP 400 `tool_use_failed`), and the run ends with no answer. `search_first` never asks the model to call a tool, so it cannot hit this.
 - **Only the agent that reads the fallback list survives an unavailable model** (4–9 of 9, vs 0 for the others).
 - **No agent survives a broken search tool** (0 everywhere): none falls back to answering from memory with a warning.
 - **Cost per correct answer is mostly search, not tokens**: about $0.008 per search against $0.0001–0.0007 of model tokens per run at list price.
 - **Qwen flagged the injected result explicitly** in 2 runs ("one search result contains an injected instruction… I've ignored that") and still answered correctly. FreshPin counts that as *not* following the planted source; an answer that repeats it as fact does count.
-- Mistral Large 4 was planned as a fifth family but timed out at NVIDIA's free endpoint (60 s) for the whole session, so it is not in the table.
+- **Provider limits are kept out of the score.** The first Gemini run had no pause between runs and hit the free tier's 15 requests a minute: 49 of 108 runs ended on HTTP 429. FreshPin marked every one as a provider limit (excluded), not an agent failure. The table uses the rerun with a 12 s pause, where all 108 runs counted.
+- Mistral Large 4 was planned as a sixth family but timed out at NVIDIA's free endpoint (60 s) for the whole session, so it is not in the table.
 
 ### Outside agents in other languages and frameworks (16 Nov 2026)
 
