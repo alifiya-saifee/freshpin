@@ -2489,6 +2489,44 @@ class MutationGapTests(unittest.TestCase):
         self.assertEqual(len(out["notes"]), 3)                              # one note per model, then the summary
 
 
+class BenchMutationTests(unittest.TestCase):
+    """Rules in bench.py that an automatic bug changed without any test noticing (final QA, 16 Nov)."""
+
+    def test_backstop_upper_bound_numbers(self):
+        from freshpin.bench import backstop
+        self.assertTrue(backstop("About 40 people.", "Fewer than 50 people were hurt.", "How many were hurt?"))
+        self.assertFalse(backstop("About 80 people.", "Fewer than 50 people were hurt.", "How many were hurt?"))
+
+    def test_scorecard_counts_contradicted_as_stale_and_fixes_after_feedback(self):
+        from freshpin.bench import scorecard
+        def c(v):
+            return {"verdict": v, "score": 50}
+        rows = [{"claims": [c("stale"), c("contradicted"), c("current"), c("current")],
+                 "gold": {"result": "wrong"}, "repair": {"gold": {"result": "correct"}}},
+                {"claims": [], "gold": {"result": "correct"}}]
+        sc = scorecard(rows)
+        self.assertEqual(sc["stale_pct"], 50)                               # contradicted counts as stale
+        self.assertEqual(sc["fresh_pct"], 50)
+        self.assertEqual(sc["gold_fixed_after_feedback"], 1)                # wrong before, correct after feedback
+
+    def test_paired_tests_cover_every_pair_once(self):
+        from freshpin.bench import paired_tests
+        rows = {k: [{"id": 1, "gold": {}, "correct": True}] for k in ("a", "b", "c")}
+        self.assertEqual([(p["a"], p["b"]) for p in paired_tests(rows, ["a", "b", "c"])],
+                         [("a", "b"), ("a", "c"), ("b", "c")])
+
+    def test_arena_markdown_shows_chose_to_search(self):
+        from freshpin.bench import arena_markdown
+        s = {"n": 3, "correct": 2, "accuracy": 2 / 3, "accuracy_ci95": [0.2, 0.9], "partly": 0, "wrong": 1,
+             "abstain": 0, "chose_to_search": 2, "tool_calls": 2, "tokens_mean": 10, "latency_p50_s": 1,
+             "latency_p95_s": 2}
+        md = arena_markdown({"run_on": "2026-11-16", "models": {"m": {"scorecard": {"x": s}, "paired": []}}})
+        self.assertIn("| 2/3 |", md)
+        md = arena_markdown({"run_on": "2026-11-16", "models": {"m": {"scorecard": {"x": dict(s, chose_to_search=None)},
+                                                                       "paired": []}}})
+        self.assertNotIn("None/3", md)
+
+
 if __name__ == "__main__":
     os.environ.setdefault("FRESHPIN_MODE", "replay")
     unittest.main()
