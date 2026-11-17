@@ -26,6 +26,32 @@ USAGE = """usage:
 """
 
 
+def reserve_result_path(results_dir, stamp: str | None = None):
+    """A new agentbench-<date>-<time>[-N].json name nobody else is using. Runs started in the same second (e.g. two
+    models benchmarked in parallel) used to get the same name and overwrite each other's results. The name is
+    reserved with an atomic create of <name>.reserved, removed once the result is written."""
+    import os
+    import time as _time
+    from pathlib import Path
+    results_dir = Path(results_dir)
+    results_dir.mkdir(parents=True, exist_ok=True)
+    stamp = stamp or _time.strftime("%Y%m%d-%H%M%S")
+    n = 1
+    while True:
+        path = results_dir / (f"agentbench-{stamp}.json" if n == 1 else f"agentbench-{stamp}-{n}.json")
+        n += 1
+        if path.exists():
+            continue
+        try:
+            os.close(os.open(path.with_suffix(".reserved"), os.O_CREAT | os.O_EXCL | os.O_WRONLY))
+        except FileExistsError:
+            continue
+        if path.exists():  # finished between the check and the reservation
+            path.with_suffix(".reserved").unlink(missing_ok=True)
+            continue
+        return path
+
+
 def _paced(fn, seconds: float):
     """Calls fn at most once every `seconds` (shared across threads): stays under a provider's per-minute limit."""
     import threading
@@ -356,8 +382,7 @@ def agentbench_cmd(args: list[str]) -> int:
     tools = ToolServer(search, cache_path=cache, live=not a.replay_only).start()
     headers = {"x-bf-vk": s.bifrost_virtual_key} if s.bifrost_virtual_key else {}
     llm = {"base_url": s.bifrost_url.rstrip("/") + "/v1", "headers": headers}
-    path = bench.RESULTS_DIR / f"agentbench-{_time.strftime('%Y%m%d-%H%M%S')}.json"
-    path.parent.mkdir(parents=True, exist_ok=True)
+    path = reserve_result_path(bench.RESULTS_DIR)
     meta = {"run_on": date_today(), "model": a.model, "fallbacks": fallbacks, "tasks": len(tasks),
             "repeats": a.repeats, "conditions": conds, "grader": judges[0], "grader_independent": independent,
             "agents": [{"name": ag.name, "description": ag.description,
@@ -393,6 +418,7 @@ def agentbench_cmd(args: list[str]) -> int:
     path.write_text(_json.dumps(result, indent=1, ensure_ascii=False), encoding="utf-8")
     path.with_suffix(".md").write_text(leaderboard_markdown(result), encoding="utf-8")
     path.with_suffix(".partial.json").unlink(missing_ok=True)
+    path.with_suffix(".reserved").unlink(missing_ok=True)
     print()
     print(leaderboard_markdown(result))
     print(f"Saved: {path}\nOpen the comparison page: python -m freshpin serve, then http://127.0.0.1:{s.port}/bench")
@@ -454,10 +480,10 @@ def regrade_cmd(args: list[str]) -> int:
         judge = _paced(judge, a.pace)
     regrade(result, tasks, judge, judges[0], workers=max(1, a.workers), consensus=a.consensus)
     # agentbench-<digits>.json, so the /bench page lists it (meta.regraded says what changed)
-    out = bench.RESULTS_DIR / f"agentbench-{_time.strftime('%Y%m%d-%H%M%S')}.json"
-    out.parent.mkdir(parents=True, exist_ok=True)
+    out = reserve_result_path(bench.RESULTS_DIR)
     out.write_text(json.dumps(result, indent=1, ensure_ascii=False), encoding="utf-8")
     out.with_suffix(".md").write_text(leaderboard_markdown(result), encoding="utf-8")
+    out.with_suffix(".reserved").unlink(missing_ok=True)
     print(leaderboard_markdown(result))
     print(f"Grader agreement: {result['meta']['regraded']}")
     if a.consensus:

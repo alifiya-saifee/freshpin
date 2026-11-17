@@ -2700,6 +2700,29 @@ class RegradePaceTests(unittest.TestCase):
         self.assertGreaterEqual(calls[2] - calls[0], 0.39)
 
 
+class ResultNameTests(unittest.TestCase):
+    """17 Nov: three benchmarks started in the same second all saved agentbench-20261117-112912.json; the last one
+    to finish overwrote the other two."""
+
+    def test_runs_started_in_the_same_second_get_different_files(self):
+        from concurrent.futures import ThreadPoolExecutor
+        from freshpin.__main__ import reserve_result_path
+        from freshpin.server import bench_file  # noqa: F401  (the names must stay listable)
+        import re as _re
+        with tempfile.TemporaryDirectory() as tmp:
+            with ThreadPoolExecutor(8) as pool:
+                paths = list(pool.map(lambda _: reserve_result_path(tmp, "20261117-112912"), range(8)))
+            names = sorted(p.name for p in paths)
+            self.assertEqual(len(set(names)), 8)
+            self.assertIn("agentbench-20261117-112912.json", names)
+            self.assertIn("agentbench-20261117-112912-8.json", names)
+            for n in names:
+                self.assertRegex(n, r"^agentbench-[0-9-]+\.json$")           # /bench still lists them
+            paths[0].write_text("{}")
+            paths[0].with_suffix(".reserved").unlink()
+            self.assertNotEqual(reserve_result_path(tmp, "20261117-112912"), paths[0])  # a finished file is never reused
+
+
 if __name__ == "__main__":
     os.environ.setdefault("FRESHPIN_MODE", "replay")
     unittest.main()
