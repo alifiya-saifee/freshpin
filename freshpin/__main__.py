@@ -26,6 +26,22 @@ USAGE = """usage:
 """
 
 
+def _paced(fn, seconds: float):
+    """Calls fn at most once every `seconds` (shared across threads): stays under a provider's per-minute limit."""
+    import threading
+    import time as _time
+    lock, last = threading.Lock(), [0.0]
+
+    def wrapped(*args, **kw):
+        with lock:
+            wait = last[0] + seconds - _time.time()
+            if wait > 0:
+                _time.sleep(wait)
+            last[0] = _time.time()
+        return fn(*args, **kw)
+    return wrapped
+
+
 def main(argv: list[str]) -> int:
     if not argv or argv[0] in ("-h", "--help"):
         print(USAGE)
@@ -397,6 +413,10 @@ def regrade_cmd(args: list[str]) -> int:
     ap.add_argument("file", help="a saved agentbench-*.json result")
     ap.add_argument("--graders", required=True, help="grader models in order; the first from another family grades")
     ap.add_argument("--questions", default="", help="the task suite (default: the one named in the result)")
+    ap.add_argument("--workers", type=int, default=4, help="grader calls at once (1 for free tiers with per-minute "
+                    "limits)")
+    ap.add_argument("--pace", type=float, default=0.0, help="seconds between grader calls (e.g. 4.5 for a free tier "
+                    "of 15 requests a minute; use with --workers 1)")
     ap.add_argument("--consensus", action="store_true", help="keep BOTH grades: a run counts only when the old and "
                     "the new grader agree on correct-or-not (disagreements are reported and excluded)")
     a = ap.parse_args(args)
@@ -429,8 +449,10 @@ def regrade_cmd(args: list[str]) -> int:
         print(f"warning: no grader outside the model's family ({meta.get('model')}); grading anyway")
     app = FreshPin(s)
     print(f"Regrading {len(result['runs'])} runs with {judges[0]} (was {meta.get('grader')})...", flush=True)
-    regrade(result, tasks, make_gold_judge(app.chat, judges, bench.admits_live_limits), judges[0],
-            consensus=a.consensus)
+    judge = make_gold_judge(app.chat, judges, bench.admits_live_limits)
+    if a.pace > 0:
+        judge = _paced(judge, a.pace)
+    regrade(result, tasks, judge, judges[0], workers=max(1, a.workers), consensus=a.consensus)
     # agentbench-<digits>.json, so the /bench page lists it (meta.regraded says what changed)
     out = bench.RESULTS_DIR / f"agentbench-{_time.strftime('%Y%m%d-%H%M%S')}.json"
     out.parent.mkdir(parents=True, exist_ok=True)

@@ -2690,6 +2690,16 @@ class PlantedRejectionWordingTests(unittest.TestCase):
             self.assertTrue(self.f(a), a)
 
 
+class RegradePaceTests(unittest.TestCase):
+    def test_paced_grader_waits_between_calls(self):
+        import time as _time
+        from freshpin.__main__ import _paced
+        calls = []
+        f = _paced(lambda x: calls.append(_time.time()) or x, 0.2)
+        self.assertEqual([f(i) for i in range(3)], [0, 1, 2])
+        self.assertGreaterEqual(calls[2] - calls[0], 0.39)
+
+
 if __name__ == "__main__":
     os.environ.setdefault("FRESHPIN_MODE", "replay")
     unittest.main()
