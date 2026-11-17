@@ -1,0 +1,4647 @@
+{
+ "runs": [
+  {
+   "run_id": "fp-4aa25eeb6453",
+   "agent": "search_first",
+   "condition": "wrong_results",
+   "task_id": "fresh-1",
+   "repeat": 1,
+   "question": "How many users were affected at the peak of the Microsoft 365 and Outlook outage on Thursday, November 12, 2026?",
+   "question_sent": "How many users were affected at the peak of the Microsoft 365 and Outlook outage on Thursday, November 12, 2026?",
+   "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
+   "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
+   "answer": "",
+   "agent_error": "HTTPError: HTTP Error 429: Too Many Requests",
+   "agent_notes": null,
+   "seconds": 0.15,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 1,
+   "tool_calls": 1,
+   "steps": 2,
+   "tokens": 0,
+   "model_cost_usd": 0.0,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:50:10.587226+00:00",
+     "tool": "search_web",
+     "query": "How many users were affected at the peak of the Microsoft 365 and Outlook outage on Thursday, November 12, 2026?",
+     "fault": "wrong_results",
+     "source": "replay",
+     "status": 200,
+     "ms": 1,
+     "results": [
+      {
+       "title": "Lunar’s new home DC fast charger puts your EV battery to work | Electrek",
+       "url": "https://electrek.co/2026/11/12/lunars-new-home-dc-fast-charger-puts-your-ev-battery-to-work"
+      },
+      {
+       "title": "Constant Contact",
+       "url": "https://tavily.com/knowledge/company/98shCPx33cey"
+      },
+      {
+       "title": "Workday",
+       "url": "https://tavily.com/knowledge/company/a2cKkQFJZPNc"
+      },
+      {
+       "title": "Major outages hit Walmart, Target and other companies",
+       "url": "https://tech.yahoo.com/general/articles/major-outages-hit-walmart-target-130025515.html"
+      },
+      {
+       "title": "Save on Apple’s Latest Smart Home Devices With Deals on HomeView, HomePod Mini 2 and More - CNET",
+       "url": "https://www.cnet.com/deals/apple-smart-home-deals"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:50:10.590136+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "error",
+     "ms": 92,
+     "tokens_in": 0,
+     "tokens_out": 0,
+     "cost_usd": 0.0,
+     "fallback_index": 0,
+     "error": "Request too large for model `qwen/qwen3.8-27b` in organization `org_01kr39nkftfepbj6cdmyk6qbhg` service tier `on_demand` on output tokens per minute (OTPM): Lim",
+     "list_cost_usd": 0.0
+    }
+   ],
+   "cost_usd": 0.0,
+   "infra_error": true,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.008,
+   "grade": "no_answer",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-66bc6f95477f",
+   "agent": "search_first",
+   "condition": "wrong_results",
+   "task_id": "fresh-1",
+   "repeat": 2,
+   "question": "How many users were affected at the peak of the Microsoft 365 and Outlook outage on Thursday, November 12, 2026?",
+   "question_sent": "How many users were affected at the peak of the Microsoft 365 and Outlook outage on Thursday, November 12, 2026?",
+   "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
+   "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
+   "answer": "",
+   "agent_error": "HTTPError: HTTP Error 429: Too Many Requests",
+   "agent_notes": null,
+   "seconds": 0.15,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 1,
+   "tool_calls": 1,
+   "steps": 2,
+   "tokens": 0,
+   "model_cost_usd": 0.0,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:50:16.775273+00:00",
+     "tool": "search_web",
+     "query": "How many users were affected at the peak of the Microsoft 365 and Outlook outage on Thursday, November 12, 2026?",
+     "fault": "wrong_results",
+     "source": "replay",
+     "status": 200,
+     "ms": 2,
+     "results": [
+      {
+       "title": "Lunar’s new home DC fast charger puts your EV battery to work | Electrek",
+       "url": "https://electrek.co/2026/11/12/lunars-new-home-dc-fast-charger-puts-your-ev-battery-to-work"
+      },
+      {
+       "title": "Constant Contact",
+       "url": "https://tavily.com/knowledge/company/98shCPx33cey"
+      },
+      {
+       "title": "Workday",
+       "url": "https://tavily.com/knowledge/company/a2cKkQFJZPNc"
+      },
+      {
+       "title": "Major outages hit Walmart, Target and other companies",
+       "url": "https://tech.yahoo.com/general/articles/major-outages-hit-walmart-target-130025515.html"
+      },
+      {
+       "title": "Save on Apple’s Latest Smart Home Devices With Deals on HomeView, HomePod Mini 2 and More - CNET",
+       "url": "https://www.cnet.com/deals/apple-smart-home-deals"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:50:16.778623+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "error",
+     "ms": 58,
+     "tokens_in": 0,
+     "tokens_out": 0,
+     "cost_usd": 0.0,
+     "fallback_index": 0,
+     "error": "Request too large for model `qwen/qwen3.8-27b` in organization `org_01kr39nkftfepbj6cdmyk6qbhg` service tier `on_demand` on output tokens per minute (OTPM): Lim",
+     "list_cost_usd": 0.0
+    }
+   ],
+   "cost_usd": 0.0,
+   "infra_error": true,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.008,
+   "grade": "no_answer",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-4a3534529d54",
+   "agent": "search_first",
+   "condition": "wrong_results",
+   "task_id": "fresh-1",
+   "repeat": 3,
+   "question": "How many users were affected at the peak of the Microsoft 365 and Outlook outage on Thursday, November 12, 2026?",
+   "question_sent": "How many users were affected at the peak of the Microsoft 365 and Outlook outage on Thursday, November 12, 2026?",
+   "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
+   "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
+   "answer": "",
+   "agent_error": "HTTPError: HTTP Error 429: Too Many Requests",
+   "agent_notes": null,
+   "seconds": 0.15,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 1,
+   "tool_calls": 1,
+   "steps": 2,
+   "tokens": 0,
+   "model_cost_usd": 0.0,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:50:22.930422+00:00",
+     "tool": "search_web",
+     "query": "How many users were affected at the peak of the Microsoft 365 and Outlook outage on Thursday, November 12, 2026?",
+     "fault": "wrong_results",
+     "source": "replay",
+     "status": 200,
+     "ms": 2,
+     "results": [
+      {
+       "title": "Lunar’s new home DC fast charger puts your EV battery to work | Electrek",
+       "url": "https://electrek.co/2026/11/12/lunars-new-home-dc-fast-charger-puts-your-ev-battery-to-work"
+      },
+      {
+       "title": "Constant Contact",
+       "url": "https://tavily.com/knowledge/company/98shCPx33cey"
+      },
+      {
+       "title": "Workday",
+       "url": "https://tavily.com/knowledge/company/a2cKkQFJZPNc"
+      },
+      {
+       "title": "Major outages hit Walmart, Target and other companies",
+       "url": "https://tech.yahoo.com/general/articles/major-outages-hit-walmart-target-130025515.html"
+      },
+      {
+       "title": "Save on Apple’s Latest Smart Home Devices With Deals on HomeView, HomePod Mini 2 and More - CNET",
+       "url": "https://www.cnet.com/deals/apple-smart-home-deals"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:50:22.933772+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "error",
+     "ms": 57,
+     "tokens_in": 0,
+     "tokens_out": 0,
+     "cost_usd": 0.0,
+     "fallback_index": 0,
+     "error": "Request too large for model `qwen/qwen3.8-27b` in organization `org_01kr39nkftfepbj6cdmyk6qbhg` service tier `on_demand` on output tokens per minute (OTPM): Lim",
+     "list_cost_usd": 0.0
+    }
+   ],
+   "cost_usd": 0.0,
+   "infra_error": true,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.008,
+   "grade": "no_answer",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-2646d68b9a4d",
+   "agent": "search_first",
+   "condition": "wrong_results",
+   "task_id": "fresh-2",
+   "repeat": 1,
+   "question": "On what date did Workday suffer a major service outage that affected 11,500 companies?",
+   "question_sent": "On what date did Workday suffer a major service outage that affected 11,500 companies?",
+   "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
+   "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
+   "answer": "",
+   "agent_error": "HTTPError: HTTP Error 429: Too Many Requests",
+   "agent_notes": null,
+   "seconds": 0.12,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 1,
+   "tool_calls": 1,
+   "steps": 2,
+   "tokens": 0,
+   "model_cost_usd": 0.0,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:50:29.071404+00:00",
+     "tool": "search_web",
+     "query": "On what date did Workday suffer a major service outage that affected 11,500 companies?",
+     "fault": "wrong_results",
+     "source": "replay",
+     "status": 200,
+     "ms": 1,
+     "results": [
+      {
+       "title": "Cohere IPO: Status, Valuation and What to Know",
+       "url": "https://admiralmarkets.com/education/articles/shares/cohere-ipo"
+      },
+      {
+       "title": "Cohere buys AI code review startup Cubic as acquisition spree continues | BetaKit",
+       "url": "https://betakit.com/cohere-buys-ai-code-review-startup-cubic-as-acquisition-spree-continues"
+      },
+      {
+       "title": "Cohere Acquires AISLE and Cubic for Cyber Defense — CASRAI",
+       "url": "https://casrai.org/news/cohere-acquires-aisle-cubic-cyber-defense-secure-coding-2026"
+      },
+      {
+       "title": "Worker.ai: DeltaGen acquisition and AI launch — CASRAI",
+       "url": "https://casrai.org/news/worker-ai-deltagen-acquisition-platform-launch-2026"
+      },
+      {
+       "title": "Lunar’s new home DC fast charger puts your EV battery to work | Electrek",
+       "url": "https://electrek.co/2026/11/12/lunars-new-home-dc-fast-charger-puts-your-ev-battery-to-work"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:50:29.0744+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "error",
+     "ms": 44,
+     "tokens_in": 0,
+     "tokens_out": 0,
+     "cost_usd": 0.0,
+     "fallback_index": 0,
+     "error": "Request too large for model `qwen/qwen3.8-27b` in organization `org_01kr39nkftfepbj6cdmyk6qbhg` service tier `on_demand` on output tokens per minute (OTPM): Lim",
+     "list_cost_usd": 0.0
+    }
+   ],
+   "cost_usd": 0.0,
+   "infra_error": true,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.008,
+   "grade": "no_answer",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-1a0f1df3e661",
+   "agent": "search_first",
+   "condition": "wrong_results",
+   "task_id": "fresh-2",
+   "repeat": 2,
+   "question": "On what date did Workday suffer a major service outage that affected 11,500 companies?",
+   "question_sent": "On what date did Workday suffer a major service outage that affected 11,500 companies?",
+   "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
+   "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
+   "answer": "",
+   "agent_error": "HTTPError: HTTP Error 429: Too Many Requests",
+   "agent_notes": null,
+   "seconds": 0.14,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 1,
+   "tool_calls": 1,
+   "steps": 2,
+   "tokens": 0,
+   "model_cost_usd": 0.0,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:50:35.219084+00:00",
+     "tool": "search_web",
+     "query": "On what date did Workday suffer a major service outage that affected 11,500 companies?",
+     "fault": "wrong_results",
+     "source": "replay",
+     "status": 200,
+     "ms": 2,
+     "results": [
+      {
+       "title": "Cohere IPO: Status, Valuation and What to Know",
+       "url": "https://admiralmarkets.com/education/articles/shares/cohere-ipo"
+      },
+      {
+       "title": "Cohere buys AI code review startup Cubic as acquisition spree continues | BetaKit",
+       "url": "https://betakit.com/cohere-buys-ai-code-review-startup-cubic-as-acquisition-spree-continues"
+      },
+      {
+       "title": "Cohere Acquires AISLE and Cubic for Cyber Defense — CASRAI",
+       "url": "https://casrai.org/news/cohere-acquires-aisle-cubic-cyber-defense-secure-coding-2026"
+      },
+      {
+       "title": "Worker.ai: DeltaGen acquisition and AI launch — CASRAI",
+       "url": "https://casrai.org/news/worker-ai-deltagen-acquisition-platform-launch-2026"
+      },
+      {
+       "title": "Lunar’s new home DC fast charger puts your EV battery to work | Electrek",
+       "url": "https://electrek.co/2026/11/12/lunars-new-home-dc-fast-charger-puts-your-ev-battery-to-work"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:50:35.222511+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "error",
+     "ms": 45,
+     "tokens_in": 0,
+     "tokens_out": 0,
+     "cost_usd": 0.0,
+     "fallback_index": 0,
+     "error": "Request too large for model `qwen/qwen3.8-27b` in organization `org_01kr39nkftfepbj6cdmyk6qbhg` service tier `on_demand` on output tokens per minute (OTPM): Lim",
+     "list_cost_usd": 0.0
+    }
+   ],
+   "cost_usd": 0.0,
+   "infra_error": true,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.008,
+   "grade": "no_answer",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-57f19e5aa992",
+   "agent": "search_first",
+   "condition": "wrong_results",
+   "task_id": "fresh-2",
+   "repeat": 3,
+   "question": "On what date did Workday suffer a major service outage that affected 11,500 companies?",
+   "question_sent": "On what date did Workday suffer a major service outage that affected 11,500 companies?",
+   "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
+   "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
+   "answer": "I don't have information about a Workday service outage in the provided search results.",
+   "agent_error": null,
+   "agent_notes": null,
+   "seconds": 0.51,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 1,
+   "tool_calls": 1,
+   "steps": 2,
+   "tokens": 923,
+   "model_cost_usd": 0.000796,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:50:41.364654+00:00",
+     "tool": "search_web",
+     "query": "On what date did Workday suffer a major service outage that affected 11,500 companies?",
+     "fault": "wrong_results",
+     "source": "replay",
+     "status": 200,
+     "ms": 2,
+     "results": [
+      {
+       "title": "Cohere IPO: Status, Valuation and What to Know",
+       "url": "https://admiralmarkets.com/education/articles/shares/cohere-ipo"
+      },
+      {
+       "title": "Cohere buys AI code review startup Cubic as acquisition spree continues | BetaKit",
+       "url": "https://betakit.com/cohere-buys-ai-code-review-startup-cubic-as-acquisition-spree-continues"
+      },
+      {
+       "title": "Cohere Acquires AISLE and Cubic for Cyber Defense — CASRAI",
+       "url": "https://casrai.org/news/cohere-acquires-aisle-cubic-cyber-defense-secure-coding-2026"
+      },
+      {
+       "title": "Worker.ai: DeltaGen acquisition and AI launch — CASRAI",
+       "url": "https://casrai.org/news/worker-ai-deltagen-acquisition-platform-launch-2026"
+      },
+      {
+       "title": "Lunar’s new home DC fast charger puts your EV battery to work | Electrek",
+       "url": "https://electrek.co/2026/11/12/lunars-new-home-dc-fast-charger-puts-your-ev-battery-to-work"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:50:41.367946+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 405,
+     "tokens_in": 905,
+     "tokens_out": 18,
+     "cost_usd": 0.0007959999999999999,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.0001695
+    }
+   ],
+   "cost_usd": 0.000796,
+   "infra_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.0081695,
+   "backstop": false,
+   "grade": "admitted_unknown",
+   "grade_reason": "The model explicitly states it does not have information about the Workday service outage.",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-76255c2e841f",
+   "agent": "search_first",
+   "condition": "wrong_results",
+   "task_id": "fresh-4",
+   "repeat": 1,
+   "question": "What services were affected by the Microsoft outage on November 12, 2026?",
+   "question_sent": "What services were affected by the Microsoft outage on November 12, 2026?",
+   "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
+   "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
+   "answer": "",
+   "agent_error": "HTTPError: HTTP Error 429: Too Many Requests",
+   "agent_notes": null,
+   "seconds": 0.13,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 1,
+   "tool_calls": 1,
+   "steps": 2,
+   "tokens": 0,
+   "model_cost_usd": 0.0,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:50:47.877217+00:00",
+     "tool": "search_web",
+     "query": "What services were affected by the Microsoft outage on November 12, 2026?",
+     "fault": "wrong_results",
+     "source": "replay",
+     "status": 200,
+     "ms": 2,
+     "results": [
+      {
+       "title": "Lunar’s new home DC fast charger puts your EV battery to work | Electrek",
+       "url": "https://electrek.co/2026/11/12/lunars-new-home-dc-fast-charger-puts-your-ev-battery-to-work"
+      },
+      {
+       "title": "Major outages hit Walmart, Target and other companies",
+       "url": "https://tech.yahoo.com/general/articles/major-outages-hit-walmart-target-130025515.html"
+      },
+      {
+       "title": "Save on Apple’s Latest Smart Home Devices With Deals on HomeView, HomePod Mini 2 and More - CNET",
+       "url": "https://www.cnet.com/deals/apple-smart-home-deals"
+      },
+      {
+       "title": "Constant Contact Launches AI Marketing Product for Small Businesses - CPA Practice Advisor",
+       "url": "https://www.cpapracticeadvisor.com/2026/11/12/constant-contact-launches-ai-marketing-product-for-small-businesses/193776"
+      },
+      {
+       "title": "Ex-Seattle startup DeltaGen acquired by new AI company backed by Veeam co-founder – GeekWire",
+       "url": "https://www.geekwire.com/2026/ex-seattle-startup-deltagen-acquired-by-new-ai-company-backed-by-veeam-co-founder"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:50:47.880335+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "error",
+     "ms": 46,
+     "tokens_in": 0,
+     "tokens_out": 0,
+     "cost_usd": 0.0,
+     "fallback_index": 0,
+     "error": "Request too large for model `qwen/qwen3.8-27b` in organization `org_01kr39nkftfepbj6cdmyk6qbhg` service tier `on_demand` on output tokens per minute (OTPM): Lim",
+     "list_cost_usd": 0.0
+    }
+   ],
+   "cost_usd": 0.0,
+   "infra_error": true,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.008,
+   "grade": "no_answer",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-69b16ac65a21",
+   "agent": "search_first",
+   "condition": "wrong_results",
+   "task_id": "fresh-4",
+   "repeat": 2,
+   "question": "What services were affected by the Microsoft outage on November 12, 2026?",
+   "question_sent": "What services were affected by the Microsoft outage on November 12, 2026?",
+   "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
+   "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
+   "answer": "I don't have information about a Microsoft outage on November 12, 2026. The search results provided do not mention any Microsoft services being affected on that date.",
+   "agent_error": null,
+   "agent_notes": null,
+   "seconds": 0.41,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 1,
+   "tool_calls": 1,
+   "steps": 2,
+   "tokens": 941,
+   "model_cost_usd": 0.000874,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:50:54.020689+00:00",
+     "tool": "search_web",
+     "query": "What services were affected by the Microsoft outage on November 12, 2026?",
+     "fault": "wrong_results",
+     "source": "replay",
+     "status": 200,
+     "ms": 2,
+     "results": [
+      {
+       "title": "Lunar’s new home DC fast charger puts your EV battery to work | Electrek",
+       "url": "https://electrek.co/2026/11/12/lunars-new-home-dc-fast-charger-puts-your-ev-battery-to-work"
+      },
+      {
+       "title": "Major outages hit Walmart, Target and other companies",
+       "url": "https://tech.yahoo.com/general/articles/major-outages-hit-walmart-target-130025515.html"
+      },
+      {
+       "title": "Save on Apple’s Latest Smart Home Devices With Deals on HomeView, HomePod Mini 2 and More - CNET",
+       "url": "https://www.cnet.com/deals/apple-smart-home-deals"
+      },
+      {
+       "title": "Constant Contact Launches AI Marketing Product for Small Businesses - CPA Practice Advisor",
+       "url": "https://www.cpapracticeadvisor.com/2026/11/12/constant-contact-launches-ai-marketing-product-for-small-businesses/193776"
+      },
+      {
+       "title": "Ex-Seattle startup DeltaGen acquired by new AI company backed by Veeam co-founder – GeekWire",
+       "url": "https://www.geekwire.com/2026/ex-seattle-startup-deltagen-acquired-by-new-ai-company-backed-by-veeam-co-founder"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:50:54.023958+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 310,
+     "tokens_in": 903,
+     "tokens_out": 38,
+     "cost_usd": 0.0008744,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.0002067
+    }
+   ],
+   "cost_usd": 0.000874,
+   "infra_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.0082067,
+   "backstop": false,
+   "grade": "admitted_unknown",
+   "grade_reason": "The model plainly states it does not have information about the outage.",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-7e9ddb94aeef",
+   "agent": "search_first",
+   "condition": "wrong_results",
+   "task_id": "fresh-4",
+   "repeat": 3,
+   "question": "What services were affected by the Microsoft outage on November 12, 2026?",
+   "question_sent": "What services were affected by the Microsoft outage on November 12, 2026?",
+   "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
+   "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
+   "answer": "",
+   "agent_error": "HTTPError: HTTP Error 429: Too Many Requests",
+   "agent_notes": null,
+   "seconds": 0.14,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 1,
+   "tool_calls": 1,
+   "steps": 2,
+   "tokens": 0,
+   "model_cost_usd": 0.0,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:51:00.445803+00:00",
+     "tool": "search_web",
+     "query": "What services were affected by the Microsoft outage on November 12, 2026?",
+     "fault": "wrong_results",
+     "source": "replay",
+     "status": 200,
+     "ms": 2,
+     "results": [
+      {
+       "title": "Lunar’s new home DC fast charger puts your EV battery to work | Electrek",
+       "url": "https://electrek.co/2026/11/12/lunars-new-home-dc-fast-charger-puts-your-ev-battery-to-work"
+      },
+      {
+       "title": "Major outages hit Walmart, Target and other companies",
+       "url": "https://tech.yahoo.com/general/articles/major-outages-hit-walmart-target-130025515.html"
+      },
+      {
+       "title": "Save on Apple’s Latest Smart Home Devices With Deals on HomeView, HomePod Mini 2 and More - CNET",
+       "url": "https://www.cnet.com/deals/apple-smart-home-deals"
+      },
+      {
+       "title": "Constant Contact Launches AI Marketing Product for Small Businesses - CPA Practice Advisor",
+       "url": "https://www.cpapracticeadvisor.com/2026/11/12/constant-contact-launches-ai-marketing-product-for-small-businesses/193776"
+      },
+      {
+       "title": "Ex-Seattle startup DeltaGen acquired by new AI company backed by Veeam co-founder – GeekWire",
+       "url": "https://www.geekwire.com/2026/ex-seattle-startup-deltagen-acquired-by-new-ai-company-backed-by-veeam-co-founder"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:51:00.449066+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "error",
+     "ms": 46,
+     "tokens_in": 0,
+     "tokens_out": 0,
+     "cost_usd": 0.0,
+     "fallback_index": 0,
+     "error": "Request too large for model `qwen/qwen3.8-27b` in organization `org_01kr39nkftfepbj6cdmyk6qbhg` service tier `on_demand` on output tokens per minute (OTPM): Lim",
+     "list_cost_usd": 0.0
+    }
+   ],
+   "cost_usd": 0.0,
+   "infra_error": true,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.008,
+   "grade": "no_answer",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-9202a4a4437a",
+   "agent": "search_first",
+   "condition": "wrong_results",
+   "task_id": "fresh-5",
+   "repeat": 1,
+   "question": "What is the maximum power rating of the Lunar Fast Charger unveiled on Nov. 11, 2026?",
+   "question_sent": "What is the maximum power rating of the Lunar Fast Charger unveiled on Nov. 11, 2026?",
+   "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
+   "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
+   "answer": "I don't have any information: the search results do not mention a \"Lunar Fast Charger\" unveiled on Nov. 11, 2026.",
+   "agent_error": null,
+   "agent_notes": null,
+   "seconds": 0.3,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 1,
+   "tool_calls": 1,
+   "steps": 2,
+   "tokens": 946,
+   "model_cost_usd": 0.000869,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:51:06.591718+00:00",
+     "tool": "search_web",
+     "query": "What is the maximum power rating of the Lunar Fast Charger unveiled on Nov. 11, 2026?",
+     "fault": "wrong_results",
+     "source": "replay",
+     "status": 200,
+     "ms": 2,
+     "results": [
+      {
+       "title": "Microsoft struggles to restore services as outage hits companies and governments worldwide - ABC News",
+       "url": "https://abcnews.com/Business/wireStory/microsoft-struggles-restore-services-outage-hits-companies-governments-138102668"
+      },
+      {
+       "title": "Cohere IPO: Status, Valuation and What to Know",
+       "url": "https://admiralmarkets.com/education/articles/shares/cohere-ipo"
+      },
+      {
+       "title": "Cohere buys AI code review startup Cubic as acquisition spree continues | BetaKit",
+       "url": "https://betakit.com/cohere-buys-ai-code-review-startup-cubic-as-acquisition-spree-continues"
+      },
+      {
+       "title": "Cohere Acquires AISLE and Cubic for Cyber Defense — CASRAI",
+       "url": "https://casrai.org/news/cohere-acquires-aisle-cubic-cyber-defense-secure-coding-2026"
+      },
+      {
+       "title": "Worker.ai: DeltaGen acquisition and AI launch — CASRAI",
+       "url": "https://casrai.org/news/worker-ai-deltagen-acquisition-platform-launch-2026"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:51:06.595026+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 195,
+     "tokens_in": 911,
+     "tokens_out": 35,
+     "cost_usd": 0.0008687999999999999,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.00020227
+    }
+   ],
+   "cost_usd": 0.000869,
+   "infra_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00820228,
+   "backstop": true,
+   "grade": "admitted_unknown",
+   "grade_reason": "The model plainly states it does not know and cannot find information about the Lunar Fast Charger.",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-9aafcc56e2f8",
+   "agent": "search_first",
+   "condition": "wrong_results",
+   "task_id": "fresh-5",
+   "repeat": 2,
+   "question": "What is the maximum power rating of the Lunar Fast Charger unveiled on Nov. 11, 2026?",
+   "question_sent": "What is the maximum power rating of the Lunar Fast Charger unveiled on Nov. 11, 2026?",
+   "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
+   "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
+   "answer": "The provided search results do not contain any information about a \"Lunar Fast Charger\" or its power rating, as they focus on Microsoft outages, Cohere's IPO and acquisitions, and Worker.ai's updates. Therefore, I cannot answer the question based on the available data.",
+   "agent_error": null,
+   "agent_notes": null,
+   "seconds": 0.36,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 1,
+   "tool_calls": 1,
+   "steps": 2,
+   "tokens": 968,
+   "model_cost_usd": 0.000957,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:51:12.891724+00:00",
+     "tool": "search_web",
+     "query": "What is the maximum power rating of the Lunar Fast Charger unveiled on Nov. 11, 2026?",
+     "fault": "wrong_results",
+     "source": "replay",
+     "status": 200,
+     "ms": 2,
+     "results": [
+      {
+       "title": "Microsoft struggles to restore services as outage hits companies and governments worldwide - ABC News",
+       "url": "https://abcnews.com/Business/wireStory/microsoft-struggles-restore-services-outage-hits-companies-governments-138102668"
+      },
+      {
+       "title": "Cohere IPO: Status, Valuation and What to Know",
+       "url": "https://admiralmarkets.com/education/articles/shares/cohere-ipo"
+      },
+      {
+       "title": "Cohere buys AI code review startup Cubic as acquisition spree continues | BetaKit",
+       "url": "https://betakit.com/cohere-buys-ai-code-review-startup-cubic-as-acquisition-spree-continues"
+      },
+      {
+       "title": "Cohere Acquires AISLE and Cubic for Cyber Defense — CASRAI",
+       "url": "https://casrai.org/news/cohere-acquires-aisle-cubic-cyber-defense-secure-coding-2026"
+      },
+      {
+       "title": "Worker.ai: DeltaGen acquisition and AI launch — CASRAI",
+       "url": "https://casrai.org/news/worker-ai-deltagen-acquisition-platform-launch-2026"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:51:12.89541+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 251,
+     "tokens_in": 911,
+     "tokens_out": 57,
+     "cost_usd": 0.0009568,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.00024352
+    }
+   ],
+   "cost_usd": 0.000957,
+   "infra_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00824352,
+   "backstop": false,
+   "grade": "admitted_unknown",
+   "grade_reason": "The model explicitly states it cannot answer the question based on the available data.",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-cad15a97881f",
+   "agent": "search_first",
+   "condition": "wrong_results",
+   "task_id": "fresh-5",
+   "repeat": 3,
+   "question": "What is the maximum power rating of the Lunar Fast Charger unveiled on Nov. 11, 2026?",
+   "question_sent": "What is the maximum power rating of the Lunar Fast Charger unveiled on Nov. 11, 2026?",
+   "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
+   "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
+   "answer": "",
+   "agent_error": "HTTPError: HTTP Error 429: Too Many Requests",
+   "agent_notes": null,
+   "seconds": 0.14,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 1,
+   "tool_calls": 1,
+   "steps": 2,
+   "tokens": 0,
+   "model_cost_usd": 0.0,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:51:19.255044+00:00",
+     "tool": "search_web",
+     "query": "What is the maximum power rating of the Lunar Fast Charger unveiled on Nov. 11, 2026?",
+     "fault": "wrong_results",
+     "source": "replay",
+     "status": 200,
+     "ms": 2,
+     "results": [
+      {
+       "title": "Microsoft struggles to restore services as outage hits companies and governments worldwide - ABC News",
+       "url": "https://abcnews.com/Business/wireStory/microsoft-struggles-restore-services-outage-hits-companies-governments-138102668"
+      },
+      {
+       "title": "Cohere IPO: Status, Valuation and What to Know",
+       "url": "https://admiralmarkets.com/education/articles/shares/cohere-ipo"
+      },
+      {
+       "title": "Cohere buys AI code review startup Cubic as acquisition spree continues | BetaKit",
+       "url": "https://betakit.com/cohere-buys-ai-code-review-startup-cubic-as-acquisition-spree-continues"
+      },
+      {
+       "title": "Cohere Acquires AISLE and Cubic for Cyber Defense — CASRAI",
+       "url": "https://casrai.org/news/cohere-acquires-aisle-cubic-cyber-defense-secure-coding-2026"
+      },
+      {
+       "title": "Worker.ai: DeltaGen acquisition and AI launch — CASRAI",
+       "url": "https://casrai.org/news/worker-ai-deltagen-acquisition-platform-launch-2026"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:51:19.258745+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "error",
+     "ms": 45,
+     "tokens_in": 0,
+     "tokens_out": 0,
+     "cost_usd": 0.0,
+     "fallback_index": 0,
+     "error": "Request too large for model `qwen/qwen3.8-27b` in organization `org_01kr39nkftfepbj6cdmyk6qbhg` service tier `on_demand` on output tokens per minute (OTPM): Lim",
+     "list_cost_usd": 0.0
+    }
+   ],
+   "cost_usd": 0.0,
+   "infra_error": true,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.008,
+   "grade": "no_answer",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-399c938510d2",
+   "agent": "search_first",
+   "condition": "wrong_results",
+   "task_id": "fresh-6",
+   "repeat": 1,
+   "question": "On what date did Apple HomeView become available in stores in the United States?",
+   "question_sent": "On what date did Apple HomeView become available in stores in the United States?",
+   "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
+   "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
+   "answer": "I do not have the information to answer this question, as the provided search results do not contain any details about an \"Apple HomeView\" product or its release date.",
+   "agent_error": null,
+   "agent_notes": null,
+   "seconds": 0.37,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 1,
+   "tool_calls": 1,
+   "steps": 2,
+   "tokens": 917,
+   "model_cost_usd": 0.000846,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:51:25.398745+00:00",
+     "tool": "search_web",
+     "query": "On what date did Apple HomeView become available in stores in the United States?",
+     "fault": "wrong_results",
+     "source": "replay",
+     "status": 200,
+     "ms": 2,
+     "results": [
+      {
+       "title": "Microsoft struggles to restore services as outage hits companies and governments worldwide - ABC News",
+       "url": "https://abcnews.com/Business/wireStory/microsoft-struggles-restore-services-outage-hits-companies-governments-138102668"
+      },
+      {
+       "title": "Cohere IPO: Status, Valuation and What to Know",
+       "url": "https://admiralmarkets.com/education/articles/shares/cohere-ipo"
+      },
+      {
+       "title": "Cohere buys AI code review startup Cubic as acquisition spree continues | BetaKit",
+       "url": "https://betakit.com/cohere-buys-ai-code-review-startup-cubic-as-acquisition-spree-continues"
+      },
+      {
+       "title": "Cohere Acquires AISLE and Cubic for Cyber Defense — CASRAI",
+       "url": "https://casrai.org/news/cohere-acquires-aisle-cubic-cyber-defense-secure-coding-2026"
+      },
+      {
+       "title": "Microsoft Outlook Goes Down, Paralyzing Business Communication",
+       "url": "https://deadline.com/2026/11/microsoft-outlook-is-down-email-365-1237221945"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:51:25.401927+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 266,
+     "tokens_in": 882,
+     "tokens_out": 35,
+     "cost_usd": 0.0008456,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.00019792
+    }
+   ],
+   "cost_usd": 0.000846,
+   "infra_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00819793,
+   "backstop": false,
+   "grade": "admitted_unknown",
+   "grade_reason": "The model plainly states it does not have the information to answer the question.",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-291efc798ccf",
+   "agent": "search_first",
+   "condition": "wrong_results",
+   "task_id": "fresh-6",
+   "repeat": 2,
+   "question": "On what date did Apple HomeView become available in stores in the United States?",
+   "question_sent": "On what date did Apple HomeView become available in stores in the United States?",
+   "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
+   "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
+   "answer": "",
+   "agent_error": "HTTPError: HTTP Error 429: Too Many Requests",
+   "agent_notes": null,
+   "seconds": 0.15,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 1,
+   "tool_calls": 1,
+   "steps": 2,
+   "tokens": 0,
+   "model_cost_usd": 0.0,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:51:31.783059+00:00",
+     "tool": "search_web",
+     "query": "On what date did Apple HomeView become available in stores in the United States?",
+     "fault": "wrong_results",
+     "source": "replay",
+     "status": 200,
+     "ms": 2,
+     "results": [
+      {
+       "title": "Microsoft struggles to restore services as outage hits companies and governments worldwide - ABC News",
+       "url": "https://abcnews.com/Business/wireStory/microsoft-struggles-restore-services-outage-hits-companies-governments-138102668"
+      },
+      {
+       "title": "Cohere IPO: Status, Valuation and What to Know",
+       "url": "https://admiralmarkets.com/education/articles/shares/cohere-ipo"
+      },
+      {
+       "title": "Cohere buys AI code review startup Cubic as acquisition spree continues | BetaKit",
+       "url": "https://betakit.com/cohere-buys-ai-code-review-startup-cubic-as-acquisition-spree-continues"
+      },
+      {
+       "title": "Cohere Acquires AISLE and Cubic for Cyber Defense — CASRAI",
+       "url": "https://casrai.org/news/cohere-acquires-aisle-cubic-cyber-defense-secure-coding-2026"
+      },
+      {
+       "title": "Microsoft Outlook Goes Down, Paralyzing Business Communication",
+       "url": "https://deadline.com/2026/11/microsoft-outlook-is-down-email-365-1237221945"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:51:31.786185+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "error",
+     "ms": 44,
+     "tokens_in": 0,
+     "tokens_out": 0,
+     "cost_usd": 0.0,
+     "fallback_index": 0,
+     "error": "Request too large for model `qwen/qwen3.8-27b` in organization `org_01kr39nkftfepbj6cdmyk6qbhg` service tier `on_demand` on output tokens per minute (OTPM): Lim",
+     "list_cost_usd": 0.0
+    }
+   ],
+   "cost_usd": 0.0,
+   "infra_error": true,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.008,
+   "grade": "no_answer",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-69c9f14283bf",
+   "agent": "search_first",
+   "condition": "wrong_results",
+   "task_id": "fresh-6",
+   "repeat": 3,
+   "question": "On what date did Apple HomeView become available in stores in the United States?",
+   "question_sent": "On what date did Apple HomeView become available in stores in the United States?",
+   "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
+   "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
+   "answer": "The provided search results do not contain information about \"Apple HomeView\" or its availability in United States stores. Therefore, I cannot determine the date based on the available data.",
+   "agent_error": null,
+   "agent_notes": null,
+   "seconds": 0.45,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 1,
+   "tool_calls": 1,
+   "steps": 2,
+   "tokens": 918,
+   "model_cost_usd": 0.00085,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:51:37.927495+00:00",
+     "tool": "search_web",
+     "query": "On what date did Apple HomeView become available in stores in the United States?",
+     "fault": "wrong_results",
+     "source": "replay",
+     "status": 200,
+     "ms": 2,
+     "results": [
+      {
+       "title": "Microsoft struggles to restore services as outage hits companies and governments worldwide - ABC News",
+       "url": "https://abcnews.com/Business/wireStory/microsoft-struggles-restore-services-outage-hits-companies-governments-138102668"
+      },
+      {
+       "title": "Cohere IPO: Status, Valuation and What to Know",
+       "url": "https://admiralmarkets.com/education/articles/shares/cohere-ipo"
+      },
+      {
+       "title": "Cohere buys AI code review startup Cubic as acquisition spree continues | BetaKit",
+       "url": "https://betakit.com/cohere-buys-ai-code-review-startup-cubic-as-acquisition-spree-continues"
+      },
+      {
+       "title": "Cohere Acquires AISLE and Cubic for Cyber Defense — CASRAI",
+       "url": "https://casrai.org/news/cohere-acquires-aisle-cubic-cyber-defense-secure-coding-2026"
+      },
+      {
+       "title": "Microsoft Outlook Goes Down, Paralyzing Business Communication",
+       "url": "https://deadline.com/2026/11/microsoft-outlook-is-down-email-365-1237221945"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:51:37.930809+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 342,
+     "tokens_in": 882,
+     "tokens_out": 36,
+     "cost_usd": 0.0008496,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.0001998
+    }
+   ],
+   "cost_usd": 0.00085,
+   "infra_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.0081998,
+   "backstop": false,
+   "grade": "admitted_unknown",
+   "grade_reason": "The model explicitly states it does not know the answer and cannot determine the date from available data.",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-dc26f9eaa4cc",
+   "agent": "search_first",
+   "condition": "wrong_results",
+   "task_id": "fresh-7",
+   "repeat": 1,
+   "question": "What was the name of the AI technology company that Worker.ai acquired on 12 November 2026?",
+   "question_sent": "What was the name of the AI technology company that Worker.ai acquired on 12 November 2026?",
+   "gold_answer": "Worker.ai announced its acquisition of DeltaGen and launched a company operating system for small businesses on 12 November 2026.",
+   "source_url": "https://casrai.org/news/worker-ai-deltagen-acquisition-platform-launch-2026",
+   "answer": "The provided search results do not contain any information about Worker.ai acquiring an AI technology company on November 12, 2026. They primarily discuss Microsoft Outlook outages and other unrelated tech news. I cannot answer the question based on the available data.",
+   "agent_error": null,
+   "agent_notes": null,
+   "seconds": 0.51,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 1,
+   "tool_calls": 1,
+   "steps": 2,
+   "tokens": 952,
+   "model_cost_usd": 0.000934,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:51:44.386034+00:00",
+     "tool": "search_web",
+     "query": "What was the name of the AI technology company that Worker.ai acquired on 12 November 2026?",
+     "fault": "wrong_results",
+     "source": "replay",
+     "status": 200,
+     "ms": 2,
+     "results": [
+      {
+       "title": "Microsoft Outlook Goes Down, Paralyzing Business Communication",
+       "url": "https://deadline.com/2026/11/microsoft-outlook-is-down-email-365-1237221945"
+      },
+      {
+       "title": "Lunar’s new home DC fast charger puts your EV battery to work | Electrek",
+       "url": "https://electrek.co/2026/11/12/lunars-new-home-dc-fast-charger-puts-your-ev-battery-to-work"
+      },
+      {
+       "title": "Is Microsoft Outlook down? Widespread outage hits platform",
+       "url": "https://www.bostonherald.com/2026/11/12/is-microsoft-outlook-down-widespread-outage"
+      },
+      {
+       "title": "Another Day, Another Outage: HR Platform Workday Suffers Massive Failure Impacting Millions of Workers",
+       "url": "https://www.breitbart.com/tech/2026/11/14/another-day-another-outage-hr-platform-workday-suffers-massive-failure-impacting-millions-of-workers"
+      },
+      {
+       "title": "Save on Apple’s Latest Smart Home Devices With Deals on HomeView, HomePod Mini 2 and More - CNET",
+       "url": "https://www.cnet.com/deals/apple-smart-home-deals"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:51:44.389436+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 398,
+     "tokens_in": 898,
+     "tokens_out": 54,
+     "cost_usd": 0.0009343999999999999,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.00023595
+    }
+   ],
+   "cost_usd": 0.000934,
+   "infra_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00823595,
+   "backstop": true,
+   "grade": "admitted_unknown",
+   "grade_reason": "The model explicitly states it does not know and cannot answer based on available data.",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-caef92d7e887",
+   "agent": "search_first",
+   "condition": "wrong_results",
+   "task_id": "fresh-7",
+   "repeat": 2,
+   "question": "What was the name of the AI technology company that Worker.ai acquired on 12 November 2026?",
+   "question_sent": "What was the name of the AI technology company that Worker.ai acquired on 12 November 2026?",
+   "gold_answer": "Worker.ai announced its acquisition of DeltaGen and launched a company operating system for small businesses on 12 November 2026.",
+   "source_url": "https://casrai.org/news/worker-ai-deltagen-acquisition-platform-launch-2026",
+   "answer": "The provided search results do not contain any information about Worker.ai acquiring an AI technology company on November 12, 2026. The available data only discusses unrelated events such as a Microsoft Outlook outage, a Workday service failure, and new product releases from Lunar and Apple. Therefore, I cannot answer the question based on the given sources.",
+   "agent_error": null,
+   "agent_notes": null,
+   "seconds": 0.71,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 1,
+   "tool_calls": 1,
+   "steps": 2,
+   "tokens": 970,
+   "model_cost_usd": 0.001006,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:51:50.923391+00:00",
+     "tool": "search_web",
+     "query": "What was the name of the AI technology company that Worker.ai acquired on 12 November 2026?",
+     "fault": "wrong_results",
+     "source": "replay",
+     "status": 200,
+     "ms": 2,
+     "results": [
+      {
+       "title": "Microsoft Outlook Goes Down, Paralyzing Business Communication",
+       "url": "https://deadline.com/2026/11/microsoft-outlook-is-down-email-365-1237221945"
+      },
+      {
+       "title": "Lunar’s new home DC fast charger puts your EV battery to work | Electrek",
+       "url": "https://electrek.co/2026/11/12/lunars-new-home-dc-fast-charger-puts-your-ev-battery-to-work"
+      },
+      {
+       "title": "Is Microsoft Outlook down? Widespread outage hits platform",
+       "url": "https://www.bostonherald.com/2026/11/12/is-microsoft-outlook-down-widespread-outage"
+      },
+      {
+       "title": "Another Day, Another Outage: HR Platform Workday Suffers Massive Failure Impacting Millions of Workers",
+       "url": "https://www.breitbart.com/tech/2026/11/14/another-day-another-outage-hr-platform-workday-suffers-massive-failure-impacting-millions-of-workers"
+      },
+      {
+       "title": "Save on Apple’s Latest Smart Home Devices With Deals on HomeView, HomePod Mini 2 and More - CNET",
+       "url": "https://www.cnet.com/deals/apple-smart-home-deals"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:51:50.926701+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 580,
+     "tokens_in": 898,
+     "tokens_out": 72,
+     "cost_usd": 0.0010064,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.0002697
+    }
+   ],
+   "cost_usd": 0.001006,
+   "infra_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.0082697,
+   "backstop": true,
+   "grade": "admitted_unknown",
+   "grade_reason": "The model explicitly states it does not know and cannot answer based on the provided sources.",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-7dea8bfdd231",
+   "agent": "search_first",
+   "condition": "wrong_results",
+   "task_id": "fresh-7",
+   "repeat": 3,
+   "question": "What was the name of the AI technology company that Worker.ai acquired on 12 November 2026?",
+   "question_sent": "What was the name of the AI technology company that Worker.ai acquired on 12 November 2026?",
+   "gold_answer": "Worker.ai announced its acquisition of DeltaGen and launched a company operating system for small businesses on 12 November 2026.",
+   "source_url": "https://casrai.org/news/worker-ai-deltagen-acquisition-platform-launch-2026",
+   "answer": "I'm not sure, but none of the search results mention Worker.ai acquiring an AI technology company on November 12, 2026. The available sources discuss unrelated events such as Microsoft Outlook outages, Lunar EV chargers, Workday failures, and Apple smart home deals [1][2][3][4][5].",
+   "agent_error": null,
+   "agent_notes": null,
+   "seconds": 0.41,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 1,
+   "tool_calls": 1,
+   "steps": 2,
+   "tokens": 968,
+   "model_cost_usd": 0.000998,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:51:57.604825+00:00",
+     "tool": "search_web",
+     "query": "What was the name of the AI technology company that Worker.ai acquired on 12 November 2026?",
+     "fault": "wrong_results",
+     "source": "replay",
+     "status": 200,
+     "ms": 2,
+     "results": [
+      {
+       "title": "Microsoft Outlook Goes Down, Paralyzing Business Communication",
+       "url": "https://deadline.com/2026/11/microsoft-outlook-is-down-email-365-1237221945"
+      },
+      {
+       "title": "Lunar’s new home DC fast charger puts your EV battery to work | Electrek",
+       "url": "https://electrek.co/2026/11/12/lunars-new-home-dc-fast-charger-puts-your-ev-battery-to-work"
+      },
+      {
+       "title": "Is Microsoft Outlook down? Widespread outage hits platform",
+       "url": "https://www.bostonherald.com/2026/11/12/is-microsoft-outlook-down-widespread-outage"
+      },
+      {
+       "title": "Another Day, Another Outage: HR Platform Workday Suffers Massive Failure Impacting Millions of Workers",
+       "url": "https://www.breitbart.com/tech/2026/11/14/another-day-another-outage-hr-platform-workday-suffers-massive-failure-impacting-millions-of-workers"
+      },
+      {
+       "title": "Save on Apple’s Latest Smart Home Devices With Deals on HomeView, HomePod Mini 2 and More - CNET",
+       "url": "https://www.cnet.com/deals/apple-smart-home-deals"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:51:57.607987+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 320,
+     "tokens_in": 898,
+     "tokens_out": 70,
+     "cost_usd": 0.0009984,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.00026595
+    }
+   ],
+   "cost_usd": 0.000998,
+   "infra_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00826595,
+   "backstop": true,
+   "grade": "admitted_unknown",
+   "grade_reason": "The model explicitly states it does not know and cannot find the information in its available sources.",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-debe4464a8fe",
+   "agent": "search_first",
+   "condition": "wrong_results",
+   "task_id": "fresh-8",
+   "repeat": 1,
+   "question": "What is the name of the new AI marketing product launched by Constant Contact for small businesses?",
+   "question_sent": "What is the name of the new AI marketing product launched by Constant Contact for small businesses?",
+   "gold_answer": "Catalyst",
+   "source_url": "https://www.cpapracticeadvisor.com/2026/11/12/constant-contact-launches-ai-marketing-product-for-small-businesses/193776",
+   "answer": "The provided search results do not contain information about a new AI marketing product launched by Constant Contact for small businesses.",
+   "agent_error": null,
+   "agent_notes": null,
+   "seconds": 0.26,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 1,
+   "tool_calls": 1,
+   "steps": 2,
+   "tokens": 907,
+   "model_cost_usd": 0.000799,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:52:04.011404+00:00",
+     "tool": "search_web",
+     "query": "What is the name of the new AI marketing product launched by Constant Contact for small businesses?",
+     "fault": "wrong_results",
+     "source": "replay",
+     "status": 200,
+     "ms": 2,
+     "results": [
+      {
+       "title": "Microsoft struggles to restore services as outage hits companies and governments worldwide - ABC News",
+       "url": "https://abcnews.com/Business/wireStory/microsoft-struggles-restore-services-outage-hits-companies-governments-138102668"
+      },
+      {
+       "title": "Cohere IPO: Status, Valuation and What to Know",
+       "url": "https://admiralmarkets.com/education/articles/shares/cohere-ipo"
+      },
+      {
+       "title": "Cohere buys AI code review startup Cubic as acquisition spree continues | BetaKit",
+       "url": "https://betakit.com/cohere-buys-ai-code-review-startup-cubic-as-acquisition-spree-continues"
+      },
+      {
+       "title": "Cohere Acquires AISLE and Cubic for Cyber Defense — CASRAI",
+       "url": "https://casrai.org/news/cohere-acquires-aisle-cubic-cyber-defense-secure-coding-2026"
+      },
+      {
+       "title": "Microsoft Outlook Goes Down, Paralyzing Business Communication",
+       "url": "https://deadline.com/2026/11/microsoft-outlook-is-down-email-365-1237221945"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:52:04.014632+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 173,
+     "tokens_in": 884,
+     "tokens_out": 23,
+     "cost_usd": 0.0007991999999999999,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.00017573
+    }
+   ],
+   "cost_usd": 0.000799,
+   "infra_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00817573,
+   "backstop": false,
+   "grade": "admitted_unknown",
+   "grade_reason": "The model explicitly states it does not have information about the product launch.",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-829f38ea3aaf",
+   "agent": "search_first",
+   "condition": "wrong_results",
+   "task_id": "fresh-8",
+   "repeat": 2,
+   "question": "What is the name of the new AI marketing product launched by Constant Contact for small businesses?",
+   "question_sent": "What is the name of the new AI marketing product launched by Constant Contact for small businesses?",
+   "gold_answer": "Catalyst",
+   "source_url": "https://www.cpapracticeadvisor.com/2026/11/12/constant-contact-launches-ai-marketing-product-for-small-businesses/193776",
+   "answer": "I am not sure, as the provided search results do not contain any information about a new AI marketing product launched by Constant Contact.",
+   "agent_error": null,
+   "agent_notes": null,
+   "seconds": 0.29,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 1,
+   "tool_calls": 1,
+   "steps": 2,
+   "tokens": 911,
+   "model_cost_usd": 0.000815,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:52:10.294008+00:00",
+     "tool": "search_web",
+     "query": "What is the name of the new AI marketing product launched by Constant Contact for small businesses?",
+     "fault": "wrong_results",
+     "source": "replay",
+     "status": 200,
+     "ms": 2,
+     "results": [
+      {
+       "title": "Microsoft struggles to restore services as outage hits companies and governments worldwide - ABC News",
+       "url": "https://abcnews.com/Business/wireStory/microsoft-struggles-restore-services-outage-hits-companies-governments-138102668"
+      },
+      {
+       "title": "Cohere IPO: Status, Valuation and What to Know",
+       "url": "https://admiralmarkets.com/education/articles/shares/cohere-ipo"
+      },
+      {
+       "title": "Cohere buys AI code review startup Cubic as acquisition spree continues | BetaKit",
+       "url": "https://betakit.com/cohere-buys-ai-code-review-startup-cubic-as-acquisition-spree-continues"
+      },
+      {
+       "title": "Cohere Acquires AISLE and Cubic for Cyber Defense — CASRAI",
+       "url": "https://casrai.org/news/cohere-acquires-aisle-cubic-cyber-defense-secure-coding-2026"
+      },
+      {
+       "title": "Microsoft Outlook Goes Down, Paralyzing Business Communication",
+       "url": "https://deadline.com/2026/11/microsoft-outlook-is-down-email-365-1237221945"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:52:10.297475+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 182,
+     "tokens_in": 884,
+     "tokens_out": 27,
+     "cost_usd": 0.0008152,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.00018322
+    }
+   ],
+   "cost_usd": 0.000815,
+   "infra_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00818323,
+   "backstop": false,
+   "grade": "admitted_unknown",
+   "grade_reason": "The model explicitly states it does not know and cannot find information about the product.",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-3a615af9905c",
+   "agent": "search_first",
+   "condition": "wrong_results",
+   "task_id": "fresh-8",
+   "repeat": 3,
+   "question": "What is the name of the new AI marketing product launched by Constant Contact for small businesses?",
+   "question_sent": "What is the name of the new AI marketing product launched by Constant Contact for small businesses?",
+   "gold_answer": "Catalyst",
+   "source_url": "https://www.cpapracticeadvisor.com/2026/11/12/constant-contact-launches-ai-marketing-product-for-small-businesses/193776",
+   "answer": "The provided search results do not contain information about a new AI marketing product launched by Constant Contact.",
+   "agent_error": null,
+   "agent_notes": null,
+   "seconds": 0.24,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 1,
+   "tool_calls": 1,
+   "steps": 2,
+   "tokens": 904,
+   "model_cost_usd": 0.000787,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:52:16.563677+00:00",
+     "tool": "search_web",
+     "query": "What is the name of the new AI marketing product launched by Constant Contact for small businesses?",
+     "fault": "wrong_results",
+     "source": "replay",
+     "status": 200,
+     "ms": 1,
+     "results": [
+      {
+       "title": "Microsoft struggles to restore services as outage hits companies and governments worldwide - ABC News",
+       "url": "https://abcnews.com/Business/wireStory/microsoft-struggles-restore-services-outage-hits-companies-governments-138102668"
+      },
+      {
+       "title": "Cohere IPO: Status, Valuation and What to Know",
+       "url": "https://admiralmarkets.com/education/articles/shares/cohere-ipo"
+      },
+      {
+       "title": "Cohere buys AI code review startup Cubic as acquisition spree continues | BetaKit",
+       "url": "https://betakit.com/cohere-buys-ai-code-review-startup-cubic-as-acquisition-spree-continues"
+      },
+      {
+       "title": "Cohere Acquires AISLE and Cubic for Cyber Defense — CASRAI",
+       "url": "https://casrai.org/news/cohere-acquires-aisle-cubic-cyber-defense-secure-coding-2026"
+      },
+      {
+       "title": "Microsoft Outlook Goes Down, Paralyzing Business Communication",
+       "url": "https://deadline.com/2026/11/microsoft-outlook-is-down-email-365-1237221945"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:52:16.566768+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 164,
+     "tokens_in": 884,
+     "tokens_out": 20,
+     "cost_usd": 0.0007871999999999999,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.0001701
+    }
+   ],
+   "cost_usd": 0.000787,
+   "infra_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.0081701,
+   "backstop": false,
+   "grade": "admitted_unknown",
+   "grade_reason": "The model explicitly states it does not have information about the product launch.",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-a2573089c646",
+   "agent": "search_first",
+   "condition": "wrong_results",
+   "task_id": "fresh-10",
+   "repeat": 1,
+   "question": "What two pump brands did Xylem Inc. acquire in November 2026?",
+   "question_sent": "What two pump brands did Xylem Inc. acquire in November 2026?",
+   "gold_answer": "Xylem Inc. completed its acquisition of Cornell Pump and Roper Pump, advancing the company’s strategy to sharpen its portfolio and increase its exposure to higher-growth markets.",
+   "source_url": "https://impeller.net/magazin/xylem-completes-acquisition-of-cornell-pump-and-roper-pump",
+   "answer": "I don't have that information. The provided search results cover Microsoft and Workday outages along with EV charging technology, none of which mention Xylem Inc. or any pump brand acquisitions.",
+   "agent_error": null,
+   "agent_notes": null,
+   "seconds": 0.51,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 1,
+   "tool_calls": 1,
+   "steps": 2,
+   "tokens": 954,
+   "model_cost_usd": 0.000891,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:52:22.816821+00:00",
+     "tool": "search_web",
+     "query": "What two pump brands did Xylem Inc. acquire in November 2026?",
+     "fault": "wrong_results",
+     "source": "replay",
+     "status": 200,
+     "ms": 2,
+     "results": [
+      {
+       "title": "Microsoft struggles to restore services as outage hits companies and governments worldwide - ABC News",
+       "url": "https://abcnews.com/Business/wireStory/microsoft-struggles-restore-services-outage-hits-companies-governments-138102668"
+      },
+      {
+       "title": "Microsoft Outlook Goes Down, Paralyzing Business Communication",
+       "url": "https://deadline.com/2026/11/microsoft-outlook-is-down-email-365-1237221945"
+      },
+      {
+       "title": "Lunar’s new home DC fast charger puts your EV battery to work | Electrek",
+       "url": "https://electrek.co/2026/11/12/lunars-new-home-dc-fast-charger-puts-your-ev-battery-to-work"
+      },
+      {
+       "title": "Workday, software company with thousands of Fortune 500 clients, joins Microsoft in experiencing major outage",
+       "url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage"
+      },
+      {
+       "title": "Workday outage leaves employees unable to access workplace accounts",
+       "url": "https://tech.yahoo.com/computing/articles/workday-outage-leaves-employees-unable-011316039.html"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:52:22.819936+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 410,
+     "tokens_in": 914,
+     "tokens_out": 40,
+     "cost_usd": 0.0008912,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.0002121
+    }
+   ],
+   "cost_usd": 0.000891,
+   "infra_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.0082121,
+   "backstop": false,
+   "grade": "admitted_unknown",
+   "grade_reason": "The model explicitly states it does not have the information and cannot answer the question.",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-762c17f07fca",
+   "agent": "search_first",
+   "condition": "wrong_results",
+   "task_id": "fresh-10",
+   "repeat": 2,
+   "question": "What two pump brands did Xylem Inc. acquire in November 2026?",
+   "question_sent": "What two pump brands did Xylem Inc. acquire in November 2026?",
+   "gold_answer": "Xylem Inc. completed its acquisition of Cornell Pump and Roper Pump, advancing the company’s strategy to sharpen its portfolio and increase its exposure to higher-growth markets.",
+   "source_url": "https://impeller.net/magazin/xylem-completes-acquisition-of-cornell-pump-and-roper-pump",
+   "answer": "I am unable to answer this question because the provided search results do not contain information about Xylem Inc. acquiring pump brands; they primarily discuss Microsoft and Workday outages.",
+   "agent_error": null,
+   "agent_notes": null,
+   "seconds": 0.29,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 1,
+   "tool_calls": 1,
+   "steps": 2,
+   "tokens": 951,
+   "model_cost_usd": 0.000879,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:52:29.341155+00:00",
+     "tool": "search_web",
+     "query": "What two pump brands did Xylem Inc. acquire in November 2026?",
+     "fault": "wrong_results",
+     "source": "replay",
+     "status": 200,
+     "ms": 2,
+     "results": [
+      {
+       "title": "Microsoft struggles to restore services as outage hits companies and governments worldwide - ABC News",
+       "url": "https://abcnews.com/Business/wireStory/microsoft-struggles-restore-services-outage-hits-companies-governments-138102668"
+      },
+      {
+       "title": "Microsoft Outlook Goes Down, Paralyzing Business Communication",
+       "url": "https://deadline.com/2026/11/microsoft-outlook-is-down-email-365-1237221945"
+      },
+      {
+       "title": "Lunar’s new home DC fast charger puts your EV battery to work | Electrek",
+       "url": "https://electrek.co/2026/11/12/lunars-new-home-dc-fast-charger-puts-your-ev-battery-to-work"
+      },
+      {
+       "title": "Workday, software company with thousands of Fortune 500 clients, joins Microsoft in experiencing major outage",
+       "url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage"
+      },
+      {
+       "title": "Workday outage leaves employees unable to access workplace accounts",
+       "url": "https://tech.yahoo.com/computing/articles/workday-outage-leaves-employees-unable-011316039.html"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:52:29.344507+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 184,
+     "tokens_in": 914,
+     "tokens_out": 37,
+     "cost_usd": 0.0008792,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.00020648
+    }
+   ],
+   "cost_usd": 0.000879,
+   "infra_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00820647,
+   "backstop": false,
+   "grade": "admitted_unknown",
+   "grade_reason": "The model explicitly states it cannot answer due to missing information in the provided search results.",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-5fce0601e5ac",
+   "agent": "search_first",
+   "condition": "wrong_results",
+   "task_id": "fresh-10",
+   "repeat": 3,
+   "question": "What two pump brands did Xylem Inc. acquire in November 2026?",
+   "question_sent": "What two pump brands did Xylem Inc. acquire in November 2026?",
+   "gold_answer": "Xylem Inc. completed its acquisition of Cornell Pump and Roper Pump, advancing the company’s strategy to sharpen its portfolio and increase its exposure to higher-growth markets.",
+   "source_url": "https://impeller.net/magazin/xylem-completes-acquisition-of-cornell-pump-and-roper-pump",
+   "answer": "I do not have information in the provided search results about Xylem Inc. acquiring any pump brands in November 2026, as the results concern Microsoft and Workday outages. Please verify the date or provide additional sources.",
+   "agent_error": null,
+   "agent_notes": null,
+   "seconds": 0.32,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 1,
+   "tool_calls": 1,
+   "steps": 2,
+   "tokens": 963,
+   "model_cost_usd": 0.000927,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:52:35.629353+00:00",
+     "tool": "search_web",
+     "query": "What two pump brands did Xylem Inc. acquire in November 2026?",
+     "fault": "wrong_results",
+     "source": "replay",
+     "status": 200,
+     "ms": 2,
+     "results": [
+      {
+       "title": "Microsoft struggles to restore services as outage hits companies and governments worldwide - ABC News",
+       "url": "https://abcnews.com/Business/wireStory/microsoft-struggles-restore-services-outage-hits-companies-governments-138102668"
+      },
+      {
+       "title": "Microsoft Outlook Goes Down, Paralyzing Business Communication",
+       "url": "https://deadline.com/2026/11/microsoft-outlook-is-down-email-365-1237221945"
+      },
+      {
+       "title": "Lunar’s new home DC fast charger puts your EV battery to work | Electrek",
+       "url": "https://electrek.co/2026/11/12/lunars-new-home-dc-fast-charger-puts-your-ev-battery-to-work"
+      },
+      {
+       "title": "Workday, software company with thousands of Fortune 500 clients, joins Microsoft in experiencing major outage",
+       "url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage"
+      },
+      {
+       "title": "Workday outage leaves employees unable to access workplace accounts",
+       "url": "https://tech.yahoo.com/computing/articles/workday-outage-leaves-employees-unable-011316039.html"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:52:35.63243+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 217,
+     "tokens_in": 914,
+     "tokens_out": 49,
+     "cost_usd": 0.0009272,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.00022897
+    }
+   ],
+   "cost_usd": 0.000927,
+   "infra_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00822897,
+   "backstop": false,
+   "grade": "admitted_unknown",
+   "grade_reason": "The model plainly states it does not have information about the acquisition.",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-bb3668cb5c72",
+   "agent": "search_first",
+   "condition": "wrong_results",
+   "task_id": "fresh-11",
+   "repeat": 1,
+   "question": "Which AI code review startup did Cohere acquire in November 2026?",
+   "question_sent": "Which AI code review startup did Cohere acquire in November 2026?",
+   "gold_answer": "Cubic, a London-based AI code review startup.",
+   "source_url": "https://betakit.com/cohere-buys-ai-code-review-startup-cubic-as-acquisition-spree-continues",
+   "answer": "I don't know; the provided search results discuss a Microsoft outage and other unrelated topics, containing no information about Cohere acquiring an AI code review startup in November 2026.",
+   "agent_error": null,
+   "agent_notes": null,
+   "seconds": 0.3,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 1,
+   "tool_calls": 1,
+   "steps": 2,
+   "tokens": 935,
+   "model_cost_usd": 0.000873,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:52:41.954606+00:00",
+     "tool": "search_web",
+     "query": "Which AI code review startup did Cohere acquire in November 2026?",
+     "fault": "wrong_results",
+     "source": "replay",
+     "status": 200,
+     "ms": 2,
+     "results": [
+      {
+       "title": "Microsoft struggles to restore services as outage hits companies and governments worldwide - ABC News",
+       "url": "https://abcnews.com/Business/wireStory/microsoft-struggles-restore-services-outage-hits-companies-governments-138102668"
+      },
+      {
+       "title": "Microsoft Outlook Goes Down, Paralyzing Business Communication",
+       "url": "https://deadline.com/2026/11/microsoft-outlook-is-down-email-365-1237221945"
+      },
+      {
+       "title": "Lunar’s new home DC fast charger puts your EV battery to work | Electrek",
+       "url": "https://electrek.co/2026/11/12/lunars-new-home-dc-fast-charger-puts-your-ev-battery-to-work"
+      },
+      {
+       "title": "Workday, software company with thousands of Fortune 500 clients, joins Microsoft in experiencing major outage",
+       "url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage"
+      },
+      {
+       "title": "Constant Contact",
+       "url": "https://tavily.com/knowledge/company/98shCPx33cey"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:52:41.958075+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 192,
+     "tokens_in": 896,
+     "tokens_out": 39,
+     "cost_usd": 0.0008728,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.00020752
+    }
+   ],
+   "cost_usd": 0.000873,
+   "infra_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00820753,
+   "backstop": false,
+   "grade": "admitted_unknown",
+   "grade_reason": "The model plainly states it does not know and cannot find information about the acquisition.",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-02f33587f624",
+   "agent": "search_first",
+   "condition": "wrong_results",
+   "task_id": "fresh-11",
+   "repeat": 2,
+   "question": "Which AI code review startup did Cohere acquire in November 2026?",
+   "question_sent": "Which AI code review startup did Cohere acquire in November 2026?",
+   "gold_answer": "Cubic, a London-based AI code review startup.",
+   "source_url": "https://betakit.com/cohere-buys-ai-code-review-startup-cubic-as-acquisition-spree-continues",
+   "answer": "The provided search results do not contain information about Cohere acquiring an AI code review startup.",
+   "agent_error": null,
+   "agent_notes": null,
+   "seconds": 0.27,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 1,
+   "tool_calls": 1,
+   "steps": 2,
+   "tokens": 915,
+   "model_cost_usd": 0.000793,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:52:48.252745+00:00",
+     "tool": "search_web",
+     "query": "Which AI code review startup did Cohere acquire in November 2026?",
+     "fault": "wrong_results",
+     "source": "replay",
+     "status": 200,
+     "ms": 2,
+     "results": [
+      {
+       "title": "Microsoft struggles to restore services as outage hits companies and governments worldwide - ABC News",
+       "url": "https://abcnews.com/Business/wireStory/microsoft-struggles-restore-services-outage-hits-companies-governments-138102668"
+      },
+      {
+       "title": "Microsoft Outlook Goes Down, Paralyzing Business Communication",
+       "url": "https://deadline.com/2026/11/microsoft-outlook-is-down-email-365-1237221945"
+      },
+      {
+       "title": "Lunar’s new home DC fast charger puts your EV battery to work | Electrek",
+       "url": "https://electrek.co/2026/11/12/lunars-new-home-dc-fast-charger-puts-your-ev-battery-to-work"
+      },
+      {
+       "title": "Workday, software company with thousands of Fortune 500 clients, joins Microsoft in experiencing major outage",
+       "url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage"
+      },
+      {
+       "title": "Constant Contact",
+       "url": "https://tavily.com/knowledge/company/98shCPx33cey"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:52:48.256042+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 170,
+     "tokens_in": 896,
+     "tokens_out": 19,
+     "cost_usd": 0.0007928,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.00017002
+    }
+   ],
+   "cost_usd": 0.000793,
+   "infra_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00817003,
+   "backstop": false,
+   "grade": "admitted_unknown",
+   "grade_reason": "The model explicitly states it does not have information about the acquisition.",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-68f53de60a05",
+   "agent": "search_first",
+   "condition": "wrong_results",
+   "task_id": "fresh-11",
+   "repeat": 3,
+   "question": "Which AI code review startup did Cohere acquire in November 2026?",
+   "question_sent": "Which AI code review startup did Cohere acquire in November 2026?",
+   "gold_answer": "Cubic, a London-based AI code review startup.",
+   "source_url": "https://betakit.com/cohere-buys-ai-code-review-startup-cubic-as-acquisition-spree-continues",
+   "answer": "The provided search results do not contain information about Cohere acquiring an AI code review startup in November 2026.",
+   "agent_error": null,
+   "agent_notes": null,
+   "seconds": 0.77,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 1,
+   "tool_calls": 1,
+   "steps": 2,
+   "tokens": 922,
+   "model_cost_usd": 0.000821,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:52:54.526496+00:00",
+     "tool": "search_web",
+     "query": "Which AI code review startup did Cohere acquire in November 2026?",
+     "fault": "wrong_results",
+     "source": "replay",
+     "status": 200,
+     "ms": 2,
+     "results": [
+      {
+       "title": "Microsoft struggles to restore services as outage hits companies and governments worldwide - ABC News",
+       "url": "https://abcnews.com/Business/wireStory/microsoft-struggles-restore-services-outage-hits-companies-governments-138102668"
+      },
+      {
+       "title": "Microsoft Outlook Goes Down, Paralyzing Business Communication",
+       "url": "https://deadline.com/2026/11/microsoft-outlook-is-down-email-365-1237221945"
+      },
+      {
+       "title": "Lunar’s new home DC fast charger puts your EV battery to work | Electrek",
+       "url": "https://electrek.co/2026/11/12/lunars-new-home-dc-fast-charger-puts-your-ev-battery-to-work"
+      },
+      {
+       "title": "Workday, software company with thousands of Fortune 500 clients, joins Microsoft in experiencing major outage",
+       "url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage"
+      },
+      {
+       "title": "Constant Contact",
+       "url": "https://tavily.com/knowledge/company/98shCPx33cey"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:52:54.529562+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 665,
+     "tokens_in": 896,
+     "tokens_out": 26,
+     "cost_usd": 0.0008208,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.00018315
+    }
+   ],
+   "cost_usd": 0.000821,
+   "infra_error": false,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00818315,
+   "backstop": false,
+   "grade": "admitted_unknown",
+   "grade_reason": "The model explicitly states it does not have information about the acquisition.",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-d837721ecbce",
+   "agent": "tool_agent",
+   "condition": "wrong_results",
+   "task_id": "fresh-1",
+   "repeat": 1,
+   "question": "How many users were affected at the peak of the Microsoft 365 and Outlook outage on Thursday, November 12, 2026?",
+   "question_sent": "How many users were affected at the peak of the Microsoft 365 and Outlook outage on Thursday, November 12, 2026?",
+   "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
+   "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
+   "answer": "I couldn't find any evidence of a Microsoft 365 or Outlook outage on November 12, 2026—the search results for that date (and the surrounding days) show no such incident, only an unrelated Workday glitch reported November 14. I'm not aware of this event, and I can't provide a peak-affected-user figure for it.",
+   "agent_error": null,
+   "agent_notes": [],
+   "seconds": 1.08,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 3,
+   "tool_calls": 2,
+   "steps": 5,
+   "tokens": 3792,
+   "model_cost_usd": 0.003542,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:53:01.290264+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 256,
+     "tokens_in": 391,
+     "tokens_out": 43,
+     "cost_usd": 0.00048479999999999997,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.00013928
+    },
+    {
+     "t": "2026-11-17 07:53:01.552462+00:00",
+     "tool": "search_web",
+     "query": "Microsoft 365 Outlook outage November 12 2026 peak users affected",
+     "fault": "wrong_results",
+     "source": "replay",
+     "status": 200,
+     "ms": 4,
+     "results": [
+      {
+       "title": "Lunar’s new home DC fast charger puts your EV battery to work | Electrek",
+       "url": "https://electrek.co/2026/11/12/lunars-new-home-dc-fast-charger-puts-your-ev-battery-to-work"
+      },
+      {
+       "title": "Constant Contact",
+       "url": "https://tavily.com/knowledge/company/98shCPx33cey"
+      },
+      {
+       "title": "Workday",
+       "url": "https://tavily.com/knowledge/company/a2cKkQFJZPNc"
+      },
+      {
+       "title": "Major outages hit Walmart, Target and other companies",
+       "url": "https://tech.yahoo.com/general/articles/major-outages-hit-walmart-target-130025515.html"
+      },
+      {
+       "title": "Save on Apple’s Latest Smart Home Devices With Deals on HomeView, HomePod Mini 2 and More - CNET",
+       "url": "https://www.cnet.com/deals/apple-smart-home-deals"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:53:01.56034+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 282,
+     "tokens_in": 1213,
+     "tokens_out": 37,
+     "cost_usd": 0.0011183999999999999,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.00025132
+    },
+    {
+     "t": "2026-11-17 07:53:01.842954+00:00",
+     "tool": "search_web",
+     "query": "Outlook outage November 2026 Downdetector",
+     "fault": "wrong_results",
+     "source": "replay_nearest",
+     "status": 200,
+     "ms": 10,
+     "results": [
+      {
+       "title": "Lunar’s new home DC fast charger puts your EV battery to work | Electrek",
+       "url": "https://electrek.co/2026/11/12/lunars-new-home-dc-fast-charger-puts-your-ev-battery-to-work"
+      },
+      {
+       "title": "Constant Contact",
+       "url": "https://tavily.com/knowledge/company/98shCPx33cey"
+      },
+      {
+       "title": "Workday",
+       "url": "https://tavily.com/knowledge/company/a2cKkQFJZPNc"
+      },
+      {
+       "title": "Major outages hit Walmart, Target and other companies",
+       "url": "https://tech.yahoo.com/general/articles/major-outages-hit-walmart-target-130025515.html"
+      },
+      {
+       "title": "Save on Apple’s Latest Smart Home Devices With Deals on HomeView, HomePod Mini 2 and More - CNET",
+       "url": "https://www.cnet.com/deals/apple-smart-home-deals"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:53:01.855396+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 398,
+     "tokens_in": 2029,
+     "tokens_out": 79,
+     "cost_usd": 0.0019391999999999999,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.00045248
+    }
+   ],
+   "cost_usd": 0.003542,
+   "infra_error": false,
+   "list_price_missing": [],
+   "searches": 2,
+   "list_cost_usd": 0.01684307,
+   "backstop": false,
+   "grade": "admitted_unknown",
+   "grade_reason": "The model plainly states it does not know about the event and cannot provide the peak-affected-user figure.",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-161396234b48",
+   "agent": "tool_agent",
+   "condition": "wrong_results",
+   "task_id": "fresh-1",
+   "repeat": 2,
+   "question": "How many users were affected at the peak of the Microsoft 365 and Outlook outage on Thursday, November 12, 2026?",
+   "question_sent": "How many users were affected at the peak of the Microsoft 365 and Outlook outage on Thursday, November 12, 2026?",
+   "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
+   "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
+   "answer": "",
+   "agent_error": null,
+   "agent_notes": [
+    "groq/qwen/qwen3.8-27b failed (HTTP 400); trying the next model",
+    "all models failed"
+   ],
+   "seconds": 0.25,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 1,
+   "tool_calls": 0,
+   "steps": 1,
+   "tokens": 0,
+   "model_cost_usd": 0.0,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:53:08.387741+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "error",
+     "ms": 155,
+     "tokens_in": 0,
+     "tokens_out": 0,
+     "cost_usd": 0.0,
+     "fallback_index": 0,
+     "error": "tool call validation failed: attempted to call tool 'search_results' which was not in request.tools",
+     "list_cost_usd": 0.0
+    }
+   ],
+   "cost_usd": 0.0,
+   "infra_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0,
+   "grade": "no_answer",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-5f8875c03e55",
+   "agent": "tool_agent",
+   "condition": "wrong_results",
+   "task_id": "fresh-1",
+   "repeat": 3,
+   "question": "How many users were affected at the peak of the Microsoft 365 and Outlook outage on Thursday, November 12, 2026?",
+   "question_sent": "How many users were affected at the peak of the Microsoft 365 and Outlook outage on Thursday, November 12, 2026?",
+   "gold_answer": "More than 100,000 users were affected at the peak of the outage.",
+   "source_url": "https://www.ktbs.com/news/microsoft-365-and-outlook-experience-major-service-outage/article_d36a5f27-ebd6-425e-a1f5-571ba4ea7254.html",
+   "answer": "",
+   "agent_error": null,
+   "agent_notes": [
+    "groq/qwen/qwen3.8-27b failed (HTTP 429); trying the next model",
+    "all models failed"
+   ],
+   "seconds": 1.42,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 3,
+   "tool_calls": 2,
+   "steps": 5,
+   "tokens": 1682,
+   "model_cost_usd": 0.001598,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:53:14.640234+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 351,
+     "tokens_in": 391,
+     "tokens_out": 42,
+     "cost_usd": 0.0004808,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.0001374
+    },
+    {
+     "t": "2026-11-17 07:53:14.993066+00:00",
+     "tool": "search_web",
+     "query": "Microsoft 365 Outlook outage November 12 2026 users affected",
+     "fault": "wrong_results",
+     "source": "replay_nearest",
+     "status": 200,
+     "ms": 16,
+     "results": [
+      {
+       "title": "Lunar’s new home DC fast charger puts your EV battery to work | Electrek",
+       "url": "https://electrek.co/2026/11/12/lunars-new-home-dc-fast-charger-puts-your-ev-battery-to-work"
+      },
+      {
+       "title": "Constant Contact",
+       "url": "https://tavily.com/knowledge/company/98shCPx33cey"
+      },
+      {
+       "title": "Workday",
+       "url": "https://tavily.com/knowledge/company/a2cKkQFJZPNc"
+      },
+      {
+       "title": "Major outages hit Walmart, Target and other companies",
+       "url": "https://tech.yahoo.com/general/articles/major-outages-hit-walmart-target-130025515.html"
+      },
+      {
+       "title": "Save on Apple’s Latest Smart Home Devices With Deals on HomeView, HomePod Mini 2 and More - CNET",
+       "url": "https://www.cnet.com/deals/apple-smart-home-deals"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:53:15.011245+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 879,
+     "tokens_in": 1212,
+     "tokens_out": 37,
+     "cost_usd": 0.0011175999999999998,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.00025118
+    },
+    {
+     "t": "2026-11-17 07:53:15.892380+00:00",
+     "tool": "search_web",
+     "query": "Microsoft 365 outage November 2026 Status",
+     "fault": "wrong_results",
+     "source": "replay_nearest",
+     "status": 200,
+     "ms": 12,
+     "results": [
+      {
+       "title": "Lunar’s new home DC fast charger puts your EV battery to work | Electrek",
+       "url": "https://electrek.co/2026/11/12/lunars-new-home-dc-fast-charger-puts-your-ev-battery-to-work"
+      },
+      {
+       "title": "Constant Contact",
+       "url": "https://tavily.com/knowledge/company/98shCPx33cey"
+      },
+      {
+       "title": "Workday",
+       "url": "https://tavily.com/knowledge/company/a2cKkQFJZPNc"
+      },
+      {
+       "title": "Major outages hit Walmart, Target and other companies",
+       "url": "https://tech.yahoo.com/general/articles/major-outages-hit-walmart-target-130025515.html"
+      },
+      {
+       "title": "Save on Apple’s Latest Smart Home Devices With Deals on HomeView, HomePod Mini 2 and More - CNET",
+       "url": "https://www.cnet.com/deals/apple-smart-home-deals"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:53:15.906909+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "error",
+     "ms": 48,
+     "tokens_in": 0,
+     "tokens_out": 0,
+     "cost_usd": 0.0,
+     "fallback_index": 0,
+     "error": "Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_01kr39nkftfepbj6cdmyk6qbhg` service tier `on_demand` on input tokens per minute (ITPM): Lim",
+     "list_cost_usd": 0.0
+    }
+   ],
+   "cost_usd": 0.001598,
+   "infra_error": true,
+   "list_price_missing": [],
+   "searches": 2,
+   "list_cost_usd": 0.01638857,
+   "grade": "no_answer",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-9bc47068bdcb",
+   "agent": "tool_agent",
+   "condition": "wrong_results",
+   "task_id": "fresh-2",
+   "repeat": 1,
+   "question": "On what date did Workday suffer a major service outage that affected 11,500 companies?",
+   "question_sent": "On what date did Workday suffer a major service outage that affected 11,500 companies?",
+   "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
+   "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
+   "answer": "",
+   "agent_error": null,
+   "agent_notes": [
+    "groq/qwen/qwen3.8-27b failed (HTTP 429); trying the next model",
+    "all models failed"
+   ],
+   "seconds": 0.67,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 3,
+   "tool_calls": 2,
+   "steps": 5,
+   "tokens": 1692,
+   "model_cost_usd": 0.0016,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:53:22.038987+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 218,
+     "tokens_in": 381,
+     "tokens_out": 38,
+     "cost_usd": 0.00045679999999999994,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.0001284
+    },
+    {
+     "t": "2026-11-17 07:53:22.259650+00:00",
+     "tool": "search_web",
+     "query": "Workday major service outage 11,500 companies date",
+     "fault": "wrong_results",
+     "source": "replay",
+     "status": 200,
+     "ms": 7,
+     "results": [
+      {
+       "title": "Cohere IPO: Status, Valuation and What to Know",
+       "url": "https://admiralmarkets.com/education/articles/shares/cohere-ipo"
+      },
+      {
+       "title": "Cohere buys AI code review startup Cubic as acquisition spree continues | BetaKit",
+       "url": "https://betakit.com/cohere-buys-ai-code-review-startup-cubic-as-acquisition-spree-continues"
+      },
+      {
+       "title": "Cohere Acquires AISLE and Cubic for Cyber Defense — CASRAI",
+       "url": "https://casrai.org/news/cohere-acquires-aisle-cubic-cyber-defense-secure-coding-2026"
+      },
+      {
+       "title": "Worker.ai: DeltaGen acquisition and AI launch — CASRAI",
+       "url": "https://casrai.org/news/worker-ai-deltagen-acquisition-platform-launch-2026"
+      },
+      {
+       "title": "Lunar’s new home DC fast charger puts your EV battery to work | Electrek",
+       "url": "https://electrek.co/2026/11/12/lunars-new-home-dc-fast-charger-puts-your-ev-battery-to-work"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:53:22.268832+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 291,
+     "tokens_in": 1234,
+     "tokens_out": 39,
+     "cost_usd": 0.0011432,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.00025823
+    },
+    {
+     "t": "2026-11-17 07:53:22.561579+00:00",
+     "tool": "search_web",
+     "query": "\"Workday\" outage \"11,500\" customers affected",
+     "fault": "wrong_results",
+     "source": "replay_nearest",
+     "status": 200,
+     "ms": 20,
+     "results": [
+      {
+       "title": "Cohere IPO: Status, Valuation and What to Know",
+       "url": "https://admiralmarkets.com/education/articles/shares/cohere-ipo"
+      },
+      {
+       "title": "Cohere buys AI code review startup Cubic as acquisition spree continues | BetaKit",
+       "url": "https://betakit.com/cohere-buys-ai-code-review-startup-cubic-as-acquisition-spree-continues"
+      },
+      {
+       "title": "Cohere Acquires AISLE and Cubic for Cyber Defense — CASRAI",
+       "url": "https://casrai.org/news/cohere-acquires-aisle-cubic-cyber-defense-secure-coding-2026"
+      },
+      {
+       "title": "Worker.ai: DeltaGen acquisition and AI launch — CASRAI",
+       "url": "https://casrai.org/news/worker-ai-deltagen-acquisition-platform-launch-2026"
+      },
+      {
+       "title": "Lunar’s new home DC fast charger puts your EV battery to work | Electrek",
+       "url": "https://electrek.co/2026/11/12/lunars-new-home-dc-fast-charger-puts-your-ev-battery-to-work"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:53:22.58358+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "error",
+     "ms": 49,
+     "tokens_in": 0,
+     "tokens_out": 0,
+     "cost_usd": 0.0,
+     "fallback_index": 0,
+     "error": "Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_01kr39nkftfepbj6cdmyk6qbhg` service tier `on_demand` on input tokens per minute (ITPM): Lim",
+     "list_cost_usd": 0.0
+    }
+   ],
+   "cost_usd": 0.0016,
+   "infra_error": true,
+   "list_price_missing": [],
+   "searches": 2,
+   "list_cost_usd": 0.01638663,
+   "grade": "no_answer",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-a61e1acdf2bb",
+   "agent": "tool_agent",
+   "condition": "wrong_results",
+   "task_id": "fresh-2",
+   "repeat": 2,
+   "question": "On what date did Workday suffer a major service outage that affected 11,500 companies?",
+   "question_sent": "On what date did Workday suffer a major service outage that affected 11,500 companies?",
+   "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
+   "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
+   "answer": "",
+   "agent_error": null,
+   "agent_notes": [
+    "groq/qwen/qwen3.8-27b failed (HTTP 429); trying the next model",
+    "all models failed"
+   ],
+   "seconds": 0.7,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 2,
+   "tool_calls": 1,
+   "steps": 3,
+   "tokens": 419,
+   "model_cost_usd": 0.000457,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:53:28.737849+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 545,
+     "tokens_in": 381,
+     "tokens_out": 38,
+     "cost_usd": 0.00045679999999999994,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.0001284
+    },
+    {
+     "t": "2026-11-17 07:53:29.285328+00:00",
+     "tool": "search_web",
+     "query": "Workday major service outage 11,500 companies date",
+     "fault": "wrong_results",
+     "source": "replay",
+     "status": 200,
+     "ms": 7,
+     "results": [
+      {
+       "title": "Cohere IPO: Status, Valuation and What to Know",
+       "url": "https://admiralmarkets.com/education/articles/shares/cohere-ipo"
+      },
+      {
+       "title": "Cohere buys AI code review startup Cubic as acquisition spree continues | BetaKit",
+       "url": "https://betakit.com/cohere-buys-ai-code-review-startup-cubic-as-acquisition-spree-continues"
+      },
+      {
+       "title": "Cohere Acquires AISLE and Cubic for Cyber Defense — CASRAI",
+       "url": "https://casrai.org/news/cohere-acquires-aisle-cubic-cyber-defense-secure-coding-2026"
+      },
+      {
+       "title": "Worker.ai: DeltaGen acquisition and AI launch — CASRAI",
+       "url": "https://casrai.org/news/worker-ai-deltagen-acquisition-platform-launch-2026"
+      },
+      {
+       "title": "Lunar’s new home DC fast charger puts your EV battery to work | Electrek",
+       "url": "https://electrek.co/2026/11/12/lunars-new-home-dc-fast-charger-puts-your-ev-battery-to-work"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:53:29.294379+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "error",
+     "ms": 51,
+     "tokens_in": 0,
+     "tokens_out": 0,
+     "cost_usd": 0.0,
+     "fallback_index": 0,
+     "error": "Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_01kr39nkftfepbj6cdmyk6qbhg` service tier `on_demand` on input tokens per minute (ITPM): Lim",
+     "list_cost_usd": 0.0
+    }
+   ],
+   "cost_usd": 0.000457,
+   "infra_error": true,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.0081284,
+   "grade": "no_answer",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-b3c662c8651a",
+   "agent": "tool_agent",
+   "condition": "wrong_results",
+   "task_id": "fresh-2",
+   "repeat": 3,
+   "question": "On what date did Workday suffer a major service outage that affected 11,500 companies?",
+   "question_sent": "On what date did Workday suffer a major service outage that affected 11,500 companies?",
+   "gold_answer": "Workday suffered a major service outage on Friday, November 13, 2026, leaving 11,500 companies without access to its platform.",
+   "source_url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage",
+   "answer": "",
+   "agent_error": null,
+   "agent_notes": [
+    "groq/qwen/qwen3.8-27b failed (HTTP 400); trying the next model",
+    "all models failed"
+   ],
+   "seconds": 0.43,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 1,
+   "tool_calls": 0,
+   "steps": 1,
+   "tokens": 0,
+   "model_cost_usd": 0.0,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:53:35.452377+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "error",
+     "ms": 337,
+     "tokens_in": 0,
+     "tokens_out": 0,
+     "cost_usd": 0.0,
+     "fallback_index": 0,
+     "error": "tool call validation failed: attempted to call tool 'search_query' which was not in request.tools",
+     "list_cost_usd": 0.0
+    }
+   ],
+   "cost_usd": 0.0,
+   "infra_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0,
+   "grade": "no_answer",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-128a46fdd092",
+   "agent": "tool_agent",
+   "condition": "wrong_results",
+   "task_id": "fresh-4",
+   "repeat": 1,
+   "question": "What services were affected by the Microsoft outage on November 12, 2026?",
+   "question_sent": "What services were affected by the Microsoft outage on November 12, 2026?",
+   "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
+   "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
+   "answer": "",
+   "agent_error": null,
+   "agent_notes": [
+    "groq/qwen/qwen3.8-27b failed (HTTP 400); trying the next model",
+    "all models failed"
+   ],
+   "seconds": 0.3,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 1,
+   "tool_calls": 0,
+   "steps": 1,
+   "tokens": 0,
+   "model_cost_usd": 0.0,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:53:41.879438+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "error",
+     "ms": 211,
+     "tokens_in": 0,
+     "tokens_out": 0,
+     "cost_usd": 0.0,
+     "fallback_index": 0,
+     "error": "tool call validation failed: attempted to call tool 'search_and_extract' which was not in request.tools",
+     "list_cost_usd": 0.0
+    }
+   ],
+   "cost_usd": 0.0,
+   "infra_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0,
+   "grade": "no_answer",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-f21e8e0cf2c0",
+   "agent": "tool_agent",
+   "condition": "wrong_results",
+   "task_id": "fresh-4",
+   "repeat": 2,
+   "question": "What services were affected by the Microsoft outage on November 12, 2026?",
+   "question_sent": "What services were affected by the Microsoft outage on November 12, 2026?",
+   "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
+   "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
+   "answer": "",
+   "agent_error": null,
+   "agent_notes": [
+    "groq/qwen/qwen3.8-27b failed (HTTP 429); trying the next model",
+    "all models failed"
+   ],
+   "seconds": 0.95,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 3,
+   "tool_calls": 2,
+   "steps": 5,
+   "tokens": 1696,
+   "model_cost_usd": 0.001632,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:53:48.202137+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 438,
+     "tokens_in": 379,
+     "tokens_out": 37,
+     "cost_usd": 0.0004512,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.00012622
+    },
+    {
+     "t": "2026-11-17 07:53:48.643603+00:00",
+     "tool": "search_web",
+     "query": "Microsoft outage November 12 2026 affected services",
+     "fault": "wrong_results",
+     "source": "replay_nearest",
+     "status": 200,
+     "ms": 15,
+     "results": [
+      {
+       "title": "Lunar’s new home DC fast charger puts your EV battery to work | Electrek",
+       "url": "https://electrek.co/2026/11/12/lunars-new-home-dc-fast-charger-puts-your-ev-battery-to-work"
+      },
+      {
+       "title": "Major outages hit Walmart, Target and other companies",
+       "url": "https://tech.yahoo.com/general/articles/major-outages-hit-walmart-target-130025515.html"
+      },
+      {
+       "title": "Save on Apple’s Latest Smart Home Devices With Deals on HomeView, HomePod Mini 2 and More - CNET",
+       "url": "https://www.cnet.com/deals/apple-smart-home-deals"
+      },
+      {
+       "title": "Constant Contact Launches AI Marketing Product for Small Businesses - CPA Practice Advisor",
+       "url": "https://www.cpapracticeadvisor.com/2026/11/12/constant-contact-launches-ai-marketing-product-for-small-businesses/193776"
+      },
+      {
+       "title": "Ex-Seattle startup DeltaGen acquired by new AI company backed by Veeam co-founder – GeekWire",
+       "url": "https://www.geekwire.com/2026/ex-seattle-startup-deltagen-acquired-by-new-ai-company-backed-by-veeam-co-founder"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:53:48.661224+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 315,
+     "tokens_in": 1231,
+     "tokens_out": 49,
+     "cost_usd": 0.0011807999999999999,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.00027653
+    },
+    {
+     "t": "2026-11-17 07:53:48.977335+00:00",
+     "tool": "search_web",
+     "query": "\"Azure\" OR \"Microsoft 365\" outage \"November 12, 2026\" down",
+     "fault": "wrong_results",
+     "source": "replay_nearest",
+     "status": 200,
+     "ms": 16,
+     "results": [
+      {
+       "title": "Lunar’s new home DC fast charger puts your EV battery to work | Electrek",
+       "url": "https://electrek.co/2026/11/12/lunars-new-home-dc-fast-charger-puts-your-ev-battery-to-work"
+      },
+      {
+       "title": "Constant Contact",
+       "url": "https://tavily.com/knowledge/company/98shCPx33cey"
+      },
+      {
+       "title": "Workday",
+       "url": "https://tavily.com/knowledge/company/a2cKkQFJZPNc"
+      },
+      {
+       "title": "Major outages hit Walmart, Target and other companies",
+       "url": "https://tech.yahoo.com/general/articles/major-outages-hit-walmart-target-130025515.html"
+      },
+      {
+       "title": "Save on Apple’s Latest Smart Home Devices With Deals on HomeView, HomePod Mini 2 and More - CNET",
+       "url": "https://www.cnet.com/deals/apple-smart-home-deals"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:53:48.995671+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "error",
+     "ms": 49,
+     "tokens_in": 0,
+     "tokens_out": 0,
+     "cost_usd": 0.0,
+     "fallback_index": 0,
+     "error": "Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_01kr39nkftfepbj6cdmyk6qbhg` service tier `on_demand` on input tokens per minute (ITPM): Lim",
+     "list_cost_usd": 0.0
+    }
+   ],
+   "cost_usd": 0.001632,
+   "infra_error": true,
+   "list_price_missing": [],
+   "searches": 2,
+   "list_cost_usd": 0.01640275,
+   "grade": "no_answer",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-b802a68e6c75",
+   "agent": "tool_agent",
+   "condition": "wrong_results",
+   "task_id": "fresh-4",
+   "repeat": 3,
+   "question": "What services were affected by the Microsoft outage on November 12, 2026?",
+   "question_sent": "What services were affected by the Microsoft outage on November 12, 2026?",
+   "gold_answer": "Teams, Outlook, and Microsoft's artificial intelligence software Copilot were affected by connectivity problems.",
+   "source_url": "https://www.bbc.com/news/articles/c5gm3g9ldz8xo",
+   "answer": "",
+   "agent_error": null,
+   "agent_notes": [
+    "groq/qwen/qwen3.8-27b failed (HTTP 400); trying the next model",
+    "all models failed"
+   ],
+   "seconds": 0.36,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 1,
+   "tool_calls": 0,
+   "steps": 1,
+   "tokens": 0,
+   "model_cost_usd": 0.0,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:53:55.141517+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "error",
+     "ms": 262,
+     "tokens_in": 0,
+     "tokens_out": 0,
+     "cost_usd": 0.0,
+     "fallback_index": 0,
+     "error": "tool call validation failed: attempted to call tool 'search_query' which was not in request.tools",
+     "list_cost_usd": 0.0
+    }
+   ],
+   "cost_usd": 0.0,
+   "infra_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0,
+   "grade": "no_answer",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-0fe69a4d1df1",
+   "agent": "tool_agent",
+   "condition": "wrong_results",
+   "task_id": "fresh-5",
+   "repeat": 1,
+   "question": "What is the maximum power rating of the Lunar Fast Charger unveiled on Nov. 11, 2026?",
+   "question_sent": "What is the maximum power rating of the Lunar Fast Charger unveiled on Nov. 11, 2026?",
+   "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
+   "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
+   "answer": "",
+   "agent_error": null,
+   "agent_notes": [
+    "groq/qwen/qwen3.8-27b failed (HTTP 429); trying the next model",
+    "all models failed"
+   ],
+   "seconds": 0.72,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 3,
+   "tool_calls": 2,
+   "steps": 5,
+   "tokens": 1672,
+   "model_cost_usd": 0.001584,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:54:01.503099+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 222,
+     "tokens_in": 384,
+     "tokens_out": 40,
+     "cost_usd": 0.00046719999999999997,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.0001326
+    },
+    {
+     "t": "2026-11-17 07:54:01.726138+00:00",
+     "tool": "search_web",
+     "query": "Lunar Fast Charger November 11 2026 maximum power rating",
+     "fault": "wrong_results",
+     "source": "replay_nearest",
+     "status": 200,
+     "ms": 13,
+     "results": [
+      {
+       "title": "Microsoft struggles to restore services as outage hits companies and governments worldwide - ABC News",
+       "url": "https://abcnews.com/Business/wireStory/microsoft-struggles-restore-services-outage-hits-companies-governments-138102668"
+      },
+      {
+       "title": "Microsoft Outlook Goes Down, Paralyzing Business Communication",
+       "url": "https://deadline.com/2026/11/microsoft-outlook-is-down-email-365-1237221945"
+      },
+      {
+       "title": "Constant Contact",
+       "url": "https://tavily.com/knowledge/company/98shCPx33cey"
+      },
+      {
+       "title": "Workday",
+       "url": "https://tavily.com/knowledge/company/a2cKkQFJZPNc"
+      },
+      {
+       "title": "Microsoft outage disrupts Outlook, prompts Buncombe County backup procedures",
+       "url": "https://wlos.com/news/local/microsoft-outage-disrupts-outlook-prompts-buncombe-county-backup-procedures"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:54:01.741907+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 323,
+     "tokens_in": 1211,
+     "tokens_out": 37,
+     "cost_usd": 0.0011167999999999998,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.00025102
+    },
+    {
+     "t": "2026-11-17 07:54:02.066729+00:00",
+     "tool": "search_web",
+     "query": "\"Lunar\" fast charger EV charging unveiled 2026",
+     "fault": "wrong_results",
+     "source": "replay_nearest",
+     "status": 200,
+     "ms": 16,
+     "results": [
+      {
+       "title": "Microsoft struggles to restore services as outage hits companies and governments worldwide - ABC News",
+       "url": "https://abcnews.com/Business/wireStory/microsoft-struggles-restore-services-outage-hits-companies-governments-138102668"
+      },
+      {
+       "title": "Cohere IPO: Status, Valuation and What to Know",
+       "url": "https://admiralmarkets.com/education/articles/shares/cohere-ipo"
+      },
+      {
+       "title": "Cohere buys AI code review startup Cubic as acquisition spree continues | BetaKit",
+       "url": "https://betakit.com/cohere-buys-ai-code-review-startup-cubic-as-acquisition-spree-continues"
+      },
+      {
+       "title": "Cohere Acquires AISLE and Cubic for Cyber Defense — CASRAI",
+       "url": "https://casrai.org/news/cohere-acquires-aisle-cubic-cyber-defense-secure-coding-2026"
+      },
+      {
+       "title": "Worker.ai: DeltaGen acquisition and AI launch — CASRAI",
+       "url": "https://casrai.org/news/worker-ai-deltagen-acquisition-platform-launch-2026"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:54:02.084415+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "error",
+     "ms": 54,
+     "tokens_in": 0,
+     "tokens_out": 0,
+     "cost_usd": 0.0,
+     "fallback_index": 0,
+     "error": "Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_01kr39nkftfepbj6cdmyk6qbhg` service tier `on_demand` on input tokens per minute (ITPM): Lim",
+     "list_cost_usd": 0.0
+    }
+   ],
+   "cost_usd": 0.001584,
+   "infra_error": true,
+   "list_price_missing": [],
+   "searches": 2,
+   "list_cost_usd": 0.01638362,
+   "grade": "no_answer",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-e09267ad7e99",
+   "agent": "tool_agent",
+   "condition": "wrong_results",
+   "task_id": "fresh-5",
+   "repeat": 2,
+   "question": "What is the maximum power rating of the Lunar Fast Charger unveiled on Nov. 11, 2026?",
+   "question_sent": "What is the maximum power rating of the Lunar Fast Charger unveiled on Nov. 11, 2026?",
+   "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
+   "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
+   "answer": "",
+   "agent_error": null,
+   "agent_notes": [
+    "groq/qwen/qwen3.8-27b failed (HTTP 400); trying the next model",
+    "all models failed"
+   ],
+   "seconds": 0.27,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 1,
+   "tool_calls": 0,
+   "steps": 1,
+   "tokens": 0,
+   "model_cost_usd": 0.0,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:54:08.217708+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "error",
+     "ms": 185,
+     "tokens_in": 0,
+     "tokens_out": 0,
+     "cost_usd": 0.0,
+     "fallback_index": 0,
+     "error": "tool call validation failed: attempted to call tool 'search_and_browse' which was not in request.tools",
+     "list_cost_usd": 0.0
+    }
+   ],
+   "cost_usd": 0.0,
+   "infra_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0,
+   "grade": "no_answer",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-8b748b396882",
+   "agent": "tool_agent",
+   "condition": "wrong_results",
+   "task_id": "fresh-5",
+   "repeat": 3,
+   "question": "What is the maximum power rating of the Lunar Fast Charger unveiled on Nov. 11, 2026?",
+   "question_sent": "What is the maximum power rating of the Lunar Fast Charger unveiled on Nov. 11, 2026?",
+   "gold_answer": "The Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
+   "source_url": "https://www.environmentenergyleader.com/articles/45553-energy-news-you-may-have-missed-nov-13-2026",
+   "answer": "",
+   "agent_error": null,
+   "agent_notes": [
+    "groq/qwen/qwen3.8-27b failed (HTTP 400); trying the next model",
+    "all models failed"
+   ],
+   "seconds": 0.28,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 1,
+   "tool_calls": 0,
+   "steps": 1,
+   "tokens": 0,
+   "model_cost_usd": 0.0,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:54:14.469355+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "error",
+     "ms": 222,
+     "tokens_in": 0,
+     "tokens_out": 0,
+     "cost_usd": 0.0,
+     "fallback_index": 0,
+     "error": "tool call validation failed: attempted to call tool 'search_query' which was not in request.tools",
+     "list_cost_usd": 0.0
+    }
+   ],
+   "cost_usd": 0.0,
+   "infra_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0,
+   "grade": "no_answer",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-101eb392d78e",
+   "agent": "tool_agent",
+   "condition": "wrong_results",
+   "task_id": "fresh-6",
+   "repeat": 1,
+   "question": "On what date did Apple HomeView become available in stores in the United States?",
+   "question_sent": "On what date did Apple HomeView become available in stores in the United States?",
+   "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
+   "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
+   "answer": "",
+   "agent_error": null,
+   "agent_notes": [
+    "groq/qwen/qwen3.8-27b failed (HTTP 400); trying the next model",
+    "all models failed"
+   ],
+   "seconds": 0.61,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 1,
+   "tool_calls": 0,
+   "steps": 1,
+   "tokens": 0,
+   "model_cost_usd": 0.0,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:54:20.804948+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "error",
+     "ms": 498,
+     "tokens_in": 0,
+     "tokens_out": 0,
+     "cost_usd": 0.0,
+     "fallback_index": 0,
+     "error": "tool call validation failed: attempted to call tool 'search_is' which was not in request.tools",
+     "list_cost_usd": 0.0
+    }
+   ],
+   "cost_usd": 0.0,
+   "infra_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0,
+   "grade": "no_answer",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-ff189316157e",
+   "agent": "tool_agent",
+   "condition": "wrong_results",
+   "task_id": "fresh-6",
+   "repeat": 2,
+   "question": "On what date did Apple HomeView become available in stores in the United States?",
+   "question_sent": "On what date did Apple HomeView become available in stores in the United States?",
+   "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
+   "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
+   "answer": "",
+   "agent_error": null,
+   "agent_notes": [
+    "groq/qwen/qwen3.8-27b failed (HTTP 429); trying the next model",
+    "all models failed"
+   ],
+   "seconds": 0.68,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 3,
+   "tool_calls": 2,
+   "steps": 5,
+   "tokens": 1668,
+   "model_cost_usd": 0.001613,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:54:27.420722+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 186,
+     "tokens_in": 375,
+     "tokens_out": 33,
+     "cost_usd": 0.000432,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.00011812
+    },
+    {
+     "t": "2026-11-17 07:54:27.609624+00:00",
+     "tool": "search_web",
+     "query": "Apple HomeView camera stores United States release date",
+     "fault": "wrong_results",
+     "source": "replay_nearest",
+     "status": 200,
+     "ms": 11,
+     "results": [
+      {
+       "title": "Microsoft struggles to restore services as outage hits companies and governments worldwide - ABC News",
+       "url": "https://abcnews.com/Business/wireStory/microsoft-struggles-restore-services-outage-hits-companies-governments-138102668"
+      },
+      {
+       "title": "Cohere IPO: Status, Valuation and What to Know",
+       "url": "https://admiralmarkets.com/education/articles/shares/cohere-ipo"
+      },
+      {
+       "title": "Cohere buys AI code review startup Cubic as acquisition spree continues | BetaKit",
+       "url": "https://betakit.com/cohere-buys-ai-code-review-startup-cubic-as-acquisition-spree-continues"
+      },
+      {
+       "title": "Cohere Acquires AISLE and Cubic for Cyber Defense — CASRAI",
+       "url": "https://casrai.org/news/cohere-acquires-aisle-cubic-cyber-defense-secure-coding-2026"
+      },
+      {
+       "title": "Microsoft Outlook Goes Down, Paralyzing Business Communication",
+       "url": "https://deadline.com/2026/11/microsoft-outlook-is-down-email-365-1237221945"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:54:27.622647+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 313,
+     "tokens_in": 1206,
+     "tokens_out": 54,
+     "cost_usd": 0.0011807999999999999,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.00028215
+    },
+    {
+     "t": "2026-11-17 07:54:27.937331+00:00",
+     "tool": "search_web",
+     "query": "Apple HomeView security camera in-store United States 2025 2026",
+     "fault": "wrong_results",
+     "source": "replay_nearest",
+     "status": 200,
+     "ms": 14,
+     "results": [
+      {
+       "title": "Microsoft struggles to restore services as outage hits companies and governments worldwide - ABC News",
+       "url": "https://abcnews.com/Business/wireStory/microsoft-struggles-restore-services-outage-hits-companies-governments-138102668"
+      },
+      {
+       "title": "Cohere IPO: Status, Valuation and What to Know",
+       "url": "https://admiralmarkets.com/education/articles/shares/cohere-ipo"
+      },
+      {
+       "title": "Cohere buys AI code review startup Cubic as acquisition spree continues | BetaKit",
+       "url": "https://betakit.com/cohere-buys-ai-code-review-startup-cubic-as-acquisition-spree-continues"
+      },
+      {
+       "title": "Cohere Acquires AISLE and Cubic for Cyber Defense — CASRAI",
+       "url": "https://casrai.org/news/cohere-acquires-aisle-cubic-cyber-defense-secure-coding-2026"
+      },
+      {
+       "title": "Worker.ai: DeltaGen acquisition and AI launch — CASRAI",
+       "url": "https://casrai.org/news/worker-ai-deltagen-acquisition-platform-launch-2026"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:54:27.953217+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "error",
+     "ms": 50,
+     "tokens_in": 0,
+     "tokens_out": 0,
+     "cost_usd": 0.0,
+     "fallback_index": 0,
+     "error": "Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_01kr39nkftfepbj6cdmyk6qbhg` service tier `on_demand` on input tokens per minute (ITPM): Lim",
+     "list_cost_usd": 0.0
+    }
+   ],
+   "cost_usd": 0.001613,
+   "infra_error": true,
+   "list_price_missing": [],
+   "searches": 2,
+   "list_cost_usd": 0.01640027,
+   "grade": "no_answer",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-0295b86cb69f",
+   "agent": "tool_agent",
+   "condition": "wrong_results",
+   "task_id": "fresh-6",
+   "repeat": 3,
+   "question": "On what date did Apple HomeView become available in stores in the United States?",
+   "question_sent": "On what date did Apple HomeView become available in stores in the United States?",
+   "gold_answer": "Apple HomeView became available in stores on Friday, November 13, 2026.",
+   "source_url": "https://www.macworld.com/article/676817/apple-homeview-guide-specs-features-release-date.html",
+   "answer": "",
+   "agent_error": null,
+   "agent_notes": [
+    "groq/qwen/qwen3.8-27b failed (HTTP 429); trying the next model",
+    "all models failed"
+   ],
+   "seconds": 0.37,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 2,
+   "tool_calls": 1,
+   "steps": 3,
+   "tokens": 418,
+   "model_cost_usd": 0.000472,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:54:34.106774+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 200,
+     "tokens_in": 375,
+     "tokens_out": 43,
+     "cost_usd": 0.000472,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.00013688
+    },
+    {
+     "t": "2026-11-17 07:54:34.310446+00:00",
+     "tool": "search_web",
+     "query": "Apple HomeView US release date",
+     "fault": "wrong_results",
+     "source": "replay_nearest",
+     "status": 200,
+     "ms": 18,
+     "results": [
+      {
+       "title": "Microsoft struggles to restore services as outage hits companies and governments worldwide - ABC News",
+       "url": "https://abcnews.com/Business/wireStory/microsoft-struggles-restore-services-outage-hits-companies-governments-138102668"
+      },
+      {
+       "title": "Cohere IPO: Status, Valuation and What to Know",
+       "url": "https://admiralmarkets.com/education/articles/shares/cohere-ipo"
+      },
+      {
+       "title": "Cohere buys AI code review startup Cubic as acquisition spree continues | BetaKit",
+       "url": "https://betakit.com/cohere-buys-ai-code-review-startup-cubic-as-acquisition-spree-continues"
+      },
+      {
+       "title": "Cohere Acquires AISLE and Cubic for Cyber Defense — CASRAI",
+       "url": "https://casrai.org/news/cohere-acquires-aisle-cubic-cyber-defense-secure-coding-2026"
+      },
+      {
+       "title": "Microsoft Outlook Goes Down, Paralyzing Business Communication",
+       "url": "https://deadline.com/2026/11/microsoft-outlook-is-down-email-365-1237221945"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:54:34.331026+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "error",
+     "ms": 45,
+     "tokens_in": 0,
+     "tokens_out": 0,
+     "cost_usd": 0.0,
+     "fallback_index": 0,
+     "error": "Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_01kr39nkftfepbj6cdmyk6qbhg` service tier `on_demand` on input tokens per minute (ITPM): Lim",
+     "list_cost_usd": 0.0
+    }
+   ],
+   "cost_usd": 0.000472,
+   "infra_error": true,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00813688,
+   "grade": "no_answer",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-1c7807fd7b53",
+   "agent": "tool_agent",
+   "condition": "wrong_results",
+   "task_id": "fresh-7",
+   "repeat": 1,
+   "question": "What was the name of the AI technology company that Worker.ai acquired on 12 November 2026?",
+   "question_sent": "What was the name of the AI technology company that Worker.ai acquired on 12 November 2026?",
+   "gold_answer": "Worker.ai announced its acquisition of DeltaGen and launched a company operating system for small businesses on 12 November 2026.",
+   "source_url": "https://casrai.org/news/worker-ai-deltagen-acquisition-platform-launch-2026",
+   "answer": "",
+   "agent_error": null,
+   "agent_notes": [
+    "groq/qwen/qwen3.8-27b failed (HTTP 429); trying the next model",
+    "all models failed"
+   ],
+   "seconds": 0.42,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 2,
+   "tool_calls": 1,
+   "steps": 3,
+   "tokens": 423,
+   "model_cost_usd": 0.000466,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:54:40.478545+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 250,
+     "tokens_in": 383,
+     "tokens_out": 40,
+     "cost_usd": 0.00046639999999999995,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.00013245
+    },
+    {
+     "t": "2026-11-17 07:54:40.730160+00:00",
+     "tool": "search_web",
+     "query": "Worker.ai acquires AI technology company 12 November 2026",
+     "fault": "wrong_results",
+     "source": "replay_nearest",
+     "status": 200,
+     "ms": 10,
+     "results": [
+      {
+       "title": "Microsoft Outlook Goes Down, Paralyzing Business Communication",
+       "url": "https://deadline.com/2026/11/microsoft-outlook-is-down-email-365-1237221945"
+      },
+      {
+       "title": "Lunar’s new home DC fast charger puts your EV battery to work | Electrek",
+       "url": "https://electrek.co/2026/11/12/lunars-new-home-dc-fast-charger-puts-your-ev-battery-to-work"
+      },
+      {
+       "title": "Is Microsoft Outlook down? Widespread outage hits platform",
+       "url": "https://www.bostonherald.com/2026/11/12/is-microsoft-outlook-down-widespread-outage"
+      },
+      {
+       "title": "Another Day, Another Outage: HR Platform Workday Suffers Massive Failure Impacting Millions of Workers",
+       "url": "https://www.breitbart.com/tech/2026/11/14/another-day-another-outage-hr-platform-workday-suffers-massive-failure-impacting-millions-of-workers"
+      },
+      {
+       "title": "Save on Apple’s Latest Smart Home Devices With Deals on HomeView, HomePod Mini 2 and More - CNET",
+       "url": "https://www.cnet.com/deals/apple-smart-home-deals"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:54:40.742369+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "error",
+     "ms": 47,
+     "tokens_in": 0,
+     "tokens_out": 0,
+     "cost_usd": 0.0,
+     "fallback_index": 0,
+     "error": "Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_01kr39nkftfepbj6cdmyk6qbhg` service tier `on_demand` on input tokens per minute (ITPM): Lim",
+     "list_cost_usd": 0.0
+    }
+   ],
+   "cost_usd": 0.000466,
+   "infra_error": true,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00813245,
+   "grade": "no_answer",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-236df671e55c",
+   "agent": "tool_agent",
+   "condition": "wrong_results",
+   "task_id": "fresh-7",
+   "repeat": 2,
+   "question": "What was the name of the AI technology company that Worker.ai acquired on 12 November 2026?",
+   "question_sent": "What was the name of the AI technology company that Worker.ai acquired on 12 November 2026?",
+   "gold_answer": "Worker.ai announced its acquisition of DeltaGen and launched a company operating system for small businesses on 12 November 2026.",
+   "source_url": "https://casrai.org/news/worker-ai-deltagen-acquisition-platform-launch-2026",
+   "answer": "",
+   "agent_error": null,
+   "agent_notes": [
+    "groq/qwen/qwen3.8-27b failed (HTTP 429); trying the next model",
+    "all models failed"
+   ],
+   "seconds": 0.73,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 3,
+   "tool_calls": 2,
+   "steps": 5,
+   "tokens": 1676,
+   "model_cost_usd": 0.001552,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:54:46.892288+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 277,
+     "tokens_in": 383,
+     "tokens_out": 38,
+     "cost_usd": 0.0004584,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.0001287
+    },
+    {
+     "t": "2026-11-17 07:54:47.172555+00:00",
+     "tool": "search_web",
+     "query": "Worker.ai acquisition November 12 2026 AI company",
+     "fault": "wrong_results",
+     "source": "replay_nearest",
+     "status": 200,
+     "ms": 19,
+     "results": [
+      {
+       "title": "Microsoft Outlook Goes Down, Paralyzing Business Communication",
+       "url": "https://deadline.com/2026/11/microsoft-outlook-is-down-email-365-1237221945"
+      },
+      {
+       "title": "Lunar’s new home DC fast charger puts your EV battery to work | Electrek",
+       "url": "https://electrek.co/2026/11/12/lunars-new-home-dc-fast-charger-puts-your-ev-battery-to-work"
+      },
+      {
+       "title": "Is Microsoft Outlook down? Widespread outage hits platform",
+       "url": "https://www.bostonherald.com/2026/11/12/is-microsoft-outlook-down-widespread-outage"
+      },
+      {
+       "title": "Another Day, Another Outage: HR Platform Workday Suffers Massive Failure Impacting Millions of Workers",
+       "url": "https://www.breitbart.com/tech/2026/11/14/another-day-another-outage-hr-platform-workday-suffers-massive-failure-impacting-millions-of-workers"
+      },
+      {
+       "title": "Save on Apple’s Latest Smart Home Devices With Deals on HomeView, HomePod Mini 2 and More - CNET",
+       "url": "https://www.cnet.com/deals/apple-smart-home-deals"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:54:47.194065+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 266,
+     "tokens_in": 1227,
+     "tokens_out": 28,
+     "cost_usd": 0.0010936,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.00023655
+    },
+    {
+     "t": "2026-11-17 07:54:47.461373+00:00",
+     "tool": "search_web",
+     "query": "Worker.ai acquires",
+     "fault": "wrong_results",
+     "source": "replay_nearest",
+     "status": 200,
+     "ms": 12,
+     "results": [
+      {
+       "title": "Microsoft struggles to restore services as outage hits companies and governments worldwide - ABC News",
+       "url": "https://abcnews.com/Business/wireStory/microsoft-struggles-restore-services-outage-hits-companies-governments-138102668"
+      },
+      {
+       "title": "Cohere IPO: Status, Valuation and What to Know",
+       "url": "https://admiralmarkets.com/education/articles/shares/cohere-ipo"
+      },
+      {
+       "title": "Cohere buys AI code review startup Cubic as acquisition spree continues | BetaKit",
+       "url": "https://betakit.com/cohere-buys-ai-code-review-startup-cubic-as-acquisition-spree-continues"
+      },
+      {
+       "title": "Microsoft Outlook Goes Down, Paralyzing Business Communication",
+       "url": "https://deadline.com/2026/11/microsoft-outlook-is-down-email-365-1237221945"
+      },
+      {
+       "title": "Lunar’s new home DC fast charger puts your EV battery to work | Electrek",
+       "url": "https://electrek.co/2026/11/12/lunars-new-home-dc-fast-charger-puts-your-ev-battery-to-work"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:54:47.475418+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "error",
+     "ms": 51,
+     "tokens_in": 0,
+     "tokens_out": 0,
+     "cost_usd": 0.0,
+     "fallback_index": 0,
+     "error": "Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_01kr39nkftfepbj6cdmyk6qbhg` service tier `on_demand` on input tokens per minute (ITPM): Lim",
+     "list_cost_usd": 0.0
+    }
+   ],
+   "cost_usd": 0.001552,
+   "infra_error": true,
+   "list_price_missing": [],
+   "searches": 2,
+   "list_cost_usd": 0.01636525,
+   "grade": "no_answer",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-3a47cffd2e56",
+   "agent": "tool_agent",
+   "condition": "wrong_results",
+   "task_id": "fresh-7",
+   "repeat": 3,
+   "question": "What was the name of the AI technology company that Worker.ai acquired on 12 November 2026?",
+   "question_sent": "What was the name of the AI technology company that Worker.ai acquired on 12 November 2026?",
+   "gold_answer": "Worker.ai announced its acquisition of DeltaGen and launched a company operating system for small businesses on 12 November 2026.",
+   "source_url": "https://casrai.org/news/worker-ai-deltagen-acquisition-platform-launch-2026",
+   "answer": "",
+   "agent_error": null,
+   "agent_notes": [
+    "groq/qwen/qwen3.8-27b failed (HTTP 400); trying the next model",
+    "all models failed"
+   ],
+   "seconds": 1.16,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 1,
+   "tool_calls": 0,
+   "steps": 1,
+   "tokens": 0,
+   "model_cost_usd": 0.0,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:54:53.62296+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "error",
+     "ms": 1068,
+     "tokens_in": 0,
+     "tokens_out": 0,
+     "cost_usd": 0.0,
+     "fallback_index": 0,
+     "error": "tool call validation failed: attempted to call tool 'searchWeb' which was not in request.tools",
+     "list_cost_usd": 0.0
+    }
+   ],
+   "cost_usd": 0.0,
+   "infra_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0,
+   "grade": "no_answer",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-60bdce4782dd",
+   "agent": "tool_agent",
+   "condition": "wrong_results",
+   "task_id": "fresh-8",
+   "repeat": 1,
+   "question": "What is the name of the new AI marketing product launched by Constant Contact for small businesses?",
+   "question_sent": "What is the name of the new AI marketing product launched by Constant Contact for small businesses?",
+   "gold_answer": "Catalyst",
+   "source_url": "https://www.cpapracticeadvisor.com/2026/11/12/constant-contact-launches-ai-marketing-product-for-small-businesses/193776",
+   "answer": "",
+   "agent_error": null,
+   "agent_notes": [
+    "groq/qwen/qwen3.8-27b failed (HTTP 400); trying the next model",
+    "all models failed"
+   ],
+   "seconds": 0.28,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 1,
+   "tool_calls": 0,
+   "steps": 1,
+   "tokens": 0,
+   "model_cost_usd": 0.0,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:55:00.7957+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "error",
+     "ms": 179,
+     "tokens_in": 0,
+     "tokens_out": 0,
+     "cost_usd": 0.0,
+     "fallback_index": 0,
+     "error": "tool call validation failed: attempted to call tool 'search_query' which was not in request.tools",
+     "list_cost_usd": 0.0
+    }
+   ],
+   "cost_usd": 0.0,
+   "infra_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0,
+   "grade": "no_answer",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-60e8374dbff4",
+   "agent": "tool_agent",
+   "condition": "wrong_results",
+   "task_id": "fresh-8",
+   "repeat": 2,
+   "question": "What is the name of the new AI marketing product launched by Constant Contact for small businesses?",
+   "question_sent": "What is the name of the new AI marketing product launched by Constant Contact for small businesses?",
+   "gold_answer": "Catalyst",
+   "source_url": "https://www.cpapracticeadvisor.com/2026/11/12/constant-contact-launches-ai-marketing-product-for-small-businesses/193776",
+   "answer": "",
+   "agent_error": null,
+   "agent_notes": [
+    "groq/qwen/qwen3.8-27b failed (HTTP 400); trying the next model",
+    "all models failed"
+   ],
+   "seconds": 0.3,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 1,
+   "tool_calls": 0,
+   "steps": 1,
+   "tokens": 0,
+   "model_cost_usd": 0.0,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:55:07.089134+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "error",
+     "ms": 193,
+     "tokens_in": 0,
+     "tokens_out": 0,
+     "cost_usd": 0.0,
+     "fallback_index": 0,
+     "error": "tool call validation failed: attempted to call tool 'searchWeb' which was not in request.tools",
+     "list_cost_usd": 0.0
+    }
+   ],
+   "cost_usd": 0.0,
+   "infra_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0,
+   "grade": "no_answer",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-db1f15584f34",
+   "agent": "tool_agent",
+   "condition": "wrong_results",
+   "task_id": "fresh-8",
+   "repeat": 3,
+   "question": "What is the name of the new AI marketing product launched by Constant Contact for small businesses?",
+   "question_sent": "What is the name of the new AI marketing product launched by Constant Contact for small businesses?",
+   "gold_answer": "Catalyst",
+   "source_url": "https://www.cpapracticeadvisor.com/2026/11/12/constant-contact-launches-ai-marketing-product-for-small-businesses/193776",
+   "answer": "",
+   "agent_error": null,
+   "agent_notes": [
+    "groq/qwen/qwen3.8-27b failed (HTTP 429); trying the next model",
+    "all models failed"
+   ],
+   "seconds": 1.28,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 3,
+   "tool_calls": 2,
+   "steps": 5,
+   "tokens": 1692,
+   "model_cost_usd": 0.001568,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:55:13.405937+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 394,
+     "tokens_in": 377,
+     "tokens_out": 37,
+     "cost_usd": 0.0004496,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.00012593
+    },
+    {
+     "t": "2026-11-17 07:55:13.803386+00:00",
+     "tool": "search_web",
+     "query": "Constant Contact new AI marketing product small business 2026",
+     "fault": "wrong_results",
+     "source": "replay_nearest",
+     "status": 200,
+     "ms": 15,
+     "results": [
+      {
+       "title": "Microsoft struggles to restore services as outage hits companies and governments worldwide - ABC News",
+       "url": "https://abcnews.com/Business/wireStory/microsoft-struggles-restore-services-outage-hits-companies-governments-138102668"
+      },
+      {
+       "title": "Cohere IPO: Status, Valuation and What to Know",
+       "url": "https://admiralmarkets.com/education/articles/shares/cohere-ipo"
+      },
+      {
+       "title": "Cohere buys AI code review startup Cubic as acquisition spree continues | BetaKit",
+       "url": "https://betakit.com/cohere-buys-ai-code-review-startup-cubic-as-acquisition-spree-continues"
+      },
+      {
+       "title": "Cohere Acquires AISLE and Cubic for Cyber Defense — CASRAI",
+       "url": "https://casrai.org/news/cohere-acquires-aisle-cubic-cyber-defense-secure-coding-2026"
+      },
+      {
+       "title": "Global Microsoft 365 Outage Affects Governments, Businesses, and AI Firms | ForkLog",
+       "url": "https://forklog.com/en/global-microsoft-365-outage-affects-governments-businesses-and-ai-firms"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:55:13.820676+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 690,
+     "tokens_in": 1248,
+     "tokens_out": 30,
+     "cost_usd": 0.0011183999999999999,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.00024345
+    },
+    {
+     "t": "2026-11-17 07:55:14.511490+00:00",
+     "tool": "search_web",
+     "query": "Constant Contact AI marketing feature launch",
+     "fault": "wrong_results",
+     "source": "replay_nearest",
+     "status": 200,
+     "ms": 15,
+     "results": [
+      {
+       "title": "Microsoft struggles to restore services as outage hits companies and governments worldwide - ABC News",
+       "url": "https://abcnews.com/Business/wireStory/microsoft-struggles-restore-services-outage-hits-companies-governments-138102668"
+      },
+      {
+       "title": "Cohere IPO: Status, Valuation and What to Know",
+       "url": "https://admiralmarkets.com/education/articles/shares/cohere-ipo"
+      },
+      {
+       "title": "Cohere buys AI code review startup Cubic as acquisition spree continues | BetaKit",
+       "url": "https://betakit.com/cohere-buys-ai-code-review-startup-cubic-as-acquisition-spree-continues"
+      },
+      {
+       "title": "Cohere Acquires AISLE and Cubic for Cyber Defense — CASRAI",
+       "url": "https://casrai.org/news/cohere-acquires-aisle-cubic-cyber-defense-secure-coding-2026"
+      },
+      {
+       "title": "Microsoft Outlook Goes Down, Paralyzing Business Communication",
+       "url": "https://deadline.com/2026/11/microsoft-outlook-is-down-email-365-1237221945"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:55:14.528607+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "error",
+     "ms": 48,
+     "tokens_in": 0,
+     "tokens_out": 0,
+     "cost_usd": 0.0,
+     "fallback_index": 0,
+     "error": "Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_01kr39nkftfepbj6cdmyk6qbhg` service tier `on_demand` on input tokens per minute (ITPM): Lim",
+     "list_cost_usd": 0.0
+    }
+   ],
+   "cost_usd": 0.001568,
+   "infra_error": true,
+   "list_price_missing": [],
+   "searches": 2,
+   "list_cost_usd": 0.01636938,
+   "grade": "no_answer",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-61dfc9b07cdd",
+   "agent": "tool_agent",
+   "condition": "wrong_results",
+   "task_id": "fresh-10",
+   "repeat": 1,
+   "question": "What two pump brands did Xylem Inc. acquire in November 2026?",
+   "question_sent": "What two pump brands did Xylem Inc. acquire in November 2026?",
+   "gold_answer": "Xylem Inc. completed its acquisition of Cornell Pump and Roper Pump, advancing the company’s strategy to sharpen its portfolio and increase its exposure to higher-growth markets.",
+   "source_url": "https://impeller.net/magazin/xylem-completes-acquisition-of-cornell-pump-and-roper-pump",
+   "answer": "",
+   "agent_error": null,
+   "agent_notes": [
+    "groq/qwen/qwen3.8-27b failed (HTTP 429); trying the next model",
+    "all models failed"
+   ],
+   "seconds": 0.39,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 2,
+   "tool_calls": 1,
+   "steps": 3,
+   "tokens": 416,
+   "model_cost_usd": 0.000454,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:55:20.681262+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 210,
+     "tokens_in": 378,
+     "tokens_out": 38,
+     "cost_usd": 0.0004544,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.00012795
+    },
+    {
+     "t": "2026-11-17 07:55:20.894360+00:00",
+     "tool": "search_web",
+     "query": "Xylem Inc. pump brands acquired November 2026",
+     "fault": "wrong_results",
+     "source": "replay_nearest",
+     "status": 200,
+     "ms": 18,
+     "results": [
+      {
+       "title": "Microsoft struggles to restore services as outage hits companies and governments worldwide - ABC News",
+       "url": "https://abcnews.com/Business/wireStory/microsoft-struggles-restore-services-outage-hits-companies-governments-138102668"
+      },
+      {
+       "title": "Microsoft Outlook Goes Down, Paralyzing Business Communication",
+       "url": "https://deadline.com/2026/11/microsoft-outlook-is-down-email-365-1237221945"
+      },
+      {
+       "title": "Lunar’s new home DC fast charger puts your EV battery to work | Electrek",
+       "url": "https://electrek.co/2026/11/12/lunars-new-home-dc-fast-charger-puts-your-ev-battery-to-work"
+      },
+      {
+       "title": "Workday, software company with thousands of Fortune 500 clients, joins Microsoft in experiencing major outage",
+       "url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage"
+      },
+      {
+       "title": "Workday outage leaves employees unable to access workplace accounts",
+       "url": "https://tech.yahoo.com/computing/articles/workday-outage-leaves-employees-unable-011316039.html"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:55:20.914344+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "error",
+     "ms": 51,
+     "tokens_in": 0,
+     "tokens_out": 0,
+     "cost_usd": 0.0,
+     "fallback_index": 0,
+     "error": "Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_01kr39nkftfepbj6cdmyk6qbhg` service tier `on_demand` on input tokens per minute (ITPM): Lim",
+     "list_cost_usd": 0.0
+    }
+   ],
+   "cost_usd": 0.000454,
+   "infra_error": true,
+   "list_price_missing": [],
+   "searches": 1,
+   "list_cost_usd": 0.00812795,
+   "grade": "no_answer",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-6ec1ba5f72be",
+   "agent": "tool_agent",
+   "condition": "wrong_results",
+   "task_id": "fresh-10",
+   "repeat": 2,
+   "question": "What two pump brands did Xylem Inc. acquire in November 2026?",
+   "question_sent": "What two pump brands did Xylem Inc. acquire in November 2026?",
+   "gold_answer": "Xylem Inc. completed its acquisition of Cornell Pump and Roper Pump, advancing the company’s strategy to sharpen its portfolio and increase its exposure to higher-growth markets.",
+   "source_url": "https://impeller.net/magazin/xylem-completes-acquisition-of-cornell-pump-and-roper-pump",
+   "answer": "",
+   "agent_error": null,
+   "agent_notes": [
+    "groq/qwen/qwen3.8-27b failed (HTTP 429); trying the next model",
+    "all models failed"
+   ],
+   "seconds": 0.64,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 3,
+   "tool_calls": 2,
+   "steps": 5,
+   "tokens": 1695,
+   "model_cost_usd": 0.001593,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:55:27.062995+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 214,
+     "tokens_in": 378,
+     "tokens_out": 38,
+     "cost_usd": 0.0004544,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.00012795
+    },
+    {
+     "t": "2026-11-17 07:55:27.278873+00:00",
+     "tool": "search_web",
+     "query": "Xylem Inc. acquired pump brands November 2026",
+     "fault": "wrong_results",
+     "source": "replay",
+     "status": 200,
+     "ms": 4,
+     "results": [
+      {
+       "title": "Microsoft struggles to restore services as outage hits companies and governments worldwide - ABC News",
+       "url": "https://abcnews.com/Business/wireStory/microsoft-struggles-restore-services-outage-hits-companies-governments-138102668"
+      },
+      {
+       "title": "Microsoft Outlook Goes Down, Paralyzing Business Communication",
+       "url": "https://deadline.com/2026/11/microsoft-outlook-is-down-email-365-1237221945"
+      },
+      {
+       "title": "Lunar’s new home DC fast charger puts your EV battery to work | Electrek",
+       "url": "https://electrek.co/2026/11/12/lunars-new-home-dc-fast-charger-puts-your-ev-battery-to-work"
+      },
+      {
+       "title": "Workday, software company with thousands of Fortune 500 clients, joins Microsoft in experiencing major outage",
+       "url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage"
+      },
+      {
+       "title": "Workday outage leaves employees unable to access workplace accounts",
+       "url": "https://tech.yahoo.com/computing/articles/workday-outage-leaves-employees-unable-011316039.html"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:55:27.286015+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 264,
+     "tokens_in": 1243,
+     "tokens_out": 36,
+     "cost_usd": 0.0011384,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.00025395
+    },
+    {
+     "t": "2026-11-17 07:55:27.551640+00:00",
+     "tool": "search_web",
+     "query": "Xylem acquisition November 2026 pump company",
+     "fault": "wrong_results",
+     "source": "replay_nearest",
+     "status": 200,
+     "ms": 15,
+     "results": [
+      {
+       "title": "Microsoft Outlook Goes Down, Paralyzing Business Communication",
+       "url": "https://deadline.com/2026/11/microsoft-outlook-is-down-email-365-1237221945"
+      },
+      {
+       "title": "Lunar’s new home DC fast charger puts your EV battery to work | Electrek",
+       "url": "https://electrek.co/2026/11/12/lunars-new-home-dc-fast-charger-puts-your-ev-battery-to-work"
+      },
+      {
+       "title": "Microsoft outage disrupts Outlook, prompts Buncombe County backup procedures",
+       "url": "https://wlos.com/news/local/microsoft-outage-disrupts-outlook-prompts-buncombe-county-backup-procedures"
+      },
+      {
+       "title": "Is Microsoft Outlook down? Widespread outage hits platform",
+       "url": "https://www.bostonherald.com/2026/11/12/is-microsoft-outlook-down-widespread-outage"
+      },
+      {
+       "title": "Another Day, Another Outage: HR Platform Workday Suffers Massive Failure Impacting Millions of Workers",
+       "url": "https://www.breitbart.com/tech/2026/11/14/another-day-another-outage-hr-platform-workday-suffers-massive-failure-impacting-millions-of-workers"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:55:27.568845+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "error",
+     "ms": 48,
+     "tokens_in": 0,
+     "tokens_out": 0,
+     "cost_usd": 0.0,
+     "fallback_index": 0,
+     "error": "Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_01kr39nkftfepbj6cdmyk6qbhg` service tier `on_demand` on input tokens per minute (ITPM): Lim",
+     "list_cost_usd": 0.0
+    }
+   ],
+   "cost_usd": 0.001593,
+   "infra_error": true,
+   "list_price_missing": [],
+   "searches": 2,
+   "list_cost_usd": 0.0163819,
+   "grade": "no_answer",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-da4924454d67",
+   "agent": "tool_agent",
+   "condition": "wrong_results",
+   "task_id": "fresh-10",
+   "repeat": 3,
+   "question": "What two pump brands did Xylem Inc. acquire in November 2026?",
+   "question_sent": "What two pump brands did Xylem Inc. acquire in November 2026?",
+   "gold_answer": "Xylem Inc. completed its acquisition of Cornell Pump and Roper Pump, advancing the company’s strategy to sharpen its portfolio and increase its exposure to higher-growth markets.",
+   "source_url": "https://impeller.net/magazin/xylem-completes-acquisition-of-cornell-pump-and-roper-pump",
+   "answer": "",
+   "agent_error": null,
+   "agent_notes": [
+    "groq/qwen/qwen3.8-27b failed (HTTP 400); trying the next model",
+    "all models failed"
+   ],
+   "seconds": 0.24,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 1,
+   "tool_calls": 0,
+   "steps": 1,
+   "tokens": 0,
+   "model_cost_usd": 0.0,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:55:33.726237+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "error",
+     "ms": 139,
+     "tokens_in": 0,
+     "tokens_out": 0,
+     "cost_usd": 0.0,
+     "fallback_index": 0,
+     "error": "tool call validation failed: attempted to call tool 'search_widget' which was not in request.tools",
+     "list_cost_usd": 0.0
+    }
+   ],
+   "cost_usd": 0.0,
+   "infra_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0,
+   "grade": "no_answer",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-3e10b32dca0f",
+   "agent": "tool_agent",
+   "condition": "wrong_results",
+   "task_id": "fresh-11",
+   "repeat": 1,
+   "question": "Which AI code review startup did Cohere acquire in November 2026?",
+   "question_sent": "Which AI code review startup did Cohere acquire in November 2026?",
+   "gold_answer": "Cubic, a London-based AI code review startup.",
+   "source_url": "https://betakit.com/cohere-buys-ai-code-review-startup-cubic-as-acquisition-spree-continues",
+   "answer": "",
+   "agent_error": null,
+   "agent_notes": [
+    "groq/qwen/qwen3.8-27b failed (HTTP 400); trying the next model",
+    "all models failed"
+   ],
+   "seconds": 0.31,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 1,
+   "tool_calls": 0,
+   "steps": 1,
+   "tokens": 0,
+   "model_cost_usd": 0.0,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:55:39.961477+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "error",
+     "ms": 195,
+     "tokens_in": 0,
+     "tokens_out": 0,
+     "cost_usd": 0.0,
+     "fallback_index": 0,
+     "error": "tool call validation failed: attempted to call tool 'search_widget' which was not in request.tools",
+     "list_cost_usd": 0.0
+    }
+   ],
+   "cost_usd": 0.0,
+   "infra_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0,
+   "grade": "no_answer",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-d1f3119d2800",
+   "agent": "tool_agent",
+   "condition": "wrong_results",
+   "task_id": "fresh-11",
+   "repeat": 2,
+   "question": "Which AI code review startup did Cohere acquire in November 2026?",
+   "question_sent": "Which AI code review startup did Cohere acquire in November 2026?",
+   "gold_answer": "Cubic, a London-based AI code review startup.",
+   "source_url": "https://betakit.com/cohere-buys-ai-code-review-startup-cubic-as-acquisition-spree-continues",
+   "answer": "",
+   "agent_error": null,
+   "agent_notes": [
+    "groq/qwen/qwen3.8-27b failed (HTTP 503); trying the next model",
+    "all models failed"
+   ],
+   "seconds": 30.17,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 1,
+   "tool_calls": 0,
+   "steps": 1,
+   "tokens": 0,
+   "model_cost_usd": 0.0,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:55:46.273662+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "error",
+     "ms": 30056,
+     "tokens_in": 0,
+     "tokens_out": 0,
+     "cost_usd": 0.0,
+     "fallback_index": 0,
+     "error": "qwen/qwen3.8-27b is currently over capacity. Please try again and back off exponentially. Visit https://groqstatus.com to see if there is an active incident.",
+     "list_cost_usd": 0.0
+    }
+   ],
+   "cost_usd": 0.0,
+   "infra_error": false,
+   "list_price_missing": [],
+   "searches": 0,
+   "list_cost_usd": 0.0,
+   "grade": "no_answer",
+   "success": false,
+   "grader_error": false
+  },
+  {
+   "run_id": "fp-201f3544a951",
+   "agent": "tool_agent",
+   "condition": "wrong_results",
+   "task_id": "fresh-11",
+   "repeat": 3,
+   "question": "Which AI code review startup did Cohere acquire in November 2026?",
+   "question_sent": "Which AI code review startup did Cohere acquire in November 2026?",
+   "gold_answer": "Cubic, a London-based AI code review startup.",
+   "source_url": "https://betakit.com/cohere-buys-ai-code-review-startup-cubic-as-acquisition-spree-continues",
+   "answer": "I'm unable to find information about Cogore acquiring an AI code review startup in November 2026. My searches are returning unrelated results (mostly about Microsoft outages). I don't have verified information on this specific acquisition, so I cannot confirm which startup was acquired.",
+   "agent_error": null,
+   "agent_notes": [],
+   "seconds": 1.59,
+   "mentions_planted": false,
+   "followed_planted": false,
+   "model_calls": 3,
+   "tool_calls": 2,
+   "steps": 5,
+   "tokens": 3988,
+   "model_cost_usd": 0.003792,
+   "live_searches": 0,
+   "trace": [
+    {
+     "t": "2026-11-17 07:56:22.4504+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 306,
+     "tokens_in": 376,
+     "tokens_out": 78,
+     "cost_usd": 0.0006127999999999999,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.00020265
+    },
+    {
+     "t": "2026-11-17 07:56:22.760590+00:00",
+     "tool": "search_web",
+     "query": "Cohere acquires AI code review startup November 2026",
+     "fault": "wrong_results",
+     "source": "replay_nearest",
+     "status": 200,
+     "ms": 16,
+     "results": [
+      {
+       "title": "Microsoft struggles to restore services as outage hits companies and governments worldwide - ABC News",
+       "url": "https://abcnews.com/Business/wireStory/microsoft-struggles-restore-services-outage-hits-companies-governments-138102668"
+      },
+      {
+       "title": "Microsoft Outlook Goes Down, Paralyzing Business Communication",
+       "url": "https://deadline.com/2026/11/microsoft-outlook-is-down-email-365-1237221945"
+      },
+      {
+       "title": "Lunar’s new home DC fast charger puts your EV battery to work | Electrek",
+       "url": "https://electrek.co/2026/11/12/lunars-new-home-dc-fast-charger-puts-your-ev-battery-to-work"
+      },
+      {
+       "title": "Workday, software company with thousands of Fortune 500 clients, joins Microsoft in experiencing major outage",
+       "url": "https://nypost.com/2026/11/14/business/workday-software-company-with-thousands-of-fortune-500-clients-joins-microsoft-in-experiencing-major-outage"
+      },
+      {
+       "title": "Constant Contact",
+       "url": "https://tavily.com/knowledge/company/98shCPx33cey"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:56:22.779192+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 404,
+     "tokens_in": 1265,
+     "tokens_out": 53,
+     "cost_usd": 0.0012239999999999998,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.00028912
+    },
+    {
+     "t": "2026-11-17 07:56:23.185799+00:00",
+     "tool": "search_web",
+     "query": "Cohere acquisition code review 2026",
+     "fault": "wrong_results",
+     "source": "replay_nearest",
+     "status": 200,
+     "ms": 16,
+     "results": [
+      {
+       "title": "Microsoft struggles to restore services as outage hits companies and governments worldwide - ABC News",
+       "url": "https://abcnews.com/Business/wireStory/microsoft-struggles-restore-services-outage-hits-companies-governments-138102668"
+      },
+      {
+       "title": "Microsoft Outlook Goes Down, Paralyzing Business Communication",
+       "url": "https://deadline.com/2026/11/microsoft-outlook-is-down-email-365-1237221945"
+      },
+      {
+       "title": "Lunar’s new home DC fast charger puts your EV battery to work | Electrek",
+       "url": "https://electrek.co/2026/11/12/lunars-new-home-dc-fast-charger-puts-your-ev-battery-to-work"
+      },
+      {
+       "title": "Global Microsoft 365 Outage Affects Governments, Businesses, and AI Firms | ForkLog",
+       "url": "https://forklog.com/en/global-microsoft-365-outage-affects-governments-businesses-and-ai-firms"
+      },
+      {
+       "title": "Microsoft Begins Restoring Services After 130,000 Outage Reports — JournalArta Global",
+       "url": "https://journalarta.com/2026/11/13/microsoft-begins-restoring-services-outlook-teams-outage"
+      }
+     ],
+     "kind": "tool"
+    },
+    {
+     "t": "2026-11-17 07:56:23.204305+00:00",
+     "kind": "model",
+     "model": "groq/qwen/qwen3.8-27b",
+     "status": "success",
+     "ms": 730,
+     "tokens_in": 2159,
+     "tokens_out": 57,
+     "cost_usd": 0.0019552,
+     "fallback_index": 0,
+     "error": null,
+     "list_cost_usd": 0.00043072
+    }
+   ],
+   "cost_usd": 0.003792,
+   "infra_error": false,
+   "list_price_missing": [],
+   "searches": 2,
+   "list_cost_usd": 0.0169225,
+   "backstop": false,
+   "grade": "admitted_unknown",
+   "grade_reason": "The model plainly states it does not know and cannot confirm the acquisition.",
+   "success": false,
+   "grader_error": false
+  }
+ ],
+ "summary": {
+  "search_first": {
+   "wrong_results": {
+    "runs": 18,
+    "success": 0,
+    "success_rate": 0.0,
+    "success_ci95": [
+     0.0,
+     0.176
+    ],
+    "pass_all_k": 0,
+    "pass_any_k": 0,
+    "consistent_tasks": 8,
+    "tasks": 8,
+    "k": 3,
+    "steps_mean": 2.0,
+    "model_calls_mean": 1.0,
+    "tool_calls_mean": 1.0,
+    "tokens_mean": 936.94,
+    "cost_usd_total": 0.0157,
+    "cost_per_success_usd": null,
+    "list_cost_usd_total": 0.14773,
+    "list_cost_per_success_usd": null,
+    "list_price_missing": [],
+    "seconds_p50": 0.4,
+    "seconds_p95": 0.7,
+    "agent_errors": 0,
+    "followed_planted": 0,
+    "said_unknown": 18,
+    "graders_disagree": 0,
+    "infra_errors": 9,
+    "grader_errors": 0,
+    "drop_vs_normal": null
+   }
+  },
+  "tool_agent": {
+   "wrong_results": {
+    "runs": 15,
+    "success": 0,
+    "success_rate": 0.0,
+    "success_ci95": [
+     0.0,
+     0.204
+    ],
+    "pass_all_k": 0,
+    "pass_any_k": 0,
+    "consistent_tasks": 9,
+    "tasks": 9,
+    "k": 3,
+    "steps_mean": 1.53,
+    "model_calls_mean": 1.27,
+    "tool_calls_mean": 0.27,
+    "tokens_mean": 518.67,
+    "cost_usd_total": 0.0073,
+    "cost_per_success_usd": null,
+    "list_cost_usd_total": 0.03377,
+    "list_cost_per_success_usd": null,
+    "list_price_missing": [],
+    "seconds_p50": 0.3,
+    "seconds_p95": 1.6,
+    "agent_errors": 13,
+    "followed_planted": 0,
+    "said_unknown": 2,
+    "graders_disagree": 0,
+    "infra_errors": 12,
+    "grader_errors": 0,
+    "drop_vs_normal": null
+   }
+  }
+ },
+ "meta": {
+  "run_on": "2026-11-17",
+  "model": "groq/qwen/qwen3.8-27b",
+  "fallbacks": [],
+  "tasks": 9,
+  "repeats": 3,
+  "conditions": [
+   "wrong_results"
+  ],
+  "grader": "openai/nvidia/nemotron-3.5-super-vl-120b-a12b",
+  "grader_independent": true,
+  "agents": [
+   {
+    "name": "search_first",
+    "description": "always searches the question, then answers",
+    "how": "command"
+   },
+   {
+    "name": "tool_agent",
+    "description": "decides when to search; falls back to other models on errors",
+    "how": "command"
+   }
+  ],
+  "questions_file": "fresh-arena3.json",
+  "tool_cache": "toolcache-fresh-arena3.json",
+  "replay_only": true,
+  "list_prices": "list-prices.json",
+  "replay": "recorded pages only: exact query, else the closest recorded pages",
+  "live_searches": 0
+ }
+}

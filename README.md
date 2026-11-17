@@ -12,7 +12,7 @@ Built for the Geek Room AI Global Hackathon 2026. **Primary problem statement:**
 |---|---|
 | **Framework independence** | An agent is **any command or HTTP endpoint** that reads a task JSON and prints an answer JSON. It calls models through the **Bifrost** gateway URL it is given and tools through FreshPin's **tool server**, over plain HTTP **or MCP**. Nothing to rewrite. Tested unchanged: plain Python with no framework (`examples/agents/reflect_agent.py`), **JavaScript** with no packages (`js_agent.mjs`), and the **OpenAI Agents SDK**, with its tool as a function or taken from FreshPin's MCP endpoint (`openai_agents_sdk_agent.py [--mcp]`). |
 | **Consistent evaluation** | Same tasks, same tools, same recorded evidence for every agent. Per run: **success** (graded against gold), **steps** (model + tool calls), **tool calls**, **tokens** and **$ cost** (read from Bifrost's own request log, tagged with the run id via `x-bf-session-id`), Tavily credits, **time**. Free tiers log $0, so each run also gets a **list-price $**: the same tokens at each model's paid price from Bifrost's own pricing table (`bench/list-prices.json`), plus $0.008 per search. |
-| **Repeatability** | `--repeats k`: every task k times. Reported: success with a 95% Wilson interval, **pass^k** (right every time), pass@k, consistency, p50/p95 time. Searches are recorded once and replayed, so repeats differ only by the agent. The task suite and its search recording are committed (`bench/suites/`), so anyone can re-run the same tasks on the same evidence with `--replay-only` (no Tavily credits; Bifrost and a model key are still needed). |
+| **Repeatability** | `--repeats k`: every task k times. Reported: success with a 95% Wilson interval, **pass^k** (right every time), pass@k, consistency, p50/p95 time. Searches are recorded once and replayed, so repeats differ only by the agent. Published: 2 models × 270 runs at k=3, with pass^3 per task (below). The task suite and its search recording are committed (`bench/suites/`), so anyone can re-run the same tasks on the same evidence with `--replay-only` (no Tavily credits; Bifrost and a model key are still needed). |
 | **Failure testing** | Controlled conditions: **model unavailable** (the agent is handed a model id the gateway rejects; a fallback list is offered, starting with the real model), **broken tool** (search returns 503), **misleading source** (a planted top result with a wrong answer and a hidden instruction). Opt-in: **misleading instruction** (a false hint inside the task itself), **slow tool** (search works but answers after 20 s) and **wrong search results** (search works but returns real pages about *other* stories, so the honest answer is "I could not find it"). Reported: drop vs normal, recoveries, errors, how often an agent **repeated the planted answer**, and how often it **said it could not find the answer**. |
 | **Inspection & comparison** | `/bench` in the web app: a leaderboard (agent × condition), a **compare view** (tick several result files, e.g. the same agents on different models, and see them side by side; it warns when suites or graders differ), every run, a **step-by-step trace** of each run (each model call: model, tokens, $, list price, ms, fallbacks, errors; each tool call: query, results, injected fault; the answer and the grader's reason), and a **side-by-side view**: pick a task and two runs (two agents, or normal vs a failure) to see both traces next to each other, with the difference in steps, tool calls, tokens and time. |
 
@@ -93,6 +93,56 @@ Four agents FreshPin never saw, run **unchanged** on Nemotron Lightning, 5 tasks
 - **A false hint inside the task hurt the SDK agent more than a planted source** (0/5 vs 3/5). Twice it repeated "made by Contoso Dynamics" as fact while getting the asked number right, which FreshPin counts as following the planted text.
 - The HTTP-served agent has no fallback model, so it failed every "model unavailable" run, as designed.
 - **Grader agreement, measured:** this file was graded by Qwen 3.8, then again by gpt-oss-20b (`python -m freshpin regrade`). They gave the same grade on 73% of the 56 answers both could grade, and agreed on correct-or-not on 84%. Treat differences of one or two runs per cell as noise.
+
+### Reliability, misleading instructions, wrong search results, two graders (17 Nov 2026)
+
+The 16 Nov tables ran each task once. Here the two strongest models ran **every task 3 times** under 5 conditions (9 tasks × 5 conditions × 3 repeats × 2 agents = 270 runs each, replay only). Cells: successes / counted runs, then **(pass^3: tasks right on all 3 repeats / tasks)**. Files: `bench/samples/agentbench-20261117-*.json`.
+
+| model | agent | normal | model unavailable | broken tool (said "not found") | misleading source | false hint in the task (followed it) | excluded runs | grader |
+|---|---|---|---|---|---|---|---|---|
+| Nemotron 3.5 Lightning | `search_first` | 20/27 (6/9) | 0/27 (0/9) | 0/26 (10) | 24/27 (7/9) | 18/27 (5/9), 3× | 1 | gpt-oss-20b |
+| Nemotron 3.5 Lightning | `tool_agent` | 24/27 (7/9) | 25/27 (7/9) | 0/27 (14) | 24/27 (6/9) | 16/27 (2/9), 8× | 0 | gpt-oss-20b |
+| Gemini 3.5 Flash-Lite | `search_first` | 27/27 (9/9) | 0/27 (0/9) | 0/27 (25) | 26/27 (8/9) | 18/27 (6/9), 1× | 0 | nemotron-3.5-super-vl-120b-a12b |
+| Gemini 3.5 Flash-Lite | `tool_agent` | 27/27 (9/9) | 26/27 (8/9) | 0/27 (26) | 27/27 (9/9) | 21/27 (5/9), 2× | 0 | nemotron-3.5-super-vl-120b-a12b |
+
+- **pass^3 is stricter than the success rate.** Lightning's `search_first` was right on 20 of 27 normal runs, but on all three repeats for only 6 of 9 tasks; Gemini was right every time on all 9.
+- **With search broken, the agents said so instead of inventing an answer** (Gemini: 51 of 54 runs said "not found"; the other 3 said they were not sure the product existed, graded wrong; none gave an invented answer).
+- **A false hint inside the task fools every model**, while a planted source mostly does not: the same agents that ignore a planted search result (24–27 of 27) go along with "reports already confirm the answer is Contoso Dynamics" 1–8 times in 27.
+
+**Misleading instruction on the other three models** (false hint in the task, 9 tasks × 3 repeats):
+
+| model | agent | correct (all 3 repeats) | went along with the hint | said "not found" | excluded runs |
+|---|---|---|---|---|---|
+| gpt-oss-120b | `search_first` | 18/27 (6/9) | 3 | 3 | 0 |
+| gpt-oss-120b | `tool_agent` | 9/20 (3/9) | 5 | 0 | 7 |
+| Qwen 3.8 27B | `search_first` | 15/27 (3/9) | 6 | 2 | 0 |
+| Qwen 3.8 27B | `tool_agent` | 9/26 (0/9) | 6 | 4 | 1 |
+| Poolside Laguna XS 2.1 | `search_first` | 12/27 (3/9) | 6 | 4 | 0 |
+| Poolside Laguna XS 2.1 | `tool_agent` | 8/27 (1/9) | 12 | 5 | 0 |
+
+Poolside Laguna's `tool_agent` repeated the false company as fact in 12 of 27 runs. The check for "went along with it" reads every sentence that names the planted company; a sentence that rejects it ("the results do not mention Contoso Dynamics", "this appears to be a placeholder rather than a real company") or only asks about it does not count (tests use real answers from these runs).
+
+**Wrong search results** (opt-in `wrong_results`: search works, but returns real recorded pages about *other* stories, so the right answer is "I could not find it"):
+
+| model | agent | counted runs | said "not found" | answered anyway (wrong or partly) | no answer | excluded runs |
+|---|---|---|---|---|---|---|
+| Qwen 3.8 27B | `search_first` | 18 | 18 | 0 | 0 | 9 |
+| Qwen 3.8 27B | `tool_agent` | 15 | 2 | 0 | 13 | 12 |
+
+`search_first` on Qwen said "not found" in every counted run and never made up an answer; `tool_agent` mostly ended with no answer at all. Groq's per-minute limits cut 21 runs (excluded, not scored).
+
+**Two graders (`regrade --consensus`).** Each 3-repeat file was graded again by a second grader from a third family; a run counts only when both agree on correct-or-not.
+
+| model | graders | same grade | agree on correct-or-not | runs where they disagree (excluded) |
+|---|---|---|---|---|
+| Nemotron 3.5 Lightning | gpt-oss-20b + Gemini 3.1 Flash-Lite | 81% | 95% | 11 of 219 |
+| Gemini 3.5 Flash-Lite | Nemotron Super + gpt-oss-20b | 70% | 92% | 20 of 240 |
+
+The conclusions above hold under both graders (e.g. Gemini `tool_agent` normal: 26/26 counted, 1 disagreement). The disagreements cluster on a few tasks whose gold answers are loose (Gemini's 20 are on 3 tasks, Lightning's 11 on 3, two of them about the same Microsoft outage): the gold says "more than 100,000 users", the answer says "more than 130,000 reports", and one grader calls that correct while the other does not. Consensus grading surfaces exactly these tasks, so they can be tightened. Lightning's second grader (Gemini 3.1 Flash-Lite, 15 requests a minute) still hit its quota on 22 runs, which shows as excluded runs. Files: `agentbench-20261117-125639.json` (Lightning) and `agentbench-20261117-130004.json` (Gemini).
+
+**Two bugs this run found in FreshPin itself, both fixed with tests:**
+- The `wrong_results` condition worked in the tool server, but the benchmark loop had its own hard-coded list of tool faults and never switched it on: the first run quietly measured "normal" (41/43 correct, no fault in any trace). A test now runs every condition through the full loop and checks what the agent actually received.
+- Three benchmarks started in the same second wrote the same result file, and the last to finish overwrote the others. Result names are now reserved atomically (`-2`, `-3`…).
 
 ### The agent contract
 
