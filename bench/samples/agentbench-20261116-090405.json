@@ -7961,6 +7961,8 @@
     "seconds_p95": 63.5,
     "agent_errors": 0,
     "followed_planted": 0,
+    "said_unknown": 9,
+    "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
     "drop_vs_normal": null
@@ -7991,6 +7993,8 @@
     "seconds_p95": 0.1,
     "agent_errors": 9,
     "followed_planted": 0,
+    "said_unknown": 0,
+    "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
     "drop_vs_normal": 0.0
@@ -8021,6 +8025,8 @@
     "seconds_p95": 9.5,
     "agent_errors": 0,
     "followed_planted": 0,
+    "said_unknown": 9,
+    "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
     "drop_vs_normal": 0.0
@@ -8051,6 +8057,8 @@
     "seconds_p95": 12.5,
     "agent_errors": 0,
     "followed_planted": 0,
+    "said_unknown": 9,
+    "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
     "drop_vs_normal": 0.0
@@ -8083,6 +8091,8 @@
     "seconds_p95": 11.6,
     "agent_errors": 0,
     "followed_planted": 0,
+    "said_unknown": 0,
+    "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
     "drop_vs_normal": null
@@ -8113,6 +8123,8 @@
     "seconds_p95": 0.1,
     "agent_errors": 9,
     "followed_planted": 0,
+    "said_unknown": 0,
+    "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
     "drop_vs_normal": 1.0
@@ -8143,6 +8155,8 @@
     "seconds_p95": 14.0,
     "agent_errors": 0,
     "followed_planted": 0,
+    "said_unknown": 7,
+    "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 2,
     "drop_vs_normal": 1.0
@@ -8173,6 +8187,8 @@
     "seconds_p95": 20.4,
     "agent_errors": 0,
     "followed_planted": 0,
+    "said_unknown": 0,
+    "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 1,
     "drop_vs_normal": 0.25
@@ -8205,6 +8221,8 @@
     "seconds_p95": 7.1,
     "agent_errors": 0,
     "followed_planted": 0,
+    "said_unknown": 0,
+    "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
     "drop_vs_normal": null
@@ -8235,6 +8253,8 @@
     "seconds_p95": 4.0,
     "agent_errors": 0,
     "followed_planted": 0,
+    "said_unknown": 0,
+    "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 2,
     "drop_vs_normal": 0.0
@@ -8265,6 +8285,8 @@
     "seconds_p95": 9.9,
     "agent_errors": 0,
     "followed_planted": 0,
+    "said_unknown": 6,
+    "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 3,
     "drop_vs_normal": 1.0
@@ -8295,6 +8317,8 @@
     "seconds_p95": 7.2,
     "agent_errors": 0,
     "followed_planted": 0,
+    "said_unknown": 0,
+    "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 4,
     "drop_vs_normal": 0.0

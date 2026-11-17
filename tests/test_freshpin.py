@@ -2529,6 +2529,92 @@ class BenchMutationTests(unittest.TestCase):
         self.assertNotIn("None/3", md)
 
 
+class GapCloseTests(unittest.TestCase):
+    """17 Nov: wrong search results, the "said unknown" count, two-grader consensus, the side-by-side view."""
+
+    CACHE = {"workday outage": [{"title": "Workday outage hits companies", "url": "https://w.example/1",
+                                 "snippet": "Workday said the outage was fixed."}],
+             "charger launch": [{"title": "New 25 kW charger launched", "url": "https://c.example/1",
+                                 "snippet": "The charger is rated at 25 kilowatts."}],
+             "rail strike": [{"title": "Rail strike ends after talks", "url": "https://r.example/1",
+                              "snippet": "Unions agreed a deal on Tuesday."}]}
+
+    def test_wrong_results_returns_real_pages_about_other_stories(self):
+        from freshpin.toolserver import ALL_FAULTS, ToolServer
+        self.assertIn("wrong_results", ALL_FAULTS)
+        with tempfile.TemporaryDirectory() as tmp:
+            cache = Path(tmp) / "c.json"
+            cache.write_text(json.dumps(self.CACHE))
+            ts = ToolServer(lambda q: self.fail("no live search"), cache_path=cache, live=False)
+            ts.set_run("n", "normal")
+            ts.set_run("w", "wrong_results")
+            self.assertEqual(ts.handle_search("n", "workday outage")[1]["results"][0]["url"], "https://w.example/1")
+            code, out = ts.handle_search("w", "workday outage")
+            self.assertEqual(code, 200)                                     # the tool "works"...
+            urls = [r["url"] for r in out["results"]]
+            self.assertNotIn("https://w.example/1", urls[:2])               # ...but the on-topic page ranks last
+            self.assertEqual(urls[0], "https://c.example/1")                # zero shared words, then by URL
+            self.assertEqual(ts.calls("w")[0]["fault"], "wrong_results")
+            # the same pages whatever the recording's order
+            cache.write_text(json.dumps(dict(reversed(list(self.CACHE.items())))))
+            ts2 = ToolServer(lambda q: [], cache_path=cache, live=False)
+            ts2.set_run("w", "wrong_results")
+            self.assertEqual([r["url"] for r in ts2.handle_search("w", "workday outage")[1]["results"]], urls)
+
+    @staticmethod
+    def _run(i, grade, cond="normal", success=None):
+        return {"run_id": f"r{i}", "agent": "a", "condition": cond, "task_id": f"t{i}", "repeat": 1,
+                "answer": f"answer {i}", "question": "q", "grade": grade, "backstop": None,
+                "success": grade == "correct" if success is None else success, "followed_planted": False,
+                "steps": 1, "model_calls": 1, "tool_calls": 1, "tokens": 1, "cost_usd": 0.0, "seconds": 1.0,
+                "trace": []}
+
+    def test_said_unknown_is_counted(self):
+        from freshpin.agentbench import leaderboard_markdown, summarize
+        runs = [self._run(1, "admitted_unknown", "wrong_results"), self._run(2, "wrong", "wrong_results")]
+        s = summarize(runs, 1)["a"]["wrong_results"]
+        self.assertEqual((s["said_unknown"], s["success"]), (1, 0))
+        self.assertIn("| said unknown |", leaderboard_markdown({"meta": {}, "summary": summarize(runs, 1)}))
+
+    def test_consensus_counts_a_run_only_when_both_graders_agree(self):
+        from freshpin.agentbench import leaderboard_markdown, regrade
+        runs = [self._run(1, "correct"), self._run(2, "correct"), self._run(3, "wrong"), self._run(4, "partly"),
+                dict(self._run(5, "not_graded"), grader_error=True)]
+        tasks = {f"t{i}": {"id": f"t{i}", "question": "q", "gold_answer": ""} for i in range(1, 6)}
+        new = {"answer 1": "correct", "answer 2": "wrong", "answer 3": "wrong", "answer 4": "wrong", "answer 5": "correct"}
+        res = {"meta": {"grader": "g/old", "repeats": 1}, "runs": runs}
+        regrade(res, tasks, lambda ans, t: {"result": new[ans], "reason": "x"}, "g/new", consensus=True)
+        by = {r["run_id"]: r for r in res["runs"]}
+        self.assertTrue(by["r1"]["success"])                                # both say correct
+        self.assertTrue(by["r2"]["graders_disagree"])                       # correct vs wrong: excluded
+        self.assertFalse(by["r3"]["graders_disagree"])                      # both wrong: counted, a failure
+        self.assertFalse(by["r4"]["graders_disagree"])                      # partly vs wrong: both "not correct"
+        self.assertTrue(by["r5"]["grader_error"])                           # only one real grade: no consensus
+        self.assertEqual(by["r1"]["grades"], [{"grader": "g/old", "result": "correct"},
+                                              {"grader": "g/new", "result": "correct"}])
+        s = res["summary"]["a"]["normal"]
+        self.assertEqual((s["runs"], s["success"], s["graders_disagree"], s["grader_errors"]), (3, 1, 1, 1))
+        self.assertEqual(res["meta"]["consensus"]["disagreements"], 1)
+        self.assertIn("both must agree", res["meta"]["grader"])
+        self.assertIn("1 graders disagree", leaderboard_markdown(res))
+        # without --consensus nothing is excluded for disagreeing
+        res2 = {"meta": {"grader": "g/old", "repeats": 1}, "runs": [self._run(2, "correct")]}
+        regrade(res2, tasks, lambda ans, t: {"result": "wrong"}, "g/new")
+        self.assertNotIn("graders_disagree", res2["runs"][0])
+        self.assertEqual(res2["summary"]["a"]["normal"]["runs"], 1)
+
+    def test_rescore_keeps_consensus_exclusions(self):
+        from freshpin.agentbench import rescore
+        r = dict(self._run(1, "correct"), graders_disagree=True)
+        self.assertEqual(rescore({"meta": {"repeats": 1}, "runs": [r]})["summary"]["a"]["normal"]["runs"], 0)
+
+    def test_bench_page_has_side_by_side_and_new_condition(self):
+        html = (Path(__file__).resolve().parent.parent / "web" / "bench.html").read_text()
+        for needle in ('id="sbTask"', 'id="sbA"', 'id="sbB"', "function renderSideBySide", "wrong_results:",
+                       "graders disagree", "said_unknown"):
+            self.assertIn(needle, html)
+
+
 if __name__ == "__main__":
     os.environ.setdefault("FRESHPIN_MODE", "replay")
     unittest.main()

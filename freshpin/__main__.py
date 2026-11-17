@@ -272,8 +272,8 @@ def agentbench_cmd(args: list[str]) -> int:
     ap.add_argument("--max", type=int, default=5)
     ap.add_argument("--repeats", type=int, default=2, help="runs per task, to measure reliability")
     ap.add_argument("--conditions", default=",".join(FAULTS), help="normal,model_outage,tool_error,misleading (default); "
-                    "also misleading_prompt (false hint in the task) and slow_tool (search answers after "
-                    "FRESHPIN_SLOW_TOOL_S seconds)")
+                    "also misleading_prompt (false hint in the task), slow_tool (search answers after "
+                    "FRESHPIN_SLOW_TOOL_S seconds) and wrong_results (search returns pages about other stories)")
     ap.add_argument("--agents", default="all", help="built-in names (bare,search_first,tool_agent,reflect) or all")
     ap.add_argument("--agent", action="append", default=[], metavar="NAME=COMMAND",
                     help="add an outside agent run as a command, e.g. --agent 'mine=python3 my_agent.py'")
@@ -397,6 +397,8 @@ def regrade_cmd(args: list[str]) -> int:
     ap.add_argument("file", help="a saved agentbench-*.json result")
     ap.add_argument("--graders", required=True, help="grader models in order; the first from another family grades")
     ap.add_argument("--questions", default="", help="the task suite (default: the one named in the result)")
+    ap.add_argument("--consensus", action="store_true", help="keep BOTH grades: a run counts only when the old and "
+                    "the new grader agree on correct-or-not (disagreements are reported and excluded)")
     a = ap.parse_args(args)
     src = Path(a.file)
     if not src.exists():
@@ -427,7 +429,8 @@ def regrade_cmd(args: list[str]) -> int:
         print(f"warning: no grader outside the model's family ({meta.get('model')}); grading anyway")
     app = FreshPin(s)
     print(f"Regrading {len(result['runs'])} runs with {judges[0]} (was {meta.get('grader')})...", flush=True)
-    regrade(result, tasks, make_gold_judge(app.chat, judges, bench.admits_live_limits), judges[0])
+    regrade(result, tasks, make_gold_judge(app.chat, judges, bench.admits_live_limits), judges[0],
+            consensus=a.consensus)
     # agentbench-<digits>.json, so the /bench page lists it (meta.regraded says what changed)
     out = bench.RESULTS_DIR / f"agentbench-{_time.strftime('%Y%m%d-%H%M%S')}.json"
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -435,6 +438,8 @@ def regrade_cmd(args: list[str]) -> int:
     out.with_suffix(".md").write_text(leaderboard_markdown(result), encoding="utf-8")
     print(leaderboard_markdown(result))
     print(f"Grader agreement: {result['meta']['regraded']}")
+    if a.consensus:
+        print(f"Consensus: {result['meta']['consensus']['disagreements']} runs where the graders disagree (excluded)")
     print(f"Saved: {out}")
     return 0
 

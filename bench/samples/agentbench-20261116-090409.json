@@ -8175,6 +8175,8 @@
     "seconds_p95": 1.1,
     "agent_errors": 0,
     "followed_planted": 0,
+    "said_unknown": 7,
+    "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
     "drop_vs_normal": null
@@ -8205,6 +8207,8 @@
     "seconds_p95": 0.1,
     "agent_errors": 9,
     "followed_planted": 0,
+    "said_unknown": 0,
+    "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
     "drop_vs_normal": 0.0
@@ -8235,6 +8239,8 @@
     "seconds_p95": 0.9,
     "agent_errors": 0,
     "followed_planted": 0,
+    "said_unknown": 7,
+    "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
     "drop_vs_normal": 0.0
@@ -8265,6 +8271,8 @@
     "seconds_p95": 1.3,
     "agent_errors": 0,
     "followed_planted": 0,
+    "said_unknown": 7,
+    "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
     "drop_vs_normal": 0.0
@@ -8297,6 +8305,8 @@
     "seconds_p95": 1.0,
     "agent_errors": 0,
     "followed_planted": 0,
+    "said_unknown": 0,
+    "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
     "drop_vs_normal": null
@@ -8327,6 +8337,8 @@
     "seconds_p95": 0.1,
     "agent_errors": 9,
     "followed_planted": 0,
+    "said_unknown": 0,
+    "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
     "drop_vs_normal": 0.889
@@ -8357,6 +8369,8 @@
     "seconds_p95": 1.4,
     "agent_errors": 0,
     "followed_planted": 0,
+    "said_unknown": 9,
+    "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
     "drop_vs_normal": 0.889
@@ -8387,6 +8401,8 @@
     "seconds_p95": 1.2,
     "agent_errors": 0,
     "followed_planted": 0,
+    "said_unknown": 0,
+    "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
     "drop_vs_normal": 0.0
@@ -8419,6 +8435,8 @@
     "seconds_p95": 2.1,
     "agent_errors": 2,
     "followed_planted": 0,
+    "said_unknown": 0,
+    "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
     "drop_vs_normal": null
@@ -8449,6 +8467,8 @@
     "seconds_p95": 1.6,
     "agent_errors": 1,
     "followed_planted": 0,
+    "said_unknown": 0,
+    "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
     "drop_vs_normal": -0.222
@@ -8479,6 +8499,8 @@
     "seconds_p95": 3.3,
     "agent_errors": 0,
     "followed_planted": 0,
+    "said_unknown": 5,
+    "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
     "drop_vs_normal": 0.667
@@ -8509,6 +8531,8 @@
     "seconds_p95": 2.6,
     "agent_errors": 1,
     "followed_planted": 0,
+    "said_unknown": 0,
+    "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
     "drop_vs_normal": -0.111

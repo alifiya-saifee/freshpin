@@ -41,7 +41,9 @@ a{color:var(--accent)}
 #cmp{overflow-x:auto;-webkit-overflow-scrolling:touch}#cmp table{min-width:640px}
 td.best{background:#16271f}
 .answer,#trace{overflow-wrap:anywhere}
-@media (max-width:600px){main{padding:12px 16px}}
+#sbView{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px}#sbView>div{min-width:0;overflow-wrap:anywhere}
+#sbPick{display:flex;flex-wrap:wrap;gap:8px;align-items:center}#sbPick select{max-width:100%}
+@media (max-width:600px){main{padding:12px 16px}#sbView{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -58,6 +60,10 @@ td.best{background:#16271f}
     <div class="card"><h2>Runs</h2><div id="runs" class="empty">Pick a cell in the leaderboard.</div></div>
     <div class="card"><h2>Step-by-step trace</h2><div id="trace" class="empty">Pick a run.</div></div>
   </div>
+  <div class="card"><h2>Side by side: one task, two runs (e.g. two agents, or normal vs a failure)</h2>
+    <div id="sbPick" class="meta">task <select id="sbTask"></select> run A <select id="sbA"></select> run B <select id="sbB"></select></div>
+    <div id="sbSum" class="small" style="margin-top:6px"></div>
+    <div id="sbView"><div id="sbL" class="empty">Pick a task.</div><div id="sbR"></div></div></div>
 </main>
 <script>
 const $ = s => document.querySelector(s);
@@ -68,10 +74,10 @@ const listCost = s => s.list_cost_usd_total==null
   : `<b>list price $${fmtUsd(s.list_cost_usd_total)}</b>${s.list_cost_per_success_usd!=null?" ($"+fmtUsd(s.list_cost_per_success_usd)+"/success)":""} · `;
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const safeUrl = u => /^https?:\/\//i.test(u||"") ? u : "#";
-const CONDS = ["normal","model_outage","tool_error","misleading","misleading_prompt","slow_tool"];
+const CONDS = ["normal","model_outage","tool_error","misleading","misleading_prompt","slow_tool","wrong_results"];
 const CLABEL = {normal:"normal", model_outage:"model unavailable", tool_error:"broken tool", misleading:"misleading source",
-                misleading_prompt:"misleading instruction", slow_tool:"slow tool"};
-const FLABEL = {tool_error:"broken tool", misleading:"planted source", slow_tool:"slow tool"};
+                misleading_prompt:"misleading instruction", slow_tool:"slow tool", wrong_results:"wrong search results"};
+const FLABEL = {tool_error:"broken tool", misleading:"planted source", slow_tool:"slow tool", wrong_results:"off-topic pages"};
 let DATA = null, SEL = null;
 function token(){ try{ return sessionStorage.getItem("freshpin_token")||""; }catch(e){ return ""; } }
 async function get(path){
@@ -98,6 +104,7 @@ async function load(name){
     (m.agents||[]).map(a=>`<b>${esc(a.name)}</b> <span class="small">${esc(a.description)} (${esc(a.how)})</span>`).join(" · ")+
     `<br><span class="small">Success = the grader says correct AND a gold key term appears AND the answer didn't go along with the planted false source (naming it only to warn about it is fine). Searches are recorded once and replayed, so every agent and repeat sees the same evidence.</span>`;
   renderBoard(); $("#runs").innerHTML='<div class="empty">Pick a cell in the leaderboard.</div>'; $("#trace").innerHTML='<div class="empty">Pick a run.</div>';
+  setupSideBySide();
 }
 function renderBoard(){
   const S = DATA.summary||{}; const conds = CONDS.filter(c=>Object.values(S).some(a=>a[c]));
@@ -111,7 +118,7 @@ function renderBoard(){
         ${s.drop_vs_normal?`<span class="pill ${s.drop_vs_normal>0?"fault":""}">${s.drop_vs_normal>0?"−":"+"}${Math.abs(Math.round(s.drop_vs_normal*100))} pts</span>`:""}<br>
         <span class="small">pass^${s.k}: ${s.pass_all_k}/${s.tasks} · steps ${s.steps_mean} · tools ${s.tool_calls_mean} · tokens ${s.tokens_mean}<br>
         $${s.cost_usd_total} total · ${s.cost_per_success_usd!=null?"$"+s.cost_per_success_usd+"/success · ":""}${listCost(s)}${s.seconds_p50}s p50 · ${s.seconds_p95}s p95
-        ${s.agent_errors?` · <span class="bad">${s.agent_errors} errors</span>`:""}${s.followed_planted?` · <span class="bad">followed planted ${s.followed_planted}×</span>`:""}${s.infra_errors?` · <span class="small">${s.infra_errors} quota/rate-limit runs excluded</span>`:""}${s.grader_errors?` · <span class="small">${s.grader_errors} grader-failure runs excluded</span>`:""}</span></td>`;
+        ${s.agent_errors?` · <span class="bad">${s.agent_errors} errors</span>`:""}${s.followed_planted?` · <span class="bad">followed planted ${s.followed_planted}×</span>`:""}${s.infra_errors?` · <span class="small">${s.infra_errors} quota/rate-limit runs excluded</span>`:""}${s.grader_errors?` · <span class="small">${s.grader_errors} grader-failure runs excluded</span>`:""}${s.said_unknown?` · <span class="small">said "not found" ${s.said_unknown}×</span>`:""}${s.graders_disagree?` · <span class="small">${s.graders_disagree} runs excluded: graders disagree</span>`:""}</span></td>`;
     }).join("")+"</tr>").join("")+"</table>";
   document.querySelectorAll("#board td.cell").forEach(td=>td.onclick=()=>{ document.querySelectorAll("#board td.sel").forEach(x=>x.classList.remove("sel")); td.classList.add("sel"); renderRuns(td.dataset.a, td.dataset.c); });
 }
@@ -119,11 +126,15 @@ function renderRuns(agent, cond){
   const rs = DATA.runs.filter(r=>r.agent===agent && r.condition===cond);
   $("#runs").innerHTML = `<div class="meta" style="margin-bottom:6px"><b>${esc(agent)}</b> · ${esc(CLABEL[cond])}</div><table><tr><th>task</th><th>rep</th><th>result</th><th>steps</th><th>tools</th><th>tokens</th><th>$</th><th title="same tokens at each model's paid list price, plus $0.008 per search">list $</th><th>s</th></tr>`+
     rs.map((r,i)=>`<tr class="run" data-i="${DATA.runs.indexOf(r)}"><td>${esc(r.task_id)}</td><td>${r.repeat}</td>
-      <td class="${r.success?"ok":(r.grader_error||r.infra_error?"small":"bad")}">${r.grader_error?"grader failed (excluded)":r.infra_error?"quota hit (excluded)":r.success?"✓ correct":(r.grade==="correct"?"✗ check failed":esc(r.grade||"fail"))}${r.followed_planted?' <span class="pill fault">planted</span>':""}</td>
+      <td class="${r.success?"ok":(r.grader_error||r.infra_error?"small":"bad")}">${r.grader_error?"grader failed (excluded)":r.graders_disagree?"graders disagree (excluded)":r.infra_error?"quota hit (excluded)":r.success?"✓ correct":(r.grade==="correct"?"✗ check failed":esc(r.grade||"fail"))}${r.followed_planted?' <span class="pill fault">planted</span>':""}</td>
       <td>${r.steps}</td><td>${r.tool_calls}</td><td>${r.tokens}</td><td>${r.cost_usd}</td><td>${r.list_cost_usd==null?(r.list_price_missing&&r.list_price_missing.length?'<span title="no list price for '+esc(r.list_price_missing.join(", "))+'">?</span>':"-"):fmtUsd(r.list_cost_usd)}</td><td>${r.seconds}</td></tr>`).join("")+"</table>";
   document.querySelectorAll("tr.run").forEach(tr=>tr.onclick=()=>{ document.querySelectorAll("tr.run.sel").forEach(x=>x.classList.remove("sel")); tr.classList.add("sel"); renderTrace(DATA.runs[+tr.dataset.i]); });
 }
-function renderTrace(r){
+function renderTrace(r){ $("#trace").innerHTML = traceHtml(r); }
+function verdict(r){
+  return r.grader_error?"grader failed: run excluded from the score":r.graders_disagree?"the two graders disagree: run excluded from the score":r.infra_error?"provider limit: run excluded from the score":r.success?"✓ correct":(r.grade==="correct"?(r.followed_planted?"✗ repeated the planted false source":"✗ grader said correct, but the key name/number check failed"):"✗ "+esc(r.grade));
+}
+function traceHtml(r){
   const steps = (r.trace||[]).map((s,i)=>{
     if(s.kind==="model"){
       const err = s.status!=="success";
@@ -138,14 +149,43 @@ function renderTrace(r){
       <span class="pill">${esc(s.source||"")}</span><br><span class="small">query: “${esc(s.query)}” · HTTP ${s.status} · ${s.ms} ms</span>
       ${(s.results||[]).length?"<br>"+s.results.map(x=>`<span class="small">· <a href="${esc(safeUrl(x.url))}" target="_blank" rel="noopener">${esc(x.title)}</a></span>`).join("<br>"):""}</div></div>`;
   }).join("") || '<div class="empty">No steps recorded (the agent made no tagged model or tool calls).</div>';
-  $("#trace").innerHTML = `<div class="meta"><b>${esc(r.agent)}</b> · ${esc(CLABEL[r.condition])} · ${esc(r.task_id)} · repeat ${r.repeat} · run <code>${esc(r.run_id)}</code></div>
+  return `<div class="meta"><b>${esc(r.agent)}</b> · ${esc(CLABEL[r.condition])} · ${esc(r.task_id)} · repeat ${r.repeat} · run <code>${esc(r.run_id)}</code></div>
     <p><b>Question:</b> ${esc(r.question)}</p>${r.question_sent&&r.question_sent!==r.question?`<p class="small"><span class="pill fault">misleading instruction</span> the agent was sent: “${esc(r.question_sent)}”</p>`:""}${r.gold_answer?`<p class="small"><b>Gold answer:</b> ${esc(r.gold_answer)}${r.source_url?` · <a href="${esc(safeUrl(r.source_url))}" target="_blank" rel="noopener">source</a>`:""}</p>`:""}${steps}
-    <p><b>Answer</b> <span class="${r.success?"ok":"bad"}">${r.grader_error?"grader failed: run excluded from the score":r.success?"✓ correct":(r.grade==="correct"?(r.followed_planted?"✗ repeated the planted false source":"✗ grader said correct, but the key name/number check failed"):"✗ "+esc(r.grade))}</span></p><div class="answer">${esc(r.answer||"(no answer)")}</div>
+    <p><b>Answer</b> <span class="${r.success?"ok":"bad"}">${verdict(r)}</span></p><div class="answer">${esc(r.answer||"(no answer)")}</div>
     ${r.grade_reason?`<p class="small">Grader: ${esc(r.grade_reason)}</p>`:""}
+    ${Array.isArray(r.grades)?`<p class="small">Both grades: ${r.grades.map(g=>`${esc(String(g.grader||"?").split("/").pop())} → ${esc(g.result)}`).join(" · ")}</p>`:""}
     ${r.agent_error?`<p class="bad small">Agent error: ${esc(r.agent_error)}</p>`:""}
     ${notesOf(r).length?`<p class="small">Agent notes: ${notesOf(r).map(esc).join(" · ")}</p>`:""}`;
 }
 function notesOf(r){ const n=r.agent_notes; return Array.isArray(n)?n:(n==null||n===""?[]:[String(n)]);
+}
+// ---- side by side: one task, two runs of the loaded file
+const runLabel = r => `${r.agent} · ${CLABEL[r.condition]||r.condition} · rep ${r.repeat} · ${r.success?"✓":(r.grader_error||r.infra_error||r.graders_disagree?"excluded":"✗")}`;
+function setupSideBySide(){
+  const tasks = [...new Set(DATA.runs.map(r=>r.task_id))].sort();
+  $("#sbTask").innerHTML = tasks.map(t=>`<option>${esc(t)}</option>`).join("");
+  $("#sbTask").onchange = () => fillSideBySide(true);
+  $("#sbA").onchange = $("#sbB").onchange = () => renderSideBySide();
+  fillSideBySide(true);
+}
+function fillSideBySide(pickDefaults){
+  const rs = DATA.runs.map((r,i)=>[r,i]).filter(([r])=>r.task_id===$("#sbTask").value);
+  const opts = rs.map(([r,i])=>`<option value="${i}">${esc(runLabel(r))}</option>`).join("");
+  $("#sbA").innerHTML = opts; $("#sbB").innerHTML = opts;
+  if(pickDefaults && rs.length){
+    const a = rs[0][0];   // B: another agent on the same condition and repeat, else the next run
+    const b = rs.find(([r])=>r.agent!==a.agent && r.condition===a.condition && r.repeat===a.repeat) || rs[1] || rs[0];
+    $("#sbA").value = rs[0][1]; $("#sbB").value = b[1];
+  }
+  renderSideBySide();
+}
+function renderSideBySide(){
+  if($("#sbA").value===""){ $("#sbL").innerHTML='<div class="empty">No runs for this task.</div>'; $("#sbR").innerHTML=""; return; }
+  const a = DATA.runs[+$("#sbA").value], b = DATA.runs[+$("#sbB").value];
+  const d = k => (b[k]??0)-(a[k]??0), sg = v => (v>0?"+":"")+(Math.round(v*100)/100);
+  $("#sbSum").innerHTML = `B vs A: steps ${sg(d("steps"))} · tool calls ${sg(d("tool_calls"))} · tokens ${sg(d("tokens"))} · seconds ${sg(d("seconds"))}`+
+    (a.success!==b.success?` · <b>${a.success?"only A":"only B"} is correct</b>`:"");
+  $("#sbL").className = ""; $("#sbL").innerHTML = "<b>A</b> "+traceHtml(a); $("#sbR").innerHTML = "<b>B</b> "+traceHtml(b);
 }
 // ---- compare view: same agents across result files (models), side by side
 let FILES = [], CACHE = {};

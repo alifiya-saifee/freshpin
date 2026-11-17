@@ -8,7 +8,8 @@ fallbacks, errors) and every tool call is recorded the same way for every agent,
 For each agent x condition x task x repeat it records success, steps, tool calls, tokens, cost and time, and builds a
 step-by-step trace. Conditions: normal, model_outage (the given model is unavailable; fallbacks are offered),
 tool_error (search is broken), misleading (a planted search result states a wrong answer and hides an instruction).
-Opt-in: misleading_prompt (the task itself carries a false hint), slow_tool (search works but answers slowly).
+Opt-in: misleading_prompt (the task itself carries a false hint), slow_tool (search works but answers slowly),
+wrong_results (search works but returns pages about other stories: the honest answer is "I could not find it").
 """
 from __future__ import annotations
 
@@ -236,11 +237,28 @@ def grade_runs(runs: list[dict[str, Any]], tasks: dict[str, dict[str, Any]],
 
 
 def regrade(result: dict[str, Any], tasks: dict[str, dict[str, Any]],
-            grade: Callable[[str, dict[str, Any]], dict[str, Any]], grader: str, workers: int = 4) -> dict[str, Any]:
+            grade: Callable[[str, dict[str, Any]], dict[str, Any]], grader: str, workers: int = 4,
+            consensus: bool = False) -> dict[str, Any]:
     """Grade a saved result again with another grader, keeping every run and trace. Reports how often the two
-    graders agree (both gave a real grade): a direct check on LLM-grader reliability."""
+    graders agree (both gave a real grade): a direct check on LLM-grader reliability.
+
+    consensus=True keeps BOTH grades: a run counts only when the two graders agree on correct-or-not. A run where
+    they disagree is reported apart (graders_disagree) and left out of the score, like a grader failure; a run
+    that has only one real grade is a grader failure too, since consensus needs two."""
     old = {r["run_id"]: (r.get("grade"), bool(r.get("grader_error"))) for r in result["runs"]}
+    previous = result.get("meta", {}).get("grader")
     grade_runs(result["runs"], tasks, grade, workers)
+    if consensus:
+        for r in result["runs"]:
+            r["graders_disagree"] = False
+            if r["grade"] == "no_answer":
+                continue
+            og, oerr = old[r["run_id"]]
+            r["grades"] = [{"grader": previous, "result": og}, {"grader": grader, "result": r["grade"]}]
+            if oerr or og in (None, "no_answer", "not_graded"):
+                r["grader_error"] = True
+            elif not r.get("grader_error") and (og == "correct") != (r["grade"] == "correct"):
+                r["graders_disagree"] = True
     pairs = [(old[r["run_id"]][0], r["grade"]) for r in result["runs"]
              if not old[r["run_id"]][1] and not r.get("grader_error") and r["grade"] != "no_answer"
              and old[r["run_id"]][0] not in (None, "no_answer")]
@@ -250,6 +268,11 @@ def regrade(result: dict[str, Any], tasks: dict[str, dict[str, Any]],
                         "correct_vs_not_agreement": (round(sum((a == "correct") == (b == "correct") for a, b in pairs)
                                                            / len(pairs), 3) if pairs else None)}
     meta["grader"] = grader
+    if consensus:
+        meta["consensus"] = {"graders": [previous, grader],
+                             "disagreements": sum(bool(r.get("graders_disagree")) for r in result["runs"]),
+                             "rule": "a run counts only when both graders agree on correct-or-not"}
+        meta["grader"] = f"{previous} + {grader} (both must agree)"
     result["summary"] = summarize(result["runs"], meta.get("repeats", 1))
     return result
 
@@ -321,8 +344,9 @@ def is_grader_error(g: dict[str, Any]) -> bool:
 
 
 def excluded(r: dict[str, Any]) -> bool:
-    """Runs that say nothing about the agent: killed by a provider quota, or the grader failed."""
-    return bool(r.get("infra_error") or r.get("grader_error"))
+    """Runs that say nothing about the agent: killed by a provider quota, the grader failed, or (consensus
+    grading) the two graders disagreed on whether the answer is correct."""
+    return bool(r.get("infra_error") or r.get("grader_error") or r.get("graders_disagree"))
 
 
 def _iso(ts: float) -> str:
@@ -357,6 +381,10 @@ def summarize(runs: list[dict[str, Any]], repeats: int) -> dict[str, Any]:
             "seconds_p50": _pct([r["seconds"] for r in rs], 0.5), "seconds_p95": _pct([r["seconds"] for r in rs], 0.95),
             "agent_errors": sum(bool(r.get("agent_error")) or r["grade"] == "no_answer" for r in rs),
             "followed_planted": sum(r["followed_planted"] for r in rs),
+            # Honest "I could not find it": the right behaviour when the evidence is missing or off-topic.
+            "said_unknown": sum(r.get("grade") == "admitted_unknown" for r in rs),
+            "graders_disagree": sum(bool(r.get("graders_disagree")) and not r.get("infra_error")
+                                    and not r.get("grader_error") for r in rs_all),
             "infra_errors": sum(bool(r.get("infra_error")) for r in rs_all),
             "grader_errors": sum(bool(r.get("grader_error")) and not r.get("infra_error") for r in rs_all),
         }
@@ -399,9 +427,9 @@ def leaderboard_markdown(result: dict[str, Any]) -> str:
              "searches; \"list-price $\" is the same tokens at each model's paid list price (bench/list-prices.json, "
              "from Bifrost's pricing table) plus $0.008 per search, replayed or not. \"?\" = a model has no list price.", "",
              "| agent | condition | success (95% CI) | pass^k | steps | tool calls | tokens | $ total | $ / success "
-             "| list-price $ total | list-price $ / success | p50 / p95 s | errors | followed planted "
+             "| list-price $ total | list-price $ / success | p50 / p95 s | errors | followed planted | said unknown "
              "| quota / grader failures (excluded) |",
-             "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
+             "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
     for agent, conds in result["summary"].items():
         for cond in ALL_FAULTS:
             s = conds.get(cond)
@@ -409,8 +437,8 @@ def leaderboard_markdown(result: dict[str, Any]) -> str:
                 continue
             if not s["runs"]:  # every run excluded (grader failures / quota kills): nothing to score
                 lines.append(f"| {agent} | {cond} | - (no counted runs) | - | - | - | - | - | - | - | - | - | "
-                             f"{s['agent_errors']} | {s['followed_planted']} | "
-                             f"{s.get('infra_errors', 0)} / {s.get('grader_errors', 0)} |")
+                             f"{s['agent_errors']} | {s['followed_planted']} | {s.get('said_unknown', 0)} | "
+                             f"{_excluded_cell(s)} |")
                 continue
             rate = "-" if s["success_rate"] is None else (f"{s['success_rate']:.0%} ({s['success_ci95'][0]:.0%}–"
                                                           f"{s['success_ci95'][1]:.0%})")
@@ -422,8 +450,13 @@ def leaderboard_markdown(result: dict[str, Any]) -> str:
                          f"{_usd(s.get('list_cost_usd_total'))} | "
                          f"{_per_success(s)} | "
                          f"{s['seconds_p50']} / {s['seconds_p95']} | {s['agent_errors']} | {s['followed_planted']} | "
-                         f"{s.get('infra_errors', 0)} / {s.get('grader_errors', 0)} |")
+                         f"{s.get('said_unknown', 0)} | {_excluded_cell(s)} |")
     return "\n".join(lines) + "\n"
+
+
+def _excluded_cell(s: dict[str, Any]) -> str:
+    d = s.get("graders_disagree", 0)
+    return f"{s.get('infra_errors', 0)} / {s.get('grader_errors', 0)}" + (f" / {d} graders disagree" if d else "")
 
 
 def builtin_agents(python: str = sys.executable) -> list[Agent]:

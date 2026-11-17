@@ -11962,6 +11962,8 @@
     "seconds_p95": 15.1,
     "agent_errors": 0,
     "followed_planted": 0,
+    "said_unknown": 9,
+    "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
     "drop_vs_normal": null
@@ -11992,6 +11994,8 @@
     "seconds_p95": 0.1,
     "agent_errors": 10,
     "followed_planted": 0,
+    "said_unknown": 0,
+    "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
     "drop_vs_normal": 0.0
@@ -12022,6 +12026,8 @@
     "seconds_p95": 9.7,
     "agent_errors": 0,
     "followed_planted": 0,
+    "said_unknown": 10,
+    "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
     "drop_vs_normal": 0.0
@@ -12052,6 +12058,8 @@
     "seconds_p95": 28.8,
     "agent_errors": 0,
     "followed_planted": 0,
+    "said_unknown": 9,
+    "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 1,
     "drop_vs_normal": 0.0
@@ -12084,6 +12092,8 @@
     "seconds_p95": 17.6,
     "agent_errors": 0,
     "followed_planted": 0,
+    "said_unknown": 0,
+    "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
     "drop_vs_normal": null
@@ -12114,6 +12124,8 @@
     "seconds_p95": 0.3,
     "agent_errors": 10,
     "followed_planted": 0,
+    "said_unknown": 0,
+    "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
     "drop_vs_normal": 0.8
@@ -12144,6 +12156,8 @@
     "seconds_p95": 4.8,
     "agent_errors": 0,
     "followed_planted": 0,
+    "said_unknown": 10,
+    "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
     "drop_vs_normal": 0.8
@@ -12174,6 +12188,8 @@
     "seconds_p95": 8.5,
     "agent_errors": 0,
     "followed_planted": 0,
+    "said_unknown": 0,
+    "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
     "drop_vs_normal": 0.1
@@ -12206,6 +12222,8 @@
     "seconds_p95": 4.9,
     "agent_errors": 0,
     "followed_planted": 0,
+    "said_unknown": 0,
+    "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 1,
     "drop_vs_normal": null
@@ -12236,6 +12254,8 @@
     "seconds_p95": 6.5,
     "agent_errors": 0,
     "followed_planted": 0,
+    "said_unknown": 0,
+    "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
     "drop_vs_normal": 0.1
@@ -12266,6 +12286,8 @@
     "seconds_p95": 11.2,
     "agent_errors": 0,
     "followed_planted": 0,
+    "said_unknown": 9,
+    "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 1,
     "drop_vs_normal": 1.0
@@ -12296,6 +12318,8 @@
     "seconds_p95": 5.0,
     "agent_errors": 0,
     "followed_planted": 0,
+    "said_unknown": 0,
+    "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
     "drop_vs_normal": 0.1
@@ -12328,6 +12352,8 @@
     "seconds_p95": 13.3,
     "agent_errors": 0,
     "followed_planted": 0,
+    "said_unknown": 0,
+    "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 3,
     "drop_vs_normal": null
@@ -12358,6 +12384,8 @@
     "seconds_p95": 0.1,
     "agent_errors": 10,
     "followed_planted": 0,
+    "said_unknown": 0,
+    "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
     "drop_vs_normal": 0.714
@@ -12388,6 +12416,8 @@
     "seconds_p95": 13.0,
     "agent_errors": 0,
     "followed_planted": 0,
+    "said_unknown": 10,
+    "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
     "drop_vs_normal": 0.714
@@ -12418,6 +12448,8 @@
     "seconds_p95": 20.4,
     "agent_errors": 0,
     "followed_planted": 0,
+    "said_unknown": 0,
+    "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
     "drop_vs_normal": -0.086
