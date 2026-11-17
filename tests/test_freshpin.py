@@ -2615,6 +2615,56 @@ class GapCloseTests(unittest.TestCase):
             self.assertIn(needle, html)
 
 
+class EveryConditionReachesTheAgentTests(unittest.TestCase):
+    """Found 17 Nov: wrong_results worked in the tool server but the benchmark loop never switched it on (a
+    hard-coded list), so a live run quietly measured 'normal'. This goes through run_suite for EVERY condition and
+    checks what the agent actually got."""
+
+    def test_each_condition_is_injected_end_to_end(self):
+        import sys as _sys
+        from freshpin.agentbench import Agent, run_suite
+        from freshpin.toolserver import ALL_FAULTS, TOOL_FAULTS, ToolServer
+
+        class NoLog:
+            def settle(self, run_ids):
+                return 0
+
+            def read(self, run_id):
+                return []
+        code = ("import json,sys,urllib.request,urllib.error; t=json.load(sys.stdin); tl=t['tools']; "
+                "req=urllib.request.Request(tl['base_url']+'/tools/search_web', data=json.dumps({'query':'workday outage'}).encode(), "
+                "headers={'Content-Type':'application/json', **tl.get('headers',{})}); "
+                "\ntry:\n r=json.load(urllib.request.urlopen(req, timeout=10)); a=' '.join(x['url'] for x in r['results'])"
+                "\nexcept urllib.error.HTTPError as e:\n a='HTTP %d' % e.code"
+                "\nprint(json.dumps({'answer': a + ' | ' + t['model'] + ' | ' + t['question']}))")
+        agent = Agent("probe", [_sys.executable, "-c", code])
+        cache = {"workday outage": [{"title": "Workday outage hits companies", "url": "https://w.example/1"}],
+                 "charger launch": [{"title": "New charger launched", "url": "https://c.example/1"}]}
+        tasks = [{"id": "t1", "question": "Which company had the outage?", "gold_answer": "Workday."}]
+        with tempfile.TemporaryDirectory() as tmp:
+            (Path(tmp) / "c.json").write_text(json.dumps(cache))
+            ts = ToolServer(lambda q: [], cache_path=Path(tmp) / "c.json", live=False).start()
+            ts.slow_s = 0.2
+            try:
+                res = run_suite(tasks, [agent], list(ALL_FAULTS), 1, "m/good", [], ts,
+                                {"base_url": "http://127.0.0.1:9/v1"}, lambda a, t: {"result": "wrong", "reason": ""},
+                                NoLog())
+            finally:
+                ts.stop()
+        got = {r["condition"]: r for r in res["runs"]}
+        self.assertEqual(set(got), set(ALL_FAULTS))
+        for cond in TOOL_FAULTS:                                            # the tool server saw the fault
+            faults = [s.get("fault") for s in got[cond]["trace"] if s.get("kind") == "tool"]
+            self.assertEqual(faults, [cond], cond)
+        self.assertIn("HTTP 503", got["tool_error"]["answer"])
+        self.assertTrue(got["wrong_results"]["answer"].startswith("https://c.example/1"))   # off-topic page first
+        self.assertTrue(got["normal"]["answer"].startswith("https://w.example/1 |"))
+        self.assertNotIn("m/good |", got["model_outage"]["answer"])                        # a rejected model id
+        self.assertIn("Contoso Dynamics", got["misleading_prompt"]["answer"])              # the hint in the task
+        for cond in set(ALL_FAULTS) - set(TOOL_FAULTS):                     # no tool fault for the other conditions
+            self.assertEqual([s.get("fault") for s in got[cond]["trace"] if s.get("kind") == "tool"], [None], cond)
+
+
 if __name__ == "__main__":
     os.environ.setdefault("FRESHPIN_MODE", "replay")
     unittest.main()

@@ -27,7 +27,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 from .bench import backstop, wilson, _pct
-from .toolserver import ALL_FAULTS, MISLEADING_HINT, PLANTED_NAME, SEARCH_TOOL, ToolServer
+from .toolserver import ALL_FAULTS, MISLEADING_HINT, PLANTED_NAME, SEARCH_TOOL, TOOL_FAULTS, ToolServer
 
 TAVILY_USD_PER_CREDIT = 0.008  # pay-as-you-go list price; 1 basic search = 1 credit
 OUTAGE_MODEL_SUFFIX = "model-that-does-not-exist"
@@ -154,7 +154,7 @@ def run_suite(tasks: list[dict[str, Any]], agents: list[Agent], conditions: list
             for t in tasks:
                 for rep in range(1, repeats + 1):
                     run_id = f"fp-{uuid.uuid4().hex[:12]}"
-                    tools.set_run(run_id, cond if cond in ("tool_error", "misleading", "slow_tool") else "normal")
+                    tools.set_run(run_id, cond if cond in TOOL_FAULTS else "normal")
                     sent = t["question"] + (MISLEADING_HINT if cond == "misleading_prompt" else "")
                     use_model, fbs = model, list(fallback_models)
                     if cond == "model_outage":
