@@ -2723,6 +2723,74 @@ class ResultNameTests(unittest.TestCase):
             self.assertNotEqual(reserve_result_path(tmp, "20261117-112912"), paths[0])  # a finished file is never reused
 
 
+class AgentAndToolRuleTests(unittest.TestCase):
+    """Rules the 17 Nov mutation run showed no test pinned (agents.py, toolserver.py)."""
+
+    def test_search_lists_undated_and_empty_results(self):
+        from unittest import mock
+        import freshpin.agents as ag
+        task = {"tools": {"base_url": "http://x", "headers": {}}}
+        with mock.patch.object(ag, "_post", return_value={"results": [{"title": "T", "url": "https://u.example/1"},
+                {"title": "S", "url": "https://u.example/2", "published_date": "2026-11-13", "snippet": "Body " * 200}]}):
+            out = ag.search(task, "q")
+        self.assertIn("[1] T (undated) https://u.example/1", out)
+        self.assertIn("[2] S (2026-11-13) https://u.example/2", out)
+        self.assertEqual(len(out.splitlines()[3].strip()), 399)            # snippet capped at 400 chars
+        with mock.patch.object(ag, "_post", return_value={"results": []}):
+            self.assertEqual(ag.search(task, "q"), "(no results)")
+
+    def test_tool_call_without_query_searches_the_question(self):
+        from unittest import mock
+        import freshpin.agents as ag
+        task = {"question": "Who had the outage?", "today": "2026-11-17", "model": "m/a", "tools": {"spec": [1]}}
+        replies = iter([{"content": "", "tool_calls": [{"id": "c1", "function": {"name": "search_web", "arguments": None}},
+                                                      {"id": "c2", "function": {"name": "search_web", "arguments": '{"query": "workday"}'}},
+                                                      {"id": "c3", "function": {"name": "open", "arguments": "{}"}}]},
+                        {"content": "Workday."}])
+        sent, queries = [], []
+        with mock.patch.object(ag, "chat", side_effect=lambda t, m, msgs, tools=None: sent.append(list(msgs)) or next(replies)), \
+                mock.patch.object(ag, "search", side_effect=lambda t, q: queries.append(q) or "results"):
+            out = ag.tool_agent(task)
+        self.assertEqual(out["answer"], "Workday.")
+        self.assertEqual(queries, ["Who had the outage?", "workday"])     # no query -> the question itself
+        assistant = sent[1][2]
+        self.assertEqual((assistant["role"], assistant["content"]), ("assistant", None))   # empty text is sent as null
+        self.assertEqual(sent[1][-1]["content"], "unknown tool")          # an invented tool gets a plain reply
+
+    def test_agent_command_usage_and_unicode(self):
+        import contextlib
+        import io
+        from unittest import mock
+        import freshpin.agents as ag
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            self.assertEqual(ag.main([]), 2)
+        self.assertIn("usage", buf.getvalue())
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf), mock.patch("sys.stdin", io.StringIO(json.dumps(
+                {"question": "q", "today": "2026-11-17", "model": "m/a"}))), \
+                mock.patch.object(ag, "chat", return_value={"content": "Café in Dubaï"}):
+            self.assertEqual(ag.main(["bare"]), 0)
+        self.assertIn("Café in Dubaï", buf.getvalue())                     # readable, not \u00e9
+
+    def test_mcp_flags_errors_and_timings_are_sane(self):
+        from freshpin.toolserver import ToolServer
+        with tempfile.TemporaryDirectory() as tmp:
+            ts = ToolServer(lambda q: [{"title": "Résumé", "url": "https://x.example/a"}], cache_path=Path(tmp) / "c.json")
+            init = ts.handle_mcp("r", {"jsonrpc": "2.0", "id": 1, "method": "initialize"})
+            self.assertIs(init["result"]["capabilities"]["tools"]["listChanged"], False)
+            ts.set_run("ok", "normal")
+            ts.set_run("bad", "tool_error")
+            call = lambda rid: ts.handle_mcp(rid, {"jsonrpc": "2.0", "id": 2, "method": "tools/call",
+                                                   "params": {"name": "search_web", "arguments": {"query": "x"}}})
+            good, bad = call("ok")["result"], call("bad")["result"]
+            self.assertIs(good["isError"], False)
+            self.assertIs(bad["isError"], True)
+            self.assertIn("Résumé", good["content"][0]["text"])              # not escaped
+            ms = ts.calls("ok")[0]["ms"]
+            self.assertTrue(0 <= ms < 5000, ms)
+
+
 if __name__ == "__main__":
     os.environ.setdefault("FRESHPIN_MODE", "replay")
     unittest.main()
