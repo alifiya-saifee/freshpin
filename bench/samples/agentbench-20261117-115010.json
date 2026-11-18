@@ -4397,7 +4397,7 @@
     }
    ],
    "cost_usd": 0.0,
-   "infra_error": false,
+   "infra_error": true,
    "list_price_missing": [],
    "searches": 0,
    "list_cost_usd": 0.0,
@@ -4581,34 +4581,34 @@
   },
   "tool_agent": {
    "wrong_results": {
-    "runs": 15,
+    "runs": 14,
     "success": 0,
     "success_rate": 0.0,
     "success_ci95": [
      0.0,
-     0.204
+     0.215
     ],
     "pass_all_k": 0,
     "pass_any_k": 0,
     "consistent_tasks": 9,
     "tasks": 9,
     "k": 3,
-    "steps_mean": 1.53,
-    "model_calls_mean": 1.27,
-    "tool_calls_mean": 0.27,
-    "tokens_mean": 518.67,
+    "steps_mean": 1.57,
+    "model_calls_mean": 1.29,
+    "tool_calls_mean": 0.29,
+    "tokens_mean": 555.71,
     "cost_usd_total": 0.0073,
     "cost_per_success_usd": null,
     "list_cost_usd_total": 0.03377,
     "list_cost_per_success_usd": null,
     "list_price_missing": [],
     "seconds_p50": 0.3,
-    "seconds_p95": 1.6,
-    "agent_errors": 13,
+    "seconds_p95": 1.2,
+    "agent_errors": 12,
     "followed_planted": 0,
     "said_unknown": 2,
     "graders_disagree": 0,
-    "infra_errors": 12,
+    "infra_errors": 13,
     "grader_errors": 0,
     "drop_vs_normal": null
    }

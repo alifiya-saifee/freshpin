@@ -1588,6 +1588,10 @@ class AgentBenchTests(unittest.TestCase):
         self.assertTrue(is_infra_error("", gemini))
         self.assertFalse(is_infra_error("", tool))                                 # a model mistake is the agent's
         self.assertFalse(is_infra_error("an answer", groq))                        # it answered anyway: counted
+        busy = [{"status": "error", "error": "qwen/qwen3.8-27b is currently over capacity. Please try again and "
+                 "back off exponentially. Visit https://groqstatus.com to see if there is an active incident."}]
+        self.assertTrue(is_infra_error("", busy))                                  # Groq overloaded: provider, not agent
+        self.assertTrue(is_infra_error("", [{"status": "error", "error": "Error 529: Overloaded"}]))
         def run(i, answer, grade, backstop, mentions, calls=()):
             return {"run_id": f"r{i}", "agent": "a", "condition": "misleading", "task_id": "t", "repeat": i,
                     "answer": answer, "grade": grade, "backstop": backstop, "followed_planted": mentions,
@@ -2542,6 +2546,12 @@ class GapCloseTests(unittest.TestCase):
     def test_wrong_results_returns_real_pages_about_other_stories(self):
         from freshpin.toolserver import ALL_FAULTS, ToolServer
         self.assertIn("wrong_results", ALL_FAULTS)
+        from freshpin.toolserver import EXTRA_FAULTS, FAULTS
+        # The brief's three failures run by default: unavailable model, broken tool, misleading instructions
+        for cond in ("model_outage", "tool_error", "misleading", "misleading_prompt"):
+            self.assertIn(cond, FAULTS)
+        self.assertNotIn("misleading_prompt", EXTRA_FAULTS)                        # one list per condition
+        self.assertFalse(set(FAULTS) & set(EXTRA_FAULTS))
         with tempfile.TemporaryDirectory() as tmp:
             cache = Path(tmp) / "c.json"
             cache.write_text(json.dumps(self.CACHE))
