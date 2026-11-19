@@ -2919,6 +2919,24 @@ class OtelExportTests(unittest.TestCase):
         self.assertTrue(any(r["freshpin.success"] is True for r in roots))
         self.assertTrue(all(r["freshpin.condition"] in ("normal", "model_outage", "tool_error", "misleading") for r in roots))
 
+    def test_every_time_format_bifrost_writes(self):
+        from freshpin.otel import _ns, run_spans
+        base = 1763208583 * 1_000_000_000                                        # 2025-11-15 12:09:43 UTC
+        self.assertEqual(_ns("2025-11-15 12:09:43.57326+00:00"), base + 573_260_000)   # trailing zero dropped
+        self.assertEqual(_ns("2025-11-15 12:09:43.573260+00:00"), base + 573_260_000)
+        self.assertEqual(_ns("2025-11-15T12:09:43.573260123Z"), base + 573_260_123)    # nanoseconds
+        self.assertEqual(_ns("2025-11-15 12:09:43+00:00"), base)
+        self.assertEqual(_ns("2025-11-15 16:09:43.5+04:00"), base + 500_000_000)       # Dubai offset
+        self.assertEqual(_ns("2025-11-15 12:09:43"), base)                             # no zone: UTC
+        self.assertEqual(_ns(1763208583.5), base + 500_000_000)
+        for bad in ("", None, "yesterday", "2025-13-45 99:99:99", True):
+            self.assertIsNone(_ns(bad))
+        spans = run_spans({"run_id": "r", "agent": "a", "answer": "x", "trace": [
+            {"kind": "model", "t": "2025-11-15 12:09:43.5+00:00", "ms": 100, "model": "p/m", "status": "success"},
+            {"kind": "tool", "tool": "search_web", "t": "garbled", "ms": 0, "status": 200}]})
+        self.assertEqual(len(spans), 3)                                           # an unreadable time keeps its step
+        self.assertEqual(spans[2]["startTimeUnixNano"], spans[1]["endTimeUnixNano"])
+
     def test_run_with_no_trace_and_the_command(self):
         import io
         import json

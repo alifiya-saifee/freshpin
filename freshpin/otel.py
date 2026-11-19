@@ -14,7 +14,8 @@ Standard library only.
 from __future__ import annotations
 
 import hashlib
-from datetime import datetime, timezone
+import re
+from datetime import datetime, timedelta, timezone
 from typing import Any
 
 SPAN_KIND_INTERNAL, SPAN_KIND_CLIENT = 1, 3
@@ -31,19 +32,31 @@ def _id(text: str, hex_len: int) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()[:hex_len]
 
 
+_TIME = re.compile(r"(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2}):(\d{2})(?:\.(\d{1,9}))?\s*(Z|[+-]\d{2}:?\d{2})?$")
+
+
 def _ns(t: Any) -> int | None:
-    """A trace step's time ('2026-11-15 12:09:43.049358+00:00', ISO, or epoch seconds) as Unix nanoseconds."""
-    if t is None or t == "":
+    """A trace step's time as Unix nanoseconds. Accepts '2026-11-15 12:09:43.049358+00:00', ISO 8601 with 'Z', any
+    number of fraction digits (Bifrost's log drops trailing zeros: '.57326', which Python 3.9's fromisoformat
+    rejects) and epoch seconds. Unreadable: None."""
+    if t is None or t == "" or isinstance(t, bool):
         return None
     if isinstance(t, (int, float)):
         return int(float(t) * 1e9)
+    m = _TIME.match(str(t).strip())
+    if not m:
+        return None
+    y, mo, d, h, mi, se, frac, tz = m.groups()
+    offset = timezone.utc
+    if tz and tz != "Z":
+        sign = -1 if tz[0] == "-" else 1
+        hh, mm = int(tz[1:3]), int(tz[-2:])
+        offset = timezone(sign * timedelta(hours=hh, minutes=mm))
     try:
-        dt = datetime.fromisoformat(str(t).replace("Z", "+00:00"))
+        dt = datetime(int(y), int(mo), int(d), int(h), int(mi), int(se), tzinfo=offset)
     except ValueError:
         return None
-    if dt.tzinfo is None:
-        dt = dt.replace(tzinfo=timezone.utc)
-    return int(dt.timestamp()) * 1_000_000_000 + dt.microsecond * 1000
+    return int(dt.timestamp()) * 1_000_000_000 + int((frac or "0").ljust(9, "0"))
 
 
 def _val(v: Any) -> dict[str, Any]:
@@ -77,11 +90,13 @@ def run_spans(r: dict[str, Any], fallback_start_ns: int = 0) -> list[dict[str, A
     run_id = str(r.get("run_id") or f"{r.get('agent')}:{r.get('condition')}:{r.get('task_id')}:{r.get('repeat')}")
     trace_id, root_id = _id(run_id, 32), _id(run_id + ":agent", 16)
     children: list[dict[str, Any]] = []
+    previous_end = fallback_start_ns
     for i, step in enumerate(r.get("trace") or []):
         start = _ns(step.get("t"))
-        if start is None:
-            continue
+        if start is None:                 # never drop a step: an unreadable time goes right after the previous one
+            start = previous_end
         end = start + int(float(step.get("ms") or 0) * 1_000_000)
+        previous_end = end
         sid = _id(f"{run_id}:{i}", 16)
         if step.get("kind") == "model":
             model = str(step.get("model") or "")
