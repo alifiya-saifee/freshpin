@@ -28,6 +28,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 from .bench import backstop, wilson, _pct
+from .bifrostkeys import BifrostKeys, is_cap_error
 from .modelproxy import ModelProxy
 from .toolserver import ALL_FAULTS, MISLEADING_HINT, PLANTED_NAME, SEARCH_TOOL, TOOL_FAULTS, ToolServer
 
@@ -147,16 +148,19 @@ def run_suite(tasks: list[dict[str, Any]], agents: list[Agent], conditions: list
               grade: Callable[[str, dict[str, Any]], dict[str, Any]], bifrost: BifrostLog | None,
               on_run: Callable[[dict[str, Any]], Any] | None = None, timeout_s: int = 180,
               on_progress: Callable[[dict[str, Any]], Any] | None = None, pace_s: float = 0.0,
-              prices: dict[str, Any] | None = None) -> dict[str, Any]:
+              prices: dict[str, Any] | None = None, keys: "BifrostKeys | None" = None,
+              request_cap: int = 2) -> dict[str, Any]:
     """Every agent x condition x task x repeat, the same way. Returns {"runs": [...], "summary": {...}}."""
     runs: list[dict[str, Any]] = []
     provider = model.split("/", 1)[0]
     # Gateway fallbacks: a pass-through adds Bifrost's own per-request fallback list, so the GATEWAY (not the agent)
     # can rescue the rejected model. Started only when that condition runs.
+    if "request_cap" in conditions and keys is None:
+        raise ValueError("request_cap needs Bifrost key management (BifrostKeys): set FRESHPIN_BIFROST_ADMIN")
     proxy = ModelProxy(llm["base_url"]).start() if "model_outage_gateway" in conditions else None
     try:
         _run_all(runs, tasks, agents, conditions, repeats, model, fallback_models, tools, llm, proxy, provider,
-                 on_progress, timeout_s, pace_s)
+                 on_progress, timeout_s, pace_s, keys, request_cap)
     finally:
         if proxy:
             proxy.stop()
@@ -171,7 +175,7 @@ def run_suite(tasks: list[dict[str, Any]], agents: list[Agent], conditions: list
 def _run_all(runs: list[dict[str, Any]], tasks: list[dict[str, Any]], agents: list[Agent], conditions: list[str],
              repeats: int, model: str, fallback_models: list[str], tools: ToolServer, llm: dict[str, Any],
              proxy: "ModelProxy | None", provider: str, on_progress: Callable[[dict[str, Any]], Any] | None,
-             timeout_s: int, pace_s: float) -> None:
+             timeout_s: int, pace_s: float, keys: "BifrostKeys | None" = None, request_cap: int = 2) -> None:
     for agent in agents:
         for cond in conditions:
             for t in tasks:
@@ -188,16 +192,36 @@ def _run_all(runs: list[dict[str, Any]], tasks: list[dict[str, Any]], agents: li
                         gateway_fbs = [model] + list(fallback_models)
                         proxy.set_run(run_id, gateway_fbs)
                         base_url = proxy.agent_base_url(llm["base_url"])
+                    llm_headers = {**llm.get("headers", {}), "x-bf-session-id": run_id}
+                    capped_key, setup_error = None, None
+                    if cond == "request_cap" and keys:
+                        # a Bifrost virtual key for this run only: its models, at most request_cap requests
+                        try:
+                            capped_key = keys.create_capped(f"freshpin-{run_id}", [model] + list(fallback_models),
+                                                            request_cap)
+                            llm_headers["x-bf-vk"] = capped_key["value"]
+                        except (RuntimeError, ValueError) as e:
+                            setup_error = str(e)
                     task = {"task_id": t["id"], "run_id": run_id, "question": sent,
                             "today": date.today().isoformat(), "model": use_model, "fallback_models": fbs,
                             "llm": {"base_url": base_url,
-                                    "headers": {**llm.get("headers", {}), "x-bf-session-id": run_id}},
+                                    "headers": llm_headers},
                             "tools": {"base_url": tools.url, "mcp_url": tools.url + "/mcp",
                                       "headers": {"X-Run-Id": run_id},
                                       "spec": [SEARCH_TOOL]}}
                     if pace_s and runs:
                         time.sleep(pace_s)  # stay inside free-tier rate limits
-                    out, wall = invoke(agent, task, timeout_s)
+                    if setup_error:
+                        out, wall = {"answer": "", "error": f"setup: {setup_error}"}, 0.0
+                    else:
+                        try:
+                            out, wall = invoke(agent, task, timeout_s)
+                        finally:
+                            if capped_key:
+                                try:
+                                    keys.delete(capped_key["id"])
+                                except RuntimeError as e:
+                                    print(f"  warning: could not delete Bifrost key {capped_key['id']}: {e}", flush=True)
                     answer = str(out.get("answer") or "")
                     rec: dict[str, Any] = {
                         "run_id": run_id, "agent": agent.name, "condition": cond, "task_id": t["id"], "repeat": rep,
@@ -207,6 +231,10 @@ def _run_all(runs: list[dict[str, Any]], tasks: list[dict[str, Any]], agents: li
                         "mentions_planted": PLANTED_NAME.casefold() in answer.casefold(),
                         "followed_planted": PLANTED_NAME.casefold() in answer.casefold(), "_task": t,
                     }
+                    if cond == "request_cap":
+                        rec["request_cap"] = request_cap
+                    if setup_error:
+                        rec["setup_error"] = setup_error           # FreshPin's setup failed: excluded, not scored
                     if gateway_fbs:
                         rec["gateway_fallbacks"] = gateway_fbs
                         rec["gateway_fallbacks_added"] = sum(bool(c["fallbacks_added"]) for c in proxy.calls(run_id))
@@ -235,7 +263,7 @@ def finalize(runs: list[dict[str, Any]], tools: ToolServer, grade: Callable[[str
         })
         rec["cost_usd"] = round(rec["model_cost_usd"] + rec["live_searches"] * TAVILY_USD_PER_CREDIT, 6)
         # A run killed by a provider quota or rate limit says nothing about the agent: report it separately.
-        rec["infra_error"] = is_infra_error(rec["answer"], model_calls)
+        rec["infra_error"] = is_infra_error(rec["answer"], model_calls, rec.get("condition", ""))
         rec["honesty"] = honesty(rec["answer"])
     add_list_cost(runs, prices)
     grade_runs(runs, {r["task_id"]: r["_task"] for r in runs}, grade, workers)
@@ -317,11 +345,13 @@ LIMIT_WORDS = ("quota", "rate limit", "rate_limit", "too many requests", "reques
                "requests per minute", "resource_exhausted", "resource exhausted", "over capacity", "overloaded")
 
 
-def is_infra_error(answer: str, model_calls: list[dict[str, Any]]) -> bool:
-    """No answer, and a model call failed on a provider limit."""
-    return not (answer or "").strip() and any(
-        c.get("status") != "success" and c.get("error") and any(w in c["error"].lower() for w in LIMIT_WORDS)
-        for c in model_calls)
+def is_infra_error(answer: str, model_calls: list[dict[str, Any]], condition: str = "") -> bool:
+    """No answer, and a model call failed on a provider limit. Under request_cap, Bifrost's own per-key request cap
+    answering 429 is the injected fault, so it counts against the agent; a provider's own limit is still excluded."""
+    failed = [c["error"] for c in model_calls if c.get("status") != "success" and c.get("error")]
+    if condition == "request_cap":
+        failed = [e for e in failed if not is_cap_error(e)]
+    return not (answer or "").strip() and any(any(w in e.lower() for w in LIMIT_WORDS) for e in failed)
 
 
 # Honesty without a grader. When the evidence is missing (broken tool) or off-topic (wrong results), the right answer
@@ -383,7 +413,7 @@ def rescore(result: dict[str, Any]) -> dict[str, Any]:
         if r.get("gold_answer") and r.get("grade") not in (None, "no_answer"):  # the key-term check, current rules
             r["backstop"] = backstop(r.get("answer", ""), r["gold_answer"], r.get("question", ""))
         calls = [s for s in r.get("trace") or [] if s.get("kind") == "model"]
-        r["infra_error"] = is_infra_error(r.get("answer", ""), calls)
+        r["infra_error"] = is_infra_error(r.get("answer", ""), calls, r.get("condition", ""))
         r["honesty"] = honesty(r.get("answer"))
         if r.get("grade") not in (None, "no_answer"):
             r["followed_planted"] = followed_planted(r)
@@ -403,7 +433,7 @@ def is_grader_error(g: dict[str, Any]) -> bool:
 def excluded(r: dict[str, Any]) -> bool:
     """Runs that say nothing about the agent: killed by a provider quota, the grader failed, or (consensus
     grading) the two graders disagreed on whether the answer is correct."""
-    return bool(r.get("infra_error") or r.get("grader_error") or r.get("graders_disagree"))
+    return bool(r.get("infra_error") or r.get("grader_error") or r.get("graders_disagree") or r.get("setup_error"))
 
 
 def _iso(ts: float) -> str:
@@ -453,6 +483,7 @@ def summarize(runs: list[dict[str, Any]], repeats: int) -> dict[str, Any]:
                                     and not r.get("grader_error") for r in rs_all),
             "infra_errors": sum(bool(r.get("infra_error")) for r in rs_all),
             "grader_errors": sum(bool(r.get("grader_error")) and not r.get("infra_error") for r in rs_all),
+            **({"setup_errors": n_setup} if (n_setup := sum(bool(r.get("setup_error")) for r in rs_all)) else {}),
         }
     for agent, conds in out.items():
         base = (conds.get("normal") or {}).get("success_rate")
@@ -528,7 +559,9 @@ def _honesty_cell(s: dict[str, Any]) -> str:
 
 def _excluded_cell(s: dict[str, Any]) -> str:
     d = s.get("graders_disagree", 0)
-    return f"{s.get('infra_errors', 0)} / {s.get('grader_errors', 0)}" + (f" / {d} graders disagree" if d else "")
+    setup = s.get("setup_errors", 0)
+    return (f"{s.get('infra_errors', 0)} / {s.get('grader_errors', 0)}" + (f" / {d} graders disagree" if d else "")
+            + (f" / {setup} setup failed" if setup else ""))
 
 
 def builtin_agents(python: str = sys.executable) -> list[Agent]:

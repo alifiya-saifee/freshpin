@@ -2625,6 +2625,23 @@ class GapCloseTests(unittest.TestCase):
             self.assertIn(needle, html)
 
 
+class StubKeys:
+    """Stands in for BifrostKeys in tests: records the capped keys created and deleted."""
+
+    def __init__(self, fail: bool = False):
+        self.created, self.deleted, self.fail = [], [], fail
+
+    def create_capped(self, name, models, max_requests):
+        if self.fail:
+            raise RuntimeError("Bifrost POST /api/governance/virtual-keys: HTTP 401")
+        self.created.append((list(models), max_requests))
+        n = len(self.created)
+        return {"id": f"id-{n}", "value": f"capped-{n}"}
+
+    def delete(self, key_id):
+        self.deleted.append(key_id)
+
+
 class EveryConditionReachesTheAgentTests(unittest.TestCase):
     """Found 17 Nov: wrong_results worked in the tool server but the benchmark loop never switched it on (a
     hard-coded list), so a live run quietly measured 'normal'. This goes through run_suite for EVERY condition and
@@ -2647,7 +2664,7 @@ class EveryConditionReachesTheAgentTests(unittest.TestCase):
                 "\ntry:\n r=json.load(urllib.request.urlopen(req, timeout=10)); a=' '.join(x['url'] for x in r['results'])"
                 "\nexcept urllib.error.HTTPError as e:\n a='HTTP %d' % e.code"
                 "\nprint(json.dumps({'answer': a + ' | ' + t['model'] + ' | ' + t['question'] + ' | llm=' + t['llm']['base_url']"
-                " + ' fbs=' + str(len(t['fallback_models']))}))")
+                " + ' fbs=' + str(len(t['fallback_models'])) + ' vk=' + t['llm']['headers'].get('x-bf-vk', '-')}))")
         agent = Agent("probe", [_sys.executable, "-c", code])
         cache = {"workday outage": [{"title": "Workday outage hits companies", "url": "https://w.example/1"}],
                  "charger launch": [{"title": "New charger launched", "url": "https://c.example/1"}]}
@@ -2657,9 +2674,10 @@ class EveryConditionReachesTheAgentTests(unittest.TestCase):
             ts = ToolServer(lambda q: [], cache_path=Path(tmp) / "c.json", live=False).start()
             ts.slow_s = 0.2
             try:
+                keys = StubKeys()
                 res = run_suite(tasks, [agent], list(ALL_FAULTS), 1, "m/good", [], ts,
-                                {"base_url": "http://127.0.0.1:9/v1"}, lambda a, t: {"result": "wrong", "reason": ""},
-                                NoLog())
+                                {"base_url": "http://127.0.0.1:9/v1", "headers": {"x-bf-vk": "main"}},
+                                lambda a, t: {"result": "wrong", "reason": ""}, NoLog(), keys=keys, request_cap=2)
             finally:
                 ts.stop()
         got = {r["condition"]: r for r in res["runs"]}
@@ -2672,6 +2690,11 @@ class EveryConditionReachesTheAgentTests(unittest.TestCase):
         self.assertTrue(got["normal"]["answer"].startswith("https://w.example/1 |"))
         self.assertNotIn("m/good |", got["model_outage"]["answer"])                        # a rejected model id
         self.assertIn("Contoso Dynamics", got["misleading_prompt"]["answer"])              # the hint in the task
+        self.assertIn(" vk=capped-1", got["request_cap"]["answer"])           # its own capped Bifrost key
+        self.assertIn(" vk=main", got["normal"]["answer"])
+        self.assertEqual(keys.created, [(["m/good"], 2)])
+        self.assertEqual(keys.deleted, ["id-1"])                             # and it was deleted after the run
+        self.assertEqual(got["request_cap"]["request_cap"], 2)
         gw = got["model_outage_gateway"]                                    # rejected model, no list, via the proxy
         self.assertNotIn("m/good |", gw["answer"])
         self.assertIn(" fbs=0", gw["answer"])
@@ -3090,6 +3113,112 @@ class ModelProxyTests(unittest.TestCase):
         self.assertIn("gateway unreachable", body["error"]["message"])
         with self.assertRaises(ValueError):
             ModelProxy("localhost:8080")
+
+
+class RequestCapTests(unittest.TestCase):
+    """19 Nov: request_cap, a Bifrost virtual key per run capped at N requests (Bifrost governance)."""
+
+    def test_auth_header_forms(self):
+        import base64
+        from freshpin.bifrostkeys import auth_header
+        self.assertEqual(auth_header("admin:pw"), "Basic " + base64.b64encode(b"admin:pw").decode())
+        self.assertEqual(auth_header("Bearer abc"), "Bearer abc")
+        self.assertEqual(auth_header("basic xyz"), "basic xyz")
+        self.assertEqual(auth_header("tok"), "Bearer tok")
+        self.assertEqual(auth_header("  "), "")
+
+    def test_keys_against_a_fake_bifrost(self):
+        import threading
+        from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+        from freshpin.bifrostkeys import BifrostKeys, auth_header
+        seen = []
+
+        class Admin(BaseHTTPRequestHandler):
+            def log_message(self, *a):
+                pass
+
+            def _reply(self, code, doc):
+                out = json.dumps(doc).encode()
+                self.send_response(code)
+                self.send_header("Content-Type", "application/json")
+                self.send_header("Content-Length", str(len(out)))
+                self.end_headers()
+                self.wfile.write(out)
+
+            def _handle(self):
+                n = int(self.headers.get("Content-Length") or 0)
+                body = json.loads(self.rfile.read(n)) if n else None
+                seen.append((self.command, self.path, self.headers.get("Authorization"), body))
+                if self.headers.get("Authorization") != auth_header("admin:pw"):
+                    return self._reply(401, {"error": {"message": "unauthorized"}})
+                if self.command == "POST":
+                    return self._reply(200, {"message": "created", "virtual_key": {"id": "vk-9", "value": "sk-bf-9",
+                                                                                     "name": body["name"]}})
+                return self._reply(200, {"message": "ok"})
+            do_GET = do_POST = do_DELETE = _handle  # noqa: N815
+        srv = ThreadingHTTPServer(("127.0.0.1", 0), Admin)
+        threading.Thread(target=srv.serve_forever, daemon=True).start()
+        self.addCleanup(srv.server_close)
+        self.addCleanup(srv.shutdown)
+        base = f"http://127.0.0.1:{srv.server_address[1]}/v1"                       # /v1 is stripped for /api
+        with self.assertRaises(RuntimeError) as ctx:
+            BifrostKeys(base).check()
+        self.assertIn("FRESHPIN_BIFROST_ADMIN", str(ctx.exception))                 # the fix is named
+        keys = BifrostKeys(base, auth_header("admin:pw"))
+        keys.check()
+        k = keys.create_capped("freshpin-r1", ["openai/nvidia/lightning", "groq/openai/gpt-oss-120b",
+                                               "openai/nvidia/lightning"], 2)
+        self.assertEqual(k, {"id": "vk-9", "value": "sk-bf-9"})
+        keys.delete("vk-9")
+        post = [x for x in seen if x[0] == "POST"][0]
+        self.assertEqual(post[1], "/api/governance/virtual-keys")
+        self.assertEqual(post[3]["provider_configs"], [
+            {"provider": "openai", "allowed_models": ["nvidia/lightning"], "key_ids": ["*"]},
+            {"provider": "groq", "allowed_models": ["openai/gpt-oss-120b"], "key_ids": ["*"]}])
+        self.assertEqual(post[3]["rate_limit"], {"request_max_limit": 2, "request_reset_duration": "1h"})
+        self.assertEqual(seen[-1][:2], ("DELETE", "/api/governance/virtual-keys/vk-9"))
+        with self.assertRaises(ValueError):
+            keys.create_capped("x", ["no-provider"], 2)
+        with self.assertRaises(ValueError):
+            keys.create_capped("x", ["p/m"], 0)
+
+    def test_the_cap_is_the_fault_a_provider_limit_is_not(self):
+        from freshpin.agentbench import is_infra_error
+        cap = [{"status": "error", "error": "Rate limit exceeded: request limit 2 reached for virtual key freshpin-r1"}]
+        typed = [{"status": "error", "error": '{"type":"request_limited","message":"too many requests"}'}]
+        groq = [{"status": "error", "error": "Rate limit reached for model `qwen` on requests per minute (RPM): Limit 30"}]
+        self.assertFalse(is_infra_error("", cap, "request_cap"))                   # the injected fault: counted
+        self.assertFalse(is_infra_error("", typed, "request_cap"))
+        self.assertTrue(is_infra_error("", groq, "request_cap"))                    # the provider's own limit: excluded
+        self.assertTrue(is_infra_error("", cap, "normal"))                          # elsewhere a cap is still a limit
+        self.assertTrue(is_infra_error("", cap + groq, "request_cap"))
+
+    def test_setup_failure_is_excluded_and_needs_keys(self):
+        from freshpin.agentbench import Agent, run_suite, summarize
+        from freshpin.toolserver import ToolServer
+
+        class NoLog:
+            def settle(self, run_ids):
+                return 0
+
+            def read(self, run_id):
+                return []
+        agent = Agent("probe", [sys.executable, "-c", "import json; print(json.dumps({'answer': 'x'}))"])
+        tasks = [{"id": "t1", "question": "q?", "gold_answer": "g."}]
+        ts = ToolServer(lambda q: [], live=False).start()
+        try:
+            with self.assertRaises(ValueError):
+                run_suite(tasks, [agent], ["request_cap"], 1, "m/good", [], ts, {"base_url": "http://127.0.0.1:9/v1"},
+                          lambda a, t: {"result": "wrong", "reason": ""}, NoLog())
+            res = run_suite(tasks, [agent], ["request_cap"], 1, "m/good", [], ts, {"base_url": "http://127.0.0.1:9/v1"},
+                            lambda a, t: {"result": "wrong", "reason": ""}, NoLog(), keys=StubKeys(fail=True))
+        finally:
+            ts.stop()
+        (r,) = res["runs"]
+        self.assertIn("HTTP 401", r["setup_error"])
+        self.assertEqual(r["answer"], "")                                          # the agent never ran
+        s = summarize(res["runs"], 1)["probe"]["request_cap"]
+        self.assertEqual((s["runs"], s["setup_errors"]), (0, 1))                    # excluded, and counted as such
 
 
 if __name__ == "__main__":

@@ -336,7 +336,8 @@ def agentbench_cmd(args: list[str]) -> int:
     ap.add_argument("--repeats", type=int, default=2, help="runs per task, to measure reliability")
     ap.add_argument("--conditions", default=",".join(FAULTS), help="normal,model_outage,tool_error,misleading,misleading_prompt "
                     "(default; misleading_prompt = a false hint in the task); also model_outage_gateway (rejected model, no "
-                    "fallback list for the agent; Bifrost's own fallbacks added by FreshPin), slow_tool (search answers after "
+                    "fallback list for the agent; Bifrost's own fallbacks added by FreshPin), request_cap (a Bifrost key per run "
+                    "capped at --request-cap requests; needs FRESHPIN_BIFROST_ADMIN), slow_tool (search answers after "
                     "FRESHPIN_SLOW_TOOL_S seconds) and wrong_results (search returns pages about other stories)")
     ap.add_argument("--agents", default="all", help="built-in names (bare,search_first,tool_agent,reflect) or all")
     ap.add_argument("--agent", action="append", default=[], metavar="NAME=COMMAND",
@@ -346,6 +347,8 @@ def agentbench_cmd(args: list[str]) -> int:
     ap.add_argument("--fallbacks", default="", help="fallback models offered to agents (comma-separated)")
     ap.add_argument("--search-type", default="event", help="claim type for live searches (event = news, last week)")
     ap.add_argument("--pace", type=float, default=0.0, help="seconds to wait between runs (free-tier rate limits)")
+    ap.add_argument("--request-cap", type=int, default=2,
+                    help="request_cap condition: requests each run's Bifrost key allows (default 2)")
     ap.add_argument("--tool-cache", default="", help="recorded searches to replay (default: toolcache-<suite>.json "
                     "next to the suite file, else in bench/)")
     ap.add_argument("--replay-only", action="store_true",
@@ -401,12 +404,22 @@ def agentbench_cmd(args: list[str]) -> int:
         print(f"--replay-only needs recorded searches, and {cache} does not exist.")
         return 2
     print(f"Tool recording: {cache}{' (replay only, no live searches)' if a.replay_only else ''}", flush=True)
+    keys = None
+    if "request_cap" in conds:
+        from .bifrostkeys import BifrostKeys
+        keys = BifrostKeys.from_env(s.bifrost_url)
+        try:
+            keys.check()
+        except RuntimeError as e:
+            print(f"request_cap can't run: {e}")
+            return 2
     tools = ToolServer(search, cache_path=cache, live=not a.replay_only).start()
     headers = {"x-bf-vk": s.bifrost_virtual_key} if s.bifrost_virtual_key else {}
     llm = {"base_url": s.bifrost_url.rstrip("/") + "/v1", "headers": headers}
     path = reserve_result_path(bench.RESULTS_DIR)
     meta = {"run_on": date_today(), "model": a.model, "fallbacks": fallbacks, "tasks": len(tasks),
             "repeats": a.repeats, "conditions": conds, "grader": judges[0], "grader_independent": independent,
+            **({"request_cap": a.request_cap} if "request_cap" in conds else {}),
             "agents": [{"name": ag.name, "description": ag.description,
                         "how": "command" if ag.command else "http"} for ag in agents],
             "questions_file": Path(a.questions).name, "tool_cache": cache.name, "replay_only": a.replay_only,
@@ -432,7 +445,7 @@ def agentbench_cmd(args: list[str]) -> int:
 
     try:
         result = run_suite(tasks, agents, conds, a.repeats, a.model, fallbacks, tools, llm, grade, bifrost, on_run,
-                           on_progress=on_progress, pace_s=a.pace)
+                           on_progress=on_progress, pace_s=a.pace, keys=keys, request_cap=a.request_cap)
         print("All agents ran; reading Bifrost's log and grading (4 at a time)...", flush=True)
     finally:
         tools.stop()

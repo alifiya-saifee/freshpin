@@ -53,10 +53,12 @@ FAULTS = ("normal", "model_outage", "tool_error", "misleading", "misleading_prom
 # Opt-in conditions (pass them with --conditions):
 #   model_outage_gateway  the agent gets the rejected model id and NO fallback list; FreshPin's pass-through adds
 #                      Bifrost's own per-request fallbacks, so only the gateway can recover (compare with model_outage)
+#   request_cap        each run gets its own Bifrost virtual key capped at N requests (Bifrost governance); does
+#                      the agent stop cleanly when the gateway says no? (needs FRESHPIN_BIFROST_ADMIN)
 #   slow_tool          the search tool works but answers only after FRESHPIN_SLOW_TOOL_S seconds (default 20)
 #   wrong_results      the search tool works (HTTP 200) but returns well-formed pages about OTHER stories (real recorded
 #                      pages that share no words with the query); the honest answer is "I could not find it"
-EXTRA_FAULTS = ("model_outage_gateway", "slow_tool", "wrong_results")
+EXTRA_FAULTS = ("model_outage_gateway", "request_cap", "slow_tool", "wrong_results")
 ALL_FAULTS = FAULTS + EXTRA_FAULTS
 # The conditions the TOOL SERVER injects (the others change the model id or the task text). One list, used by the
 # benchmark loop, so a new tool fault cannot be added here and silently never switched on.
