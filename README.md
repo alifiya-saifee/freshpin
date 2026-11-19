@@ -27,6 +27,7 @@ python -m freshpin agentbench ... --graders a/b,c/d                    # fix the
 python -m freshpin regrade bench/results/agentbench-<ts>.json --graders a/b   # grade again; reports grader agreement
 python -m freshpin regrade ... --graders a/b --consensus             # keep both grades: count a run only if they agree
 python -m freshpin otel-export bench/samples/agentbench-<ts>.json --out runs.otlp.json   # OpenTelemetry traces
+python -m freshpin bench-static site/                                   # read-only /bench snapshot for static hosting
 python -m freshpin agentbench --questions bench/suites/fresh-arena2.json --replay-only \
     --model openai/nvidia/nemotron-3.5-lightning-30b-a3b --yes         # re-run the published suite on its recorded searches
                                                                        # (a reworded search gets the closest recorded pages)
@@ -144,6 +145,10 @@ The conclusions above hold under both graders (e.g. Gemini `tool_agent` normal: 
 **Two bugs this run found in FreshPin itself, both fixed with tests:**
 - The `wrong_results` condition worked in the tool server, but the benchmark loop had its own hard-coded list of tool faults and never switched it on: the first run quietly measured "normal" (41/43 correct, no fault in any trace). A test now runs every condition through the full loop and checks what the agent actually received.
 - Three benchmarks started in the same second wrote the same result file, and the last to finish overwrote the others. Result names are now reserved atomically (`-2`, `-3`…).
+
+### Read-only snapshot (no keys, no server)
+
+`python -m freshpin bench-static site/` writes the `/bench` page with every committed result (`bench/samples/` only, never local `bench/results/`) as plain files. Serve the folder with any web server (`python -m http.server -d site`) or host it on GitHub Pages: the leaderboard, traces, compare view, side-by-side view and honesty labels all work, read-only.
 
 ### Traces in your own tools (OpenTelemetry)
 
@@ -484,6 +489,7 @@ freshpin/
   agents.py     built-in reference agents (bare, search_first, tool_agent)
   prices.py     list prices from Bifrost's pricing table
   otel.py       agentbench runs as OpenTelemetry traces (OTLP/JSON, gen_ai.* names)
+  benchstatic.py read-only /bench snapshot for static hosting (committed samples only)
 bench/          suites/ (task suites + recorded searches), samples/ (published results), list-prices.json
                 (results/ is git-ignored)
 examples/agents outside agents: reflect (Python), js_agent.mjs (JavaScript), openai_agents_sdk_agent.py

@@ -17,13 +17,13 @@ RESULTS = ROOT / "bench" / "results"
 SAMPLES = ROOT / "bench" / "samples"  # committed example runs, so a fresh clone has something to inspect
 
 
-def bench_files() -> list[dict[str, str]]:
-    """Agent-benchmark result files, newest first."""
+def bench_files(include_results: bool = True) -> list[dict[str, str]]:
+    """Agent-benchmark result files, newest first (include_results=False: the committed samples only)."""
     import json as _json
     out = []
     # A committed sample wins over a local result of the same name (the sample is the curated, rescored copy).
-    files = sorted(list(SAMPLES.glob("agentbench-*.json")) + list(RESULTS.glob("agentbench-*.json")),
-                   key=lambda f: f.name, reverse=True)
+    local = list(RESULTS.glob("agentbench-*.json")) if include_results else []
+    files = sorted(list(SAMPLES.glob("agentbench-*.json")) + local, key=lambda f: f.name, reverse=True)
     seen = set()
     for f in files:
         if f.name in seen or bench_file(f.name) is None:  # list only what /api/bench/result will serve

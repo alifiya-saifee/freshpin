@@ -80,7 +80,16 @@ const CLABEL = {normal:"normal", model_outage:"model unavailable", tool_error:"b
 const FLABEL = {tool_error:"broken tool", misleading:"planted source", slow_tool:"slow tool", wrong_results:"off-topic pages"};
 let DATA = null, SEL = null;
 function token(){ try{ return sessionStorage.getItem("freshpin_token")||""; }catch(e){ return ""; } }
+// Read-only snapshot (python -m freshpin bench-static): the same page reads exported files instead of the API.
+const STATIC = window.FRESHPIN_STATIC === true;
+function staticPath(path){
+  if(path === "/api/bench/list") return "data/list.json";
+  const m = /^\/api\/bench\/result\?file=(agentbench-[0-9-]+\.json)$/.exec(decodeURIComponent(path));
+  if(m) return "data/" + m[1];
+  throw new Error("not in this snapshot: " + path);
+}
 async function get(path){
+  if(STATIC){ const r = await fetch(staticPath(path)); if(!r.ok) throw new Error(r.status+" "+r.statusText); return r.json(); }
   const h = token() ? {"X-FreshPin-Token": token()} : {};
   let r = await fetch(path, {headers:h});
   if(r.status===401){ const t=prompt("FreshPin API token"); if(t){ try{sessionStorage.setItem("freshpin_token",t);}catch(e){} r = await fetch(path,{headers:{"X-FreshPin-Token":t}}); } }

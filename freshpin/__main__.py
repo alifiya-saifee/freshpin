@@ -20,6 +20,8 @@ USAGE = """usage:
                                            (keeps every trace; reports how often the two graders agree)
   python -m freshpin otel-export FILE [--out F]  write an agentbench result as OpenTelemetry traces (OTLP/JSON):
                                            one trace per run, gen_ai.* spans for the agent, model calls and tool calls
+  python -m freshpin bench-static DIR      write a read-only snapshot of /bench (committed samples only) for
+                                           static hosting such as GitHub Pages
   python -m freshpin prices --models a,b   write bench/list-prices.json from Bifrost's pricing table (list-price $)
   python -m freshpin bench-build [--n 8]   build a fresh-events question set (gold answers + quotes) from this week's news
   python -m freshpin watch [--all]         re-check pinned facts past their half-life; alert on reopened decisions
@@ -96,6 +98,21 @@ def main(argv: list[str]) -> int:
         return regrade_cmd(argv[1:])
     if cmd == "otel-export":
         return otel_cmd(argv[1:])
+    if cmd == "bench-static":
+        if len(argv) != 2 or argv[1].startswith("-"):
+            print("usage: python -m freshpin bench-static DIR   (a new or empty folder)", file=sys.stderr)
+            return 2
+        from pathlib import Path
+
+        from .benchstatic import build
+        try:
+            n = build(Path(argv[1]))
+        except ValueError as e:
+            print(e, file=sys.stderr)
+            return 2
+        print(f"{n['results']} results -> {argv[1]} (open index.html through a web server, e.g. "
+              f"python -m http.server -d {argv[1]})")
+        return 0
     app = FreshPin(settings())
     if cmd == "check" and len(argv) > 1:
         print(json.dumps(app.check(" ".join(argv[1:])), indent=2, ensure_ascii=False))

@@ -2945,6 +2945,57 @@ class OtelExportTests(unittest.TestCase):
             self.assertIn("Not an agentbench result", se.getvalue())
 
 
+class BenchStaticTests(unittest.TestCase):
+    """19 Nov: a read-only snapshot of /bench for static hosting; committed samples only."""
+
+    def test_snapshot_has_samples_only_and_the_static_page(self):
+        import json
+        import tempfile
+        from unittest import mock
+        from freshpin import benchstatic, server
+        with tempfile.TemporaryDirectory() as local, tempfile.TemporaryDirectory() as out:
+            # a local, uncommitted result must never reach a public snapshot
+            (Path(local) / "agentbench-20990101-000000.json").write_text(
+                json.dumps({"meta": {"model": "secret/local"}, "runs": [], "summary": {}}), encoding="utf-8")
+            with mock.patch.object(server, "RESULTS", Path(local)):
+                self.assertIn("agentbench-20990101-000000.json", [f["name"] for f in server.bench_files()])
+                n = benchstatic.build(Path(out) / "site")
+            site = Path(out) / "site"
+            samples = sorted(f.name for f in server.SAMPLES.glob("agentbench-*.json"))
+            listed = json.loads((site / "data" / "list.json").read_text(encoding="utf-8"))["files"]
+            self.assertEqual(sorted(f["name"] for f in listed), samples)
+            self.assertEqual(n["results"], len(samples))
+            self.assertEqual(sorted(f.name for f in (site / "data").glob("agentbench-*.json")), samples)
+            self.assertNotIn("secret/local", (site / "data" / "list.json").read_text(encoding="utf-8"))
+            html = (site / "index.html").read_text(encoding="utf-8")
+            self.assertIn("window.FRESHPIN_STATIC = true", html)
+            self.assertIn("Read-only snapshot", html)
+            self.assertNotIn('<a href="/">', html)                                # no link to a server that isn't there
+            self.assertTrue((site / ".nojekyll").exists())
+            with self.assertRaises(ValueError):                                   # never writes into a used folder
+                benchstatic.build(site)
+
+    def test_page_reads_files_only_in_static_mode(self):
+        html = (Path(__file__).resolve().parent.parent / "web" / "bench.html").read_text(encoding="utf-8")
+        self.assertIn("const STATIC = window.FRESHPIN_STATIC === true;", html)
+        self.assertIn('if(path === "/api/bench/list") return "data/list.json";', html)
+        self.assertIn("(agentbench-[0-9-]+\\.json)$", html)                     # only result names, no paths
+        self.assertIn('throw new Error("not in this snapshot: "', html)
+
+    def test_command(self):
+        import io
+        import tempfile
+        from contextlib import redirect_stderr, redirect_stdout
+        from freshpin.__main__ import main
+        with tempfile.TemporaryDirectory() as d:
+            with redirect_stdout(io.StringIO()) as so:
+                self.assertEqual(main(["bench-static", str(Path(d) / "s")]), 0)
+            self.assertIn("results ->", so.getvalue())
+            with redirect_stderr(io.StringIO()):
+                self.assertEqual(main(["bench-static", str(Path(d) / "s")]), 2)   # not empty any more
+                self.assertEqual(main(["bench-static"]), 2)
+
+
 if __name__ == "__main__":
     os.environ.setdefault("FRESHPIN_MODE", "replay")
     unittest.main()
