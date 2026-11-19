@@ -1,7 +1,7 @@
 # FreshPin: the problem, our solution, and the results so far
 
 Geek Room AI Global Hackathon 2026 · Problem statement #2 (Bifrost track) · Category: **research agents**
-Repo: github.com/alifiya-saifee/freshpin · All 157 tests passing on the latest local commit (18 Nov 2026, not pushed yet). Last pushed: `511030e`, GitHub CI 6/6 green.
+Repo: github.com/alifiya-saifee/freshpin · All 170 tests passing (Python 3.12 and 3.9) on the latest local commit (19 Nov 2026, not pushed yet). Last pushed: `685add7`, GitHub CI 6/6 green.
 
 ---
 
@@ -80,7 +80,7 @@ FreshPin started as a **stale-answer detector**. It checks an AI answer claim by
 All results are real runs, saved in `bench/samples/` and viewable in `/bench`. Cells show **successes / counted runs**.
 
 ### How to read the conditions
-- **Model unavailable:** the agent is handed a model id the gateway rejects, together with a fallback list. **Bifrost's own gateway fallbacks are switched off on purpose**, so this measures *the agent's* error handling. An agent with no fallback logic scores 0 here by design. With Bifrost's gateway fallbacks on, every agent would be rescued by the gateway (that run has not been done yet).
+- **Model unavailable:** the agent is handed a model id the gateway rejects, together with a fallback list. **Bifrost's own gateway fallbacks are switched off on purpose**, so this measures *the agent's* error handling. An agent with no fallback logic scores 0 here by design. A separate condition turns Bifrost's own fallbacks on instead (section 3.8): there the gateway rescues agents with no fallback logic.
 - **Broken tool:** every search fails, so **no agent can be right** and success is always 0. The score that matters is **honesty**: did the agent say "I couldn't find it" instead of inventing an answer? The tables below show that as **said "not found"**. **These honesty counts don't come from a grader** (graders turned out to disagree on them, see 3.7). Each broken-tool answer is sorted by a fixed word rule into *said not found* ("I'm not sure", "I couldn't find…", "I don't have…"), *no answer* or *answered anyway*, and every borderline answer was then read by hand. Every run not cut by a provider limit is counted. The rule is part of FreshPin: `/bench` shows it in each broken-tool cell and labels every run, and the saved results carry the counts (`said_not_found`, `answered_anyway`), so anyone can re-check them.
 - **`bare` (no tools)** answers from memory. It scores 0 on news from after its training by design, so it is a floor, not a competitor. It is left out of the comparisons below.
 
@@ -196,12 +196,24 @@ The conclusions hold under both graders. The disagreements on correct-or-not clu
 
 **The second grader also exposed a grader bias.** Under the broken tool, gpt-oss-20b graded 72 honest "I couldn't find it" answers as "wrong", where the other grader called them "said not found" (plus 4 more in the outside-agents run of 3.3, which it graded alone). Reading the answers by hand confirms they were honest. That is why the honesty counts in this document come from a fixed word rule plus a hand reading, not from either grader. This doesn't change any success score (a wrong answer and "not found" both count as not correct), but it does change the honesty count. That is exactly the kind of problem a single grader hides.
 
+### 3.8 Gateway fallbacks: does Bifrost close the gap? (19 Nov)
+New opt-in condition: the agent gets the rejected model and **no fallback list**; FreshPin adds Bifrost’s own per-request `fallbacks` to each call, so only the **gateway** can recover. 9 tasks × 3 repeats.
+
+| Model | Agent | Model unavailable (agent’s own fallbacks) | Model unavailable, gateway fallbacks |
+|---|---|---|---|
+| Nemotron 3.5 Lightning | `search_first` (no fallback logic) | 0/27 | **25/27** |
+| Nemotron 3.5 Lightning | `tool_agent` | 27/27 | 24/25 |
+| Gemini 3.5 Flash-Lite | `search_first` | 0/27 | **27/27** |
+| Gemini 3.5 Flash-Lite | `tool_agent` | 27/27 | 26/27 |
+
+**With Bifrost’s fallbacks on, the outage stops being the agent’s problem.** The agent with no fallback logic went from 0 to 25–27 of 27. In all 108 gateway runs, Bifrost’s log shows the rejected attempt, then a successful fallback. The cost is one logged failed attempt per call. Lightning was graded by Gemini 3.1 Flash-Lite, because the Groq key behind its usual graders had stopped working (HTTP 401).
+
 ---
 
 ## 4. Main findings in one place
 1. **The agent matters, not just the model.** On the same model and the same evidence, three tool-using agents scored 71%, 80% and 100% on normal runs, and 0 to 9 of 10 when the model was unavailable.
 2. **Some models break the "model calls the tools" design, as shown in the traces.** gpt-oss and Qwen invent tool names, and the run ends with no answer. This is visible in the traces even where the score gap is small.
-3. **Error handling decides the "model unavailable" result.** With gateway fallbacks off, only the agent that used its fallback list recovered. In production, Bifrost's gateway fallbacks would cover agents without that logic.
+3. **Error handling decides the "model unavailable" result, unless the gateway handles it.** With gateway fallbacks off, only the agent that used its fallback list recovered (0 vs 9 of 10). With Bifrost’s own fallbacks on, the agent with no fallback logic scored 25–27 of 27.
 4. **When search breaks, the question is honesty, and the agent design decides it.** `search_first` said "not found" in every broken-tool run on every model (45 of 45 in the 1-run test, 54 of 54 over 3 repeats). Letting the model decide was riskier: `tool_agent` on gpt-oss **invented an answer in 4 of 9 runs** (dates years off), and on Qwen 7 of 9 runs gave no answer. On Lightning and Gemini over 3 repeats, `tool_agent` said "not found" in 53 of 54 runs.
 5. **A false hint in the task is more dangerous than a false web page,** in all 10 model–agent pairs. Every model followed the hint at least once.
 6. **One run is not enough.** pass^3 exposes agents that are right only some of the time.
@@ -209,7 +221,7 @@ The conclusions hold under both graders. The disagreements on correct-or-not clu
 8. **A grader can be biased against honesty, and a second grader catches it.** gpt-oss-20b scored 72 honest "I couldn't find it" answers as "wrong". With that grader alone, Lightning looked half as honest as it was.
 
 ## 5. Quality and checks
-- **157 automated tests** pass, locally, on a fresh copy and in GitHub CI (Ubuntu and macOS, Python 3.9, 3.12 and 3.14).
+- **170 automated tests** pass (Python 3.12 and 3.9), locally, on a fresh copy and in GitHub CI (Ubuntu and macOS, Python 3.9, 3.12 and 3.14).
 - **QA kit (12 layers):** 454/457 checks on the results commit; after fixes, the last two layers are 15/15. **137 of 160 deliberately planted bugs** were caught by the tests (86%).
 - **Bugs found by benchmarking FreshPin itself, all fixed with tests:**
   - the wrong-results condition was never switched on;
@@ -225,7 +237,7 @@ The conclusions hold under both graders. The disagreements on correct-or-not clu
 - A **model outage** is tested at the start of a run, not halfway through.
 - A few **gold answers are loose** and should be tightened; the two-grader check found exactly which ones.
 - **Wrong search results** has only been run on Qwen so far.
-- **There is no "model unavailable" run with Bifrost's gateway fallbacks on.** It would show how much of the gap the gateway closes.
+- **The request-cap condition** (a Bifrost key per run capped at N requests) is built and tested but has not run on real models yet: it needs Bifrost’s admin login.
 - **The honesty word rule is simple and English-only.** It can miss unusual phrasings: a first version missed "the provided search results do not contain information", which the tests now cover. Borderline answers are still worth reading.
 - The misleading instruction is now **on by default** (it used to be opt-in). The published results above were run before that change; the tables list it where it was run.
 - No **LangGraph or CrewAI** agent has been tested yet.
