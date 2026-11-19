@@ -2861,6 +2861,90 @@ class HonestyRuleTests(unittest.TestCase):
             self.assertIn(needle, html)
 
 
+class OtelExportTests(unittest.TestCase):
+    """19 Nov: agentbench runs as OpenTelemetry traces (OTLP/JSON, gen_ai.* names)."""
+
+    def sample(self):
+        import json
+        f = Path(__file__).resolve().parent.parent / "bench" / "samples" / "agentbench-20261115-155950.json"
+        return json.loads(f.read_text(encoding="utf-8"))
+
+    def spans(self, out):
+        return [s for rs in out["resourceSpans"] for ss in rs["scopeSpans"] for s in ss["spans"]]
+
+    def test_one_trace_per_run_with_a_span_per_step(self):
+        import re
+        from freshpin.otel import to_otlp
+        result = self.sample()
+        spans = self.spans(to_otlp(result, source="x.json"))
+        steps = sum(len(r.get("trace") or []) for r in result["runs"])
+        self.assertEqual(len(spans), len(result["runs"]) + steps)
+        self.assertEqual(len({s["traceId"] for s in spans}), len(result["runs"]))
+        by_id = {s["spanId"]: s for s in spans}
+        self.assertEqual(len(by_id), len(spans))                                 # span ids are unique
+        for s in spans:
+            self.assertRegex(s["traceId"], r"^[0-9a-f]{32}$")                    # OTLP/JSON: hex, not base64
+            self.assertRegex(s["spanId"], r"^[0-9a-f]{16}$")
+            self.assertLessEqual(int(s["startTimeUnixNano"]), int(s["endTimeUnixNano"]))
+            if "parentSpanId" in s:
+                parent = by_id[s["parentSpanId"]]
+                self.assertEqual(parent["traceId"], s["traceId"])
+                self.assertTrue(parent["name"].startswith("invoke_agent "))
+                self.assertLessEqual(int(parent["startTimeUnixNano"]), int(s["startTimeUnixNano"]))
+                self.assertGreaterEqual(int(parent["endTimeUnixNano"]), int(s["endTimeUnixNano"]))
+            else:
+                self.assertTrue(re.match(r"^invoke_agent ", s["name"]))
+        self.assertEqual(to_otlp(result), to_otlp(result))                        # deterministic
+
+    def test_gen_ai_names_values_and_errors(self):
+        from freshpin.otel import GENAI_ATTRIBUTES, to_otlp
+        spans = self.spans(to_otlp(self.sample()))
+        allowed = set(GENAI_ATTRIBUTES) | {"error.type", "http.response.status_code"}
+        for s in spans:
+            for a in s["attributes"]:
+                self.assertTrue(a["key"] in allowed or a["key"].startswith("freshpin."), a["key"])
+                self.assertEqual(len(a["value"]), 1)
+                if "intValue" in a["value"]:
+                    self.assertIsInstance(a["value"]["intValue"], str)           # 64-bit ints are strings in JSON
+        attrs = lambda s: {a["key"]: list(a["value"].values())[0] for a in s["attributes"]}  # noqa: E731
+        ops = {attrs(s)["gen_ai.operation.name"] for s in spans}
+        self.assertEqual(ops, {"invoke_agent", "chat", "execute_tool"})
+        rejected = [s for s in spans if "model-that-does-not-exist" in s["name"]]
+        self.assertTrue(rejected)
+        self.assertTrue(all(s["status"]["code"] == 2 and "not allowed" in s["status"]["message"] for s in rejected))
+        broken = [s for s in spans if s["name"] == "execute_tool search_web" and attrs(s).get("freshpin.tool.fault") == "tool_error"]
+        self.assertTrue(broken)
+        self.assertTrue(all(s["status"]["code"] == 2 and attrs(s)["http.response.status_code"] == "503" for s in broken))
+        roots = [attrs(s) for s in spans if "parentSpanId" not in s]
+        self.assertTrue(any(r["freshpin.success"] is True for r in roots))
+        self.assertTrue(all(r["freshpin.condition"] in ("normal", "model_outage", "tool_error", "misleading") for r in roots))
+
+    def test_run_with_no_trace_and_the_command(self):
+        import io
+        import json
+        import tempfile
+        from contextlib import redirect_stderr, redirect_stdout
+        from freshpin.__main__ import main
+        from freshpin.otel import to_otlp
+        out = to_otlp({"meta": {"run_on": "2026-11-15"}, "runs": [{"run_id": "r1", "agent": "a", "answer": "",
+                                                                   "agent_error": "timeout", "seconds": 2.5}]})
+        (root,) = self.spans(out)
+        self.assertEqual(root["status"], {"code": 2, "message": "timeout"})
+        self.assertEqual(int(root["endTimeUnixNano"]) - int(root["startTimeUnixNano"]), 2_500_000_000)
+        with tempfile.TemporaryDirectory() as d:
+            src, dst = Path(d) / "r.json", Path(d) / "o.json"
+            src.write_text(json.dumps(self.sample()), encoding="utf-8")
+            with redirect_stdout(io.StringIO()) as so:
+                self.assertEqual(main(["otel-export", str(src), "--out", str(dst)]), 0)
+            self.assertIn("160 runs", so.getvalue())
+            self.assertIn("resourceSpans", json.loads(dst.read_text(encoding="utf-8")))
+            (Path(d) / "bad.json").write_text("[1, 2]", encoding="utf-8")
+            with redirect_stderr(io.StringIO()) as se:
+                self.assertEqual(main(["otel-export", str(Path(d) / "bad.json")]), 2)
+                self.assertEqual(main(["otel-export", str(Path(d) / "missing.json")]), 2)
+            self.assertIn("Not an agentbench result", se.getvalue())
+
+
 if __name__ == "__main__":
     os.environ.setdefault("FRESHPIN_MODE", "replay")
     unittest.main()

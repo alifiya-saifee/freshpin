@@ -18,6 +18,8 @@ USAGE = """usage:
                                            conditions, steps/tools/tokens/$/time, step-by-step traces (see --help)
   python -m freshpin regrade FILE --graders a,b   grade a saved agentbench result again with another grader
                                            (keeps every trace; reports how often the two graders agree)
+  python -m freshpin otel-export FILE [--out F]  write an agentbench result as OpenTelemetry traces (OTLP/JSON):
+                                           one trace per run, gen_ai.* spans for the agent, model calls and tool calls
   python -m freshpin prices --models a,b   write bench/list-prices.json from Bifrost's pricing table (list-price $)
   python -m freshpin bench-build [--n 8]   build a fresh-events question set (gold answers + quotes) from this week's news
   python -m freshpin watch [--all]         re-check pinned facts past their half-life; alert on reopened decisions
@@ -92,6 +94,8 @@ def main(argv: list[str]) -> int:
         return prices_cmd(argv[1:])
     if cmd == "regrade":
         return regrade_cmd(argv[1:])
+    if cmd == "otel-export":
+        return otel_cmd(argv[1:])
     app = FreshPin(settings())
     if cmd == "check" and len(argv) > 1:
         print(json.dumps(app.check(" ".join(argv[1:])), indent=2, ensure_ascii=False))
@@ -422,6 +426,40 @@ def agentbench_cmd(args: list[str]) -> int:
     print()
     print(leaderboard_markdown(result))
     print(f"Saved: {path}\nOpen the comparison page: python -m freshpin serve, then http://127.0.0.1:{s.port}/bench")
+    return 0
+
+
+def otel_cmd(args: list[str]) -> int:
+    """Write a saved agentbench result as OpenTelemetry traces (OTLP/JSON), for Jaeger, Tempo, Langfuse, Phoenix..."""
+    import argparse
+    from pathlib import Path
+
+    from .otel import to_otlp
+    ap = argparse.ArgumentParser(prog="python -m freshpin otel-export",
+                                 description="Write an agentbench result as OpenTelemetry traces (OTLP/JSON). "
+                                             "POST the file to a collector's /v1/traces, or import it into a tracing tool.")
+    ap.add_argument("result", help="an agentbench result file (bench/samples/... or bench/results/...)")
+    ap.add_argument("--out", default="", help="output file (default: print to stdout)")
+    a = ap.parse_args(args)
+    src = Path(a.result)
+    if not src.is_file():
+        print(f"No such file: {src}", file=sys.stderr)
+        return 2
+    try:
+        result = json.loads(src.read_text(encoding="utf-8"))
+    except ValueError as e:
+        print(f"Not a JSON file: {src} ({e})", file=sys.stderr)
+        return 2
+    if not isinstance(result, dict) or not isinstance(result.get("runs"), list):
+        print(f"Not an agentbench result (no runs): {src}", file=sys.stderr)
+        return 2
+    out = json.dumps(to_otlp(result, source=src.name), ensure_ascii=False)
+    if a.out:
+        Path(a.out).write_text(out + "\n", encoding="utf-8")
+        n = sum(len(ss["spans"]) for rs in json.loads(out)["resourceSpans"] for ss in rs["scopeSpans"])
+        print(f"{len(result['runs'])} runs, {n} spans -> {a.out}")
+    else:
+        print(out)
     return 0
 
 

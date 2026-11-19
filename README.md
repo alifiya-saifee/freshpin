@@ -26,6 +26,7 @@ python -m freshpin agentbench ... --agent 'js=node examples/agents/js_agent.mjs'
 python -m freshpin agentbench ... --graders a/b,c/d                    # fix the grader to compare models fairly
 python -m freshpin regrade bench/results/agentbench-<ts>.json --graders a/b   # grade again; reports grader agreement
 python -m freshpin regrade ... --graders a/b --consensus             # keep both grades: count a run only if they agree
+python -m freshpin otel-export bench/samples/agentbench-<ts>.json --out runs.otlp.json   # OpenTelemetry traces
 python -m freshpin agentbench --questions bench/suites/fresh-arena2.json --replay-only \
     --model openai/nvidia/nemotron-3.5-lightning-30b-a3b --yes         # re-run the published suite on its recorded searches
                                                                        # (a reworded search gets the closest recorded pages)
@@ -143,6 +144,17 @@ The conclusions above hold under both graders (e.g. Gemini `tool_agent` normal: 
 **Two bugs this run found in FreshPin itself, both fixed with tests:**
 - The `wrong_results` condition worked in the tool server, but the benchmark loop had its own hard-coded list of tool faults and never switched it on: the first run quietly measured "normal" (41/43 correct, no fault in any trace). A test now runs every condition through the full loop and checks what the agent actually received.
 - Three benchmarks started in the same second wrote the same result file, and the last to finish overwrote the others. Result names are now reserved atomically (`-2`, `-3`…).
+
+### Traces in your own tools (OpenTelemetry)
+
+Every saved result can be exported as **OpenTelemetry traces** (OTLP/JSON), so the runs open in the tracing tools teams already use (Jaeger, Grafana Tempo, Langfuse, Arize Phoenix, Datadog…):
+
+```bash
+python -m freshpin otel-export bench/samples/agentbench-20261115-155950.json --out runs.otlp.json
+curl -X POST -H 'Content-Type: application/json' --data @runs.otlp.json http://localhost:4318/v1/traces   # any OTLP collector
+```
+
+One trace per run: an `invoke_agent <agent>` span, with a `chat <model>` span for each model call (tokens, errors and fallbacks, from Bifrost's log) and an `execute_tool search_web` span for each tool call (query and injected fault). Names follow the OpenTelemetry **GenAI semantic conventions** (`gen_ai.*`); FreshPin's verdicts ride along as `freshpin.*` attributes (condition, grade, success, honesty, cost). The GenAI conventions are still marked *Development* upstream, so attribute names may change; the ones FreshPin writes are pinned in `freshpin/otel.py`. Checked against the official OTLP protobuf schema (`opentelemetry-proto`); standard library only.
 
 ### The agent contract
 
@@ -471,6 +483,7 @@ freshpin/
   toolserver.py the agents' tool (HTTP and MCP): record once, replay, inject failures
   agents.py     built-in reference agents (bare, search_first, tool_agent)
   prices.py     list prices from Bifrost's pricing table
+  otel.py       agentbench runs as OpenTelemetry traces (OTLP/JSON, gen_ai.* names)
 bench/          suites/ (task suites + recorded searches), samples/ (published results), list-prices.json
                 (results/ is git-ignored)
 examples/agents outside agents: reflect (Python), js_agent.mjs (JavaScript), openai_agents_sdk_agent.py
