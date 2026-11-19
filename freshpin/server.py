@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hmac
 import json
+import threading
 import traceback
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import Any
@@ -48,6 +49,40 @@ def bench_file(name: str):
         if f.is_file():
             return f
     return None
+
+
+def result_bytes(f) -> bytes:
+    """A result file as served: older files get the agent-vs-agent comparison added on the fly (file unchanged)."""
+    raw = f.read_bytes()
+    if b'"pairwise"' in raw:
+        return raw
+    from .agentbench import counted
+    from .stats import pairwise
+    try:
+        doc = json.loads(raw)
+        doc["pairwise"] = pairwise(doc.get("runs") or [], counted)
+    except (ValueError, KeyError, TypeError, AttributeError):
+        return raw
+    return json.dumps(doc, ensure_ascii=False).encode("utf-8")
+
+
+_REVIEW_LOCK = threading.Lock()
+
+
+def save_review(name: str, run_id: str, verdict: str, by: str = "", note: str = "") -> dict[str, Any]:
+    """Record a person's verdict on one run of a result file, rescore, and save the file in place (same layout)."""
+    from .agentbench import set_review
+    f = bench_file(name)
+    if f is None:
+        raise KeyError("no such result")
+    with _REVIEW_LOCK:                                  # one read-modify-write at a time
+        raw = f.read_text(encoding="utf-8")
+        result = set_review(json.loads(raw), run_id, verdict, by=by, note=note)
+        indent = 2 if raw.startswith('{\n  "') else 1 if raw.startswith('{\n "') else None
+        tmp = f.with_name(f.name + ".tmp")
+        tmp.write_text(json.dumps(result, indent=indent, ensure_ascii=False), encoding="utf-8")
+        tmp.replace(f)
+    return result
 
 
 def make_handler(app: FreshPin):
@@ -106,7 +141,7 @@ def make_handler(app: FreshPin):
                 if f is None:
                     self._json(404, {"error": "no such result"})
                 else:
-                    self._send(200, f.read_bytes(), "application/json; charset=utf-8")
+                    self._send(200, result_bytes(f), "application/json; charset=utf-8")
             elif path == "/api/status":
                 self._json(200, app.status())
             elif path == "/api/samples":
@@ -145,6 +180,9 @@ def make_handler(app: FreshPin):
                     if b.get("ack") is not True:  # the person must confirm they read the new facts (checked here too)
                         raise ValueError("confirm you have read the new facts and their sources (ack)")
                     self._json(200, app.approve(b["id"], b.get("by", ""), b.get("note", "")))
+                elif path == "/api/bench/review":
+                    self._json(200, save_review(str(b.get("file", "")), str(b.get("run_id", "")),
+                                                str(b.get("verdict", "")), str(b.get("by", "")), str(b.get("note", ""))))
                 elif path == "/api/decisions":
                     self._json(200, app.pin_decision(b.get("title", ""), b.get("owner", ""), b.get("keys", []), b.get("by", "")))
                 else:

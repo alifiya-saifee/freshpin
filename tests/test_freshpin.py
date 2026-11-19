@@ -3415,6 +3415,61 @@ class HumanReviewTests(unittest.TestCase):
             set_review(self.result(), "a:normal:t5:1", "correct")
 
 
+class ReviewPageTests(unittest.TestCase):
+    """19 Nov: /bench saves a person's verdict into the result file and serves the rescored result."""
+
+    def test_review_endpoint_saves_rescored_file_in_its_layout(self):
+        import urllib.error
+        import urllib.request
+        from unittest import mock
+        from freshpin import server
+        res = HumanReviewTests().result()
+        with tempfile.TemporaryDirectory() as tmp, tempfile.TemporaryDirectory() as res_dir:
+            f = Path(res_dir) / "agentbench-20990101-000001.json"
+            f.write_text(json.dumps(res, indent=1), encoding="utf-8")
+            app = replay_app(tmp)
+            with mock.patch.object(server, "RESULTS", Path(res_dir)):
+                httpd = ThreadingHTTPServer(("127.0.0.1", 0), server.make_handler(app))
+                threading.Thread(target=httpd.serve_forever, daemon=True).start()
+                base = f"http://127.0.0.1:{httpd.server_port}"
+
+                def call(path, body=None):
+                    req = urllib.request.Request(base + path, data=None if body is None else json.dumps(body).encode(),
+                                                 headers={"Content-Type": "application/json"},
+                                                 method="GET" if body is None else "POST")
+                    try:
+                        with urllib.request.urlopen(req, timeout=5) as r:
+                            return r.status, json.loads(r.read())
+                    except urllib.error.HTTPError as exc:
+                        return exc.code, json.loads(exc.read())
+                try:
+                    code, doc = call("/api/bench/result?file=" + f.name)
+                    self.assertEqual(code, 200)
+                    self.assertIn("pairwise", doc)                          # older file: added when served
+                    self.assertNotIn('"pairwise"', f.read_text(encoding="utf-8"))
+                    body = {"file": f.name, "run_id": "a:normal:t3:1", "verdict": "correct", "by": "Alifiya"}
+                    code, doc = call("/api/bench/review", body)
+                    self.assertEqual(code, 200)
+                    self.assertEqual(doc["summary"]["a"]["normal"]["human_reviewed"], 1)
+                    saved = f.read_text(encoding="utf-8")
+                    self.assertTrue(saved.startswith('{\n "'))              # same layout as before
+                    self.assertEqual(json.loads(saved)["summary"]["a"]["normal"]["runs"], 4)
+                    self.assertEqual(call("/api/bench/review", dict(body, verdict="maybe"))[0], 400)
+                    self.assertEqual(call("/api/bench/review", dict(body, run_id="nope"))[0], 400)
+                    self.assertEqual(call("/api/bench/review", dict(body, file="../x.json"))[0], 400)
+                    self.assertFalse(list(Path(res_dir).glob("*.tmp")))
+                finally:
+                    httpd.shutdown()
+                    httpd.server_close()
+
+    def test_page_has_charts_significance_and_review(self):
+        html = (Path(__file__).resolve().parent.parent / "web" / "bench.html").read_text(encoding="utf-8")
+        for needle in ('id="heat"', 'id="scatter"', 'id="cards"', 'id="sig"', 'id="review"',
+                       'post("/api/bench/review"', "DATA.pairwise", "too_few_tasks"):
+            self.assertIn(needle, html)
+        self.assertIn('${STATIC?"disabled":""}', html)                      # no saving from the static snapshot
+
+
 if __name__ == "__main__":
     os.environ.setdefault("FRESHPIN_MODE", "replay")
     unittest.main()

@@ -161,6 +161,22 @@ In *model unavailable*, the agent gets a model id the gateway rejects plus a fal
 - **It costs one logged failed attempt per call** (one more step) and a little list-price $; the agent's answer quality is unchanged.
 - So the earlier "only the agent with a fallback list survives" finding is about agents run **without** gateway protection. With Bifrost's fallbacks on, the outage stops being the agent's problem.
 
+### Is the difference real? Charts, report cards and a person's verdict
+
+- **Agent vs agent, paired by task.** `/bench` (and `python -m freshpin significance FILE`) compares every pair of agents per condition. Each task counts **once** (its repeats are averaged), so 3 repeats don't count as 3 times the evidence. A gap is called **real** only when an exact sign test gives p < 0.05 **and** a 95% bootstrap interval (over tasks, seeded) leaves out 0. With fewer than 6 tasks that differ, not even a clean sweep can reach p < 0.05, and the verdict says **"too few tasks"**, not "no difference". On the published 9-task runs, two kinds of gap are real. (1) **Searching vs not searching:** `search_first` and `tool_agent` beat `bare` with the normal condition on 4 of 5 models (Nemotron, gpt-oss, Laguna and Gemini; p 0.004–0.03). (2) **Using the fallback list:** with the model unavailable, `tool_agent` beat `search_first` in all 10 runs on those 4 models (7–9 of 9 tasks, p 0.004–0.016), but not on Qwen. **No gap between `search_first` and `tool_agent` was real** with the normal condition, a misleading source or a misleading instruction, on any model: those gaps of a few points can't be told apart from chance with 9 tasks, and neither can the small gap left once Bifrost's fallbacks are on.
+- **Charts** (`/bench`): a heatmap of agents by conditions. For broken tool and off-topic results it shows how often the agent said "not found", because no answer can be right there. There is also a cost-against-accuracy chart (list-price $ per run against success, with 95% intervals; hover for exact numbers) and a **report card** per agent (normal success, right every time, worst failure, made-up answers, planted answers repeated, $ per correct answer, time).
+- **A person settles what the graders couldn't.** Runs where the two graders disagreed, or the grader failed, are listed under **"Needs a person"**, with the question, the gold answer and the answer. Mark each one ✓ correct or ✗ wrong (with an optional reason): the verdict is saved into the result file with your name and the time, the run is counted again, and every score updates. The graders' own grades stay on the run, and **undo** removes the verdict. A run cut by a provider limit can't be judged: there is no answer to judge. The read-only snapshot shows the list without the buttons.
+
+### A gate for CI: fail the build when the agent gets worse
+
+```bash
+python -m freshpin gate RESULT.json --min-success 0.8 --min-success model_outage=0.8 \
+    --max-answered-anyway 0 --max-planted 0 [--agent my_agent] [--lower-bound]
+python -m freshpin agentbench ... --fail-under 0.8          # the simple version, straight after a run
+```
+
+Exit code 0 means every rule passed and 1 means one failed (a cell with no counted runs fails: no evidence is never a pass). 2 means bad input. The rules apply per agent and condition, to counted runs only. `--lower-bound` compares the low end of the 95% interval, which is stricter when runs are few. On GitHub Actions the pass/fail table also appears on the run page. `examples/ci/agent-gate.yml` is a ready workflow for **your agent's** repository: it benchmarks the agent on a self-hosted runner next to Bifrost, replaying the recorded searches (0 Tavily credits), then gates it. FreshPin's own CI gates a committed result on every push: once with a bar it meets, which must pass, and once with a bar it misses, which must fail.
+
 ### Read-only snapshot (no keys, no server)
 
 `python -m freshpin bench-static site/` writes the `/bench` page with every committed result (`bench/samples/` only, never local `bench/results/`) as plain files. Serve the folder with any web server (`python -m http.server -d site`) or host it on GitHub Pages: the leaderboard, traces, compare view, side-by-side view and honesty labels all work, read-only.
@@ -505,10 +521,14 @@ freshpin/
   prices.py     list prices from Bifrost's pricing table
   otel.py       agentbench runs as OpenTelemetry traces (OTLP/JSON, gen_ai.* names)
   benchstatic.py read-only /bench snapshot for static hosting (committed samples only)
+  stats.py      agent vs agent, paired by task: exact sign test + bootstrap interval
+  gate.py       pass/fail rules on a result, for CI
 bench/          suites/ (task suites + recorded searches), samples/ (published results), list-prices.json
                 (results/ is git-ignored)
 examples/agents outside agents: reflect (Python), js_agent.mjs (JavaScript), openai_agents_sdk_agent.py
-web/            index.html (detector + ledger), bench.html (leaderboard, compare view, traces); no build step
+examples/ci     agent-gate.yml: a GitHub Actions gate for your own agent
+web/            index.html (detector + ledger), bench.html (leaderboard, charts, significance, review, compare
+                view, traces); no build step
 .github/        CI: tests on Linux and macOS, Python 3.9 / 3.12 / 3.14
 samples/        demo scenarios and their seeded decisions
 fixtures/       recorded responses for replay mode
