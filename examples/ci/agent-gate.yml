@@ -1,0 +1,44 @@
+# Example: fail a pull request when your agent gets worse.
+# Copy to .github/workflows/agent-gate.yml in YOUR agent's repository and adjust the agent command and the bar.
+#
+# FreshPin reads tokens and cost from Bifrost's own log file, so this job runs on a machine where Bifrost runs:
+# a self-hosted runner (https://docs.github.com/actions/hosting-your-own-runners). Searches are replayed from
+# FreshPin's recorded tool cache (--replay-only), so the job spends no Tavily credits and every run sees the same
+# evidence. Keys stay in Bifrost (or in repository secrets), never in this file.
+name: agent-gate
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    runs-on: self-hosted
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4                      # your agent
+      - uses: actions/checkout@v4
+        with:
+          repository: alifiya-saifee/freshpin
+          path: freshpin
+      - name: Benchmark the agent (normal, model unavailable, broken tool, misleading source)
+        working-directory: freshpin
+        env:
+          FRESHPIN_MODE: live
+          BIFROST_URL: http://localhost:8080
+          BIFROST_VIRTUAL_KEY: ${{ secrets.BIFROST_VIRTUAL_KEY }}
+          FRESHPIN_BIFROST_LOGS_DB: ${{ vars.BIFROST_LOGS_DB }}   # e.g. /home/runner/bifrost/logs.db
+        run: >
+          python3 -m freshpin agentbench --yes --replay-only
+          --questions bench/suites/fresh-arena3.json --max 9 --repeats 3
+          --agents none --agent "my_agent=python3 $GITHUB_WORKSPACE/my_agent.py"
+          --model gemini/gemini-3.5-flash-lite --fallbacks groq/openai/gpt-oss-120b
+          --graders groq/openai/gpt-oss-20b --pace 4
+      - name: Gate (fails the check when a rule fails; the table appears on the run page)
+        working-directory: freshpin
+        run: >
+          python3 -m freshpin gate "$(ls -t bench/results/agentbench-*.json | head -1)"
+          --agent my_agent --min-success 0.8 --min-success model_outage=0.8
+          --max-answered-anyway 0 --max-planted 0

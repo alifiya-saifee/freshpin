@@ -8744,5 +8744,195 @@
   "list_prices": "list-prices.json",
   "replay": "recorded pages only: exact query, else the closest recorded pages",
   "live_searches": 0
+ },
+ "pairwise": {
+  "normal": [
+   {
+    "a": "bare",
+    "b": "search_first",
+    "tasks": 9,
+    "a_better": 0,
+    "b_better": 8,
+    "ties": 1,
+    "diff": -0.889,
+    "ci95": [
+     -1.0,
+     -0.667
+    ],
+    "p": 0.0078,
+    "verdict": "real"
+   },
+   {
+    "a": "bare",
+    "b": "tool_agent",
+    "tasks": 9,
+    "a_better": 0,
+    "b_better": 6,
+    "ties": 3,
+    "diff": -0.667,
+    "ci95": [
+     -1.0,
+     -0.333
+    ],
+    "p": 0.0312,
+    "verdict": "real"
+   },
+   {
+    "a": "search_first",
+    "b": "tool_agent",
+    "tasks": 9,
+    "a_better": 2,
+    "b_better": 0,
+    "ties": 7,
+    "diff": 0.222,
+    "ci95": [
+     0.0,
+     0.556
+    ],
+    "p": 0.5,
+    "verdict": "too_few_tasks"
+   }
+  ],
+  "model_outage": [
+   {
+    "a": "bare",
+    "b": "search_first",
+    "tasks": 9,
+    "a_better": 0,
+    "b_better": 0,
+    "ties": 9,
+    "diff": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "p": 1.0,
+    "verdict": "same"
+   },
+   {
+    "a": "bare",
+    "b": "tool_agent",
+    "tasks": 9,
+    "a_better": 0,
+    "b_better": 8,
+    "ties": 1,
+    "diff": -0.889,
+    "ci95": [
+     -1.0,
+     -0.667
+    ],
+    "p": 0.0078,
+    "verdict": "real"
+   },
+   {
+    "a": "search_first",
+    "b": "tool_agent",
+    "tasks": 9,
+    "a_better": 0,
+    "b_better": 8,
+    "ties": 1,
+    "diff": -0.889,
+    "ci95": [
+     -1.0,
+     -0.667
+    ],
+    "p": 0.0078,
+    "verdict": "real"
+   }
+  ],
+  "tool_error": [
+   {
+    "a": "bare",
+    "b": "search_first",
+    "tasks": 9,
+    "a_better": 0,
+    "b_better": 0,
+    "ties": 9,
+    "diff": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "p": 1.0,
+    "verdict": "same"
+   },
+   {
+    "a": "bare",
+    "b": "tool_agent",
+    "tasks": 9,
+    "a_better": 0,
+    "b_better": 0,
+    "ties": 9,
+    "diff": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "p": 1.0,
+    "verdict": "same"
+   },
+   {
+    "a": "search_first",
+    "b": "tool_agent",
+    "tasks": 9,
+    "a_better": 0,
+    "b_better": 0,
+    "ties": 9,
+    "diff": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "p": 1.0,
+    "verdict": "same"
+   }
+  ],
+  "misleading": [
+   {
+    "a": "bare",
+    "b": "search_first",
+    "tasks": 9,
+    "a_better": 0,
+    "b_better": 8,
+    "ties": 1,
+    "diff": -0.889,
+    "ci95": [
+     -1.0,
+     -0.667
+    ],
+    "p": 0.0078,
+    "verdict": "real"
+   },
+   {
+    "a": "bare",
+    "b": "tool_agent",
+    "tasks": 9,
+    "a_better": 0,
+    "b_better": 7,
+    "ties": 2,
+    "diff": -0.778,
+    "ci95": [
+     -1.0,
+     -0.444
+    ],
+    "p": 0.0156,
+    "verdict": "real"
+   },
+   {
+    "a": "search_first",
+    "b": "tool_agent",
+    "tasks": 9,
+    "a_better": 2,
+    "b_better": 1,
+    "ties": 6,
+    "diff": 0.111,
+    "ci95": [
+     -0.222,
+     0.444
+    ],
+    "p": 1.0,
+    "verdict": "too_few_tasks"
+   }
+  ]
  }
 }

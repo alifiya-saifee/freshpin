@@ -8615,5 +8615,195 @@
     "list_prices": "list-prices.json",
     "replay": "recorded pages only: exact query, else the closest recorded pages",
     "live_searches": 0
+  },
+  "pairwise": {
+    "normal": [
+      {
+        "a": "bare",
+        "b": "search_first",
+        "tasks": 9,
+        "a_better": 0,
+        "b_better": 9,
+        "ties": 0,
+        "diff": -1.0,
+        "ci95": [
+          -1.0,
+          -1.0
+        ],
+        "p": 0.0039,
+        "verdict": "real"
+      },
+      {
+        "a": "bare",
+        "b": "tool_agent",
+        "tasks": 9,
+        "a_better": 0,
+        "b_better": 9,
+        "ties": 0,
+        "diff": -1.0,
+        "ci95": [
+          -1.0,
+          -1.0
+        ],
+        "p": 0.0039,
+        "verdict": "real"
+      },
+      {
+        "a": "search_first",
+        "b": "tool_agent",
+        "tasks": 9,
+        "a_better": 0,
+        "b_better": 0,
+        "ties": 9,
+        "diff": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "p": 1.0,
+        "verdict": "same"
+      }
+    ],
+    "model_outage": [
+      {
+        "a": "bare",
+        "b": "search_first",
+        "tasks": 9,
+        "a_better": 0,
+        "b_better": 0,
+        "ties": 9,
+        "diff": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "p": 1.0,
+        "verdict": "same"
+      },
+      {
+        "a": "bare",
+        "b": "tool_agent",
+        "tasks": 9,
+        "a_better": 0,
+        "b_better": 9,
+        "ties": 0,
+        "diff": -1.0,
+        "ci95": [
+          -1.0,
+          -1.0
+        ],
+        "p": 0.0039,
+        "verdict": "real"
+      },
+      {
+        "a": "search_first",
+        "b": "tool_agent",
+        "tasks": 9,
+        "a_better": 0,
+        "b_better": 9,
+        "ties": 0,
+        "diff": -1.0,
+        "ci95": [
+          -1.0,
+          -1.0
+        ],
+        "p": 0.0039,
+        "verdict": "real"
+      }
+    ],
+    "tool_error": [
+      {
+        "a": "bare",
+        "b": "search_first",
+        "tasks": 9,
+        "a_better": 0,
+        "b_better": 0,
+        "ties": 9,
+        "diff": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "p": 1.0,
+        "verdict": "same"
+      },
+      {
+        "a": "bare",
+        "b": "tool_agent",
+        "tasks": 9,
+        "a_better": 0,
+        "b_better": 0,
+        "ties": 9,
+        "diff": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "p": 1.0,
+        "verdict": "same"
+      },
+      {
+        "a": "search_first",
+        "b": "tool_agent",
+        "tasks": 9,
+        "a_better": 0,
+        "b_better": 0,
+        "ties": 9,
+        "diff": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "p": 1.0,
+        "verdict": "same"
+      }
+    ],
+    "misleading": [
+      {
+        "a": "bare",
+        "b": "search_first",
+        "tasks": 9,
+        "a_better": 0,
+        "b_better": 8,
+        "ties": 1,
+        "diff": -0.889,
+        "ci95": [
+          -1.0,
+          -0.667
+        ],
+        "p": 0.0078,
+        "verdict": "real"
+      },
+      {
+        "a": "bare",
+        "b": "tool_agent",
+        "tasks": 9,
+        "a_better": 0,
+        "b_better": 8,
+        "ties": 1,
+        "diff": -0.889,
+        "ci95": [
+          -1.0,
+          -0.667
+        ],
+        "p": 0.0078,
+        "verdict": "real"
+      },
+      {
+        "a": "search_first",
+        "b": "tool_agent",
+        "tasks": 9,
+        "a_better": 0,
+        "b_better": 0,
+        "ties": 9,
+        "diff": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "p": 1.0,
+        "verdict": "same"
+      }
+    ]
   }
 }

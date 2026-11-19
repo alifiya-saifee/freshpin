@@ -12920,5 +12920,559 @@
    "agreement": 0.732,
    "correct_vs_not_agreement": 0.839
   }
+ },
+ "pairwise": {
+  "normal": [
+   {
+    "a": "js (JavaScript)",
+    "b": "agents_sdk (OpenAI Agents SDK)",
+    "tasks": 5,
+    "a_better": 0,
+    "b_better": 1,
+    "ties": 4,
+    "diff": -0.2,
+    "ci95": [
+     -0.6,
+     0.0
+    ],
+    "p": 1.0,
+    "verdict": "too_few_tasks"
+   },
+   {
+    "a": "js (JavaScript)",
+    "b": "agents_sdk_mcp (SDK, tool over MCP)",
+    "tasks": 5,
+    "a_better": 1,
+    "b_better": 2,
+    "ties": 2,
+    "diff": -0.2,
+    "ci95": [
+     -0.8,
+     0.4
+    ],
+    "p": 1.0,
+    "verdict": "too_few_tasks"
+   },
+   {
+    "a": "js (JavaScript)",
+    "b": "reflect_http (agent over HTTP)",
+    "tasks": 5,
+    "a_better": 0,
+    "b_better": 1,
+    "ties": 4,
+    "diff": -0.2,
+    "ci95": [
+     -0.6,
+     0.0
+    ],
+    "p": 1.0,
+    "verdict": "too_few_tasks"
+   },
+   {
+    "a": "agents_sdk (OpenAI Agents SDK)",
+    "b": "agents_sdk_mcp (SDK, tool over MCP)",
+    "tasks": 5,
+    "a_better": 1,
+    "b_better": 1,
+    "ties": 3,
+    "diff": 0.0,
+    "ci95": [
+     -0.6,
+     0.6
+    ],
+    "p": 1.0,
+    "verdict": "too_few_tasks"
+   },
+   {
+    "a": "agents_sdk (OpenAI Agents SDK)",
+    "b": "reflect_http (agent over HTTP)",
+    "tasks": 5,
+    "a_better": 0,
+    "b_better": 0,
+    "ties": 5,
+    "diff": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "p": 1.0,
+    "verdict": "same"
+   },
+   {
+    "a": "agents_sdk_mcp (SDK, tool over MCP)",
+    "b": "reflect_http (agent over HTTP)",
+    "tasks": 5,
+    "a_better": 1,
+    "b_better": 1,
+    "ties": 3,
+    "diff": 0.0,
+    "ci95": [
+     -0.6,
+     0.6
+    ],
+    "p": 1.0,
+    "verdict": "too_few_tasks"
+   }
+  ],
+  "model_outage": [
+   {
+    "a": "js (JavaScript)",
+    "b": "agents_sdk (OpenAI Agents SDK)",
+    "tasks": 5,
+    "a_better": 0,
+    "b_better": 2,
+    "ties": 3,
+    "diff": -0.4,
+    "ci95": [
+     -0.8,
+     0.0
+    ],
+    "p": 0.5,
+    "verdict": "too_few_tasks"
+   },
+   {
+    "a": "js (JavaScript)",
+    "b": "agents_sdk_mcp (SDK, tool over MCP)",
+    "tasks": 5,
+    "a_better": 0,
+    "b_better": 1,
+    "ties": 4,
+    "diff": -0.2,
+    "ci95": [
+     -0.6,
+     0.0
+    ],
+    "p": 1.0,
+    "verdict": "too_few_tasks"
+   },
+   {
+    "a": "js (JavaScript)",
+    "b": "reflect_http (agent over HTTP)",
+    "tasks": 5,
+    "a_better": 2,
+    "b_better": 0,
+    "ties": 3,
+    "diff": 0.4,
+    "ci95": [
+     0.0,
+     0.8
+    ],
+    "p": 0.5,
+    "verdict": "too_few_tasks"
+   },
+   {
+    "a": "agents_sdk (OpenAI Agents SDK)",
+    "b": "agents_sdk_mcp (SDK, tool over MCP)",
+    "tasks": 5,
+    "a_better": 2,
+    "b_better": 1,
+    "ties": 2,
+    "diff": 0.2,
+    "ci95": [
+     -0.4,
+     0.8
+    ],
+    "p": 1.0,
+    "verdict": "too_few_tasks"
+   },
+   {
+    "a": "agents_sdk (OpenAI Agents SDK)",
+    "b": "reflect_http (agent over HTTP)",
+    "tasks": 5,
+    "a_better": 4,
+    "b_better": 0,
+    "ties": 1,
+    "diff": 0.8,
+    "ci95": [
+     0.4,
+     1.0
+    ],
+    "p": 0.125,
+    "verdict": "too_few_tasks"
+   },
+   {
+    "a": "agents_sdk_mcp (SDK, tool over MCP)",
+    "b": "reflect_http (agent over HTTP)",
+    "tasks": 5,
+    "a_better": 3,
+    "b_better": 0,
+    "ties": 2,
+    "diff": 0.6,
+    "ci95": [
+     0.2,
+     1.0
+    ],
+    "p": 0.25,
+    "verdict": "too_few_tasks"
+   }
+  ],
+  "tool_error": [
+   {
+    "a": "js (JavaScript)",
+    "b": "agents_sdk (OpenAI Agents SDK)",
+    "tasks": 5,
+    "a_better": 0,
+    "b_better": 0,
+    "ties": 5,
+    "diff": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "p": 1.0,
+    "verdict": "same"
+   },
+   {
+    "a": "js (JavaScript)",
+    "b": "agents_sdk_mcp (SDK, tool over MCP)",
+    "tasks": 5,
+    "a_better": 0,
+    "b_better": 0,
+    "ties": 5,
+    "diff": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "p": 1.0,
+    "verdict": "same"
+   },
+   {
+    "a": "js (JavaScript)",
+    "b": "reflect_http (agent over HTTP)",
+    "tasks": 5,
+    "a_better": 0,
+    "b_better": 0,
+    "ties": 5,
+    "diff": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "p": 1.0,
+    "verdict": "same"
+   },
+   {
+    "a": "agents_sdk (OpenAI Agents SDK)",
+    "b": "agents_sdk_mcp (SDK, tool over MCP)",
+    "tasks": 5,
+    "a_better": 0,
+    "b_better": 0,
+    "ties": 5,
+    "diff": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "p": 1.0,
+    "verdict": "same"
+   },
+   {
+    "a": "agents_sdk (OpenAI Agents SDK)",
+    "b": "reflect_http (agent over HTTP)",
+    "tasks": 5,
+    "a_better": 0,
+    "b_better": 0,
+    "ties": 5,
+    "diff": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "p": 1.0,
+    "verdict": "same"
+   },
+   {
+    "a": "agents_sdk_mcp (SDK, tool over MCP)",
+    "b": "reflect_http (agent over HTTP)",
+    "tasks": 5,
+    "a_better": 0,
+    "b_better": 0,
+    "ties": 5,
+    "diff": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "p": 1.0,
+    "verdict": "same"
+   }
+  ],
+  "misleading": [
+   {
+    "a": "js (JavaScript)",
+    "b": "agents_sdk (OpenAI Agents SDK)",
+    "tasks": 5,
+    "a_better": 0,
+    "b_better": 0,
+    "ties": 5,
+    "diff": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "p": 1.0,
+    "verdict": "same"
+   },
+   {
+    "a": "js (JavaScript)",
+    "b": "agents_sdk_mcp (SDK, tool over MCP)",
+    "tasks": 5,
+    "a_better": 0,
+    "b_better": 1,
+    "ties": 4,
+    "diff": -0.2,
+    "ci95": [
+     -0.6,
+     0.0
+    ],
+    "p": 1.0,
+    "verdict": "too_few_tasks"
+   },
+   {
+    "a": "js (JavaScript)",
+    "b": "reflect_http (agent over HTTP)",
+    "tasks": 3,
+    "a_better": 1,
+    "b_better": 0,
+    "ties": 2,
+    "diff": 0.333,
+    "ci95": [
+     0.0,
+     1.0
+    ],
+    "p": 1.0,
+    "verdict": "too_few_tasks"
+   },
+   {
+    "a": "agents_sdk (OpenAI Agents SDK)",
+    "b": "agents_sdk_mcp (SDK, tool over MCP)",
+    "tasks": 5,
+    "a_better": 0,
+    "b_better": 1,
+    "ties": 4,
+    "diff": -0.2,
+    "ci95": [
+     -0.6,
+     0.0
+    ],
+    "p": 1.0,
+    "verdict": "too_few_tasks"
+   },
+   {
+    "a": "agents_sdk (OpenAI Agents SDK)",
+    "b": "reflect_http (agent over HTTP)",
+    "tasks": 3,
+    "a_better": 1,
+    "b_better": 0,
+    "ties": 2,
+    "diff": 0.333,
+    "ci95": [
+     0.0,
+     1.0
+    ],
+    "p": 1.0,
+    "verdict": "too_few_tasks"
+   },
+   {
+    "a": "agents_sdk_mcp (SDK, tool over MCP)",
+    "b": "reflect_http (agent over HTTP)",
+    "tasks": 3,
+    "a_better": 1,
+    "b_better": 0,
+    "ties": 2,
+    "diff": 0.333,
+    "ci95": [
+     0.0,
+     1.0
+    ],
+    "p": 1.0,
+    "verdict": "too_few_tasks"
+   }
+  ],
+  "misleading_prompt": [
+   {
+    "a": "js (JavaScript)",
+    "b": "agents_sdk (OpenAI Agents SDK)",
+    "tasks": 5,
+    "a_better": 4,
+    "b_better": 0,
+    "ties": 1,
+    "diff": 0.8,
+    "ci95": [
+     0.4,
+     1.0
+    ],
+    "p": 0.125,
+    "verdict": "too_few_tasks"
+   },
+   {
+    "a": "js (JavaScript)",
+    "b": "agents_sdk_mcp (SDK, tool over MCP)",
+    "tasks": 5,
+    "a_better": 2,
+    "b_better": 1,
+    "ties": 2,
+    "diff": 0.2,
+    "ci95": [
+     -0.4,
+     0.8
+    ],
+    "p": 1.0,
+    "verdict": "too_few_tasks"
+   },
+   {
+    "a": "js (JavaScript)",
+    "b": "reflect_http (agent over HTTP)",
+    "tasks": 3,
+    "a_better": 2,
+    "b_better": 0,
+    "ties": 1,
+    "diff": 0.667,
+    "ci95": [
+     0.0,
+     1.0
+    ],
+    "p": 0.5,
+    "verdict": "too_few_tasks"
+   },
+   {
+    "a": "agents_sdk (OpenAI Agents SDK)",
+    "b": "agents_sdk_mcp (SDK, tool over MCP)",
+    "tasks": 5,
+    "a_better": 0,
+    "b_better": 3,
+    "ties": 2,
+    "diff": -0.6,
+    "ci95": [
+     -1.0,
+     -0.2
+    ],
+    "p": 0.25,
+    "verdict": "too_few_tasks"
+   },
+   {
+    "a": "agents_sdk (OpenAI Agents SDK)",
+    "b": "reflect_http (agent over HTTP)",
+    "tasks": 3,
+    "a_better": 0,
+    "b_better": 1,
+    "ties": 2,
+    "diff": -0.333,
+    "ci95": [
+     -1.0,
+     0.0
+    ],
+    "p": 1.0,
+    "verdict": "too_few_tasks"
+   },
+   {
+    "a": "agents_sdk_mcp (SDK, tool over MCP)",
+    "b": "reflect_http (agent over HTTP)",
+    "tasks": 3,
+    "a_better": 1,
+    "b_better": 0,
+    "ties": 2,
+    "diff": 0.333,
+    "ci95": [
+     0.0,
+     1.0
+    ],
+    "p": 1.0,
+    "verdict": "too_few_tasks"
+   }
+  ],
+  "slow_tool": [
+   {
+    "a": "js (JavaScript)",
+    "b": "agents_sdk (OpenAI Agents SDK)",
+    "tasks": 4,
+    "a_better": 0,
+    "b_better": 0,
+    "ties": 4,
+    "diff": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "p": 1.0,
+    "verdict": "same"
+   },
+   {
+    "a": "js (JavaScript)",
+    "b": "agents_sdk_mcp (SDK, tool over MCP)",
+    "tasks": 5,
+    "a_better": 1,
+    "b_better": 2,
+    "ties": 2,
+    "diff": -0.2,
+    "ci95": [
+     -0.8,
+     0.4
+    ],
+    "p": 1.0,
+    "verdict": "too_few_tasks"
+   },
+   {
+    "a": "js (JavaScript)",
+    "b": "reflect_http (agent over HTTP)",
+    "tasks": 5,
+    "a_better": 1,
+    "b_better": 0,
+    "ties": 4,
+    "diff": 0.2,
+    "ci95": [
+     0.0,
+     0.6
+    ],
+    "p": 1.0,
+    "verdict": "too_few_tasks"
+   },
+   {
+    "a": "agents_sdk (OpenAI Agents SDK)",
+    "b": "agents_sdk_mcp (SDK, tool over MCP)",
+    "tasks": 4,
+    "a_better": 1,
+    "b_better": 1,
+    "ties": 2,
+    "diff": 0.0,
+    "ci95": [
+     -0.75,
+     0.75
+    ],
+    "p": 1.0,
+    "verdict": "too_few_tasks"
+   },
+   {
+    "a": "agents_sdk (OpenAI Agents SDK)",
+    "b": "reflect_http (agent over HTTP)",
+    "tasks": 4,
+    "a_better": 1,
+    "b_better": 0,
+    "ties": 3,
+    "diff": 0.25,
+    "ci95": [
+     0.0,
+     0.75
+    ],
+    "p": 1.0,
+    "verdict": "too_few_tasks"
+   },
+   {
+    "a": "agents_sdk_mcp (SDK, tool over MCP)",
+    "b": "reflect_http (agent over HTTP)",
+    "tasks": 5,
+    "a_better": 2,
+    "b_better": 0,
+    "ties": 3,
+    "diff": 0.4,
+    "ci95": [
+     0.0,
+     0.8
+    ],
+    "p": 0.5,
+    "verdict": "too_few_tasks"
+   }
+  ]
  }
 }

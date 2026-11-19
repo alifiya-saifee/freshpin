@@ -36,3 +36,11 @@ jobs:
         env:
           FRESHPIN_MODE: replay
         run: python -W error::ResourceWarning -m unittest discover -s tests -v
+      # The CI gate on a committed result: a bar the published agent meets passes, a bar it misses must fail.
+      - name: Gate a committed result (pass and fail)
+        run: |
+          python -m freshpin gate bench/samples/agentbench-20261117-123528.json --agent tool_agent \
+            --min-success 0.7 --min-success model_outage=0.9 --max-answered-anyway 0 --max-planted 1
+          if python -m freshpin gate bench/samples/agentbench-20261117-123528.json --agent search_first \
+            --min-success model_outage=0.5 > /dev/null; then echo "gate should have failed"; exit 1; fi
+        shell: bash

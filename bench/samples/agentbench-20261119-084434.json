@@ -11190,5 +11190,41 @@
    "agreement": 1.0,
    "correct_vs_not_agreement": 1.0
   }
+ },
+ "pairwise": {
+  "model_outage": [
+   {
+    "a": "search_first",
+    "b": "tool_agent",
+    "tasks": 9,
+    "a_better": 0,
+    "b_better": 9,
+    "ties": 0,
+    "diff": -1.0,
+    "ci95": [
+     -1.0,
+     -1.0
+    ],
+    "p": 0.0039,
+    "verdict": "real"
+   }
+  ],
+  "model_outage_gateway": [
+   {
+    "a": "search_first",
+    "b": "tool_agent",
+    "tasks": 9,
+    "a_better": 0,
+    "b_better": 1,
+    "ties": 8,
+    "diff": -0.037,
+    "ci95": [
+     -0.111,
+     0.0
+    ],
+    "p": 1.0,
+    "verdict": "too_few_tasks"
+   }
+  ]
  }
 }

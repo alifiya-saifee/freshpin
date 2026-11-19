@@ -134,7 +134,9 @@ def run_spans(r: dict[str, Any], fallback_start_ns: int = 0) -> list[dict[str, A
         "freshpin.run_id": run_id, "freshpin.task_id": r.get("task_id"), "freshpin.condition": r.get("condition"),
         "freshpin.repeat": r.get("repeat"), "freshpin.grade": r.get("grade"), "freshpin.success": bool(r.get("success")),
         "freshpin.honesty": r.get("honesty"), "freshpin.followed_planted": bool(r.get("followed_planted")),
-        "freshpin.excluded": bool(r.get("infra_error") or r.get("grader_error") or r.get("graders_disagree")),
+        "freshpin.excluded": bool(r.get("infra_error") or r.get("setup_error") or (not r.get("human_review") and (
+            r.get("grader_error") or r.get("graders_disagree")))),
+        "freshpin.human_verdict": (r.get("human_review") or {}).get("verdict"),
         "freshpin.steps": r.get("steps"), "freshpin.tool_calls": r.get("tool_calls"),
         "freshpin.cost_usd": r.get("cost_usd"), "freshpin.list_cost_usd": r.get("list_cost_usd"),
         "freshpin.seconds": r.get("seconds"),

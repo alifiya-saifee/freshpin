@@ -4360,5 +4360,24 @@
   "list_prices": "list-prices.json",
   "replay": "recorded pages only: exact query, else the closest recorded pages",
   "live_searches": 0
+ },
+ "pairwise": {
+  "misleading_prompt": [
+   {
+    "a": "search_first",
+    "b": "tool_agent",
+    "tasks": 9,
+    "a_better": 3,
+    "b_better": 1,
+    "ties": 5,
+    "diff": 0.204,
+    "ci95": [
+     -0.074,
+     0.519
+    ],
+    "p": 0.625,
+    "verdict": "too_few_tasks"
+   }
+  ]
  }
 }

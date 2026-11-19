@@ -26703,5 +26703,92 @@
    "disagreements": 20,
    "rule": "a run counts only when both graders agree on correct-or-not"
   }
+ },
+ "pairwise": {
+  "normal": [
+   {
+    "a": "search_first",
+    "b": "tool_agent",
+    "tasks": 7,
+    "a_better": 0,
+    "b_better": 0,
+    "ties": 7,
+    "diff": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "p": 1.0,
+    "verdict": "same"
+   }
+  ],
+  "model_outage": [
+   {
+    "a": "search_first",
+    "b": "tool_agent",
+    "tasks": 9,
+    "a_better": 0,
+    "b_better": 9,
+    "ties": 0,
+    "diff": -0.963,
+    "ci95": [
+     -1.0,
+     -0.889
+    ],
+    "p": 0.0039,
+    "verdict": "real"
+   }
+  ],
+  "tool_error": [
+   {
+    "a": "search_first",
+    "b": "tool_agent",
+    "tasks": 9,
+    "a_better": 0,
+    "b_better": 0,
+    "ties": 9,
+    "diff": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "p": 1.0,
+    "verdict": "same"
+   }
+  ],
+  "misleading": [
+   {
+    "a": "search_first",
+    "b": "tool_agent",
+    "tasks": 7,
+    "a_better": 0,
+    "b_better": 1,
+    "ties": 6,
+    "diff": -0.143,
+    "ci95": [
+     -0.429,
+     0.0
+    ],
+    "p": 1.0,
+    "verdict": "too_few_tasks"
+   }
+  ],
+  "misleading_prompt": [
+   {
+    "a": "search_first",
+    "b": "tool_agent",
+    "tasks": 9,
+    "a_better": 2,
+    "b_better": 3,
+    "ties": 4,
+    "diff": -0.185,
+    "ci95": [
+     -0.481,
+     0.111
+    ],
+    "p": 1.0,
+    "verdict": "too_few_tasks"
+   }
+  ]
  }
 }

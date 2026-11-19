@@ -20,6 +20,9 @@ USAGE = """usage:
                                            (keeps every trace; reports how often the two graders agree)
   python -m freshpin otel-export FILE [--out F]  write an agentbench result as OpenTelemetry traces (OTLP/JSON):
                                            one trace per run, gen_ai.* spans for the agent, model calls and tool calls
+  python -m freshpin gate FILE --min-success 0.8 [--max-answered-anyway 0] [--agent NAME]
+                                           pass/fail an agentbench result for CI (exit 1 when a rule fails)
+  python -m freshpin significance FILE     is each agent-vs-agent difference real or chance? (paired by task)
   python -m freshpin bench-static DIR      write a read-only snapshot of /bench (committed samples only) for
                                            static hosting such as GitHub Pages
   python -m freshpin prices --models a,b   write bench/list-prices.json from Bifrost's pricing table (list-price $)
@@ -98,6 +101,10 @@ def main(argv: list[str]) -> int:
         return regrade_cmd(argv[1:])
     if cmd == "otel-export":
         return otel_cmd(argv[1:])
+    if cmd == "gate":
+        return gate_cmd(argv[1:])
+    if cmd == "significance":
+        return significance_cmd(argv[1:])
     if cmd == "bench-static":
         if len(argv) != 2 or argv[1].startswith("-"):
             print("usage: python -m freshpin bench-static DIR   (a new or empty folder)", file=sys.stderr)
@@ -357,6 +364,9 @@ def agentbench_cmd(args: list[str]) -> int:
     ap.add_argument("--graders", default="", help="grader models in order (comma-separated); the first one from a "
                     "different family than --model grades. Fix this to compare models under the same grader")
     ap.add_argument("--yes", action="store_true")
+    ap.add_argument("--fail-under", type=float, default=None, metavar="RATE",
+                    help="exit 1 if any agent's normal success rate is below RATE (0.8 or 80): a CI gate. "
+                         "For more rules run python -m freshpin gate on the saved result")
     a = ap.parse_args(args)
     unknown = [c for c in a.conditions.split(",") if c and c not in ALL_FAULTS]
     if unknown:
@@ -457,6 +467,99 @@ def agentbench_cmd(args: list[str]) -> int:
     print()
     print(leaderboard_markdown(result))
     print(f"Saved: {path}\nOpen the comparison page: python -m freshpin serve, then http://127.0.0.1:{s.port}/bench")
+    if a.fail_under is not None:
+        from .gate import check, parse_min_success, report_markdown
+        checks = check(result, parse_min_success([str(a.fail_under)]))
+        print(report_markdown(checks, path.name))
+        return 0 if all(c["ok"] for c in checks) else 1
+    return 0
+
+
+def _load_result(name: str):
+    from pathlib import Path
+    src = Path(name)
+    try:
+        result = json.loads(src.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as e:
+        print(f"Can't read {src}: {e}", file=sys.stderr)
+        return None
+    if not isinstance(result, dict) or not result.get("runs"):
+        print(f"Not an agentbench result (no runs): {src}", file=sys.stderr)
+        return None
+    return result
+
+
+def gate_cmd(args: list[str]) -> int:
+    """Pass/fail a saved agentbench result (exit 0 pass, 1 a rule failed, 2 bad input), for CI."""
+    import argparse
+    import os
+
+    from .gate import check, parse_min_success, report_markdown
+    ap = argparse.ArgumentParser(prog="python -m freshpin gate",
+                                 description="Fail CI when agents fall below your bar. Rules apply per agent and "
+                                             "condition, to counted runs only (provider limits are left out).")
+    ap.add_argument("result", help="an agentbench result file")
+    ap.add_argument("--min-success", action="append", default=[], metavar="[COND=]RATE",
+                    help="success rate to reach, e.g. 0.8 (normal) or tool_error=0.5; repeatable")
+    ap.add_argument("--lower-bound", action="store_true",
+                    help="compare the low end of the 95%% interval, not the rate (stricter with few runs)")
+    ap.add_argument("--max-answered-anyway", type=int, default=None, metavar="N",
+                    help="at most N made-up answers when search is broken or off-topic")
+    ap.add_argument("--max-planted", type=int, default=None, metavar="N",
+                    help="at most N answers that went along with the planted false source")
+    ap.add_argument("--agent", action="append", default=[], help="check only these agents (default: all)")
+    a = ap.parse_args(args)
+    try:
+        rules = parse_min_success(a.min_success)
+    except ValueError as e:
+        print(e, file=sys.stderr)
+        return 2
+    if not rules and a.max_answered_anyway is None and a.max_planted is None:
+        print("Give at least one rule: --min-success, --max-answered-anyway or --max-planted", file=sys.stderr)
+        return 2
+    result = _load_result(a.result)
+    if result is None:
+        return 2
+    checks = check(result, rules, a.agent or None, a.max_answered_anyway, a.max_planted, a.lower_bound)
+    if not checks:
+        print("No rule applied to this result (wrong condition names?)", file=sys.stderr)
+        return 2
+    md = report_markdown(checks, os.path.basename(a.result))
+    print(md)
+    summary_file = os.environ.get("GITHUB_STEP_SUMMARY")
+    if summary_file:  # shown on the GitHub Actions run page
+        with open(summary_file, "a", encoding="utf-8") as f:
+            f.write(md + "\n")
+    return 0 if all(c["ok"] for c in checks) else 1
+
+
+def significance_cmd(args: list[str]) -> int:
+    """Print every agent-vs-agent comparison of a saved result: is the gap real, or could it be chance?"""
+    import argparse
+
+    from .agentbench import rescore
+    ap = argparse.ArgumentParser(prog="python -m freshpin significance",
+                                 description="Paired by task: a sign test and a 95%% bootstrap interval. A difference "
+                                             "is called real only when both agree.")
+    ap.add_argument("result", help="an agentbench result file")
+    ap.add_argument("--condition", default="", help="only this condition (default: all)")
+    a = ap.parse_args(args)
+    result = _load_result(a.result)
+    if result is None:
+        return 2
+    pw = rescore(result)["pairwise"]
+    print("| condition | A | B | tasks | A better / B better / tie | A − B (95% interval) | p | verdict |")
+    print("|---|---|---|---|---|---|---|---|")
+    for cond, rows in pw.items():
+        if a.condition and cond != a.condition:
+            continue
+        for x in rows:
+            verdict = {"real": "real difference", "cant_tell": "can't tell (could be chance)",
+                       "no_shared_tasks": "no shared tasks", "same": "same on every task",
+                       "too_few_tasks": "too few tasks to tell (fewer than 6 differ)"}[x["verdict"]]
+            print(f"| {cond} | {x['a']} | {x['b']} | {x['tasks']} | {x['a_better']} / {x['b_better']} / {x['ties']} "
+                  f"| {x['diff'] * 100:+.0f} pts ({x['ci95'][0] * 100:+.0f} to {x['ci95'][1] * 100:+.0f}) | "
+                  f"{x['p']:.3f} | {verdict} |")
     return 0
 
 

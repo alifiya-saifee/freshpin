@@ -12739,5 +12739,375 @@
   "tool_cache": "suites/toolcache-fresh-arena2.json",
   "rescored": "2026-11-15: runs where the grader itself failed are excluded (grader_errors), like quota kills",
   "list_prices": "list-prices.json"
+ },
+ "pairwise": {
+  "normal": [
+   {
+    "a": "bare",
+    "b": "search_first",
+    "tasks": 5,
+    "a_better": 0,
+    "b_better": 4,
+    "ties": 1,
+    "diff": -0.8,
+    "ci95": [
+     -1.0,
+     -0.4
+    ],
+    "p": 0.125,
+    "verdict": "too_few_tasks"
+   },
+   {
+    "a": "bare",
+    "b": "tool_agent",
+    "tasks": 5,
+    "a_better": 0,
+    "b_better": 5,
+    "ties": 0,
+    "diff": -1.0,
+    "ci95": [
+     -1.0,
+     -1.0
+    ],
+    "p": 0.0625,
+    "verdict": "too_few_tasks"
+   },
+   {
+    "a": "bare",
+    "b": "reflect (outside agent)",
+    "tasks": 4,
+    "a_better": 0,
+    "b_better": 3,
+    "ties": 1,
+    "diff": -0.75,
+    "ci95": [
+     -1.0,
+     -0.25
+    ],
+    "p": 0.25,
+    "verdict": "too_few_tasks"
+   },
+   {
+    "a": "search_first",
+    "b": "tool_agent",
+    "tasks": 5,
+    "a_better": 0,
+    "b_better": 1,
+    "ties": 4,
+    "diff": -0.2,
+    "ci95": [
+     -0.6,
+     0.0
+    ],
+    "p": 1.0,
+    "verdict": "too_few_tasks"
+   },
+   {
+    "a": "search_first",
+    "b": "reflect (outside agent)",
+    "tasks": 4,
+    "a_better": 0,
+    "b_better": 0,
+    "ties": 4,
+    "diff": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "p": 1.0,
+    "verdict": "same"
+   },
+   {
+    "a": "tool_agent",
+    "b": "reflect (outside agent)",
+    "tasks": 4,
+    "a_better": 1,
+    "b_better": 0,
+    "ties": 3,
+    "diff": 0.25,
+    "ci95": [
+     0.0,
+     0.75
+    ],
+    "p": 1.0,
+    "verdict": "too_few_tasks"
+   }
+  ],
+  "model_outage": [
+   {
+    "a": "bare",
+    "b": "search_first",
+    "tasks": 5,
+    "a_better": 0,
+    "b_better": 0,
+    "ties": 5,
+    "diff": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "p": 1.0,
+    "verdict": "same"
+   },
+   {
+    "a": "bare",
+    "b": "tool_agent",
+    "tasks": 5,
+    "a_better": 0,
+    "b_better": 5,
+    "ties": 0,
+    "diff": -0.9,
+    "ci95": [
+     -1.0,
+     -0.7
+    ],
+    "p": 0.0625,
+    "verdict": "too_few_tasks"
+   },
+   {
+    "a": "bare",
+    "b": "reflect (outside agent)",
+    "tasks": 5,
+    "a_better": 0,
+    "b_better": 0,
+    "ties": 5,
+    "diff": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "p": 1.0,
+    "verdict": "same"
+   },
+   {
+    "a": "search_first",
+    "b": "tool_agent",
+    "tasks": 5,
+    "a_better": 0,
+    "b_better": 5,
+    "ties": 0,
+    "diff": -0.9,
+    "ci95": [
+     -1.0,
+     -0.7
+    ],
+    "p": 0.0625,
+    "verdict": "too_few_tasks"
+   },
+   {
+    "a": "search_first",
+    "b": "reflect (outside agent)",
+    "tasks": 5,
+    "a_better": 0,
+    "b_better": 0,
+    "ties": 5,
+    "diff": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "p": 1.0,
+    "verdict": "same"
+   },
+   {
+    "a": "tool_agent",
+    "b": "reflect (outside agent)",
+    "tasks": 5,
+    "a_better": 5,
+    "b_better": 0,
+    "ties": 0,
+    "diff": 0.9,
+    "ci95": [
+     0.7,
+     1.0
+    ],
+    "p": 0.0625,
+    "verdict": "too_few_tasks"
+   }
+  ],
+  "tool_error": [
+   {
+    "a": "bare",
+    "b": "search_first",
+    "tasks": 5,
+    "a_better": 0,
+    "b_better": 0,
+    "ties": 5,
+    "diff": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "p": 1.0,
+    "verdict": "same"
+   },
+   {
+    "a": "bare",
+    "b": "tool_agent",
+    "tasks": 5,
+    "a_better": 0,
+    "b_better": 0,
+    "ties": 5,
+    "diff": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "p": 1.0,
+    "verdict": "same"
+   },
+   {
+    "a": "bare",
+    "b": "reflect (outside agent)",
+    "tasks": 5,
+    "a_better": 0,
+    "b_better": 0,
+    "ties": 5,
+    "diff": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "p": 1.0,
+    "verdict": "same"
+   },
+   {
+    "a": "search_first",
+    "b": "tool_agent",
+    "tasks": 5,
+    "a_better": 0,
+    "b_better": 0,
+    "ties": 5,
+    "diff": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "p": 1.0,
+    "verdict": "same"
+   },
+   {
+    "a": "search_first",
+    "b": "reflect (outside agent)",
+    "tasks": 5,
+    "a_better": 0,
+    "b_better": 0,
+    "ties": 5,
+    "diff": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "p": 1.0,
+    "verdict": "same"
+   },
+   {
+    "a": "tool_agent",
+    "b": "reflect (outside agent)",
+    "tasks": 5,
+    "a_better": 0,
+    "b_better": 0,
+    "ties": 5,
+    "diff": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "p": 1.0,
+    "verdict": "same"
+   }
+  ],
+  "misleading": [
+   {
+    "a": "bare",
+    "b": "search_first",
+    "tasks": 5,
+    "a_better": 0,
+    "b_better": 4,
+    "ties": 1,
+    "diff": -0.7,
+    "ci95": [
+     -1.0,
+     -0.3
+    ],
+    "p": 0.125,
+    "verdict": "too_few_tasks"
+   },
+   {
+    "a": "bare",
+    "b": "tool_agent",
+    "tasks": 5,
+    "a_better": 0,
+    "b_better": 5,
+    "ties": 0,
+    "diff": -0.9,
+    "ci95": [
+     -1.0,
+     -0.7
+    ],
+    "p": 0.0625,
+    "verdict": "too_few_tasks"
+   },
+   {
+    "a": "bare",
+    "b": "reflect (outside agent)",
+    "tasks": 5,
+    "a_better": 0,
+    "b_better": 4,
+    "ties": 1,
+    "diff": -0.8,
+    "ci95": [
+     -1.0,
+     -0.4
+    ],
+    "p": 0.125,
+    "verdict": "too_few_tasks"
+   },
+   {
+    "a": "search_first",
+    "b": "tool_agent",
+    "tasks": 5,
+    "a_better": 0,
+    "b_better": 2,
+    "ties": 3,
+    "diff": -0.2,
+    "ci95": [
+     -0.4,
+     0.0
+    ],
+    "p": 0.5,
+    "verdict": "too_few_tasks"
+   },
+   {
+    "a": "search_first",
+    "b": "reflect (outside agent)",
+    "tasks": 5,
+    "a_better": 0,
+    "b_better": 1,
+    "ties": 4,
+    "diff": -0.1,
+    "ci95": [
+     -0.3,
+     0.0
+    ],
+    "p": 1.0,
+    "verdict": "too_few_tasks"
+   },
+   {
+    "a": "tool_agent",
+    "b": "reflect (outside agent)",
+    "tasks": 5,
+    "a_better": 1,
+    "b_better": 0,
+    "ties": 4,
+    "diff": 0.1,
+    "ci95": [
+     0.0,
+     0.3
+    ],
+    "p": 1.0,
+    "verdict": "too_few_tasks"
+   }
+  ]
  }
 }

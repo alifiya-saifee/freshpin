@@ -3221,6 +3221,200 @@ class RequestCapTests(unittest.TestCase):
         self.assertEqual((s["runs"], s["setup_errors"]), (0, 1))                    # excluded, and counted as such
 
 
+QUOTA_TRACE = [{"kind": "model", "status": "error", "error": "429 rate limit reached (requests per minute)"}]
+
+
+def _run(agent, task, success, condition="normal", repeat=1, **kw):
+    r = {"agent": agent, "task_id": task, "condition": condition, "repeat": repeat, "success": success,
+         "run_id": f"{agent}:{condition}:{task}:{repeat}", "answer": "x" if success else "y",
+         "grade": "correct" if success else "incorrect", "steps": 1, "model_calls": 1, "tool_calls": 0,
+         "tokens": 10, "cost_usd": 0.0, "seconds": 1.0, "trace": [], "question": "q"}
+    r.update(kw)
+    return r
+
+
+class SignificanceTests(unittest.TestCase):
+    """19 Nov: is an agent-vs-agent gap real? Paired by task: sign test + bootstrap interval."""
+
+    def test_sign_test_exact_values(self):
+        from freshpin.stats import sign_test
+        self.assertAlmostEqual(sign_test(9, 0), 2 / 512)          # a 9-of-9 sweep
+        self.assertAlmostEqual(sign_test(8, 1), 2 * 10 / 512)     # 8 of 9: still under 0.05
+        self.assertGreater(sign_test(7, 2), 0.05)                 # 7 of 9: could be chance
+        self.assertEqual(sign_test(0, 0), 1.0)
+        self.assertEqual(sign_test(3, 3), 1.0)
+
+    def test_clean_sweep_on_nine_tasks_is_real(self):
+        from freshpin.stats import compare
+        a = [_run("A", f"t{i}", True, repeat=k) for i in range(9) for k in (1, 2)]
+        b = [_run("B", f"t{i}", False, repeat=k) for i in range(9) for k in (1, 2)]
+        c = compare(a, b, lambda r: True)
+        self.assertEqual((c["tasks"], c["a_better"], c["b_better"], c["verdict"]), (9, 9, 0, "real"))
+        self.assertEqual(c["diff"], 1.0)
+        self.assertEqual(c["ci95"], [1.0, 1.0])
+
+    def test_repeats_are_not_independent_evidence(self):
+        """5 tasks x 10 repeats is still 5 tasks: a sweep can't reach p < 0.05, so the verdict says so."""
+        from freshpin.stats import compare
+        a = [_run("A", f"t{i}", True, repeat=k) for i in range(5) for k in range(10)]
+        b = [_run("B", f"t{i}", False, repeat=k) for i in range(5) for k in range(10)]
+        c = compare(a, b, lambda r: True)
+        self.assertEqual(c["tasks"], 5)
+        self.assertEqual(c["verdict"], "too_few_tasks")
+        self.assertGreater(c["p"], 0.05)
+
+    def test_ties_and_mixed(self):
+        from freshpin.stats import compare
+        same = compare([_run("A", f"t{i}", True) for i in range(9)], [_run("B", f"t{i}", True) for i in range(9)],
+                       lambda r: True)
+        self.assertEqual(same["verdict"], "same")
+        mixed = compare([_run("A", f"t{i}", i % 2 == 0) for i in range(9)],
+                        [_run("B", f"t{i}", i % 2 == 1) for i in range(9)], lambda r: True)
+        self.assertEqual(mixed["verdict"], "cant_tell")
+        self.assertLessEqual(mixed["ci95"][0], 0)
+        self.assertGreaterEqual(mixed["ci95"][1], 0)
+        none = compare([_run("A", "t1", True)], [_run("B", "t2", True)], lambda r: True)
+        self.assertEqual(none["verdict"], "no_shared_tasks")
+
+    def test_excluded_runs_are_left_out_and_bootstrap_is_repeatable(self):
+        from freshpin.stats import bootstrap_ci, compare
+        a = [_run("A", f"t{i}", True) for i in range(9)] + [_run("A", "t9", False, infra_error=True)]
+        b = [_run("B", f"t{i}", False) for i in range(10)]
+        from freshpin.agentbench import counted
+        self.assertEqual(compare(a, b, counted)["tasks"], 9)       # t9: A's only run was a quota kill
+        d = [0.5, -0.5, 1, 0, 0, 1, 0.5, 0, 1]
+        self.assertEqual(bootstrap_ci(d), bootstrap_ci(d))
+
+    def test_rescore_adds_pairwise_on_a_sample(self):
+        import json
+        from freshpin.agentbench import rescore
+        f = Path(__file__).resolve().parent.parent / "bench" / "samples" / "agentbench-20261117-123528.json"
+        res = rescore(json.loads(f.read_text(encoding="utf-8")))
+        row = res["pairwise"]["model_outage"][0]
+        self.assertEqual((row["a"], row["b"], row["verdict"], row["b_better"]), ("search_first", "tool_agent", "real", 9))
+
+    def test_command(self):
+        import io
+        from contextlib import redirect_stdout
+        from freshpin.__main__ import main
+        f = str(Path(__file__).resolve().parent.parent / "bench" / "samples" / "agentbench-20261117-123528.json")
+        with redirect_stdout(io.StringIO()) as so:
+            self.assertEqual(main(["significance", f, "--condition", "model_outage"]), 0)
+        self.assertIn("real difference", so.getvalue())
+        self.assertNotIn("| normal |", so.getvalue())
+
+
+class GateTests(unittest.TestCase):
+    """19 Nov: a CI gate: exit 1 when an agent falls below the bar or makes up answers."""
+
+    def result(self):
+        runs = ([_run("good", f"t{i}", True) for i in range(5)] + [_run("weak", f"t{i}", i < 3) for i in range(5)]
+                + [_run("good", "t0", False, condition="tool_error", answer="I could not find it.")]
+                + [_run("weak", "t0", False, condition="tool_error", answer="It was Acme on 3 May.")])
+        return {"meta": {"repeats": 1}, "runs": runs}
+
+    def test_rules(self):
+        from freshpin.gate import check
+        cs = check(self.result(), {"normal": 0.8})
+        self.assertEqual({(c["agent"], c["ok"]) for c in cs}, {("good", True), ("weak", False)})
+        self.assertEqual([c["value"] for c in cs if c["agent"] == "weak"], [0.6])
+        cs = check(self.result(), None, max_answered_anyway=0)
+        self.assertEqual({(c["agent"], c["condition"], c["ok"]) for c in cs},
+                         {("good", "tool_error", True), ("weak", "tool_error", False)})
+        cs = check(self.result(), {"normal": 0.8}, agents=["good"])
+        self.assertTrue(all(c["ok"] for c in cs) and len(cs) == 1)
+        cs = check(self.result(), {"normal": 0.8}, agents=["good"], lower_bound=True)  # 5/5 -> low end ~57%
+        self.assertFalse(cs[0]["ok"])
+
+    def test_no_evidence_is_never_a_pass(self):
+        from freshpin.gate import check
+        res = {"meta": {"repeats": 1}, "runs": [_run("a", "t0", False, answer="", trace=QUOTA_TRACE)]}
+        cs = check(res, {"normal": 0.5})
+        self.assertEqual((cs[0]["value"], cs[0]["ok"]), (None, False))
+        self.assertFalse(check(res, {"normal": 0.5}, agents=["missing"])[0]["ok"])
+
+    def test_parse(self):
+        from freshpin.gate import parse_min_success
+        self.assertEqual(parse_min_success(["0.8", "tool_error=50"]), {"normal": 0.8, "tool_error": 0.5})
+        for bad in (["x"], ["-1"], ["150"]):
+            with self.assertRaises(ValueError):
+                parse_min_success(bad)
+
+    def test_command_exit_codes_and_step_summary(self):
+        import io
+        import json
+        import tempfile
+        from contextlib import redirect_stderr, redirect_stdout
+        from unittest import mock
+        from freshpin.__main__ import main
+        with tempfile.TemporaryDirectory() as d:
+            f = Path(d) / "r.json"
+            f.write_text(json.dumps(self.result()), encoding="utf-8")
+            summary = Path(d) / "summary.md"
+            with mock.patch.dict(os.environ, {"GITHUB_STEP_SUMMARY": str(summary)}), \
+                    redirect_stdout(io.StringIO()) as so:
+                self.assertEqual(main(["gate", str(f), "--min-success", "0.8"]), 1)
+                self.assertEqual(main(["gate", str(f), "--min-success", "0.5"]), 0)
+            self.assertIn("FreshPin gate: FAILED", so.getvalue())
+            self.assertIn("FreshPin gate: passed", summary.read_text(encoding="utf-8"))
+            with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
+                self.assertEqual(main(["gate", str(f)]), 2)                             # no rule
+                self.assertEqual(main(["gate", str(Path(d) / "missing.json"), "--min-success", "0.5"]), 2)
+                self.assertEqual(main(["gate", str(f), "--min-success", "abc"]), 2)
+
+    def test_repo_ci_gates_a_sample(self):
+        wf = (Path(__file__).resolve().parent.parent / ".github" / "workflows" / "tests.yml").read_text(encoding="utf-8")
+        self.assertIn("python -m freshpin gate", wf)
+        ex = Path(__file__).resolve().parent.parent / "examples" / "ci" / "agent-gate.yml"
+        self.assertIn("-m freshpin gate", ex.read_text(encoding="utf-8"))
+
+
+class HumanReviewTests(unittest.TestCase):
+    """19 Nov: a person settles runs the graders disagreed on (or failed on); the score then counts them."""
+
+    def result(self):
+        runs = [_run("a", f"t{i}", True) for i in range(3)]
+        runs.append(_run("a", "t3", False, graders_disagree=True, grades=[{"grader": "g1", "result": "correct"},
+                                                                          {"grader": "g2", "result": "incorrect"}]))
+        runs.append(_run("a", "t4", False, grade="not_graded", grader_error=True))
+        runs.append(_run("a", "t5", False, answer="", trace=QUOTA_TRACE))
+        return {"meta": {"repeats": 1}, "runs": runs}
+
+    def test_review_counts_the_run_and_survives_rescoring(self):
+        from freshpin.agentbench import needs_review, rescore, set_review
+        res = rescore(self.result())
+        s = res["summary"]["a"]["normal"]
+        self.assertEqual((s["runs"], s["success"], s["graders_disagree"], s["grader_errors"]), (3, 3, 1, 1))
+        self.assertEqual([r["task_id"] for r in res["runs"] if needs_review(r)], ["t3", "t4"])
+        res = set_review(res, "a:normal:t3:1", "correct", by="Alifiya", note="the date matches the source")
+        s = res["summary"]["a"]["normal"]
+        self.assertEqual((s["runs"], s["success"], s["graders_disagree"], s["human_reviewed"]), (4, 4, 0, 1))
+        res = set_review(res, "a:normal:t4:1", "wrong", by="Alifiya")
+        s = rescore(res)["summary"]["a"]["normal"]                      # a rescore keeps the person's verdicts
+        self.assertEqual((s["runs"], s["success"], s["grader_errors"], s["human_reviewed"]), (5, 4, 0, 2))
+        run = next(r for r in res["runs"] if r["task_id"] == "t3")
+        self.assertEqual(run["human_review"]["by"], "Alifiya")
+        self.assertEqual(run["grades"][1]["result"], "incorrect")       # the graders' grades stay visible
+        res = set_review(res, "a:normal:t3:1", "clear")
+        self.assertEqual(res["summary"]["a"]["normal"]["runs"], 4)
+
+    def test_review_wins_over_a_later_grading(self):
+        from freshpin.agentbench import grade_runs, set_review
+        res = set_review(self.result(), "a:normal:t3:1", "wrong")
+        tasks = {f"t{i}": {"gold_answer": "", "question": "q"} for i in range(6)}
+        grade_runs(res["runs"], tasks, lambda answer, task: {"result": "correct", "reason": "ok"}, workers=1)
+        self.assertFalse(next(r for r in res["runs"] if r["task_id"] == "t3")["success"])
+
+    def test_bad_reviews_are_refused(self):
+        from freshpin.agentbench import set_review
+        with self.assertRaises(KeyError):
+            set_review(self.result(), "nope", "correct")
+        with self.assertRaises(ValueError):
+            set_review(self.result(), "a:normal:t3:1", "maybe")
+        with self.assertRaises(ValueError):                             # no answer to judge
+            set_review(self.result(), "a:normal:t5:1", "correct")
+
+
 if __name__ == "__main__":
     os.environ.setdefault("FRESHPIN_MODE", "replay")
     unittest.main()

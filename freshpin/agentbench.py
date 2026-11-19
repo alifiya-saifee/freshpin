@@ -30,6 +30,7 @@ from typing import Any, Callable
 from .bench import backstop, wilson, _pct
 from .bifrostkeys import BifrostKeys, is_cap_error
 from .modelproxy import ModelProxy
+from .stats import pairwise
 from .toolserver import ALL_FAULTS, MISLEADING_HINT, PLANTED_NAME, SEARCH_TOOL, TOOL_FAULTS, ToolServer
 
 TAVILY_USD_PER_CREDIT = 0.008  # pay-as-you-go list price; 1 basic search = 1 credit
@@ -169,7 +170,7 @@ def run_suite(tasks: list[dict[str, Any]], agents: list[Agent], conditions: list
         rec.pop("_task", None)
         if on_run:
             on_run(rec)
-    return {"runs": runs, "summary": summarize(runs, repeats)}
+    return {"runs": runs, "summary": summarize(runs, repeats), "pairwise": pairwise(runs, counted)}
 
 
 def _run_all(runs: list[dict[str, Any]], tasks: list[dict[str, Any]], agents: list[Agent], conditions: list[str],
@@ -289,6 +290,7 @@ def grade_runs(runs: list[dict[str, Any]], tasks: dict[str, dict[str, Any]],
             rec["grader_error"] = is_grader_error(g)
         else:
             rec.update(grade="no_answer", success=False, grader_error=False)
+        apply_review(rec)
 
 
 def regrade(result: dict[str, Any], tasks: dict[str, dict[str, Any]],
@@ -329,6 +331,7 @@ def regrade(result: dict[str, Any], tasks: dict[str, dict[str, Any]],
                              "rule": "a run counts only when both graders agree on correct-or-not"}
         meta["grader"] = f"{previous} + {grader} (both must agree)"
     result["summary"] = summarize(result["runs"], meta.get("repeats", 1))
+    result["pairwise"] = pairwise(result["runs"], counted)
     return result
 
 
@@ -420,7 +423,9 @@ def rescore(result: dict[str, Any]) -> dict[str, Any]:
             r["success"] = r["grade"] == "correct" and r.get("backstop") is not False and not r["followed_planted"]
         else:
             r["followed_planted"], r["success"] = False, False
+        apply_review(r)
     result["summary"] = summarize(result["runs"], result.get("meta", {}).get("repeats", 1))
+    result["pairwise"] = pairwise(result["runs"], counted)
     return result
 
 
@@ -432,8 +437,54 @@ def is_grader_error(g: dict[str, Any]) -> bool:
 
 def excluded(r: dict[str, Any]) -> bool:
     """Runs that say nothing about the agent: killed by a provider quota, the grader failed, or (consensus
-    grading) the two graders disagreed on whether the answer is correct."""
-    return bool(r.get("infra_error") or r.get("grader_error") or r.get("graders_disagree") or r.get("setup_error"))
+    grading) the two graders disagreed on whether the answer is correct. A person's verdict (human_review) settles
+    a grader failure or a disagreement, so that run counts again; a quota kill or a setup failure never counts."""
+    if r.get("infra_error") or r.get("setup_error"):
+        return True
+    if r.get("human_review"):
+        return False
+    return bool(r.get("grader_error") or r.get("graders_disagree"))
+
+
+def counted(r: dict[str, Any]) -> bool:
+    return not excluded(r)
+
+
+REVIEW_VERDICTS = ("correct", "wrong")
+
+
+def apply_review(r: dict[str, Any]) -> None:
+    """A person's verdict on a run is final for its success (it was asked for because the graders could not agree
+    or failed). The graders' own grades stay on the run, so the trace still shows what they said."""
+    rev = r.get("human_review")
+    if rev and rev.get("verdict") in REVIEW_VERDICTS:
+        r["success"] = rev["verdict"] == "correct"
+
+
+def set_review(result: dict[str, Any], run_id: str, verdict: str, by: str = "", note: str = "",
+               at: str = "") -> dict[str, Any]:
+    """Record (or with verdict "clear", remove) a person's verdict on one run, then rescore the whole result."""
+    run = next((r for r in result.get("runs") or [] if r.get("run_id") == run_id), None)
+    if run is None:
+        raise KeyError(f"no run {run_id!r} in this result")
+    if verdict == "clear":
+        run.pop("human_review", None)
+    elif verdict in REVIEW_VERDICTS:
+        calls = [x for x in run.get("trace") or [] if x.get("kind") == "model"]
+        if run.get("setup_error") or is_infra_error(run.get("answer", ""), calls, run.get("condition", "")):
+            raise ValueError("this run was cut by a provider limit or a setup failure: there is no answer to judge")
+        from datetime import datetime, timezone
+        run["human_review"] = {"verdict": verdict, "by": str(by)[:80], "note": str(note)[:500],
+                               "at": at or datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")}
+    else:
+        raise ValueError(f"verdict must be one of {REVIEW_VERDICTS + ('clear',)}")
+    return rescore(result)
+
+
+def needs_review(r: dict[str, Any]) -> bool:
+    """Runs a person should look at: the two graders disagreed, or the grader failed, and nobody has decided yet."""
+    return bool(not r.get("infra_error") and not r.get("setup_error") and not r.get("human_review")
+                and (r.get("graders_disagree") or r.get("grader_error")))
 
 
 def _iso(ts: float) -> str:
@@ -480,9 +531,12 @@ def summarize(runs: list[dict[str, Any]], repeats: int) -> dict[str, Any]:
             # The same, by the fixed word rule (no grader needed, so only provider-limit runs are left out).
             **_honesty_counts([r for r in rs_all if not r.get("infra_error")]),
             "graders_disagree": sum(bool(r.get("graders_disagree")) and not r.get("infra_error")
-                                    and not r.get("grader_error") for r in rs_all),
+                                    and not r.get("grader_error") and not r.get("human_review") for r in rs_all),
             "infra_errors": sum(bool(r.get("infra_error")) for r in rs_all),
-            "grader_errors": sum(bool(r.get("grader_error")) and not r.get("infra_error") for r in rs_all),
+            "grader_errors": sum(bool(r.get("grader_error")) and not r.get("infra_error") and not r.get("human_review")
+                                 for r in rs_all),
+            **({"human_reviewed": n_rev} if (n_rev := sum(bool(r.get("human_review")) and not excluded(r)
+                                                          for r in rs_all)) else {}),
             **({"setup_errors": n_setup} if (n_setup := sum(bool(r.get("setup_error")) for r in rs_all)) else {}),
         }
     for agent, conds in out.items():
@@ -561,7 +615,8 @@ def _excluded_cell(s: dict[str, Any]) -> str:
     d = s.get("graders_disagree", 0)
     setup = s.get("setup_errors", 0)
     return (f"{s.get('infra_errors', 0)} / {s.get('grader_errors', 0)}" + (f" / {d} graders disagree" if d else "")
-            + (f" / {setup} setup failed" if setup else ""))
+            + (f" / {setup} setup failed" if setup else "")
+            + (f" (+{s['human_reviewed']} decided by a person, counted)" if s.get("human_reviewed") else ""))
 
 
 def builtin_agents(python: str = sys.executable) -> list[Agent]:
