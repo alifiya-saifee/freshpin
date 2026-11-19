@@ -2646,7 +2646,8 @@ class EveryConditionReachesTheAgentTests(unittest.TestCase):
                 "headers={'Content-Type':'application/json', **tl.get('headers',{})}); "
                 "\ntry:\n r=json.load(urllib.request.urlopen(req, timeout=10)); a=' '.join(x['url'] for x in r['results'])"
                 "\nexcept urllib.error.HTTPError as e:\n a='HTTP %d' % e.code"
-                "\nprint(json.dumps({'answer': a + ' | ' + t['model'] + ' | ' + t['question']}))")
+                "\nprint(json.dumps({'answer': a + ' | ' + t['model'] + ' | ' + t['question'] + ' | llm=' + t['llm']['base_url']"
+                " + ' fbs=' + str(len(t['fallback_models']))}))")
         agent = Agent("probe", [_sys.executable, "-c", code])
         cache = {"workday outage": [{"title": "Workday outage hits companies", "url": "https://w.example/1"}],
                  "charger launch": [{"title": "New charger launched", "url": "https://c.example/1"}]}
@@ -2671,6 +2672,14 @@ class EveryConditionReachesTheAgentTests(unittest.TestCase):
         self.assertTrue(got["normal"]["answer"].startswith("https://w.example/1 |"))
         self.assertNotIn("m/good |", got["model_outage"]["answer"])                        # a rejected model id
         self.assertIn("Contoso Dynamics", got["misleading_prompt"]["answer"])              # the hint in the task
+        gw = got["model_outage_gateway"]                                    # rejected model, no list, via the proxy
+        self.assertNotIn("m/good |", gw["answer"])
+        self.assertIn(" fbs=0", gw["answer"])
+        self.assertNotIn("llm=http://127.0.0.1:9/v1", gw["answer"])
+        self.assertRegex(gw["answer"], r"llm=http://127\.0\.0\.1:\d+/v1")
+        self.assertEqual(gw["gateway_fallbacks"], ["m/good"])
+        self.assertIn(" fbs=1", got["model_outage"]["answer"])                # the agent's own list, as before
+        self.assertIn("llm=http://127.0.0.1:9/v1", got["normal"]["answer"])
         for cond in set(ALL_FAULTS) - set(TOOL_FAULTS):                     # no tool fault for the other conditions
             self.assertEqual([s.get("fault") for s in got[cond]["trace"] if s.get("kind") == "tool"], [None], cond)
 
@@ -3012,6 +3021,75 @@ class BenchStaticTests(unittest.TestCase):
             with redirect_stderr(io.StringIO()):
                 self.assertEqual(main(["bench-static", str(Path(d) / "s")]), 2)   # not empty any more
                 self.assertEqual(main(["bench-static"]), 2)
+
+
+class ModelProxyTests(unittest.TestCase):
+    """19 Nov: the pass-through that adds Bifrost's per-request fallbacks for model_outage_gateway."""
+
+    def setUp(self):
+        import threading
+        from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+        self.seen = []
+        test = self
+
+        class Gateway(BaseHTTPRequestHandler):
+            def log_message(self, *a):
+                pass
+
+            def do_POST(self):  # noqa: N802
+                body = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
+                test.seen.append({"path": self.path, "body": body, "vk": self.headers.get_all("x-bf-vk")})
+                ok = body["model"] != "p/model-that-does-not-exist" or body.get("fallbacks")
+                out = json.dumps({"model": (body.get("fallbacks") or [body["model"]])[0]} if ok
+                                 else {"error": {"message": "Model is not allowed for virtual key"}}).encode()
+                self.send_response(200 if ok else 403)
+                self.send_header("Content-Type", "application/json")
+                self.send_header("Content-Length", str(len(out)))
+                self.end_headers()
+                self.wfile.write(out)
+        self.gw = ThreadingHTTPServer(("127.0.0.1", 0), Gateway)
+        threading.Thread(target=self.gw.serve_forever, daemon=True).start()
+        self.addCleanup(self.gw.server_close)
+        self.addCleanup(self.gw.shutdown)
+
+    def post(self, url, run_id, body):
+        import urllib.error
+        import urllib.request
+        req = urllib.request.Request(url + "/v1/chat/completions", json.dumps(body).encode(),
+                                     {"Content-Type": "application/json", "x-bf-session-id": run_id, "X-Bf-Vk": "vk1"})
+        try:
+            with urllib.request.urlopen(req, timeout=10) as r:
+                return r.status, json.loads(r.read())
+        except urllib.error.HTTPError as e:
+            return e.code, json.loads(e.read())
+
+    def test_fallbacks_only_for_the_gateway_run(self):
+        from freshpin.modelproxy import ModelProxy
+        px = ModelProxy(f"http://127.0.0.1:{self.gw.server_address[1]}/v1").start()
+        self.addCleanup(px.stop)
+        self.assertTrue(px.agent_base_url("http://localhost:8080/v1").endswith("/v1"))
+        px.set_run("gw", ["p/good"])
+        px.set_run("plain")
+        bad = {"model": "p/model-that-does-not-exist", "messages": []}
+        self.assertEqual(self.post(px.url, "gw", bad), (200, {"model": "p/good"}))       # the gateway rescued it
+        self.assertEqual(self.post(px.url, "plain", bad)[0], 403)                          # no list: rejected
+        self.assertEqual(self.post(px.url, "gw", dict(bad, fallbacks=["p/mine"]))[1], {"model": "p/mine"})  # agent's own kept
+        self.assertEqual(self.seen[0]["body"]["fallbacks"], ["p/good"])
+        self.assertNotIn("fallbacks", self.seen[1]["body"])
+        self.assertEqual(self.seen[0]["path"], "/v1/chat/completions")
+        self.assertEqual(self.seen[0]["vk"], ["vk1"])                                     # headers passed once
+        self.assertEqual([c["fallbacks_added"] for c in px.calls("gw")], [["p/good"], []])
+        self.assertEqual([c["status"] for c in px.calls("plain")], [403])
+
+    def test_unreachable_gateway_is_a_502_not_a_crash(self):
+        from freshpin.modelproxy import ModelProxy
+        px = ModelProxy("http://127.0.0.1:9").start()
+        self.addCleanup(px.stop)
+        code, body = self.post(px.url, "r", {"model": "p/m", "messages": []})
+        self.assertEqual(code, 502)
+        self.assertIn("gateway unreachable", body["error"]["message"])
+        with self.assertRaises(ValueError):
+            ModelProxy("localhost:8080")
 
 
 if __name__ == "__main__":

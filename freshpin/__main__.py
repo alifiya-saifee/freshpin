@@ -335,7 +335,8 @@ def agentbench_cmd(args: list[str]) -> int:
     ap.add_argument("--max", type=int, default=5)
     ap.add_argument("--repeats", type=int, default=2, help="runs per task, to measure reliability")
     ap.add_argument("--conditions", default=",".join(FAULTS), help="normal,model_outage,tool_error,misleading,misleading_prompt "
-                    "(default; misleading_prompt = a false hint in the task); also slow_tool (search answers after "
+                    "(default; misleading_prompt = a false hint in the task); also model_outage_gateway (rejected model, no "
+                    "fallback list for the agent; Bifrost's own fallbacks added by FreshPin), slow_tool (search answers after "
                     "FRESHPIN_SLOW_TOOL_S seconds) and wrong_results (search returns pages about other stories)")
     ap.add_argument("--agents", default="all", help="built-in names (bare,search_first,tool_agent,reflect) or all")
     ap.add_argument("--agent", action="append", default=[], metavar="NAME=COMMAND",

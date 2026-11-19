@@ -74,8 +74,8 @@ const listCost = s => s.list_cost_usd_total==null
   : `<b>list price $${fmtUsd(s.list_cost_usd_total)}</b>${s.list_cost_per_success_usd!=null?" ($"+fmtUsd(s.list_cost_per_success_usd)+"/success)":""} · `;
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const safeUrl = u => /^https?:\/\//i.test(u||"") ? u : "#";
-const CONDS = ["normal","model_outage","tool_error","misleading","misleading_prompt","slow_tool","wrong_results"];
-const CLABEL = {normal:"normal", model_outage:"model unavailable", tool_error:"broken tool", misleading:"misleading source",
+const CONDS = ["normal","model_outage","model_outage_gateway","tool_error","misleading","misleading_prompt","slow_tool","wrong_results"];
+const CLABEL = {normal:"normal", model_outage:"model unavailable", model_outage_gateway:"model unavailable, gateway fallbacks", tool_error:"broken tool", misleading:"misleading source",
                 misleading_prompt:"misleading instruction", slow_tool:"slow tool", wrong_results:"wrong search results"};
 const FLABEL = {tool_error:"broken tool", misleading:"planted source", slow_tool:"slow tool", wrong_results:"off-topic pages"};
 let DATA = null, SEL = null;

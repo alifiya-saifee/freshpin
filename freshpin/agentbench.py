@@ -28,6 +28,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 from .bench import backstop, wilson, _pct
+from .modelproxy import ModelProxy
 from .toolserver import ALL_FAULTS, MISLEADING_HINT, PLANTED_NAME, SEARCH_TOOL, TOOL_FAULTS, ToolServer
 
 TAVILY_USD_PER_CREDIT = 0.008  # pay-as-you-go list price; 1 basic search = 1 credit
@@ -150,6 +151,27 @@ def run_suite(tasks: list[dict[str, Any]], agents: list[Agent], conditions: list
     """Every agent x condition x task x repeat, the same way. Returns {"runs": [...], "summary": {...}}."""
     runs: list[dict[str, Any]] = []
     provider = model.split("/", 1)[0]
+    # Gateway fallbacks: a pass-through adds Bifrost's own per-request fallback list, so the GATEWAY (not the agent)
+    # can rescue the rejected model. Started only when that condition runs.
+    proxy = ModelProxy(llm["base_url"]).start() if "model_outage_gateway" in conditions else None
+    try:
+        _run_all(runs, tasks, agents, conditions, repeats, model, fallback_models, tools, llm, proxy, provider,
+                 on_progress, timeout_s, pace_s)
+    finally:
+        if proxy:
+            proxy.stop()
+    finalize(runs, tools, grade, bifrost, prices=prices)
+    for rec in runs:
+        rec.pop("_task", None)
+        if on_run:
+            on_run(rec)
+    return {"runs": runs, "summary": summarize(runs, repeats)}
+
+
+def _run_all(runs: list[dict[str, Any]], tasks: list[dict[str, Any]], agents: list[Agent], conditions: list[str],
+             repeats: int, model: str, fallback_models: list[str], tools: ToolServer, llm: dict[str, Any],
+             proxy: "ModelProxy | None", provider: str, on_progress: Callable[[dict[str, Any]], Any] | None,
+             timeout_s: int, pace_s: float) -> None:
     for agent in agents:
         for cond in conditions:
             for t in tasks:
@@ -157,12 +179,18 @@ def run_suite(tasks: list[dict[str, Any]], agents: list[Agent], conditions: list
                     run_id = f"fp-{uuid.uuid4().hex[:12]}"
                     tools.set_run(run_id, cond if cond in TOOL_FAULTS else "normal")
                     sent = t["question"] + (MISLEADING_HINT if cond == "misleading_prompt" else "")
-                    use_model, fbs = model, list(fallback_models)
+                    use_model, fbs, base_url, gateway_fbs = model, list(fallback_models), llm["base_url"], []
                     if cond == "model_outage":
                         use_model, fbs = f"{provider}/{OUTAGE_MODEL_SUFFIX}", [model] + list(fallback_models)
+                    elif cond == "model_outage_gateway" and proxy:
+                        # the agent gets the rejected model and NO fallback list; only the gateway can recover
+                        use_model, fbs = f"{provider}/{OUTAGE_MODEL_SUFFIX}", []
+                        gateway_fbs = [model] + list(fallback_models)
+                        proxy.set_run(run_id, gateway_fbs)
+                        base_url = proxy.agent_base_url(llm["base_url"])
                     task = {"task_id": t["id"], "run_id": run_id, "question": sent,
                             "today": date.today().isoformat(), "model": use_model, "fallback_models": fbs,
-                            "llm": {"base_url": llm["base_url"],
+                            "llm": {"base_url": base_url,
                                     "headers": {**llm.get("headers", {}), "x-bf-session-id": run_id}},
                             "tools": {"base_url": tools.url, "mcp_url": tools.url + "/mcp",
                                       "headers": {"X-Run-Id": run_id},
@@ -179,15 +207,12 @@ def run_suite(tasks: list[dict[str, Any]], agents: list[Agent], conditions: list
                         "mentions_planted": PLANTED_NAME.casefold() in answer.casefold(),
                         "followed_planted": PLANTED_NAME.casefold() in answer.casefold(), "_task": t,
                     }
+                    if gateway_fbs:
+                        rec["gateway_fallbacks"] = gateway_fbs
+                        rec["gateway_fallbacks_added"] = sum(bool(c["fallbacks_added"]) for c in proxy.calls(run_id))
                     runs.append(rec)
                     if on_progress:
                         on_progress(rec)
-    finalize(runs, tools, grade, bifrost, prices=prices)
-    for rec in runs:
-        rec.pop("_task", None)
-        if on_run:
-            on_run(rec)
-    return {"runs": runs, "summary": summarize(runs, repeats)}
 
 
 def finalize(runs: list[dict[str, Any]], tools: ToolServer, grade: Callable[[str, dict[str, Any]], dict[str, Any]],
