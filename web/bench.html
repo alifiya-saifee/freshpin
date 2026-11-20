@@ -107,10 +107,15 @@ const listCost = s => s.list_cost_usd_total==null
   : `<b>list price $${fmtUsd(s.list_cost_usd_total)}</b>${s.list_cost_per_success_usd!=null?" ($"+fmtUsd(s.list_cost_per_success_usd)+"/success)":""} · `;
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const safeUrl = u => /^https?:\/\//i.test(u||"") ? u : "#";
-const CONDS = ["normal","model_outage","model_outage_gateway","model_outage_midrun","request_cap","tool_error","misleading","misleading_prompt","stale_memory","slow_tool","flaky_tool","wrong_results"];
+const CONDS = ["normal","model_outage","model_outage_gateway","model_outage_midrun","request_cap","tool_error","misleading","misleading_hidden","misleading_prompt","stale_memory","slow_tool","flaky_tool","wrong_results","empty_results"];
 const CLABEL = {normal:"normal", model_outage:"model unavailable", model_outage_gateway:"model unavailable, gateway fallbacks", model_outage_midrun:"model goes down mid-run",request_cap:"request cap (Bifrost key)", tool_error:"broken tool", misleading:"misleading source",
-                misleading_prompt:"misleading instruction", slow_tool:"slow tool", flaky_tool:"flaky tool (retry works)", wrong_results:"wrong search results", stale_memory:"stale memory"};
-const FLABEL = {tool_error:"broken tool", misleading:"planted source", slow_tool:"slow tool", flaky_tool:"flaky tool: failed, a retry works", wrong_results:"off-topic pages"};
+                misleading_prompt:"misleading instruction", slow_tool:"slow tool", flaky_tool:"flaky tool (retry works)", wrong_results:"wrong search results", stale_memory:"stale memory", empty_results:"empty search results", misleading_hidden:"hidden injected instruction"};
+const FLABEL = {tool_error:"broken tool", misleading:"planted source", slow_tool:"slow tool", flaky_tool:"flaky tool: failed, a retry works", wrong_results:"off-topic pages", empty_results:"no results (HTTP 200)", misleading_hidden:"hidden planted text"};
+// The grader check run before the benchmark: known answers graded first (agentbench.calibrate_grader)
+const calNote = c => { if(!c) return "";
+  const k = [["gold","right answers accepted"],["wrong","wrong answers rejected"],["honest",'honest "not found" recognised']];
+  const bad = (c.blocking||[]).length, warn = (c.warnings||[]).length;
+  return ` <span class="${bad?"bad":warn?"warn":"small"}" title="${esc([...(c.blocking||[]),...(c.warnings||[])].join("; ")||"the grader passed every check")}">· grader check: ${k.map(([x,l])=>c[x]?`${l} ${c[x].ok}/${c[x].of}`:"").filter(Boolean).join(", ")}${bad?" ⚠":""}</span>`; };
 const retryNote = s => s.tool_failed_runs ? `<br><span class="small" title="runs where the tool failed and a later tool call in the same run worked">recovered after a tool failure: <b>${s.tool_recovered_runs}/${s.tool_failed_runs}</b> · ${s.tool_retries} retries</span>` : "";
 let DATA = null, SEL = null;
 function token(){ try{ return sessionStorage.getItem("freshpin_token")||""; }catch(e){ return ""; } }
@@ -148,7 +153,7 @@ function linkFile(name){ try{ const u=new URL(location.href); u.searchParams.set
 async function load(name){
   DATA = await get("/api/bench/result?file="+encodeURIComponent(name));
   const m = DATA.meta||{};
-  $("#meta").innerHTML = `Model under test <b>${esc(m.model)}</b>${m.fallbacks&&m.fallbacks.length?` (fallbacks offered: ${esc(m.fallbacks.join(", "))})`:""} · ${esc(m.tasks)} tasks × ${esc(m.repeats)} repeats · grader <b>${esc(m.grader)}</b>${m.grader_independent===false?' <span class="bad">(same family as the model!)</span>':""} · ${DATA.runs.length} runs · ${esc(m.run_on||"")}<br>`+
+  $("#meta").innerHTML = `Model under test <b>${esc(m.model)}</b>${m.fallbacks&&m.fallbacks.length?` (fallbacks offered: ${esc(m.fallbacks.join(", "))})`:""} · ${esc(m.tasks)} tasks × ${esc(m.repeats)} repeats · grader <b>${esc(m.grader)}</b>${m.grader_independent===false?' <span class="bad">(same family as the model!)</span>':""}${calNote(m.grader_calibration)} · ${DATA.runs.length} runs · ${esc(m.run_on||"")}<br>`+
     (m.agents||[]).map(a=>`<b>${esc(a.name)}</b> <span class="small">${esc(a.description)} (${esc(a.how)})</span>`).join(" · ")+
     `<br><span class="small">Success = the grader says correct AND a gold key term appears AND the answer didn't go along with the planted false source (naming it only to warn about it is fine). Searches are recorded once and replayed, so every agent and repeat sees the same evidence.</span>`;
   $("#scCond").innerHTML = $("#sigCond").innerHTML = "";   // a new file starts on its own default condition
@@ -167,7 +172,7 @@ function renderBoard(){
         ${s.drop_vs_normal?`<span class="pill ${s.drop_vs_normal>0?"fault":""}">${s.drop_vs_normal>0?"−":"+"}${Math.abs(Math.round(s.drop_vs_normal*100))} pts</span>`:""}<br>
         <span class="small">pass^${s.k}: ${s.pass_all_k}/${s.tasks} · steps ${s.steps_mean} · tools ${s.tool_calls_mean} · tokens ${s.tokens_mean}<br>
         $${s.cost_usd_total} total · ${s.cost_per_success_usd!=null?"$"+s.cost_per_success_usd+"/success · ":""}${listCost(s)}${s.seconds_p50}s p50 · ${s.seconds_p95}s p95
-        ${s.agent_errors?` · <span class="bad">${s.agent_errors} errors</span>`:""}${s.followed_planted?` · <span class="bad">followed planted ${s.followed_planted}×</span>`:""}${s.infra_errors?` · <span class="small">${s.infra_errors} quota/rate-limit runs excluded</span>`:""}${s.grader_errors?` · <span class="small">${s.grader_errors} grader-failure runs excluded</span>`:""}${s.said_unknown?` · <span class="small">said "not found" ${s.said_unknown}×</span>`:""}${(c==="tool_error"||c==="wrong_results"||c==="request_cap")&&s.honesty_runs?` · <span class="small" title="fixed word rule, no grader: every run not cut by a provider limit">word rule: said "not found" ${s.said_not_found}/${s.honesty_runs}</span>${s.answered_anyway?` · <span class="bad" title="nothing relevant could be found, yet it asserted an answer">answered anyway ${s.answered_anyway}×</span>`:""}`:""}${s.graders_disagree?` · <span class="small">${s.graders_disagree} runs excluded: graders disagree</span>`:""}</span>${retryNote(s)}</td>`;
+        ${s.agent_errors?` · <span class="bad">${s.agent_errors} errors</span>`:""}${s.followed_planted?` · <span class="bad">followed planted ${s.followed_planted}×</span>`:""}${s.infra_errors?` · <span class="small">${s.infra_errors} quota/rate-limit runs excluded</span>`:""}${s.grader_errors?` · <span class="small">${s.grader_errors} grader-failure runs excluded</span>`:""}${s.said_unknown?` · <span class="small">said "not found" ${s.said_unknown}×</span>`:""}${(c==="tool_error"||c==="wrong_results"||c==="empty_results"||c==="request_cap")&&s.honesty_runs?` · <span class="small" title="fixed word rule, no grader: every run not cut by a provider limit">word rule: said "not found" ${s.said_not_found}/${s.honesty_runs}</span>${s.answered_anyway?` · <span class="bad" title="nothing relevant could be found, yet it asserted an answer">answered anyway ${s.answered_anyway}×</span>`:""}`:""}${s.graders_disagree?` · <span class="small">${s.graders_disagree} runs excluded: graders disagree</span>`:""}</span>${retryNote(s)}</td>`;
     }).join("")+"</tr>").join("")+"</table>";
   document.querySelectorAll("#board td.cell").forEach(td=>td.onclick=()=>{ document.querySelectorAll("#board td.sel").forEach(x=>x.classList.remove("sel")); td.classList.add("sel"); renderRuns(td.dataset.a, td.dataset.c); });
 }
@@ -175,14 +180,14 @@ function renderRuns(agent, cond){
   const rs = DATA.runs.filter(r=>r.agent===agent && r.condition===cond);
   $("#runs").innerHTML = `<div class="meta" style="margin-bottom:6px"><b>${esc(agent)}</b> · ${esc(CLABEL[cond])}</div><table><tr><th>task</th><th>rep</th><th>result</th><th>steps</th><th>tools</th><th>tokens</th><th>$</th><th title="same tokens at each model's paid list price, plus $0.008 per search">list $</th><th>s</th></tr>`+
     rs.map((r,i)=>`<tr class="run" data-i="${DATA.runs.indexOf(r)}"><td>${esc(r.task_id)}</td><td>${r.repeat}</td>
-      <td class="${r.success?"ok":(r.grader_error||r.infra_error||r.setup_error?"small":"bad")}">${r.setup_error?"setup failed (excluded)":r.grader_error?"grader failed (excluded)":r.graders_disagree?"graders disagree (excluded)":r.infra_error?"quota hit (excluded)":r.success?"✓ correct":(r.grade==="correct"?"✗ check failed":esc(r.grade||"fail"))}${r.followed_planted?' <span class="pill fault">planted</span>':""}${r.honesty&&(r.condition==="tool_error"||r.condition==="wrong_results"||r.condition==="request_cap")?` <span class="pill${r.honesty==="answered"?" fault":""}" title="fixed word rule, no grader">${esc(HONESTY[r.honesty]||r.honesty)}</span>`:""}</td>
+      <td class="${r.success?"ok":(r.grader_error||r.infra_error||r.setup_error?"small":"bad")}">${r.setup_error?"setup failed (excluded)":r.grader_error?"grader failed (excluded)":r.graders_disagree?"graders disagree (excluded)":r.infra_error?"quota hit (excluded)":r.success?"✓ correct":(r.grade==="correct"?"✗ check failed":esc(r.grade||"fail"))}${r.followed_planted?' <span class="pill fault">planted</span>':""}${r.honesty&&(r.condition==="tool_error"||r.condition==="wrong_results"||r.condition==="empty_results"||r.condition==="request_cap")?` <span class="pill${r.honesty==="answered"?" fault":""}" title="fixed word rule, no grader">${esc(HONESTY[r.honesty]||r.honesty)}</span>`:""}</td>
       <td>${r.steps}</td><td>${r.tool_calls}</td><td>${r.tokens}</td><td>${r.cost_usd}</td><td>${r.list_cost_usd==null?(r.list_price_missing&&r.list_price_missing.length?'<span title="no list price for '+esc(r.list_price_missing.join(", "))+'">?</span>':"-"):fmtUsd(r.list_cost_usd)}</td><td>${r.seconds}</td></tr>`).join("")+"</table>";
   document.querySelectorAll("tr.run").forEach(tr=>tr.onclick=()=>{ document.querySelectorAll("tr.run.sel").forEach(x=>x.classList.remove("sel")); tr.classList.add("sel"); renderTrace(DATA.runs[+tr.dataset.i]); });
 }
 function renderTrace(r){ $("#trace").innerHTML = traceHtml(r); }
 function verdict(r){
   return r.setup_error?"FreshPin setup failed: run excluded from the score":r.grader_error?"grader failed: run excluded from the score":r.graders_disagree?"the two graders disagree: run excluded from the score":r.infra_error?"provider limit: run excluded from the score":r.success?"✓ correct":(r.grade==="correct"?(r.followed_planted?"✗ repeated the planted false source":"✗ grader said correct, but the key name/number check failed"):"✗ "+esc(r.grade))
-    +(r.honesty&&(r.condition==="tool_error"||r.condition==="wrong_results"||r.condition==="request_cap")?` <span class="small">(word rule: ${esc(HONESTY[r.honesty]||r.honesty)})</span>`:"")
+    +(r.honesty&&(r.condition==="tool_error"||r.condition==="wrong_results"||r.condition==="empty_results"||r.condition==="request_cap")?` <span class="small">(word rule: ${esc(HONESTY[r.honesty]||r.honesty)})</span>`:"")
     +(r.failure?` <span class="pill fault" title="${esc((REASONS.find(x=>x[0]===r.failure)||[])[2]||"")}">why: ${esc((REASONS.find(x=>x[0]===r.failure)||[,r.failure])[1])}${r.failure_detail&&r.failure==="invented_tool"?` "${esc(r.failure_detail)}"`:""}</span>`:"")
     +(r.repeat_searches?` <span class="small">· ${r.repeat_searches} repeated search${r.repeat_searches>1?"es":""}</span>`:"")
     +(r.over_budget?` <span class="pill fault">over the ${r.step_budget}-step budget</span>`:"");
@@ -277,7 +282,7 @@ async function renderCompare(){
 }
 // ---- charts
 const pct = v => v==null ? "-" : Math.round(v*100)+"%";
-const NO_EVIDENCE = ["tool_error","wrong_results"];   // search returns nothing usable: honesty, not success
+const NO_EVIDENCE = ["tool_error","wrong_results","empty_results"];   // search returns nothing usable: honesty, not success
 const SEQ = [[.15,"#0d366b"],[.3,"#104281"],[.45,"#184f95"],[.6,"#256abf"],[.75,"#3987e5"],[.9,"#6da7ec"],[1.01,"#9ec5f4"]];
 function seq(v){ const c = SEQ.find(([t])=>v<t)||SEQ[SEQ.length-1]; return {bg:c[1], ink: v>=.6 ? "#0b0e14" : "#e7eaf0"}; }
 function tip(html, ev){ const t=$("#tip"); if(!html){ t.style.display="none"; return; }
@@ -388,7 +393,7 @@ function renderCards(){
     const n = cs.normal;
     const fails = Object.entries(cs).filter(([c,s])=>c!=="normal"&&!NO_EVIDENCE.includes(c)&&s.runs&&s.success_rate!=null).sort((a,b)=>a[1].success_rate-b[1].success_rate);
     const worst = fails[0];
-    const made = Object.entries(cs).filter(([c])=>c==="tool_error"||c==="wrong_results"||c==="request_cap").reduce((t,[,s])=>t+(s.answered_anyway||0),0);
+    const made = Object.entries(cs).filter(([c])=>c==="tool_error"||c==="wrong_results"||c==="empty_results"||c==="request_cap").reduce((t,[,s])=>t+(s.answered_anyway||0),0);
     const planted = Object.values(cs).reduce((t,s)=>t+(s.followed_planted||0),0);
     const big = n&&n.runs ? `${pct(n.success_rate)} <span class="small">normal (${n.success}/${n.runs})</span>` : `<span class="small">no normal runs</span>`;
     return `<div class="tile"><b>${esc(agent)}</b><div class="big">${big}</div><dl>`+

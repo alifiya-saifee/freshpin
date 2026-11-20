@@ -313,6 +313,20 @@ def arena_cmd(a, s, app, client, questions, models, check) -> int:
     return 0
 
 
+def _check_grader(grade, tasks: list, name: str) -> dict:
+    """Grade known answers first (see agentbench.calibrate_grader) and say what was found."""
+    from .agentbench import CALIBRATION_KINDS, calibrate_grader
+    cal = calibrate_grader(grade, tasks)
+    parts = [f"{CALIBRATION_KINDS[k][0]} {cal[k]['ok']}/{cal[k]['of']}" for k in CALIBRATION_KINDS]
+    print(f"Grader check ({name}, {cal['tasks']} tasks): " + " · ".join(parts)
+          + (f" · {cal['grader_errors']} grader failures" if cal["grader_errors"] else ""), flush=True)
+    for m in cal["blocking"]:
+        print(f"  WARNING: {m}: success scores from this grader may be wrong", flush=True)
+    for m in cal["warnings"]:
+        print(f"  note: {m}: honesty is counted by the word rule, not this grader", flush=True)
+    return cal
+
+
 def tool_cache_path(questions: "Path", explicit: str, bench_dir: "Path") -> "Path":
     """Where the recorded searches for a task suite live: --tool-cache if given, else next to the suite (so a
     committed suite and its recording travel together), else the old bench/ location."""
@@ -348,8 +362,10 @@ def agentbench_cmd(args: list[str]) -> int:
                     "FRESHPIN_SLOW_TOOL_S seconds), wrong_results (search returns pages about other stories), "
                     "flaky_tool (the first FRESHPIN_FLAKY_FAILS searches of a run fail, then search works: does the "
                     "agent retry?), model_outage_midrun (the model answers the first call, then goes down; needs "
-                    "--fallbacks) and stale_memory (task.memory holds an old note with a wrong answer: does the agent "
-                    "re-check?)")
+                    "--fallbacks), stale_memory (task.memory holds an old note with a wrong answer: does the agent "
+                    "re-check?), empty_results (search answers HTTP 200 with no results: a silent failure) and "
+                    "misleading_hidden (the planted answer and instruction hide in a display:none block of a "
+                    "normal-looking page)")
     ap.add_argument("--agents", default="all",
                     help="built-in names (bare,search_first,search_retry,tool_agent,reflect) or all")
     ap.add_argument("--agent", action="append", default=[], metavar="NAME=COMMAND",
@@ -361,6 +377,11 @@ def agentbench_cmd(args: list[str]) -> int:
     ap.add_argument("--pace", type=float, default=0.0, help="seconds to wait between runs (free-tier rate limits)")
     ap.add_argument("--request-cap", type=int, default=2,
                     help="request_cap condition: requests each run's Bifrost key allows (default 2)")
+    ap.add_argument("--strict-graders", action="store_true",
+                    help="stop before running if the grader check finds the grader rejecting right answers or "
+                    "accepting wrong ones")
+    ap.add_argument("--skip-grader-check", action="store_true",
+                    help="do not grade the known answers (gold, a wrong version, an honest 'not found') first")
     ap.add_argument("--step-budget", type=int, default=None, metavar="N",
                     help="tell every agent it has N steps (model + tool calls) in task.budget.max_steps, and count "
                     "the runs that used more (over_budget); the answer is still graded as usual")
@@ -410,6 +431,12 @@ def agentbench_cmd(args: list[str]) -> int:
                    list(dict.fromkeys(s.checker_models + s.verifier_models + s.extractor_models)))
     judges, independent = bench.independent_models(a.model, grader_pool)
     grade = make_gold_judge(app.chat, judges, bench.admits_live_limits)
+    calibration = None
+    if not a.skip_grader_check:
+        calibration = _check_grader(grade, tasks, judges[0])
+        if calibration["blocking"] and a.strict_graders:
+            print("--strict-graders: pick another grader with --graders.")
+            return 2
     if not s.bifrost_logs_db:
         print("warning: FRESHPIN_BIFROST_LOGS_DB is not set, so model calls, tokens and $ can't be read from Bifrost.")
     bifrost = BifrostLog(s.bifrost_logs_db) if s.bifrost_logs_db else None
@@ -439,6 +466,7 @@ def agentbench_cmd(args: list[str]) -> int:
             "repeats": a.repeats, "conditions": conds, "grader": judges[0], "grader_independent": independent,
             **({"request_cap": a.request_cap} if "request_cap" in conds else {}),
             **({"step_budget": a.step_budget} if a.step_budget else {}),
+            **({"grader_calibration": calibration} if calibration else {}),
             "agents": [{"name": ag.name, "description": ag.description,
                         "how": "command" if ag.command else "http"} for ag in agents],
             "questions_file": Path(a.questions).name, "tool_cache": cache.name, "replay_only": a.replay_only,
@@ -664,7 +692,9 @@ def regrade_cmd(args: list[str]) -> int:
     judge = make_gold_judge(app.chat, judges, bench.admits_live_limits)
     if a.pace > 0:
         judge = _paced(judge, a.pace)
+    calibration = _check_grader(judge, list(tasks.values()), judges[0])
     regrade(result, tasks, judge, judges[0], workers=max(1, a.workers), consensus=a.consensus)
+    result["meta"]["regraded"]["grader_calibration"] = calibration
     # agentbench-<digits>.json, so the /bench page lists it (meta.regraded says what changed)
     out = reserve_result_path(bench.RESULTS_DIR)
     out.write_text(json.dumps(result, indent=1, ensure_ascii=False), encoding="utf-8")
