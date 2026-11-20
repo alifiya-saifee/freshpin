@@ -44,11 +44,27 @@ We built the platform, then ran it: **5 models from 5 families, 6+ agent designs
 | Issue | What we found | What FreshPin does about it |
 |---|---|---|
 | **Training-data contamination** | A model that "knows" the answer measures memory, not the agent | Tasks are built from **this week's news**, after every model's training. The no-tools agent scores **0 on every model**, which proves it |
-| **The grader is biased** | gpt-oss-20b graded **72 honest "I couldn't find it" answers as wrong**. With that grader alone, Lightning looked half as honest as it was | Two graders from different families must agree (`--consensus`). Honesty is counted by a **fixed word rule**, not a grader. A person settles disagreements in the UI |
+| **The grader is biased** | gpt-oss-20b graded **72 honest "I couldn't find it" answers as wrong**. With that grader alone, Lightning looked half as honest as it was | Every grader is **checked on known answers before a run** (right, wrong, honest "not found"). Two graders from different families must agree (`--consensus`). Honesty is counted by a **fixed word rule**, not a grader. A person settles disagreements in the UI |
 | **Provider limits look like agent failures** | In one Gemini run, **49 of 108** runs hit the free tier's rate limit | Rate-limit and quota kills are **excluded and reported**, never scored against the agent |
 | **Small differences look real** | 80% vs 100% on 9 tasks is not proof | A gap is called real only if a **paired sign test (p < 0.05) and a bootstrap interval** agree. With too few tasks it says *"too few tasks to tell"* |
 | **Different agents, different evidence** | Live web search returns different pages each time | Every search is **recorded once and replayed**, so every agent and repeat sees identical evidence (and re-runs cost 0 search credits) |
 | **The benchmark itself had bugs** | One condition was silently never switched on (a run "measured" normal); two runs started in the same second overwrote each other | Both found by benchmarking FreshPin itself, fixed, and pinned by tests |
+
+### 2.3 This matches what the field reports
+
+Each finding above lines up with problems developers report on forums and that researchers published this year. FreshPin measures all of them on the same agents, under the same conditions.
+
+| What developers and researchers report | What FreshPin found | Outside evidence |
+|---|---|---|
+| Models call tools that don't exist | 34 invented-tool runs (gpt-oss, Qwen) | Groq forum: gpt-oss "calling tools that don't exist" ([link](https://community.groq.com/t/tool-calling-errors-on-both-gpt-oss-models/406)); a paper counts gpt-oss-120b calling an undefined tool 860 times ([arXiv 2604.00362](https://www.alphaxiv.org/abs/2604.00362)) |
+| Agents make up answers when a tool fails | gpt-oss invented answers in 4 of 9 broken-tool runs | NeurIPS 2026: *When Tools Fail, Agents Fabricate* ([link](https://neurips.cc/virtual/2026/173038)) and *Fabrication After Tool Failure* ([link](https://neurips.cc/virtual/2026/179974)); n8n forum: "the tool quietly failed, and it answered anyway" ([link](https://community.n8n.io/t/your-ai-agent-said-done-but-the-tool-under-it-quietly-failed-and-it-answered-anyway/301674?tl=en)) |
+| Final-answer scoring hides dishonesty; LLM judges are biased | A grader marked 72 honest answers wrong | 12 documented judge biases ([arXiv 2410.02736](https://arxiv.org/pdf/2410.02736)); consistent judges can still be biased ([arXiv 2606.19544](https://arxiv.org/pdf/2606.19544)) |
+| The same agent gives different results each run | Right in 20 of 27 runs, but on all 3 tries for only 6 of 9 tasks | τ-bench introduced pass^k; gpt-4o fell to about 25% at pass^8 ([arXiv 2406.12045](https://arxiv.org/pdf/2406.12045)) |
+| Benchmarks leak into training data | No-tools agent scores 0 on every model | LiveBench uses fresh questions for the same reason ([arXiv 2406.19314](https://arxiv.org/abs/2406.19314v2)) |
+| Web pages hijack research agents | A false hint beat a planted page in all 10 pairs | In-the-wild injection payloads aimed at agents ([Infosecurity](https://infosecurity-magazine.com/news/researchers-10-wild-indirect)); Google warns of poisoned pages ([AI News](https://www.artificialintelligence-news.com/news/google-warns-malicious-web-pages-poisoning-ai-agents/)) |
+| Benchmarks don't predict production; recovery matters more than the model | Bifrost fallbacks took 0/27 to 25–27/27 | Production builders on error recovery and upstream failures ([AI Weekly](https://aiweekly.co/alerts/production-agent-builders-flag-demo-reliability-gap)) |
+
+These sources were found by web search. The NeurIPS papers are cited from their published abstracts; read them before quoting specific results.
 
 ---
 
@@ -73,7 +89,7 @@ this week's news ──► bench-build ──► tasks + gold answer + exact quo
 | **1. Framework independence** | An agent is **any command or HTTP endpoint**: task JSON in, answer JSON out. Tested unchanged: plain Python, **JavaScript** with no packages, **OpenAI Agents SDK** (function tool and **MCP** tool), an agent **served over HTTP**, and **LangGraph** (`StateGraph` + `ToolNode`) |
 | **2. Consistent evaluation** | Same tasks, same replayed evidence. Per run: **success, steps, tool calls, tokens, $ cost** (from Bifrost's own log), **list-price $**, **time**, **why it failed**, **repeated searches**, optional **step budget** |
 | **3. Repeatability** | `--repeats k`: success with 95% Wilson interval, **pass^k** (right every time), pass@k, p50/p95 time. Published: 270 runs per model at k = 3 |
-| **4. Failure testing** | 11 conditions (table below) |
+| **4. Failure testing** | 13 conditions (table below) |
 | **5. Inspection & comparison** | `/bench`: leaderboard, heatmap, cost-vs-accuracy chart, report cards, **why-runs-failed chart**, step-by-step traces, **side-by-side** run comparison, compare across result files, agent-vs-agent significance, review queue for a person |
 
 ### The failure conditions
@@ -87,6 +103,8 @@ this week's news ──► bench-build ──► tasks + gold answer + exact quo
 | **Flaky tool** ¹ | First search fails, a retry works | **Retry strategy** |
 | Slow tool | Search answers after 20 s | Timeouts and patience |
 | Wrong search results | Real pages about other stories | Honesty under irrelevant evidence |
+| **Empty search results** ¹ | Search answers HTTP 200 with nothing found | Honesty when there's no error to react to |
+| **Hidden injected instruction** ¹ | Normal-looking page; false answer in a `display:none` block | Resistance to injection hidden in page content |
 | Misleading source | Planted result with a wrong answer and a hidden instruction | Prompt-injection resistance |
 | Misleading instruction | False hint inside the task | Trusting the user over the evidence |
 | **Stale memory** ¹ | A month-old wrong note in the agent's memory | Re-checking vs trusting memory |
@@ -121,16 +139,16 @@ this week's news ──► bench-build ──► tasks + gold answer + exact quo
 3. **It explains failures, not just scores them.** Each failed run gets a reason from fixed rules over its trace. On the published results this found the 34 invented-tool runs and the 4 fabricated answers, which we had first found by reading traces by hand.
 4. **It tells agent problems apart from gateway problems.** The same outage runs with the agent's own fallbacks and with Bifrost's. 0/27 becoming 25–27/27 shows exactly where resilience should live.
 5. **It treats honesty as a first-class result.** When evidence is missing, "I couldn't find it" is the right answer, and FreshPin counts it with a fixed rule because we showed that a grader can be biased against it.
-6. **It refuses to overclaim.** Two graders, paired significance tests, "too few tasks to tell", provider limits excluded. A difference is reported as real only when it is.
+6. **It refuses to overclaim.** Graders checked on known answers before a run, two graders, paired significance tests, "too few tasks to tell", provider limits excluded. A difference is reported as real only when it is.
 7. **It plugs into how teams already work.** A CI gate fails the build when an agent gets worse or starts making things up. Traces export to OpenTelemetry (Jaeger, Langfuse, Datadog…). A read-only results site publishes from GitHub Pages.
-8. **It was tested on itself.** 200 automated tests. New rules are checked by deliberately breaking them and confirming the tests fail. Running FreshPin on real models found and fixed two bugs in FreshPin itself.
+8. **It was tested on itself.** 206 automated tests, passing on Linux, macOS and Windows. New rules are checked by deliberately breaking them and confirming the tests fail. Running FreshPin on real models found and fixed two bugs in FreshPin itself.
 
 ---
 
 ## 6. Honest limits
 
 - **Small task set** (9 tasks): differences of one or two runs are noise, and the significance test says so.
-- **Flaky tool, mid-run outage, stale memory, step budget and the LangGraph agent** are built and tested offline but not yet run on real models.
+- **Flaky tool, mid-run outage, stale memory, empty results, hidden injection, step budget, the grader check and the LangGraph agent** are built and tested offline but not yet run on real models.
 - **Running agents live** needs your own Bifrost and model keys; the saved results and tests work offline.
 - **The honesty word rule and failure-reason patterns** are English-only and built from the provider errors seen so far.
 - A few **gold answers are loose**; the two-grader check identified which ones.
