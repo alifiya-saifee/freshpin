@@ -75,7 +75,17 @@ def _paced(fn, seconds: float):
     return wrapped
 
 
+def _utf8_output() -> None:
+    """Print UTF-8 whatever the console's code page. Windows consoles default to cp1252, which can't encode the
+    marks FreshPin prints (✅ ❌ → ×), so the gate crashed there before printing its verdict."""
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if reconfigure and (getattr(stream, "encoding", "") or "").lower().replace("-", "") != "utf8":
+            reconfigure(encoding="utf-8", errors="replace")
+
+
 def main(argv: list[str]) -> int:
+    _utf8_output()
     if not argv or argv[0] in ("-h", "--help"):
         print(USAGE)
         return 0

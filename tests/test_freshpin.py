@@ -2681,6 +2681,24 @@ class StubKeys:
         self.deleted.append(key_id)
 
 
+class ConsoleEncodingTests(unittest.TestCase):
+    """Found 20 Nov by the new Windows CI job: the gate printed ✅ to a cp1252 console and crashed before its verdict."""
+
+    def test_gate_prints_its_marks_on_a_cp1252_console(self):
+        import subprocess
+        root = Path(__file__).resolve().parent.parent
+        env = {**os.environ, "PYTHONIOENCODING": "cp1252", "PYTHONUTF8": "0", "PYTHONPATH": str(root)}
+        proc = subprocess.run([sys.executable, "-m", "freshpin", "gate",
+                               str(root / "bench/samples/agentbench-20261117-123528.json"), "--agent", "tool_agent",
+                               "--min-success", "0.7", "--min-success", "model_outage=0.9",
+                               "--max-answered-anyway", "0", "--max-planted", "1"],
+                              capture_output=True, cwd=str(root), env=env, timeout=120)
+        out = proc.stdout.decode("utf-8")
+        self.assertEqual(proc.returncode, 0, proc.stderr.decode("utf-8", "replace")[-500:])
+        self.assertIn("✅", out)
+        self.assertNotIn("UnicodeEncodeError", proc.stderr.decode("utf-8", "replace"))
+
+
 class GraderCalibrationTests(unittest.TestCase):
     """Known answers graded before a run, so a biased grader is caught up front, not after 72 answers."""
     TASKS = [{"id": "t1", "question": "How many users?", "gold_answer": "More than 100,000 users at the peak."},
