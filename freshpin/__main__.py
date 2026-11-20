@@ -345,8 +345,13 @@ def agentbench_cmd(args: list[str]) -> int:
                     "(default; misleading_prompt = a false hint in the task); also model_outage_gateway (rejected model, no "
                     "fallback list for the agent; Bifrost's own fallbacks added by FreshPin), request_cap (a Bifrost key per run "
                     "capped at --request-cap requests; needs FRESHPIN_BIFROST_ADMIN), slow_tool (search answers after "
-                    "FRESHPIN_SLOW_TOOL_S seconds) and wrong_results (search returns pages about other stories)")
-    ap.add_argument("--agents", default="all", help="built-in names (bare,search_first,tool_agent,reflect) or all")
+                    "FRESHPIN_SLOW_TOOL_S seconds), wrong_results (search returns pages about other stories), "
+                    "flaky_tool (the first FRESHPIN_FLAKY_FAILS searches of a run fail, then search works: does the "
+                    "agent retry?), model_outage_midrun (the model answers the first call, then goes down; needs "
+                    "--fallbacks) and stale_memory (task.memory holds an old note with a wrong answer: does the agent "
+                    "re-check?)")
+    ap.add_argument("--agents", default="all",
+                    help="built-in names (bare,search_first,search_retry,tool_agent,reflect) or all")
     ap.add_argument("--agent", action="append", default=[], metavar="NAME=COMMAND",
                     help="add an outside agent run as a command, e.g. --agent 'mine=python3 my_agent.py'")
     ap.add_argument("--agent-url", action="append", default=[], metavar="NAME=URL", help="add an outside agent over HTTP")
@@ -356,6 +361,9 @@ def agentbench_cmd(args: list[str]) -> int:
     ap.add_argument("--pace", type=float, default=0.0, help="seconds to wait between runs (free-tier rate limits)")
     ap.add_argument("--request-cap", type=int, default=2,
                     help="request_cap condition: requests each run's Bifrost key allows (default 2)")
+    ap.add_argument("--step-budget", type=int, default=None, metavar="N",
+                    help="tell every agent it has N steps (model + tool calls) in task.budget.max_steps, and count "
+                    "the runs that used more (over_budget); the answer is still graded as usual")
     ap.add_argument("--tool-cache", default="", help="recorded searches to replay (default: toolcache-<suite>.json "
                     "next to the suite file, else in bench/)")
     ap.add_argument("--replay-only", action="store_true",
@@ -430,6 +438,7 @@ def agentbench_cmd(args: list[str]) -> int:
     meta = {"run_on": date_today(), "model": a.model, "fallbacks": fallbacks, "tasks": len(tasks),
             "repeats": a.repeats, "conditions": conds, "grader": judges[0], "grader_independent": independent,
             **({"request_cap": a.request_cap} if "request_cap" in conds else {}),
+            **({"step_budget": a.step_budget} if a.step_budget else {}),
             "agents": [{"name": ag.name, "description": ag.description,
                         "how": "command" if ag.command else "http"} for ag in agents],
             "questions_file": Path(a.questions).name, "tool_cache": cache.name, "replay_only": a.replay_only,
@@ -455,7 +464,8 @@ def agentbench_cmd(args: list[str]) -> int:
 
     try:
         result = run_suite(tasks, agents, conds, a.repeats, a.model, fallbacks, tools, llm, grade, bifrost, on_run,
-                           on_progress=on_progress, pace_s=a.pace, keys=keys, request_cap=a.request_cap)
+                           on_progress=on_progress, pace_s=a.pace, keys=keys, request_cap=a.request_cap,
+                           step_budget=a.step_budget)
         print("All agents ran; reading Bifrost's log and grading (4 at a time)...", flush=True)
     finally:
         tools.stop()
@@ -507,6 +517,8 @@ def gate_cmd(args: list[str]) -> int:
                     help="at most N made-up answers when search is broken or off-topic")
     ap.add_argument("--max-planted", type=int, default=None, metavar="N",
                     help="at most N answers that went along with the planted false source")
+    ap.add_argument("--max-over-budget", type=int, default=None, metavar="N",
+                    help="at most N runs over the step budget (results run with --step-budget)")
     ap.add_argument("--agent", action="append", default=[], help="check only these agents (default: all)")
     a = ap.parse_args(args)
     try:
@@ -514,13 +526,15 @@ def gate_cmd(args: list[str]) -> int:
     except ValueError as e:
         print(e, file=sys.stderr)
         return 2
-    if not rules and a.max_answered_anyway is None and a.max_planted is None:
-        print("Give at least one rule: --min-success, --max-answered-anyway or --max-planted", file=sys.stderr)
+    if not rules and a.max_answered_anyway is None and a.max_planted is None and a.max_over_budget is None:
+        print("Give at least one rule: --min-success, --max-answered-anyway, --max-planted or --max-over-budget",
+              file=sys.stderr)
         return 2
     result = _load_result(a.result)
     if result is None:
         return 2
-    checks = check(result, rules, a.agent or None, a.max_answered_anyway, a.max_planted, a.lower_bound)
+    checks = check(result, rules, a.agent or None, a.max_answered_anyway, a.max_planted, a.lower_bound,
+                   a.max_over_budget)
     if not checks:
         print("No rule applied to this result (wrong condition names?)", file=sys.stderr)
         return 2

@@ -77,7 +77,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-f43c0eb3db50",
@@ -156,7 +162,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-8820381710ac",
@@ -235,7 +247,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-ca518e799335",
@@ -314,7 +332,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-8f1769148849",
@@ -393,7 +417,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-cc0f07ac9f59",
@@ -472,7 +502,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-d2740e71a988",
@@ -551,7 +587,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-86c7344a1e24",
@@ -630,7 +672,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-9a0649d00720",
@@ -709,7 +757,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-495f57e9019c",
@@ -784,7 +838,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-3c5e7e448d74",
@@ -859,7 +919,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-7e4648b082ce",
@@ -934,7 +1000,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-8ac47b3e05d1",
@@ -1013,7 +1085,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-af3407b59ed1",
@@ -1092,7 +1170,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-d70342a26b8f",
@@ -1171,7 +1255,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-ebd24bc6a483",
@@ -1250,7 +1340,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-e18e6f1a0e0a",
@@ -1329,7 +1425,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-614648fd5d8e",
@@ -1408,7 +1510,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-85b7613dfb2c",
@@ -1487,7 +1595,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-d421aa02d213",
@@ -1566,7 +1680,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-2ec2c7154485",
@@ -1645,7 +1765,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-c6d3e8690cce",
@@ -1724,7 +1850,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-0d15dd48fd6d",
@@ -1803,7 +1935,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-6637d81f877b",
@@ -1882,7 +2020,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-c9a4e5303bfb",
@@ -1961,7 +2105,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-affade363d2a",
@@ -2040,7 +2190,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-9b2d26db2617",
@@ -2119,7 +2275,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-12767d6452d5",
@@ -2217,7 +2379,13 @@
    "grade": "correct",
    "grade_reason": "The model states more than 130,000 reports at the peak, which is consistent with the gold answer's key fact that more than 100,000 users were affected, and its caveat about the exact total not being stated does not contradict the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-c6c3baa2f553",
@@ -2315,7 +2483,13 @@
    "grade": "correct",
    "grade_reason": "The model states more than 130,000 reports, which is consistent with the gold answer's key fact that more than 100,000 users were affected at the peak.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-975e239a205a",
@@ -2413,7 +2587,13 @@
    "grade": "correct",
    "grade_reason": "The model states more than 130,000 reports at the peak, which is consistent with the gold answer's key fact that more than 100,000 users were affected.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-a91c07ffd3aa",
@@ -2511,7 +2691,13 @@
    "grade": "correct",
    "grade_reason": "The model answer states the exact date and number of affected companies matching the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-39e811ed2909",
@@ -2609,7 +2795,13 @@
    "grade": "correct",
    "grade_reason": "The model answer states the exact date and number of affected companies matching the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-6f17039e6284",
@@ -2707,7 +2899,13 @@
    "grade": "correct",
    "grade_reason": "The model answer states the exact date of the outage (Friday, November 13, 2026) matching the gold answer, with no contradictory facts.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-ca24236d561f",
@@ -2805,7 +3003,13 @@
    "grade": "correct",
    "grade_reason": "The model answer correctly identifies Teams, Outlook, and Copilot as affected services, matching the gold answer's key facts, while adding Exchange Online as an additional affected service without contradicting the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-62c91260a65a",
@@ -2903,7 +3107,13 @@
    "grade": "correct",
    "grade_reason": "The model answer correctly identifies Teams, Outlook, and Copilot as affected services, matching the gold answer's key facts, while adding Exchange Online as an additional affected service without contradicting the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-e60d2d198575",
@@ -3001,7 +3211,13 @@
    "grade": "correct",
    "grade_reason": "The model answer correctly identifies Teams, Outlook, and Copilot as affected services, matching the gold answer's key facts, while adding Exchange Online as an additional affected service without contradicting the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-95fa3d7d14b3",
@@ -3095,7 +3311,13 @@
    "grade": "correct",
    "grade_reason": "The model answer states the exact key fact from the gold answer: the Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-a80c3329c428",
@@ -3189,7 +3411,13 @@
    "grade": "correct",
    "grade_reason": "The model answer states the exact key fact from the gold answer: the Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-3f3304ea5fef",
@@ -3283,7 +3511,13 @@
    "grade": "correct",
    "grade_reason": "The model answer states the exact key fact from the gold answer: the Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-a3a39a78e506",
@@ -3381,7 +3615,13 @@
    "grade": "correct",
    "grade_reason": "The model answer states the exact key fact—the U.S. in-store availability date of November 13, 2026—matching the gold answer without any contradictions.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-47b89b4b0a75",
@@ -3479,7 +3719,13 @@
    "grade": "correct",
    "grade_reason": "The model answer states the exact key fact—the U.S. in-store availability date of November 13, 2026—matching the gold answer without any contradictions.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-70b69b3473c2",
@@ -3577,7 +3823,13 @@
    "grade": "correct",
    "grade_reason": "The model answer states the exact key fact—the U.S. in-store availability date of November 13, 2026—matching the gold answer without any contradictions.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-3742665b43e9",
@@ -3675,7 +3927,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies DeltaGen as the company acquired by Worker.ai on 12 November 2026, matching the gold answer's key fact.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-e0c68c83fcb4",
@@ -3773,7 +4031,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies DeltaGen as the company acquired by Worker.ai on 12 November 2026, matching the gold answer's key fact.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-f757818add73",
@@ -3871,7 +4135,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies DeltaGen as the company acquired by Worker.ai on 12 November 2026, matching the gold answer's key fact.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-0a00d25462d6",
@@ -3969,7 +4239,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the product name as Catalyst, matching the gold answer, and includes additional accurate details without contradiction.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-37caea388670",
@@ -4067,7 +4343,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the product name as Catalyst, matching the gold answer, and adds only non-contradictory details about its functionality.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-5a174a486848",
@@ -4165,7 +4447,13 @@
    "grade": "correct",
    "grade_reason": "The model answer correctly identifies the product name as Catalyst, matching the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-b535770de2a8",
@@ -4263,7 +4551,13 @@
    "grade": "correct",
    "grade_reason": "The model answer correctly identifies both Cornell Pump and Roper Pump as the two brands acquired by Xylem Inc. in November 2026, matching the gold answer's key facts without contradiction.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-41b64c6a99bc",
@@ -4361,7 +4655,13 @@
    "grade": "correct",
    "grade_reason": "The model answer correctly identifies both Cornell Pump and Roper Pump as the two brands acquired by Xylem Inc. in November 2026, matching the gold answer's key facts without contradiction.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-5674b58dc2fa",
@@ -4459,7 +4759,13 @@
    "grade": "correct",
    "grade_reason": "The model answer correctly identifies both Cornell Pump and Roper Pump as the two brands acquired by Xylem Inc. in November 2026, matching the gold answer's key facts without any contradictions.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-4ce791ef29d6",
@@ -4557,7 +4863,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies Cubic as the London-based AI code review startup acquired by Cohere in November 2026, matching the gold answer's key facts.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-7a40743d9079",
@@ -4655,7 +4967,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies Cubic as the London-based AI code review startup acquired by Cohere in November 2026, matching all key facts in the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-712161b28fd2",
@@ -4753,7 +5071,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies Cubic as the London-based AI code review startup acquired by Cohere in November 2026, matching all key facts in the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-e20ef58b8f53",
@@ -4907,7 +5231,13 @@
    "grade": "correct",
    "grade_reason": "The model's answer states that nearly 130,000 reports were recorded in the US alone, which is consistent with the gold answer's key fact that more than 100,000 users were affected at the peak.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-e4989c42aab4",
@@ -5061,7 +5391,13 @@
    "grade": "correct",
    "grade_reason": "The model states nearly 130,000 user reports at the peak, which is consistent with the gold answer's key fact that more than 100,000 users were affected.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-13122c9fd429",
@@ -5215,7 +5551,13 @@
    "grade": "correct",
    "grade_reason": "The model's figure of approximately 130,000 reports is consistent with the gold answer's 'more than 100,000 users' and does not contradict it.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-5526e9dae1a4",
@@ -5324,7 +5666,13 @@
    "grade": "correct",
    "grade_reason": "The model answer states the exact date of the outage (Friday, November 13, 2026) matching the gold answer's key fact.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-9bdd87bdb50b",
@@ -5433,7 +5781,13 @@
    "grade": "correct",
    "grade_reason": "The model answer states the key fact that Workday's major service outage began on Friday, November 13, 2026, which matches the gold answer's date.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-5145fb116c0e",
@@ -5542,7 +5896,13 @@
    "grade": "correct",
    "grade_reason": "The model answer matches the gold answer's key facts: the outage date (Friday, November 13, 2026) and the number of affected companies (approximately 11,500).",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-c756a30e9fb9",
@@ -5651,7 +6011,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies Teams, Outlook, and Copilot as affected services, matching the gold answer's key facts, while adding Exchange Online as an additional affected service without contradicting the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-31792bf7631f",
@@ -5760,7 +6126,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies Teams, Outlook, and Copilot as affected services, matching the gold answer's key facts, while adding Exchange Online and general symptoms that do not contradict the source.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-eff35247dd08",
@@ -5869,7 +6241,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies Teams, Outlook, and Copilot as affected services, matching the gold answer's key facts, while adding Microsoft 365 context that does not contradict the source.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-98752ff56815",
@@ -5970,7 +6348,13 @@
    "grade": "correct",
    "grade_reason": "The model answer matches the gold answer exactly, stating the Lunar Fast Charger's maximum power rating is up to 25 kilowatts (kW).",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-1ce2a670887a",
@@ -6071,7 +6455,13 @@
    "grade": "correct",
    "grade_reason": "The model answer exactly matches the gold answer's key fact of 25 kilowatts (kW) maximum power rating.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-62682d253746",
@@ -6176,7 +6566,13 @@
    "grade": "correct",
    "grade_reason": "The model answer states the exact key fact from the gold answer: the Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-33e263c539a2",
@@ -6285,7 +6681,13 @@
    "grade": "correct",
    "grade_reason": "The model answer states the exact key fact—the November 13, 2026 U.S. store availability date—matching the gold answer without any contradictions.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-72942748f4a1",
@@ -6394,7 +6796,13 @@
    "grade": "correct",
    "grade_reason": "The model answer states the exact key fact—the November 13, 2026 U.S. store availability date—matching the gold answer without any contradictions.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-5f1f29052cf0",
@@ -6503,7 +6911,13 @@
    "grade": "correct",
    "grade_reason": "The model answer states the exact key fact—the November 13, 2026 U.S. store availability date—matching the gold answer without any contradictions.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-9eddf5f685d1",
@@ -6612,7 +7026,13 @@
    "grade": "correct",
    "grade_reason": "The model answer correctly identifies DeltaGen as the company acquired by Worker.ai on November 12, 2026, matching the gold answer's key facts.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-8d5c8fbfc6d3",
@@ -6721,7 +7141,13 @@
    "grade": "correct",
    "grade_reason": "The model answer correctly identifies DeltaGen as the company acquired by Worker.ai on November 12, 2026, matching the gold answer's key facts.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-d5f853a22c4a",
@@ -6830,7 +7256,13 @@
    "grade": "correct",
    "grade_reason": "The model answer correctly identifies DeltaGen as the company acquired by Worker.ai on 12 November 2026, matching the gold answer's key fact.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-4316f89188e2",
@@ -6939,7 +7371,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the product name as Catalyst, matching the gold answer, and adds only non-contradictory descriptive details.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-9abe25d1c012",
@@ -7048,7 +7486,13 @@
    "grade": "correct",
    "grade_reason": "The model answer correctly identifies the product name as Catalyst, matching the gold answer, and provides additional accurate context without contradicting the key fact.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-56eff3f29066",
@@ -7157,7 +7601,13 @@
    "grade": "correct",
    "grade_reason": "The model answer correctly identifies the product name as Constant Contact Catalyst, matching the gold answer's key fact of Catalyst.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-e97441505874",
@@ -7266,7 +7716,13 @@
    "grade": "correct",
    "grade_reason": "The model answer correctly states both pump brands acquired by Xylem Inc. in November 2026 as Cornell Pump and Roper Pump, matching the gold answer's key facts without contradiction.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-fc6aa6030767",
@@ -7375,7 +7831,13 @@
    "grade": "correct",
    "grade_reason": "The model answer correctly states both pump brands acquired by Xylem Inc. in November 2026 as Cornell Pump and Roper Pump, matching the gold answer's key facts without contradiction.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-5b45d0e05dcc",
@@ -7484,7 +7946,13 @@
    "grade": "correct",
    "grade_reason": "The model answer correctly identifies both Cornell Pump and Roper Pump as the two brands acquired by Xylem Inc. in November 2026, matching the gold answer exactly.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-bffcf1961d1c",
@@ -7593,7 +8061,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies Cubic as the AI code review startup acquired by Cohere in November 2026, matching the gold answer's key facts.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-9287ec2abc48",
@@ -7702,7 +8176,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies Cubic as the AI code review startup acquired by Cohere in November 2026, matching the gold answer's key facts.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-da1f26714fa0",
@@ -7811,7 +8291,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies Cubic as the AI code review startup acquired by Cohere in November 2026, matching the gold answer's key facts.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-0abeebda98a7",
@@ -7993,7 +8479,13 @@
    "grade": "correct",
    "grade_reason": "The model's figure of nearly 130,000 problem reports in the U.S. alone is consistent with the gold answer's key fact that more than 100,000 users were affected at the peak.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-d54e7eae551e",
@@ -8175,7 +8667,13 @@
    "grade": "correct",
    "grade_reason": "The model states nearly 130,000 reports at peak, which is consistent with the gold answer's key fact that more than 100,000 users were affected.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-eea274b1c760",
@@ -8357,7 +8855,13 @@
    "grade": "correct",
    "grade_reason": "The model states nearly 130,000 reports at peak, which is consistent with the gold answer's key fact that more than 100,000 users were affected, and its hedging about broader impacts does not contradict the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-9f4cd95508f9",
@@ -8481,7 +8985,13 @@
    "grade": "correct",
    "grade_reason": "The model answer states the key fact that Workday's major service outage began on Friday, November 13, 2026, which matches the gold answer's date.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-d9c47211379f",
@@ -8605,7 +9115,13 @@
    "grade": "correct",
    "grade_reason": "The model answer states the exact date of the outage as given in the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-19aaec05adab",
@@ -8787,7 +9303,13 @@
    "grade": "correct",
    "grade_reason": "The model answer states the correct date (Friday, November 13, 2026) and the correct number of affected companies (over 11,500 organizations), matching the gold answer's key facts without contradiction.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-7d4ba4e797a8",
@@ -8911,7 +9433,13 @@
    "grade": "correct",
    "grade_reason": "The model answer correctly identifies Teams, Outlook, and Copilot as the affected services, matching the gold answer's key facts.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-16ee5e4e147f",
@@ -9035,7 +9563,13 @@
    "grade": "correct",
    "grade_reason": "The model answer correctly identifies Teams, Outlook, and Copilot as the affected services, matching the gold answer's key facts.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-1e577f733c32",
@@ -9159,7 +9693,13 @@
    "grade": "correct",
    "grade_reason": "The model answer correctly identifies Teams, Outlook, and Copilot as the affected services, matching the gold answer's key facts.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-93939f040e61",
@@ -9279,7 +9819,13 @@
    "grade": "correct",
    "grade_reason": "The model answer exactly matches the gold answer's key fact that the Lunar Fast Charger is rated at up to 25 kilowatts (kW).",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-159d41eb46f3",
@@ -9399,7 +9945,13 @@
    "grade": "correct",
    "grade_reason": "The model answer matches the gold answer exactly, stating the Lunar Fast Charger's maximum power rating is up to 25 kilowatts (kW).",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-7a68b999dbab",
@@ -9519,7 +10071,13 @@
    "grade": "correct",
    "grade_reason": "The model answer matches the gold answer exactly, stating the Lunar Fast Charger's maximum power rating is up to 25 kilowatts (kW).",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-ff4577dd0b6c",
@@ -9643,7 +10201,13 @@
    "grade": "correct",
    "grade_reason": "The model answer states the exact key fact—the November 13, 2026 U.S. store availability date—matching the gold answer without any contradictions.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-904bc8188d41",
@@ -9767,7 +10331,13 @@
    "grade": "correct",
    "grade_reason": "The model answer states the exact key fact—the November 13, 2026 U.S. store availability date—matching the gold answer without any contradictions.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-7c242c236d75",
@@ -9891,7 +10461,13 @@
    "grade": "correct",
    "grade_reason": "The model answer states the exact key fact—the November 13, 2026 U.S. store availability date—matching the gold answer without any contradictions.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-81fb63b33c44",
@@ -10015,7 +10591,13 @@
    "grade": "correct",
    "grade_reason": "The model answer correctly identifies DeltaGen as the company acquired by Worker.ai on 12 November 2026, matching the gold answer's key fact.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-cfac737a48fa",
@@ -10139,7 +10721,13 @@
    "grade": "correct",
    "grade_reason": "The model answer correctly identifies DeltaGen as the company acquired by Worker.ai on 12 November 2026, matching the gold answer's key fact.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-deed90696454",
@@ -10263,7 +10851,13 @@
    "grade": "correct",
    "grade_reason": "The model answer correctly identifies DeltaGen as the company acquired by Worker.ai on November 12, 2026, matching the gold answer's key facts.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-54ffb1c2c8aa",
@@ -10387,7 +10981,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the product name as Constant Contact Catalyst, matching the gold answer's key fact of 'Catalyst'.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-b9a1823f1c92",
@@ -10511,7 +11111,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the product name as Catalyst, matching the gold answer, and adds only non-contradictory descriptive details.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-fb2fb3e317c8",
@@ -10635,7 +11241,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the product name as Catalyst, matching the gold answer, and adds only non-contradictory descriptive details.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-f3e4e334aa14",
@@ -10759,7 +11371,13 @@
    "grade": "correct",
    "grade_reason": "The model answer correctly states both pump brands acquired by Xylem Inc. in November 2026 as Cornell Pump and Roper Pump, matching the gold answer's key facts without contradiction.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-b36817419346",
@@ -10883,7 +11501,13 @@
    "grade": "correct",
    "grade_reason": "The model answer correctly states both pump brands acquired by Xylem Inc. in November 2026 as Cornell Pump and Roper Pump, matching the gold answer's key facts without contradiction.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-870060a7fd5c",
@@ -11007,7 +11631,13 @@
    "grade": "correct",
    "grade_reason": "The model answer states both key facts—Cornell Pump and Roper Pump—and matches the gold answer without contradiction.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-669cd0118dfd",
@@ -11131,7 +11761,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies Cubic as the AI code review startup acquired by Cohere in November 2026, matching the gold answer's key facts.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-fbe3a5860c57",
@@ -11255,7 +11891,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies Cubic as the AI code review startup acquired by Cohere in November 2026, matching the gold answer's key facts.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-5282aca8b4e4",
@@ -11379,7 +12021,13 @@
    "grade": "partly",
    "grade_reason": "The model correctly identifies Cubic as the acquired AI code review startup but adds an unsupported claim about also acquiring cybersecurity startup AISLE, which is not in the gold answer.",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "wrong_answer",
+   "failure_detail": "partly"
   }
  ],
  "summary": {
@@ -11419,6 +12067,11 @@
     "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
+    "steps_mean_success": null,
+    "repeat_searches": 0,
+    "failures": {
+     "model_unavailable": 27
+    },
     "drop_vs_normal": null
    },
    "model_outage_gateway": {
@@ -11456,6 +12109,8 @@
     "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
+    "steps_mean_success": 3.0,
+    "repeat_searches": 0,
     "drop_vs_normal": null
    }
   },
@@ -11495,6 +12150,8 @@
     "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
+    "steps_mean_success": 4.22,
+    "repeat_searches": 0,
     "drop_vs_normal": null
    },
    "model_outage_gateway": {
@@ -11532,6 +12189,11 @@
     "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
+    "steps_mean_success": 5.46,
+    "repeat_searches": 0,
+    "failures": {
+     "wrong_answer": 1
+    },
     "drop_vs_normal": null
    }
   }

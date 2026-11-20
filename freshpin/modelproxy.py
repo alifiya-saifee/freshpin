@@ -5,6 +5,11 @@ gateway fallbacks, the proxy adds Bifrost's own per-request `"fallbacks": [...]`
 the GATEWAY can rescue a rejected model even when the agent has no fallback logic of its own. Every other request
 passes through unchanged. Runs are told apart by the `x-bf-session-id` header FreshPin gives each run.
 
+For a run set to a mid-run outage, the proxy lets the first `outage_after` requests for the model under test through,
+then rewrites the model of every later request for it to an id the gateway rejects: the model "goes down" in the
+middle of the agent's work, after it has already seen it working. Requests for any other model (the agent's fallbacks)
+pass unchanged, so an agent that switches model recovers and one that assumes "it worked once" does not.
+
 Responses are returned whole (a streamed response arrives in one piece). Standard library only.
 """
 from __future__ import annotations
@@ -31,16 +36,38 @@ class ModelProxy:
         self.upstream = f"{u.scheme}://{u.netloc}"
         self.timeout_s = timeout_s
         self._runs: dict[str, list[str]] = {}
+        self._outages: dict[str, dict[str, Any]] = {}   # run_id -> {"model", "after", "reject_as", "seen"}
         self._log: dict[str, list[dict[str, Any]]] = {}
         self._lock = threading.Lock()
         self._httpd: ThreadingHTTPServer | None = None
         self.url = ""
 
-    def set_run(self, run_id: str, fallbacks: list[str] | None = None) -> None:
-        """fallbacks: the list to add to this run's requests (None or empty: pass through unchanged)."""
+    def set_run(self, run_id: str, fallbacks: list[str] | None = None, outage_model: str | None = None,
+                outage_after: int = 1, reject_as: str = "") -> None:
+        """fallbacks: the list to add to this run's requests (None or empty: pass through unchanged).
+        outage_model: the model that goes down mid-run; its first outage_after requests work, later ones are sent
+        to the gateway as reject_as (a model id it refuses)."""
         with self._lock:
             self._runs[run_id] = list(fallbacks or [])
+            if outage_model:
+                if not reject_as:
+                    raise ValueError("a mid-run outage needs reject_as: the model id the gateway rejects")
+                self._outages[run_id] = {"model": outage_model, "after": max(0, int(outage_after)),
+                                         "reject_as": reject_as, "seen": 0}
             self._log.setdefault(run_id, [])
+
+    def _apply_outage(self, run_id: str, doc: dict[str, Any], note: dict[str, Any]) -> bool:
+        """Mid-run outage: True when this request's model was swapped for the rejected id."""
+        with self._lock:
+            o = self._outages.get(run_id)
+            if not o or doc.get("model") != o["model"]:
+                return False
+            o["seen"] += 1
+            if o["seen"] <= o["after"]:
+                return False
+        doc["model"] = o["reject_as"]
+        note["outage_injected"] = True
+        return True
 
     def calls(self, run_id: str) -> list[dict[str, Any]]:
         with self._lock:
@@ -54,17 +81,21 @@ class ModelProxy:
         run_id = headers.get("x-bf-session-id", "")
         with self._lock:
             fallbacks = list(self._runs.get(run_id) or [])
+            outage = run_id in self._outages
         note: dict[str, Any] = {"t": time.time(), "method": method, "path": path, "fallbacks_added": [], "model": None}
-        if body and fallbacks:
+        if body and (fallbacks or outage):
             try:
                 doc = json.loads(body)
             except ValueError:
                 doc = None
             if isinstance(doc, dict) and "model" in doc:
                 note["model"] = doc.get("model")
-                if not doc.get("fallbacks"):                       # an agent's own list is left as it is
+                changed = self._apply_outage(run_id, doc, note)
+                if fallbacks and not doc.get("fallbacks"):         # an agent's own list is left as it is
                     doc["fallbacks"] = fallbacks
                     note["fallbacks_added"] = fallbacks
+                    changed = True
+                if changed:
                     body = json.dumps(doc).encode("utf-8")
         req = urllib.request.Request(self.upstream + path, data=body, method=method,
                                      headers={k: v for k, v in headers.items() if k.lower() not in HOP_HEADERS})

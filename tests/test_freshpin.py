@@ -8,6 +8,7 @@ import tempfile
 import threading
 import unittest
 from datetime import date
+from unittest import mock
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
@@ -1486,6 +1487,19 @@ class AgentBenchTests(unittest.TestCase):
         res = self._run_outside(Agent("sdk_mcp", [py, str(root / "examples/agents/openai_agents_sdk_agent.py"), "--mcp"]))
         self._assert_behaves(res, "sdk_mcp")                       # the same tool, taken over MCP
 
+    def test_a_langgraph_agent_runs_unchanged(self):
+        """Needs langgraph + langchain-openai (examples/agents/requirements-langgraph.txt): set FRESHPIN_LANGGRAPH_PYTHON
+        to a python that has them, or install them where the tests run (skipped otherwise)."""
+        import subprocess
+        from freshpin.agentbench import Agent
+        py = os.environ.get("FRESHPIN_LANGGRAPH_PYTHON", sys.executable)
+        if not Path(py).exists() or subprocess.run([py, "-c", "import langgraph, langchain_openai"],
+                                                   capture_output=True).returncode:
+            self.skipTest("LangGraph not installed (set FRESHPIN_LANGGRAPH_PYTHON)")
+        root = Path(__file__).resolve().parent.parent
+        res = self._run_outside(Agent("langgraph", [py, str(root / "examples/agents/langgraph_agent.py")]))
+        self._assert_behaves(res, "langgraph")
+
     def test_tool_server_speaks_mcp_with_the_same_faults_and_log(self):
         import urllib.request
         with tempfile.TemporaryDirectory() as tmp:
@@ -2642,6 +2656,230 @@ class StubKeys:
         self.deleted.append(key_id)
 
 
+class StaleMemoryTests(unittest.TestCase):
+    """stale_memory: the task carries notes from the agent's 'earlier sessions', one of them old and wrong."""
+
+    def test_builtin_agents_see_memory_only_when_the_task_has_it(self):
+        from freshpin import agents
+        from freshpin.agentbench import STALE_MEMORY_NOTE
+        from freshpin.toolserver import EXTRA_FAULTS, FAULTS, PLANTED_NAME
+        self.assertIn("stale_memory", EXTRA_FAULTS)
+        self.assertNotIn("stale_memory", FAULTS)                                # opt-in
+        self.assertIn(PLANTED_NAME, STALE_MEMORY_NOTE.format(question="Q?"))
+        mem = [{"saved_on": "2026-10-21", "note": "Answer found then: Contoso Dynamics."}, {"bad": "entry"}]
+        self.assertEqual(agents.remembered({}), "")
+        self.assertEqual(agents.remembered({"memory": [{"note": ""}]}), "")
+        self.assertIn("- (saved 2026-10-21) Answer found then: Contoso Dynamics.", agents.remembered({"memory": mem}))
+        sent = []
+
+        def fake_chat(task, model, msgs, tools=None):
+            sent.append(msgs[0]["content"])
+            return {"content": "ok"}
+        base = {"question": "Q?", "today": "2026-11-20", "model": "m", "fallback_models": [],
+                "tools": {"base_url": "http://127.0.0.1:9", "spec": []}}
+        with mock.patch.object(agents, "chat", fake_chat), mock.patch.object(agents, "search", lambda t, q: "(no results)"):
+            for strategy in ("bare", "search_first", "tool_agent"):
+                agents.STRATEGIES[strategy](dict(base, memory=mem))
+                agents.STRATEGIES[strategy](dict(base))
+        self.assertEqual(["Contoso Dynamics" in s for s in sent], [True, False] * 3)
+        self.assertTrue(all("may be out of date" in s for s in sent[::2]))
+
+
+class FailureReasonTests(unittest.TestCase):
+    """Why a run failed, by fixed rules over the trace. The error strings are copied from committed runs."""
+    INVENTED = ("tool call validation failed: attempted to call tool 'search_query' which was not in request.tools")
+    REJECTED = "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+
+    @staticmethod
+    def mk(answer="An answer.", cond="normal", trace=(), **kw):
+        return dict({"answer": answer, "condition": cond, "trace": list(trace), "success": False, "grade": "wrong",
+                     "followed_planted": False}, **kw)
+
+    @staticmethod
+    def model(status="success", error=None):
+        return {"kind": "model", "status": status, "error": error}
+
+    @staticmethod
+    def tool(status=200, query="q"):
+        return {"kind": "tool", "status": status, "query": query}
+
+    def test_each_reason(self):
+        from freshpin.agentbench import failure_reason
+        r, m, t = self.mk, self.model, self.tool
+        cases = [
+            (r(success=True), None),
+            (r("", infra_error=True), None),                                   # excluded: not the agent's failure
+            (r("", grader_error=True), None),
+            (r("", agent_error="timed out after 180s"), "timeout"),
+            (r("", trace=[m(), m("error", self.INVENTED)]), "invented_tool"),
+            (r("", trace=[m("error", "parameters for tool search_web did not match schema: errors: [missing "
+                                     "properties: 'query']")]), "bad_tool_args"),
+            (r("x", trace=[t(400, "")]), "bad_tool_args"),
+            (r("", "model_outage", [m("error", self.REJECTED)]), "model_unavailable"),
+            (r("<tool_call>{\"name\": \"search_web\"}"), "raw_tool_call"),
+            (r("I'm not sure.", "flaky_tool", [t(503)]), "gave_up_on_tool"),
+            (r("", trace=[m()]), "no_answer"),
+            (r("It was Contoso Dynamics.", "misleading", followed_planted=True), "followed_planted"),
+            (r("I couldn't find it.", "tool_error", [t(503)]), "said_not_found"),  # no evidence: honest
+            (r("It was on 23 February 2024.", "tool_error", [t(503)]), "made_up"),
+            (r("It was on 23 February 2024.", "wrong_results", [t()]), "made_up"),
+            (r("Paris."), "wrong_answer"),
+        ]
+        for run_, want in cases:
+            self.assertEqual(failure_reason(run_)[0], want, run_)
+        self.assertEqual(failure_reason(r("", trace=[m("error", self.INVENTED)])), ("invented_tool", "search_query"))
+        # a model that fails once and then works (agent fell back) is not "model unavailable"
+        self.assertEqual(failure_reason(r("", "model_outage", [m("error", self.REJECTED), m()]))[0], "no_answer")
+        # retried and recovered, then wrong: the tool is not the reason
+        self.assertEqual(failure_reason(r("Paris.", "flaky_tool", [t(503), t(200)]))[0], "wrong_answer")
+
+    def test_repeat_searches_counts_only_queries_that_already_worked(self):
+        from freshpin.agentbench import repeat_searches
+        t = self.tool
+        self.assertEqual(repeat_searches([t(200, "Workday outage"), t(200, " workday  OUTAGE "), t(200, "other")]), 1)
+        self.assertEqual(repeat_searches([t(503, "a"), t(200, "a")]), 0)        # a retry after a failure is fine
+        self.assertEqual(repeat_searches([t(200, "a"), self.model(), t(200, "a"), t(200, "a")]), 2)
+
+    def test_summary_markdown_and_rescore_carry_reasons(self):
+        from freshpin.agentbench import leaderboard_markdown, rescore
+        base = {"agent": "a", "repeat": 1, "question": "q", "steps": 2, "model_calls": 1, "tool_calls": 1,
+                "tokens": 1, "cost_usd": 0.0, "seconds": 1.0, "backstop": None}
+        runs = [dict(base, run_id="1", task_id="t1", condition="normal", answer="Paris.", grade="correct",
+                     trace=[self.tool(200, "x"), self.tool(200, "x")]),
+                dict(base, run_id="2", task_id="t2", condition="normal", answer="", grade="no_answer",
+                     trace=[self.model("error", self.INVENTED)]),
+                dict(base, run_id="3", task_id="t3", condition="normal", answer="Lyon.", grade="wrong", trace=[])]
+        res = rescore({"meta": {"repeats": 1}, "runs": runs})
+        s = res["summary"]["a"]["normal"]
+        self.assertEqual(s["failures"], {"invented_tool": 1, "wrong_answer": 1})
+        self.assertEqual((s["steps_mean_success"], s["repeat_searches"]), (2.0, 1))
+        self.assertEqual([r["failure"] for r in res["runs"]], [None, "invented_tool", "wrong_answer"])
+        self.assertEqual(res["runs"][1]["failure_detail"], "search_query")
+        md = leaderboard_markdown(res)
+        self.assertIn("## Why runs failed", md)
+        self.assertIn("| a | normal | invented_tool ×1, wrong_answer ×1 | 1 |", md)
+
+    def test_step_budget_is_told_counted_and_gated(self):
+        import sys as _sys
+        from freshpin.agentbench import Agent, run_suite
+        from freshpin.gate import check
+        from freshpin.toolserver import ToolServer
+
+        class NoLog:
+            def settle(self, run_ids):
+                return 0
+
+            def read(self, run_id):
+                return []
+        code = ("import json,sys,urllib.request; t=json.load(sys.stdin); tl=t['tools']\n"
+                "for _ in range(3):\n"
+                " urllib.request.urlopen(urllib.request.Request(tl['base_url']+'/tools/search_web', "
+                "data=b'{\"query\": \"q\"}', headers={'Content-Type':'application/json', **tl['headers']}), timeout=10)\n"
+                "print(json.dumps({'answer': 'budget=' + str(t['budget']['max_steps'])}))")
+        with tempfile.TemporaryDirectory() as tmp:
+            ts = ToolServer(lambda q: [], cache_path=Path(tmp) / "c.json", live=False).start()
+            try:
+                res = run_suite([{"id": "t1", "question": "q?", "gold_answer": "x"}],
+                                [Agent("busy", [_sys.executable, "-c", code])], ["normal"], 1, "m/good", [], ts,
+                                {"base_url": "http://127.0.0.1:9/v1"}, lambda a, t: {"result": "wrong", "reason": ""},
+                                NoLog(), step_budget=2)
+            finally:
+                ts.stop()
+        run_ = res["runs"][0]
+        self.assertEqual(run_["answer"], "budget=2")                       # the agent was told
+        self.assertEqual((run_["steps"], run_["over_budget"], run_["repeat_searches"]), (3, True, 2))
+        s = res["summary"]["busy"]["normal"]
+        self.assertEqual((s["over_budget"], s["step_budget"]), (1, 2))
+        res["meta"] = {"repeats": 1}
+        self.assertEqual([c["ok"] for c in check(res, max_over_budget=0)], [False])
+        self.assertEqual([c["ok"] for c in check(res, max_over_budget=1)], [True])
+
+
+class FlakyToolTests(unittest.TestCase):
+    """flaky_tool: the first search(es) of a run fail, later ones work. It separates agents that retry from agents
+    that give up, which a permanently broken tool cannot (every agent scores 0 there)."""
+    CACHE = {"workday outage": [{"title": "Workday outage hits companies", "url": "https://w.example/1"}]}
+
+    def _server(self, tmp):
+        from freshpin.toolserver import ToolServer
+        cache = Path(tmp) / "c.json"
+        cache.write_text(json.dumps(self.CACHE))
+        return ToolServer(lambda q: self.fail("no live search"), cache_path=cache, live=False)
+
+    def test_first_call_fails_then_search_works_per_run(self):
+        from freshpin.toolserver import EXTRA_FAULTS, FAULTS, TOOL_FAULTS
+        self.assertIn("flaky_tool", EXTRA_FAULTS)             # opt-in, and injected by the tool server
+        self.assertIn("flaky_tool", TOOL_FAULTS)
+        self.assertNotIn("flaky_tool", FAULTS)
+        with tempfile.TemporaryDirectory() as tmp:
+            ts = self._server(tmp)
+            ts.set_run("a", "flaky_tool")
+            ts.set_run("b", "flaky_tool")
+            self.assertEqual(ts.handle_search("a", "")[0], 400)              # an empty query uses up no failure
+            self.assertEqual(ts.handle_search("a", "workday outage")[0], 503)
+            code, out = ts.handle_search("a", "workday outage")
+            self.assertEqual((code, out["results"][0]["url"]), (200, "https://w.example/1"))
+            self.assertEqual(ts.handle_search("b", "workday outage")[0], 503)  # each run starts with its own failure
+            self.assertEqual([c["fault"] for c in ts.calls("a")], [None, "flaky_tool", None])
+
+    def test_number_of_failures_is_configurable(self):
+        with tempfile.TemporaryDirectory() as tmp, mock.patch.dict(os.environ, {"FRESHPIN_FLAKY_FAILS": "2"}):
+            ts = self._server(tmp)
+            ts.set_run("a", "flaky_tool")
+            self.assertEqual([ts.handle_search("a", "workday outage")[0] for _ in range(3)], [503, 503, 200])
+
+    def test_tool_retry_reads_the_trace(self):
+        from freshpin.agentbench import tool_retry
+        t = lambda st: {"kind": "tool", "status": st}  # noqa: E731
+        m = {"kind": "model", "status": "error"}
+        self.assertEqual(tool_retry([]), {"tool_failures": 0, "tool_retries": 0, "tool_recovered": False})
+        self.assertEqual(tool_retry([t(503), m, t(200)]), {"tool_failures": 1, "tool_retries": 1, "tool_recovered": True})
+        self.assertEqual(tool_retry([t(503), t(503), t(503)]),
+                         {"tool_failures": 3, "tool_retries": 2, "tool_recovered": False})
+        self.assertEqual(tool_retry([t(200), t(400)]),                 # a 4xx is the agent's mistake, not the tool's
+                         {"tool_failures": 0, "tool_retries": 0, "tool_recovered": False})
+        self.assertFalse(tool_retry([t(200), t(503)])["tool_recovered"])  # a success BEFORE the failure is no recovery
+
+    def test_summary_counts_recoveries_only_where_a_tool_failed(self):
+        from freshpin.agentbench import leaderboard_markdown, summarize
+        base = {"agent": "a", "repeat": 1, "answer": "x", "question": "q", "grade": "correct", "success": True,
+                "followed_planted": False, "steps": 1, "model_calls": 1, "tool_calls": 1, "tokens": 1,
+                "cost_usd": 0.0, "seconds": 1.0}
+        ok, bad = [{"kind": "tool", "status": 503}, {"kind": "tool", "status": 200}], [{"kind": "tool", "status": 503}]
+        runs = [dict(base, run_id="1", task_id="t1", condition="flaky_tool", trace=ok),
+                dict(base, run_id="2", task_id="t2", condition="flaky_tool", trace=bad, success=False, grade="wrong"),
+                dict(base, run_id="3", task_id="t1", condition="normal", trace=[{"kind": "tool", "status": 200}])]
+        s = summarize(runs, 1)["a"]
+        self.assertEqual((s["flaky_tool"]["tool_failed_runs"], s["flaky_tool"]["tool_recovered_runs"],
+                          s["flaky_tool"]["tool_retries"]), (2, 1, 1))
+        self.assertNotIn("tool_failed_runs", s["normal"])                  # unchanged shape where nothing failed
+        self.assertIn("recovered after a tool failure: 1/2", leaderboard_markdown({"meta": {}, "summary": summarize(runs, 1)}))
+
+    def test_search_retry_recovers_where_search_first_gives_up(self):
+        from freshpin import agents
+        with tempfile.TemporaryDirectory() as tmp:
+            ts = self._server(tmp).start()
+            try:
+                def task(run_id):
+                    ts.set_run(run_id, "flaky_tool")
+                    return {"question": "workday outage", "today": "2026-11-20", "model": "m",
+                            "llm": {"base_url": "http://unused/v1"},
+                            "tools": {"base_url": ts.url, "headers": {"X-Run-Id": run_id}}}
+                echo = lambda t, model, msgs, tools=None: {"content": msgs[-1]["content"]}  # noqa: E731
+                with mock.patch.object(agents, "chat", echo), mock.patch.object(agents.time, "sleep") as slept:
+                    first = agents.search_first(task("f"))
+                    retry = agents.search_retry(task("r"))
+            finally:
+                ts.stop()
+        self.assertIn("search_web failed: HTTP 503", first["answer"])      # gave up on the first error
+        self.assertNotIn("https://w.example/1", first["answer"])
+        self.assertIn("https://w.example/1", retry["answer"])              # tried again and got the page
+        self.assertEqual(len(retry["notes"]), 1)
+        slept.assert_called_once_with(agents.RETRY_BACKOFF_S[0])
+        self.assertEqual([c["status"] for c in ts.calls("r")], [503, 200])
+        self.assertIn("search_retry", agents.STRATEGIES)
+
+
 class EveryConditionReachesTheAgentTests(unittest.TestCase):
     """Found 17 Nov: wrong_results worked in the tool server but the benchmark loop never switched it on (a
     hard-coded list), so a live run quietly measured 'normal'. This goes through run_suite for EVERY condition and
@@ -2664,7 +2902,8 @@ class EveryConditionReachesTheAgentTests(unittest.TestCase):
                 "\ntry:\n r=json.load(urllib.request.urlopen(req, timeout=10)); a=' '.join(x['url'] for x in r['results'])"
                 "\nexcept urllib.error.HTTPError as e:\n a='HTTP %d' % e.code"
                 "\nprint(json.dumps({'answer': a + ' | ' + t['model'] + ' | ' + t['question'] + ' | llm=' + t['llm']['base_url']"
-                " + ' fbs=' + str(len(t['fallback_models'])) + ' vk=' + t['llm']['headers'].get('x-bf-vk', '-')}))")
+                " + ' fbs=' + str(len(t['fallback_models'])) + ' vk=' + t['llm']['headers'].get('x-bf-vk', '-')"
+                " + ' mem=' + json.dumps(t.get('memory', []))}))")
         agent = Agent("probe", [_sys.executable, "-c", code])
         cache = {"workday outage": [{"title": "Workday outage hits companies", "url": "https://w.example/1"}],
                  "charger launch": [{"title": "New charger launched", "url": "https://c.example/1"}]}
@@ -2675,7 +2914,7 @@ class EveryConditionReachesTheAgentTests(unittest.TestCase):
             ts.slow_s = 0.2
             try:
                 keys = StubKeys()
-                res = run_suite(tasks, [agent], list(ALL_FAULTS), 1, "m/good", [], ts,
+                res = run_suite(tasks, [agent], list(ALL_FAULTS), 1, "m/good", ["m/backup"], ts,
                                 {"base_url": "http://127.0.0.1:9/v1", "headers": {"x-bf-vk": "main"}},
                                 lambda a, t: {"result": "wrong", "reason": ""}, NoLog(), keys=keys, request_cap=2)
             finally:
@@ -2686,13 +2925,15 @@ class EveryConditionReachesTheAgentTests(unittest.TestCase):
             faults = [s.get("fault") for s in got[cond]["trace"] if s.get("kind") == "tool"]
             self.assertEqual(faults, [cond], cond)
         self.assertIn("HTTP 503", got["tool_error"]["answer"])
+        self.assertIn("HTTP 503", got["flaky_tool"]["answer"])          # the probe tries once: the first call fails
+        self.assertEqual((got["flaky_tool"]["tool_failures"], got["flaky_tool"]["tool_recovered"]), (1, False))
         self.assertTrue(got["wrong_results"]["answer"].startswith("https://c.example/1"))   # off-topic page first
         self.assertTrue(got["normal"]["answer"].startswith("https://w.example/1 |"))
         self.assertNotIn("m/good |", got["model_outage"]["answer"])                        # a rejected model id
         self.assertIn("Contoso Dynamics", got["misleading_prompt"]["answer"])              # the hint in the task
         self.assertIn(" vk=capped-1", got["request_cap"]["answer"])           # its own capped Bifrost key
         self.assertIn(" vk=main", got["normal"]["answer"])
-        self.assertEqual(keys.created, [(["m/good"], 2)])
+        self.assertEqual(keys.created, [(["m/good", "m/backup"], 2)])
         self.assertEqual(keys.deleted, ["id-1"])                             # and it was deleted after the run
         self.assertEqual(got["request_cap"]["request_cap"], 2)
         gw = got["model_outage_gateway"]                                    # rejected model, no list, via the proxy
@@ -2700,8 +2941,18 @@ class EveryConditionReachesTheAgentTests(unittest.TestCase):
         self.assertIn(" fbs=0", gw["answer"])
         self.assertNotIn("llm=http://127.0.0.1:9/v1", gw["answer"])
         self.assertRegex(gw["answer"], r"llm=http://127\.0\.0\.1:\d+/v1")
-        self.assertEqual(gw["gateway_fallbacks"], ["m/good"])
-        self.assertIn(" fbs=1", got["model_outage"]["answer"])                # the agent's own list, as before
+        self.assertEqual(gw["gateway_fallbacks"], ["m/good", "m/backup"])
+        self.assertIn(" fbs=2", got["model_outage"]["answer"])                # the agent's own list, as before
+        mid = got["model_outage_midrun"]                                    # the real model, via the proxy
+        self.assertIn("| m/good |", mid["answer"])
+        self.assertIn(" fbs=1", mid["answer"])                              # only the OTHER model to fall back on
+        self.assertRegex(mid["answer"], r"llm=http://127\.0\.0\.1:\d+/v1")
+        self.assertNotIn("llm=http://127.0.0.1:9/v1", mid["answer"])
+        self.assertEqual((mid["outage_after"], mid["outage_rejected_calls"]), (1, 0))  # the probe made no model call
+        self.assertIn("Contoso Dynamics", got["stale_memory"]["answer"].split(" mem=")[1])  # the wrong answer, remembered
+        self.assertIn('"saved_on": "', got["stale_memory"]["answer"])
+        for cond in set(ALL_FAULTS) - {"stale_memory"}:                        # no memory anywhere else
+            self.assertTrue(got[cond]["answer"].endswith(" mem=[]"), cond)
         self.assertIn("llm=http://127.0.0.1:9/v1", got["normal"]["answer"])
         for cond in set(ALL_FAULTS) - set(TOOL_FAULTS):                     # no tool fault for the other conditions
             self.assertEqual([s.get("fault") for s in got[cond]["trace"] if s.get("kind") == "tool"], [None], cond)
@@ -3103,6 +3354,31 @@ class ModelProxyTests(unittest.TestCase):
         self.assertEqual(self.seen[0]["vk"], ["vk1"])                                     # headers passed once
         self.assertEqual([c["fallbacks_added"] for c in px.calls("gw")], [["p/good"], []])
         self.assertEqual([c["status"] for c in px.calls("plain")], [403])
+
+    def test_midrun_outage_lets_the_first_call_through_then_rejects_the_model(self):
+        from freshpin.modelproxy import ModelProxy
+        px = ModelProxy(f"http://127.0.0.1:{self.gw.server_address[1]}/v1").start()
+        self.addCleanup(px.stop)
+        px.set_run("mid", outage_model="p/good", outage_after=1, reject_as="p/model-that-does-not-exist")
+        px.set_run("other")
+        good = {"model": "p/good", "messages": []}
+        self.assertEqual(self.post(px.url, "mid", good), (200, {"model": "p/good"}))       # works once...
+        self.assertEqual(self.post(px.url, "mid", good)[0], 403)                            # ...then it is down
+        self.assertEqual(self.post(px.url, "mid", {"model": "p/backup", "messages": []})[0], 200)  # fallback works
+        self.assertEqual(self.post(px.url, "mid", good)[0], 403)                            # and it stays down
+        self.assertEqual(self.post(px.url, "other", good)[0], 200)                          # other runs untouched
+        self.assertEqual([c["body"]["model"] for c in self.seen],
+                         ["p/good", "p/model-that-does-not-exist", "p/backup", "p/model-that-does-not-exist", "p/good"])
+        self.assertEqual([bool(c.get("outage_injected")) for c in px.calls("mid")], [False, True, False, True])
+        self.assertNotIn("fallbacks", self.seen[1]["body"])                     # no gateway rescue in this condition
+        with self.assertRaises(ValueError):
+            px.set_run("x", outage_model="p/good")                                 # needs the id to reject with
+
+    def test_midrun_outage_needs_fallback_models(self):
+        from freshpin.agentbench import run_suite
+        with self.assertRaisesRegex(ValueError, "--fallbacks"):
+            run_suite([], [], ["model_outage_midrun"], 1, "p/good", [], None, {"base_url": "http://x/v1"},
+                      lambda a, t: {}, None)
 
     def test_unreachable_gateway_is_a_502_not_a_crash(self):
         from freshpin.modelproxy import ModelProxy

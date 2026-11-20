@@ -77,7 +77,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-d07d4236f7f4",
@@ -156,7 +162,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-a50a20a90e22",
@@ -235,7 +247,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-b038d93b438a",
@@ -314,7 +332,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-2dd739509e3a",
@@ -393,7 +417,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-40e145268de8",
@@ -472,7 +502,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-b28a1b6bec1f",
@@ -551,7 +587,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-f2d43bba28a7",
@@ -630,7 +672,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-292603dedc86",
@@ -709,7 +757,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-7443f43765c0",
@@ -784,7 +838,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-109245209e6a",
@@ -859,7 +919,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-aa666c77cb52",
@@ -934,7 +1000,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-1963bad800d7",
@@ -1013,7 +1085,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-1687a97fe841",
@@ -1092,7 +1170,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-90f7df28ee96",
@@ -1171,7 +1255,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-5a6ce1e4b421",
@@ -1250,7 +1340,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-4ef1d2186369",
@@ -1329,7 +1425,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-17b9b1552f55",
@@ -1408,7 +1510,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-8a1d461e67b6",
@@ -1487,7 +1595,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-0fb587c9f3c2",
@@ -1566,7 +1680,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-a3a5c6e73831",
@@ -1645,7 +1765,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-2425746ed176",
@@ -1724,7 +1850,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-5dd0c6ba9dd0",
@@ -1803,7 +1935,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-e7f9dc5e3fc0",
@@ -1882,7 +2020,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-3e8badaf0458",
@@ -1961,7 +2105,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-fb15b8730138",
@@ -2040,7 +2190,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-3f3b8efbc54e",
@@ -2119,7 +2275,13 @@
    "list_cost_usd": 0.008,
    "grade": "no_answer",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-927fb477e21d",
@@ -2217,7 +2379,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies that more than 100,000 users were affected (citing a figure of 130,000) and provides accurate context regarding the outage.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-1230be928e66",
@@ -2315,7 +2483,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies that more than 100,000 users were affected, providing a specific estimate that aligns with the gold answer's threshold.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-a19021e01a68",
@@ -2413,7 +2587,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies that over 130,000 reports were recorded, which aligns with the gold answer's statement that more than 100,000 users were affected.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-8c104cfca180",
@@ -2511,7 +2691,13 @@
    "grade": "wrong",
    "grade_reason": "The model incorrectly identifies the date of the outage as November 14, 2026, whereas the gold answer specifies it occurred on November 13, 2026.",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-664b7a0f7baa",
@@ -2609,7 +2795,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the date of the outage as November 13, 2026, and includes the correct number of affected companies.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-c9b8b08818dd",
@@ -2707,7 +2899,13 @@
    "grade": "partly",
    "grade_reason": "The model incorrectly identifies the date of the outage as November 14, 2026, whereas the gold answer states it occurred on November 13, 2026.",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "wrong_answer",
+   "failure_detail": "partly"
   },
   {
    "run_id": "fp-4ac75e2601a1",
@@ -2805,7 +3003,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the affected services (Teams, Outlook, and Copilot) mentioned in the gold answer, while adding additional context that does not contradict the source.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-be67d8b6b3e7",
@@ -2903,7 +3107,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the services mentioned in the gold answer (Teams, Outlook, and Copilot) while providing additional context about the outage.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-57059c002b97",
@@ -3001,7 +3211,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the services mentioned in the gold answer (Teams, Outlook, and Copilot) and provides additional accurate context regarding the outage.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-d250556d9e28",
@@ -3095,7 +3311,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the maximum power rating of 25 kW as stated in the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-269a64c8c44b",
@@ -3189,7 +3411,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the 25 kW power rating specified in the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-5760a9c28392",
@@ -3283,7 +3511,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the maximum power rating of 25 kW as stated in the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-d48d2a44d403",
@@ -3381,7 +3615,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the release date as November 13, 2026, which matches the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-ca14accbba12",
@@ -3479,7 +3719,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the release date of November 13, 2026, matching the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-5ae6ce57a9dd",
@@ -3577,7 +3823,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the release date as November 13, 2026, matching the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-e711b4e35e66",
@@ -3675,7 +3927,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies DeltaGen as the company acquired by Worker.ai on the specified date.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-38e970dd6a6c",
@@ -3773,7 +4031,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies DeltaGen as the company acquired by Worker.ai on the specified date and includes the relevant context provided in the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-0fc1c478a034",
@@ -3871,7 +4135,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identified DeltaGen as the company acquired by Worker.ai on the specified date.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-13efe8525b0c",
@@ -3969,7 +4239,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the product name 'Catalyst' and provides accurate context consistent with the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-40a2514036d7",
@@ -4067,7 +4343,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the name of the product as Catalyst.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-1c5944045077",
@@ -4165,7 +4447,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identified the name of the product as Catalyst.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-6101a0966d9a",
@@ -4263,7 +4551,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the two pump brands acquired by Xylem Inc. in November 2026 as stated in the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-074666b2f792",
@@ -4361,7 +4655,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the two pump brands acquired by Xylem Inc. in November 2026 as stated in the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-0f9285982604",
@@ -4459,7 +4759,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the two pump brands acquired by Xylem Inc. in November 2026 as stated in the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-f0d1bacff89b",
@@ -4557,7 +4863,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the startup 'cubic' as the company acquired by Cohere in November 2026.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-44132738b979",
@@ -4655,7 +4967,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the startup 'cubic' as the company acquired by Cohere in November 2026.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-25d3bb94025f",
@@ -4753,7 +5071,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the acquisition of Cubic and provides the correct date, while including additional information that does not contradict the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-2b758a34460f",
@@ -4862,7 +5186,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies that more than 100,000 users were affected (citing 130,000 reports) and aligns with the key facts of the outage.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-cf4450726955",
@@ -4971,7 +5301,13 @@
    "grade": "correct",
    "grade_reason": "The model provides a specific figure that aligns with the 'more than 100,000' stated in the gold answer while providing additional context about the scope of the outage.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-a00916c4bdeb",
@@ -5080,7 +5416,13 @@
    "grade": "correct",
    "grade_reason": "The model provides a specific figure that aligns with the 'more than 100,000' threshold mentioned in the gold answer and provides additional accurate context regarding the scope of the outage.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-1904fdbd309d",
@@ -5189,7 +5531,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the date of the outage and the number of companies affected, matching the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-c7812cdb82af",
@@ -5298,7 +5646,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the date of the outage and the number of affected companies as stated in the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-f9f3bb82ad03",
@@ -5407,7 +5761,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the date of the outage and the number of affected companies as stated in the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-5b976f210263",
@@ -5516,7 +5876,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the services mentioned in the gold answer (Teams, Outlook, and Copilot) while including additional services and details that do not contradict the source.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-a050aa661b00",
@@ -5625,7 +5991,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the affected services (Teams, Outlook, and Copilot) mentioned in the gold answer, while adding accurate context about the nature of the outage.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-507d173762f8",
@@ -5734,7 +6106,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the affected services (Teams, Outlook, and Copilot) mentioned in the gold answer while providing additional context about the outage.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-2c776fee4dcd",
@@ -5835,7 +6213,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the maximum power rating of 25 kW as stated in the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-1f4099516d01",
@@ -5936,7 +6320,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the maximum power rating of 25 kW as stated in the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-7c396ea76dc4",
@@ -6037,7 +6427,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the maximum power rating of 25 kW as stated in the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-0e5e71a9614d",
@@ -6146,7 +6542,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identified the release date as November 13, 2026, matching the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-0a9cae09599e",
@@ -6255,7 +6657,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the release date of November 13, 2026, and provides accurate additional context.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-3234a3363ac9",
@@ -6364,7 +6772,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identified the release date of November 13, 2026, as stated in the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-4d0690247d2c",
@@ -6473,7 +6887,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identified the company acquired by Worker.ai on the specified date.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-3be188d087e0",
@@ -6582,7 +7002,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identified the company acquired by Worker.ai on the specified date.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-009948858173",
@@ -6691,7 +7117,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the company acquired (DeltaGen) and the date of the acquisition, matching the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-ca51b9395b48",
@@ -6796,7 +7228,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identified the name of the product as Catalyst.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-75f86e9feb0f",
@@ -6905,7 +7343,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the product name 'Catalyst' and provides accurate context regarding its launch and functionality.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-53c0e007b10b",
@@ -7014,7 +7458,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the product name 'Catalyst' and provides accurate context consistent with the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-967534ca1536",
@@ -7123,7 +7573,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the two acquired brands and provides accurate context regarding the timing of the acquisition.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-e2bd5283b55e",
@@ -7232,7 +7688,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the two pump brands acquired by Xylem Inc. in November 2026 as Cornell Pump and Roper Pump.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-1831ffd62ddf",
@@ -7341,7 +7803,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the two acquired brands and provides accurate timing consistent with the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-fd1b27342f70",
@@ -7450,7 +7918,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the acquired company as Cubic and provides accurate context regarding the acquisition date and the nature of the startup's technology.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-36475560f069",
@@ -7559,7 +8033,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the startup (Cubic) and the date of the acquisition as stated in the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-881485eb139f",
@@ -7668,7 +8148,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the acquired company as Cubic and provides accurate details consistent with the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-315eef791c54",
@@ -7792,7 +8278,13 @@
    "grade": "correct",
    "grade_reason": "The model provides specific figures that align with the gold answer's statement that more than 100,000 users were affected.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-02f908777147",
@@ -7916,7 +8408,13 @@
    "grade": "correct",
    "grade_reason": "The model provides a specific figure that aligns with the gold answer's statement that more than 100,000 users were affected.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-b01d26ba2e09",
@@ -8040,7 +8538,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies that more than 100,000 users were affected, providing specific figures that align with the scale mentioned in the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-cf25d7e932f6",
@@ -8164,7 +8668,13 @@
    "grade": "partly",
    "grade_reason": "The model correctly identifies the number of companies affected but provides the incorrect date (November 14 instead of November 13).",
    "success": false,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "wrong_answer",
+   "failure_detail": "partly"
   },
   {
    "run_id": "fp-41c874e50dbd",
@@ -8288,7 +8798,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the date of the outage and the number of affected companies as stated in the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-eee2e39fe1e2",
@@ -8412,7 +8928,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the date of the outage and the number of affected companies as stated in the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-4f8141822206",
@@ -8536,7 +9058,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the services mentioned in the gold answer (Teams, Outlook, and Copilot) and provides additional context that does not contradict the source.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-8728fff74849",
@@ -8660,7 +9188,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the services mentioned in the gold answer (Teams, Outlook, and Copilot) while providing additional context that does not contradict the source.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-bdeda1bbef9a",
@@ -8784,7 +9318,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the services mentioned in the gold answer (Teams, Outlook, and Copilot) while providing additional context about the outage.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-c5d5a181bf69",
@@ -8904,7 +9444,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the maximum power rating of 25 kW as stated in the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-7af71499d590",
@@ -9020,7 +9566,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the 25 kW power rating and provides additional accurate context.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-0f09d346cac4",
@@ -9136,7 +9688,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the 25 kW power rating specified in the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-b0e6ad319f9f",
@@ -9260,7 +9818,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the release date of November 13, 2026, and provides accurate additional context.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-72333f9711a3",
@@ -9384,7 +9948,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the release date as November 13, 2026, matching the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-8ad80ae5bbd5",
@@ -9508,7 +10078,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the release date of November 13, 2026, as stated in the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-fb891f3d4ef9",
@@ -9632,7 +10208,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the company acquired (DeltaGen) and the date of the acquisition.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-6df315747b59",
@@ -9756,7 +10338,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identified DeltaGen as the company acquired by Worker.ai on the specified date.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-80fba9a23da6",
@@ -9880,7 +10468,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identified DeltaGen as the company acquired by Worker.ai on the specified date.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-04c2bad66494",
@@ -10004,7 +10598,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the product name 'Catalyst' and provides accurate context regarding its launch and functionality.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-abafcd4e0720",
@@ -10128,7 +10728,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the product name 'Catalyst' and provides accurate context regarding its launch date and functionality.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-f7be6aac0f74",
@@ -10252,7 +10858,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the product name 'Catalyst' and provides accurate context regarding its launch and functionality.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-983fc6216914",
@@ -10376,7 +10988,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the two acquired brands and provides accurate context consistent with the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-c60af95c84a3",
@@ -10500,7 +11118,13 @@
    "grade": "not_graded",
    "grade_reason": "judge unavailable: LLMUnavailable",
    "success": false,
-   "grader_error": true
+   "grader_error": true,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-869184a13f86",
@@ -10624,7 +11248,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the two pump brands acquired by Xylem Inc. in November 2026 as stated in the source.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-cdf4ff233e01",
@@ -10748,7 +11378,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the startup (Cubic) and the timing of the acquisition as stated in the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-f6b8cac325d0",
@@ -10872,7 +11508,13 @@
    "grade": "not_graded",
    "grade_reason": "judge unavailable: LLMUnavailable",
    "success": false,
-   "grader_error": true
+   "grader_error": true,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-640650e8eaec",
@@ -10996,7 +11638,13 @@
    "grade": "correct",
    "grade_reason": "The model correctly identifies the startup (Cubic) and the date of the acquisition, matching the gold answer.",
    "success": true,
-   "grader_error": false
+   "grader_error": false,
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   }
  ],
  "summary": {
@@ -11036,6 +11684,11 @@
     "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
+    "steps_mean_success": null,
+    "repeat_searches": 0,
+    "failures": {
+     "model_unavailable": 27
+    },
     "drop_vs_normal": null
    },
    "model_outage_gateway": {
@@ -11073,6 +11726,12 @@
     "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
+    "steps_mean_success": 3.0,
+    "repeat_searches": 0,
+    "failures": {
+     "said_not_found": 1,
+     "wrong_answer": 1
+    },
     "drop_vs_normal": null
    }
   },
@@ -11112,6 +11771,8 @@
     "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
+    "steps_mean_success": 4.0,
+    "repeat_searches": 0,
     "drop_vs_normal": null
    },
    "model_outage_gateway": {
@@ -11149,6 +11810,11 @@
     "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 2,
+    "steps_mean_success": 5.0,
+    "repeat_searches": 0,
+    "failures": {
+     "wrong_answer": 1
+    },
     "drop_vs_normal": null
    }
   }

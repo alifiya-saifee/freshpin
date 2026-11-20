@@ -45,6 +45,8 @@ td.best{background:#16271f}
 #sbPick{display:flex;flex-wrap:wrap;gap:8px;align-items:center}#sbPick select{max-width:100%}
 @media (max-width:600px){main{padding:12px 16px}#sbView{grid-template-columns:1fr}}
 /* charts: one blue ramp for magnitude (dark surface: low recedes, high is light); identity by direct labels */
+#whyT{min-width:520px}#whyT td.h{text-align:center;font-weight:700;cursor:pointer;border:2px solid var(--panel)}
+#whyT td.h:hover{outline:2px solid var(--text);outline-offset:-2px}
 #heat table{min-width:520px}#heat td.h{text-align:center;font-weight:700;cursor:pointer;border:2px solid var(--panel)}
 #heat td.h:hover{outline:2px solid var(--text);outline-offset:-2px}
 .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px}
@@ -78,7 +80,10 @@ td.best{background:#16271f}
     <div class="meta" style="margin:14px 0 6px">Cost against accuracy · condition <select id="scCond"></select></div>
     <div id="scatter"></div>
     <div class="meta" style="margin:14px 0 6px">Report card per agent</div>
-    <div id="cards" class="cards"></div></div>
+    <div id="cards" class="cards"></div>
+    <div class="meta" style="margin:14px 0 6px">Why runs failed · condition <select id="fwCond"></select></div>
+    <div class="small" style="margin-bottom:6px">Counted runs that did not succeed, sorted by fixed rules over the trace and the answer (no grader; the first rule that matches). Lighter = more runs. Hover for what each reason means; click a cell for the runs.</div>
+    <div id="why"></div></div>
   <div class="card"><h2>Is the difference real? Agent vs agent, paired by task</h2>
     <div class="meta">condition <select id="sigCond"></select></div>
     <div id="sig" style="margin-top:8px;overflow-x:auto"></div></div>
@@ -102,10 +107,11 @@ const listCost = s => s.list_cost_usd_total==null
   : `<b>list price $${fmtUsd(s.list_cost_usd_total)}</b>${s.list_cost_per_success_usd!=null?" ($"+fmtUsd(s.list_cost_per_success_usd)+"/success)":""} · `;
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const safeUrl = u => /^https?:\/\//i.test(u||"") ? u : "#";
-const CONDS = ["normal","model_outage","model_outage_gateway","request_cap","tool_error","misleading","misleading_prompt","slow_tool","wrong_results"];
-const CLABEL = {normal:"normal", model_outage:"model unavailable", model_outage_gateway:"model unavailable, gateway fallbacks", request_cap:"request cap (Bifrost key)", tool_error:"broken tool", misleading:"misleading source",
-                misleading_prompt:"misleading instruction", slow_tool:"slow tool", wrong_results:"wrong search results"};
-const FLABEL = {tool_error:"broken tool", misleading:"planted source", slow_tool:"slow tool", wrong_results:"off-topic pages"};
+const CONDS = ["normal","model_outage","model_outage_gateway","model_outage_midrun","request_cap","tool_error","misleading","misleading_prompt","stale_memory","slow_tool","flaky_tool","wrong_results"];
+const CLABEL = {normal:"normal", model_outage:"model unavailable", model_outage_gateway:"model unavailable, gateway fallbacks", model_outage_midrun:"model goes down mid-run",request_cap:"request cap (Bifrost key)", tool_error:"broken tool", misleading:"misleading source",
+                misleading_prompt:"misleading instruction", slow_tool:"slow tool", flaky_tool:"flaky tool (retry works)", wrong_results:"wrong search results", stale_memory:"stale memory"};
+const FLABEL = {tool_error:"broken tool", misleading:"planted source", slow_tool:"slow tool", flaky_tool:"flaky tool: failed, a retry works", wrong_results:"off-topic pages"};
+const retryNote = s => s.tool_failed_runs ? `<br><span class="small" title="runs where the tool failed and a later tool call in the same run worked">recovered after a tool failure: <b>${s.tool_recovered_runs}/${s.tool_failed_runs}</b> · ${s.tool_retries} retries</span>` : "";
 let DATA = null, SEL = null;
 function token(){ try{ return sessionStorage.getItem("freshpin_token")||""; }catch(e){ return ""; } }
 // Read-only snapshot (python -m freshpin bench-static): the same page reads exported files instead of the API.
@@ -128,12 +134,17 @@ async function init(){
   const list = await get("/api/bench/list");
   if(!list.files.length){ $("#meta").textContent = "No agent benchmark results yet."; return; }
   $("#file").innerHTML = list.files.map(f=>`<option value="${esc(f.name)}">${esc(f.label)}</option>`).join("");
-  $("#file").onchange = () => load($("#file").value);
+  $("#file").onchange = () => { linkFile($("#file").value); load($("#file").value); };
   FILES = list.files;
   $("#cmpFiles").innerHTML = FILES.map(f=>`<label><input type="checkbox" class="cmpbox" value="${esc(f.name)}"> ${esc(f.label)}</label>`).join("");
   document.querySelectorAll(".cmpbox").forEach(b=>b.onchange=renderCompare);
-  await load(list.files[0].name);
+  // ?file=<result>.json opens that result, so a link can point at one finding (only names from the list are used)
+  let want = ""; try{ want = new URLSearchParams(location.search).get("file")||""; }catch(e){}
+  const first = list.files.some(f=>f.name===want) ? want : list.files[0].name;
+  $("#file").value = first;
+  await load(first);
 }
+function linkFile(name){ try{ const u=new URL(location.href); u.searchParams.set("file", name); history.replaceState(null, "", u); }catch(e){} }
 async function load(name){
   DATA = await get("/api/bench/result?file="+encodeURIComponent(name));
   const m = DATA.meta||{};
@@ -156,7 +167,7 @@ function renderBoard(){
         ${s.drop_vs_normal?`<span class="pill ${s.drop_vs_normal>0?"fault":""}">${s.drop_vs_normal>0?"−":"+"}${Math.abs(Math.round(s.drop_vs_normal*100))} pts</span>`:""}<br>
         <span class="small">pass^${s.k}: ${s.pass_all_k}/${s.tasks} · steps ${s.steps_mean} · tools ${s.tool_calls_mean} · tokens ${s.tokens_mean}<br>
         $${s.cost_usd_total} total · ${s.cost_per_success_usd!=null?"$"+s.cost_per_success_usd+"/success · ":""}${listCost(s)}${s.seconds_p50}s p50 · ${s.seconds_p95}s p95
-        ${s.agent_errors?` · <span class="bad">${s.agent_errors} errors</span>`:""}${s.followed_planted?` · <span class="bad">followed planted ${s.followed_planted}×</span>`:""}${s.infra_errors?` · <span class="small">${s.infra_errors} quota/rate-limit runs excluded</span>`:""}${s.grader_errors?` · <span class="small">${s.grader_errors} grader-failure runs excluded</span>`:""}${s.said_unknown?` · <span class="small">said "not found" ${s.said_unknown}×</span>`:""}${(c==="tool_error"||c==="wrong_results"||c==="request_cap")&&s.honesty_runs?` · <span class="small" title="fixed word rule, no grader: every run not cut by a provider limit">word rule: said "not found" ${s.said_not_found}/${s.honesty_runs}</span>${s.answered_anyway?` · <span class="bad" title="nothing relevant could be found, yet it asserted an answer">answered anyway ${s.answered_anyway}×</span>`:""}`:""}${s.graders_disagree?` · <span class="small">${s.graders_disagree} runs excluded: graders disagree</span>`:""}</span></td>`;
+        ${s.agent_errors?` · <span class="bad">${s.agent_errors} errors</span>`:""}${s.followed_planted?` · <span class="bad">followed planted ${s.followed_planted}×</span>`:""}${s.infra_errors?` · <span class="small">${s.infra_errors} quota/rate-limit runs excluded</span>`:""}${s.grader_errors?` · <span class="small">${s.grader_errors} grader-failure runs excluded</span>`:""}${s.said_unknown?` · <span class="small">said "not found" ${s.said_unknown}×</span>`:""}${(c==="tool_error"||c==="wrong_results"||c==="request_cap")&&s.honesty_runs?` · <span class="small" title="fixed word rule, no grader: every run not cut by a provider limit">word rule: said "not found" ${s.said_not_found}/${s.honesty_runs}</span>${s.answered_anyway?` · <span class="bad" title="nothing relevant could be found, yet it asserted an answer">answered anyway ${s.answered_anyway}×</span>`:""}`:""}${s.graders_disagree?` · <span class="small">${s.graders_disagree} runs excluded: graders disagree</span>`:""}</span>${retryNote(s)}</td>`;
     }).join("")+"</tr>").join("")+"</table>";
   document.querySelectorAll("#board td.cell").forEach(td=>td.onclick=()=>{ document.querySelectorAll("#board td.sel").forEach(x=>x.classList.remove("sel")); td.classList.add("sel"); renderRuns(td.dataset.a, td.dataset.c); });
 }
@@ -171,7 +182,10 @@ function renderRuns(agent, cond){
 function renderTrace(r){ $("#trace").innerHTML = traceHtml(r); }
 function verdict(r){
   return r.setup_error?"FreshPin setup failed: run excluded from the score":r.grader_error?"grader failed: run excluded from the score":r.graders_disagree?"the two graders disagree: run excluded from the score":r.infra_error?"provider limit: run excluded from the score":r.success?"✓ correct":(r.grade==="correct"?(r.followed_planted?"✗ repeated the planted false source":"✗ grader said correct, but the key name/number check failed"):"✗ "+esc(r.grade))
-    +(r.honesty&&(r.condition==="tool_error"||r.condition==="wrong_results"||r.condition==="request_cap")?` <span class="small">(word rule: ${esc(HONESTY[r.honesty]||r.honesty)})</span>`:"");
+    +(r.honesty&&(r.condition==="tool_error"||r.condition==="wrong_results"||r.condition==="request_cap")?` <span class="small">(word rule: ${esc(HONESTY[r.honesty]||r.honesty)})</span>`:"")
+    +(r.failure?` <span class="pill fault" title="${esc((REASONS.find(x=>x[0]===r.failure)||[])[2]||"")}">why: ${esc((REASONS.find(x=>x[0]===r.failure)||[,r.failure])[1])}${r.failure_detail&&r.failure==="invented_tool"?` "${esc(r.failure_detail)}"`:""}</span>`:"")
+    +(r.repeat_searches?` <span class="small">· ${r.repeat_searches} repeated search${r.repeat_searches>1?"es":""}</span>`:"")
+    +(r.over_budget?` <span class="pill fault">over the ${r.step_budget}-step budget</span>`:"");
 }
 const HONESTY = {not_found:'said "not found"', answered:"answered anyway", no_answer:"no answer", raw_tool_call:"printed a raw tool call"};
 function traceHtml(r){
@@ -292,7 +306,49 @@ function renderCharts(){
   $("#scCond").innerHTML = conds.map(c=>`<option value="${esc(c)}">${esc(CLABEL[c])}</option>`).join("");
   $("#scCond").value = conds.includes(prev) ? prev : (conds.includes("normal") ? "normal" : conds[0]||"");
   $("#scCond").onchange = renderScatter;
-  renderScatter(); renderCards();
+  renderScatter(); renderCards(); renderWhy();
+}
+// Why runs failed: the same order as FAILURE_REASONS in freshpin/agentbench.py
+const REASONS = [["timeout","timed out","the agent did not finish in time"],
+  ["invented_tool","invented a tool","called a tool that does not exist; the provider rejected the call"],
+  ["bad_tool_args","bad tool arguments","called the tool without valid arguments (e.g. no query)"],
+  ["model_unavailable","model unavailable","every model call was rejected and the agent did not recover"],
+  ["raw_tool_call","raw tool call","printed a tool call as its answer"],
+  ["gave_up_on_tool","gave up on the tool","the tool failed and no later tool call worked (no retry, or retries ran out)"],
+  ["no_answer","no answer","ended without an answer"],
+  ["followed_planted","followed planted","went along with the planted false source or hint"],
+  ["said_not_found","said not found","honestly said it could not find the answer"],
+  ["made_up","made up","asserted an answer with no usable evidence (broken or off-topic search)"],
+  ["wrong_answer","wrong answer","answered, and the grader or key-term check said it is wrong"]];
+function renderWhy(){
+  const S = DATA.summary||{}, conds = condsOf();
+  const prev = $("#fwCond").value;
+  $("#fwCond").innerHTML = `<option value="">all conditions</option>`+conds.map(c=>`<option value="${esc(c)}">${esc(CLABEL[c])}</option>`).join("");
+  $("#fwCond").value = conds.includes(prev) ? prev : "";
+  $("#fwCond").onchange = renderWhy;
+  const c = $("#fwCond").value;
+  const rows = Object.entries(S).map(([agent,cs])=>{
+    const tally = {}; Object.entries(cs).filter(([k])=>!c||k===c).forEach(([,s])=>Object.entries(s.failures||{}).forEach(([r,n])=>tally[r]=(tally[r]||0)+n));
+    return [agent, tally];
+  });
+  const used = REASONS.filter(([k])=>rows.some(([,t])=>t[k]));
+  if(!used.length){ $("#why").innerHTML = `<div class="empty">${Object.values(S).some(cs=>Object.values(cs).some(s=>s.runs&&!("failures" in s)&&s.success<s.runs))?"This result file predates failure reasons: <code>python -m freshpin bench --show FILE</code> lists them with the current rules.":"No counted run failed here."}</div>`; return; }
+  const max = Math.max(...rows.flatMap(([,t])=>Object.values(t)));
+  $("#why").innerHTML = `<table id="whyT"><tr><th>agent</th>${used.map(([,l])=>`<th>${esc(l)}</th>`).join("")}</tr>`+
+    rows.map(([agent,t])=>`<tr><td><b>${esc(agent)}</b></td>`+used.map(([k,l,d])=>{
+      const n=t[k]||0; if(!n) return `<td class="small" style="text-align:center">·</td>`;
+      const col=seq(.25+.75*n/max);
+      return `<td class="h" style="background:${col.bg};color:${col.ink}" data-a="${esc(agent)}" data-k="${esc(k)}" data-tip="${esc(`<b>${esc(agent)}</b> · ${esc(c?CLABEL[c]:"all conditions")}<br><b>${n}</b> run${n>1?"s":""}: ${esc(l)}<br><span class="small">${esc(d)}</span>`)}">${n}</td>`;
+    }).join("")+"</tr>").join("")+"</table>";
+  document.querySelectorAll("#whyT td.h").forEach(td=>{
+    td.onmousemove = ev => tip(td.dataset.tip, ev); td.onmouseleave = () => tip("");
+    td.onclick = () => {
+      const cs = S[td.dataset.a]||{};
+      const cond = c || Object.keys(cs).find(k=>(cs[k].failures||{})[td.dataset.k]);
+      const cell=[...document.querySelectorAll("#board .cell")].find(e=>e.dataset.a===td.dataset.a&&e.dataset.c===cond);
+      if(cell){ cell.click(); $("#runs").scrollIntoView({block:"start"}); }
+    };
+  });
 }
 function renderScatter(){
   const c = $("#scCond").value, S = DATA.summary||{};
@@ -340,6 +396,11 @@ function renderCards(){
       (worst?`<dt>worst failure</dt><dd>${esc(CLABEL[worst[0]]||worst[0])}: ${pct(worst[1].success_rate)}</dd>`:"")+
       `<dt>made-up answers</dt><dd>${made} <span class="small">(no evidence)</span></dd>`+
       `<dt>repeated planted</dt><dd>${planted}</dd>`+
+      (()=>{ const t={}; Object.values(cs).forEach(s=>Object.entries(s.failures||{}).forEach(([k,v])=>{ if(k!=="said_not_found") t[k]=(t[k]||0)+v; }));
+             const top=Object.entries(t).sort((a,b)=>b[1]-a[1])[0];
+             return top?`<dt>most common failure</dt><dd>${esc((REASONS.find(x=>x[0]===top[0])||[,top[0]])[1])} ×${top[1]}</dd>`:""; })()+
+      (n&&n.runs&&n.steps_mean_success!=null?`<dt>steps per success</dt><dd>${n.steps_mean_success}${n.repeat_searches?` <span class="small">(${n.repeat_searches} repeated searches)</span>`:""}</dd>`:"")+
+      (cs.flaky_tool&&cs.flaky_tool.tool_failed_runs?`<dt>retried a flaky tool</dt><dd>${cs.flaky_tool.tool_recovered_runs}/${cs.flaky_tool.tool_failed_runs} recovered</dd>`:"")+
       (n&&n.runs?`<dt>list $ / correct</dt><dd>${n.list_cost_usd_total==null?"?":(n.list_cost_per_success_usd==null?"-":"$"+fmtUsd(n.list_cost_per_success_usd))}</dd><dt>time p50</dt><dd>${n.seconds_p50}s</dd>`:"")+
       `</dl></div>`;
   }).join("");

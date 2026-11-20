@@ -1,0 +1,3 @@
+# Only for examples/agents/langgraph_agent.py. FreshPin itself needs nothing beyond the Python standard library.
+langgraph==1.1.6
+langchain-openai==1.8.5
