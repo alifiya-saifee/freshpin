@@ -113,7 +113,7 @@ All results are real runs, saved in `bench/samples/` and viewable in `/bench`. C
 | Poolside Laguna XS 2.1 | `search_first` | 7/9 | 0/9 | 9/9 | 7/9 |
 | Poolside Laguna XS 2.1 | `tool_agent` | 8/9 | 9/9 | 9/9 | 5/9 |
 | Gemini 3.5 Flash-Lite | `search_first` | 9/9 | 0/9 | 9/9 | 8/9 |
-| Gemini 3.5 Flash-Lite | `tool_agent` | 9/9 | 9/9 | 9/9 | 8/9 |
+| Gemini 3.5 Flash-Lite | `tool_agent` | 9/9 | 9/9 | 9/9 | 8/8 |
 
 What this shows:
 - **Some models break the "let the model call tools" design, as shown in the traces.** On gpt-oss and Qwen, `tool_agent` runs that failed had **called tools that don't exist** (gpt-oss: `open`; Qwen: `search_query`, `searchWeb` and others). The provider rejected the call and the run ended with no answer. On normal runs the score gap is only 6/9 against 8/9, which is within noise. The traces are the evidence, not the score.
@@ -145,7 +145,7 @@ The two strongest models, 9 tasks × 5 conditions × 3 repeats × 2 agents = **2
 | Nemotron 3.5 Lightning | `search_first` | 20/27 (6/9) | 0/27 | 27/27 | 24/27 (7/9) | 18/27 (5/9), 3× |
 | Nemotron 3.5 Lightning | `tool_agent` | 24/27 (7/9) | 25/27 (7/9) | 26/27 | 24/27 (6/9) | 16/27 (2/9), 8× |
 | Gemini 3.5 Flash-Lite | `search_first` | **27/27 (9/9)** | 0/27 | 27/27 | 26/27 (8/9) | 18/27 (6/9), 1× |
-| Gemini 3.5 Flash-Lite | `tool_agent` | **27/27 (9/9)** | 26/27 (8/9) | 27/27 | 27/27 (9/9) | 21/27 (5/9), 2× |
+| Gemini 3.5 Flash-Lite | `tool_agent` | **27/27 (9/9)** | 26/26 (9/9) | 27/27 | 27/27 (9/9) | 21/25 (7/9), 2× |
 
 - **pass^3 is stricter than the success rate.** Lightning's `search_first` was right 20 times out of 27, but on all 3 tries for only 6 of 9 tasks. Gemini was right every time.
 - **Under a broken tool, both models were honest.** Lightning said "not found" in 53 of 54 runs and Gemini in 54 of 54. Lightning's other run printed a raw tool call (`<tool_call>…`) instead of an answer, a formatting failure, not an invented fact. **No run invented an answer.**
@@ -162,7 +162,7 @@ Each model is compared with **its own** misleading-source result.
 | Nemotron 3.5 Lightning | `search_first` | 24/27 (89%) | 18/27 (67%) | 3 |
 | Nemotron 3.5 Lightning | `tool_agent` | 24/27 (89%) | 16/27 (59%) | 8 |
 | Gemini 3.5 Flash-Lite | `search_first` | 26/27 (96%) | 18/27 (67%) | 1 |
-| Gemini 3.5 Flash-Lite | `tool_agent` | 27/27 (100%) | 21/27 (78%) | 2 |
+| Gemini 3.5 Flash-Lite | `tool_agent` | 27/27 (100%) | 21/25 (84%) | 2 |
 | gpt-oss-120b | `search_first` | 8/9 (89%)* | 18/27 (67%) | 3 |
 | gpt-oss-120b | `tool_agent` | 7/9 (78%)* | 9/20 (45%) | 5 |
 | Qwen 3.8 27B | `search_first` | 7/9 (78%)* | 15/27 (56%) | 6 |

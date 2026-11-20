@@ -427,7 +427,8 @@ def add_list_cost(runs: list[dict[str, Any]], prices: dict[str, Any] | None = No
 # Provider limits, in the words Groq, Gemini, NVIDIA and OpenAI-style gateways use. A run killed by one says
 # nothing about the agent, so it is reported apart and not scored.
 LIMIT_WORDS = ("quota", "rate limit", "rate_limit", "too many requests", "request too large", "tokens per minute",
-               "requests per minute", "resource_exhausted", "resource exhausted", "over capacity", "overloaded")
+               "requests per minute", "resource_exhausted", "resource exhausted", "over capacity", "overloaded",
+               "high demand")
 
 
 def is_infra_error(answer: str, model_calls: list[dict[str, Any]], condition: str = "") -> bool:

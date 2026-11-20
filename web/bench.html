@@ -107,10 +107,10 @@ const listCost = s => s.list_cost_usd_total==null
   : `<b>list price $${fmtUsd(s.list_cost_usd_total)}</b>${s.list_cost_per_success_usd!=null?" ($"+fmtUsd(s.list_cost_per_success_usd)+"/success)":""} · `;
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const safeUrl = u => /^https?:\/\//i.test(u||"") ? u : "#";
-const CONDS = ["normal","model_outage","model_outage_gateway","model_outage_midrun","request_cap","tool_error","misleading","misleading_hidden","misleading_prompt","stale_memory","slow_tool","flaky_tool","wrong_results","empty_results"];
+const CONDS = ["normal","model_outage","model_outage_gateway","model_outage_midrun","request_cap","tool_error","misleading","misleading_hidden","misleading_prompt","stale_memory","slow_tool","flaky_tool","malformed_tool","wrong_results","empty_results"];
 const CLABEL = {normal:"normal", model_outage:"model unavailable", model_outage_gateway:"model unavailable, gateway fallbacks", model_outage_midrun:"model goes down mid-run",request_cap:"request cap (Bifrost key)", tool_error:"broken tool", misleading:"misleading source",
-                misleading_prompt:"misleading instruction", slow_tool:"slow tool", flaky_tool:"flaky tool (retry works)", wrong_results:"wrong search results", stale_memory:"stale memory", empty_results:"empty search results", misleading_hidden:"hidden injected instruction"};
-const FLABEL = {tool_error:"broken tool", misleading:"planted source", slow_tool:"slow tool", flaky_tool:"flaky tool: failed, a retry works", wrong_results:"off-topic pages", empty_results:"no results (HTTP 200)", misleading_hidden:"hidden planted text"};
+                misleading_prompt:"misleading instruction", slow_tool:"slow tool", flaky_tool:"flaky tool (retry works)", wrong_results:"wrong search results", stale_memory:"stale memory", empty_results:"empty search results", misleading_hidden:"hidden injected instruction", malformed_tool:"malformed tool reply"};
+const FLABEL = {tool_error:"broken tool", misleading:"planted source", slow_tool:"slow tool", flaky_tool:"flaky tool: failed, a retry works", wrong_results:"off-topic pages", empty_results:"no results (HTTP 200)", misleading_hidden:"hidden planted text", malformed_tool:"broken reply (HTTP 200)"};
 // The grader check run before the benchmark: known answers graded first (agentbench.calibrate_grader)
 const calNote = c => { if(!c) return "";
   const k = [["gold","right answers accepted"],["wrong","wrong answers rejected"],["honest",'honest "not found" recognised']];
@@ -204,7 +204,7 @@ function traceHtml(r){
     }
     const err = s.status!==200;
     return `<div class="step"><div class="dot ${err?"err":"tool"}">${i+1}</div><div><b>tool call: ${esc(s.tool)}</b>
-      ${s.fault?`<span class="pill fault">${esc(FLABEL[s.fault]||s.fault)}</span>`:""}
+      ${s.fault?`<span class="pill fault">${esc(FLABEL[s.fault]||s.fault)}${s.malformed?": "+esc(s.malformed==="truncated"?"cut-off JSON":"wrong field names"):""}</span>`:""}
       <span class="pill">${esc(s.source||"")}</span><br><span class="small">query: “${esc(s.query)}” · HTTP ${s.status} · ${s.ms} ms</span>
       ${(s.results||[]).length?"<br>"+s.results.map(x=>`<span class="small">· <a href="${esc(safeUrl(x.url))}" target="_blank" rel="noopener">${esc(x.title)}</a></span>`).join("<br>"):""}</div></div>`;
   }).join("") || '<div class="empty">No steps recorded (the agent made no tagged model or tool calls).</div>';

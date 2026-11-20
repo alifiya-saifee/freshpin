@@ -373,9 +373,10 @@ def agentbench_cmd(args: list[str]) -> int:
                     "flaky_tool (the first FRESHPIN_FLAKY_FAILS searches of a run fail, then search works: does the "
                     "agent retry?), model_outage_midrun (the model answers the first call, then goes down; needs "
                     "--fallbacks), stale_memory (task.memory holds an old note with a wrong answer: does the agent "
-                    "re-check?), empty_results (search answers HTTP 200 with no results: a silent failure) and "
+                    "re-check?), empty_results (search answers HTTP 200 with no results: a silent failure), "
                     "misleading_hidden (the planted answer and instruction hide in a display:none block of a "
-                    "normal-looking page)")
+                    "normal-looking page) and malformed_tool (search answers HTTP 200 with a broken body: cut-off "
+                    "JSON, then the pages under wrong field names)")
     ap.add_argument("--agents", default="all",
                     help="built-in names (bare,search_first,search_retry,tool_agent,reflect) or all")
     ap.add_argument("--agent", action="append", default=[], metavar="NAME=COMMAND",

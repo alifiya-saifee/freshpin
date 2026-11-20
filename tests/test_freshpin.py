@@ -1631,6 +1631,9 @@ class AgentBenchTests(unittest.TestCase):
                  "back off exponentially. Visit https://groqstatus.com to see if there is an active incident."}]
         self.assertTrue(is_infra_error("", busy))                                  # Groq overloaded: provider, not agent
         self.assertTrue(is_infra_error("", [{"status": "error", "error": "Error 529: Overloaded"}]))
+        gemini_busy = [{"status": "error", "error": "This model is currently experiencing high demand. Spikes in demand "
+                        "are usually temporary. Please try again later."}]                 # seen 19 Nov, Gemini free tier
+        self.assertTrue(is_infra_error("", gemini_busy))
         def run(i, answer, grade, backstop, mentions, calls=()):
             return {"run_id": f"r{i}", "agent": "a", "condition": "misleading", "task_id": "t", "repeat": i,
                     "answer": answer, "grade": grade, "backstop": backstop, "followed_planted": mentions,
@@ -3097,8 +3100,11 @@ class EveryConditionReachesTheAgentTests(unittest.TestCase):
         self.assertEqual((mid["outage_after"], mid["outage_rejected_calls"]), (1, 0))  # the probe made no model call
         self.assertIn("Contoso Dynamics", got["stale_memory"]["answer"].split(" mem=")[1])  # the wrong answer, remembered
         self.assertIn('"saved_on": "', got["stale_memory"]["answer"])
-        for cond in set(ALL_FAULTS) - {"stale_memory"}:                        # no memory anywhere else
+        for cond in set(ALL_FAULTS) - {"stale_memory", "malformed_tool"}:      # no memory anywhere else
             self.assertTrue(got[cond]["answer"].endswith(" mem=[]"), cond)
+        bad = [x for x in got["malformed_tool"]["trace"] if x.get("kind") == "tool"][0]
+        self.assertEqual(bad["malformed"], "truncated")                     # the run's first reply: cut-off JSON
+        self.assertFalse(got["malformed_tool"]["answer"])                    # the probe choked on it: no answer
         self.assertIn("llm=http://127.0.0.1:9/v1", got["normal"]["answer"])
         for cond in set(ALL_FAULTS) - set(TOOL_FAULTS):                     # no tool fault for the other conditions
             self.assertEqual([s.get("fault") for s in got[cond]["trace"] if s.get("kind") == "tool"], [None], cond)
@@ -3890,6 +3896,63 @@ class ReviewPageTests(unittest.TestCase):
                        'post("/api/bench/review"', "DATA.pairwise", "too_few_tasks"):
             self.assertIn(needle, html)
         self.assertIn('${STATIC?"disabled":""}', html)                      # no saving from the static snapshot
+
+
+class MalformedToolTests(unittest.TestCase):
+    """20 Nov: search answers HTTP 200 with a broken body (cut-off JSON, then renamed fields). Ported from the
+    19 Nov branch: on a live test it crashed search_first and made tool_agent drop a working model."""
+
+    def test_bodies(self):
+        from freshpin.toolserver import malformed_body
+        results = [{"title": "Workday outage", "url": "https://w.example/1", "snippet": "s", "published_date": "d"}]
+        kind, raw = malformed_body(results, 0)
+        self.assertEqual(kind, "truncated")
+        with self.assertRaises(ValueError):
+            json.loads(raw)
+        kind, raw = malformed_body(results, 1)
+        doc = json.loads(raw)
+        self.assertEqual(kind, "renamed_fields")
+        self.assertNotIn("results", doc)
+        self.assertEqual(doc["items"][0]["link"], "https://w.example/1")    # the pages are there, misnamed
+        self.assertEqual(malformed_body(results, 2)[0], "truncated")
+
+    def test_broken_bytes_go_out_over_http_and_mcp(self):
+        import urllib.error
+        import urllib.request
+        from freshpin.toolserver import ToolServer
+
+        def post(url, body):
+            req = urllib.request.Request(url, json.dumps(body).encode(), {"Content-Type": "application/json",
+                                                                          "X-Run-Id": "m"})
+            with urllib.request.urlopen(req, timeout=10) as r:
+                return r.status, r.read().decode()
+        with TempDir() as tmp:
+            (Path(tmp) / "c.json").write_text(json.dumps({"workday outage": [
+                {"title": "Workday outage", "url": "https://w.example/1", "snippet": "Workday was down."}]}))
+            ts = ToolServer(lambda q: [], cache_path=Path(tmp) / "c.json", live=False).start()
+            try:
+                ts.set_run("m", "malformed_tool")
+                code, raw = post(ts.url + "/tools/search_web", {"query": "workday outage"})
+                self.assertEqual(code, 200)
+                with self.assertRaises(ValueError):
+                    json.loads(raw)
+                self.assertIn('"items"', post(ts.url + "/tools/search_web", {"query": "workday outage"})[1])
+                code, raw = post(ts.url + "/mcp", {"jsonrpc": "2.0", "id": 1, "method": "tools/call", "params": {
+                    "name": "search_web", "arguments": {"query": "workday outage"}}})
+                reply = json.loads(raw)["result"]
+                self.assertFalse(reply["isError"])
+                with self.assertRaises(ValueError):                           # call 3: cut off again
+                    json.loads(reply["content"][0]["text"])
+                calls = ts.calls("m")
+                self.assertEqual([c["malformed"] for c in calls], ["truncated", "renamed_fields", "truncated"])
+                self.assertEqual(calls[0]["results"][0]["url"], "https://w.example/1")   # the trace shows what was hidden
+                ts.set_run("n", "normal")                                     # other runs get clean JSON
+                req = urllib.request.Request(ts.url + "/tools/search_web", json.dumps({"query": "workday outage"}).encode(),
+                                             {"Content-Type": "application/json", "X-Run-Id": "n"})
+                with urllib.request.urlopen(req, timeout=10) as r:
+                    self.assertEqual(json.loads(r.read())["results"][0]["url"], "https://w.example/1")
+            finally:
+                ts.stop()
 
 
 if __name__ == "__main__":

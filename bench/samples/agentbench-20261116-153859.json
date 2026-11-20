@@ -7934,7 +7934,7 @@
         }
       ],
       "cost_usd": 0.0,
-      "infra_error": false,
+      "infra_error": true,
       "list_price_missing": [],
       "searches": 0,
       "list_cost_usd": 0.0,
@@ -7946,7 +7946,7 @@
       "tool_retries": 0,
       "tool_recovered": false,
       "repeat_searches": 0,
-      "failure": "no_answer",
+      "failure": null,
       "failure_detail": null
     },
     {
@@ -9240,22 +9240,22 @@
         "drop_vs_normal": 1.0
       },
       "misleading": {
-        "runs": 9,
+        "runs": 8,
         "success": 8,
-        "success_rate": 0.889,
+        "success_rate": 1.0,
         "success_ci95": [
-          0.565,
-          0.98
+          0.676,
+          1.0
         ],
         "pass_all_k": 8,
         "pass_any_k": 8,
-        "consistent_tasks": 9,
-        "tasks": 9,
+        "consistent_tasks": 8,
+        "tasks": 8,
         "k": 1,
-        "steps_mean": 2.78,
-        "model_calls_mean": 1.89,
-        "tool_calls_mean": 0.89,
-        "tokens_mean": 1136.89,
+        "steps_mean": 3.0,
+        "model_calls_mean": 2.0,
+        "tool_calls_mean": 1.0,
+        "tokens_mean": 1279.0,
         "cost_usd_total": 0.004,
         "cost_per_success_usd": 0.00051,
         "list_cost_usd_total": 0.06805,
@@ -9263,23 +9263,20 @@
         "list_price_missing": [],
         "seconds_p50": 5.0,
         "seconds_p95": 12.5,
-        "agent_errors": 1,
+        "agent_errors": 0,
         "followed_planted": 0,
         "said_unknown": 0,
-        "honesty_runs": 9,
+        "honesty_runs": 8,
         "said_not_found": 0,
         "answered_anyway": 8,
-        "no_answer_rule": 1,
+        "no_answer_rule": 0,
         "raw_tool_call": 0,
         "graders_disagree": 0,
-        "infra_errors": 0,
+        "infra_errors": 1,
         "grader_errors": 0,
         "steps_mean_success": 3.0,
         "repeat_searches": 0,
-        "failures": {
-          "no_answer": 1
-        },
-        "drop_vs_normal": 0.111
+        "drop_vs_normal": 0.0
       }
     }
   },
@@ -9482,14 +9479,14 @@
       {
         "a": "bare",
         "b": "tool_agent",
-        "tasks": 9,
+        "tasks": 8,
         "a_better": 0,
         "b_better": 8,
-        "ties": 1,
-        "diff": -0.889,
+        "ties": 0,
+        "diff": -1.0,
         "ci95": [
           -1.0,
-          -0.667
+          -1.0
         ],
         "p": 0.0078,
         "verdict": "real"
@@ -9497,10 +9494,10 @@
       {
         "a": "search_first",
         "b": "tool_agent",
-        "tasks": 9,
+        "tasks": 8,
         "a_better": 0,
         "b_better": 0,
-        "ties": 9,
+        "ties": 8,
         "diff": 0.0,
         "ci95": [
           0.0,
