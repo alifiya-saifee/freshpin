@@ -35,6 +35,16 @@ class FreshPin:
                                       tuple(s.no_thinking_prefixes), tuple(s.no_temperature_prefixes))
             self.search = CachedSearch(TavilyClient(s.tavily_api_key, s.tavily_url, s.timeout_s))
 
+    def close(self) -> None:
+        """Close the ledger's database (see Ledger.close)."""
+        self.ledger.close()
+
+    def __enter__(self) -> "FreshPin":
+        return self
+
+    def __exit__(self, *exc: object) -> None:
+        self.close()
+
     def status(self) -> dict[str, Any]:
         bifrost_ok = None
         if self.s.mode == "live":

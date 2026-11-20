@@ -8,6 +8,7 @@ import tempfile
 import threading
 import unittest
 from datetime import date
+from unittest import mock
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
@@ -21,6 +22,31 @@ from freshpin.pipeline import heuristic_claims  # noqa: E402
 from freshpin.scoring import freshness_score  # noqa: E402
 
 TODAY = date(2026, 11, 14)
+
+# Windows refuses to delete a file that is still open, so a temp folder holding an open ledger database cannot be
+# cleaned up there (Linux and macOS allow it). Every Ledger the tests open is tracked, and TempDir closes the ones
+# inside it before deleting the folder.
+_OPEN_LEDGERS: list = []
+_ledger_init = Ledger.__init__
+
+
+def _tracked_ledger_init(self, *args, **kwargs):
+    _ledger_init(self, *args, **kwargs)
+    _OPEN_LEDGERS.append(self)
+
+
+Ledger.__init__ = _tracked_ledger_init
+
+
+class TempDir(tempfile.TemporaryDirectory):
+    """tempfile.TemporaryDirectory that first closes the ledgers opened inside it."""
+
+    def cleanup(self):
+        root = os.path.realpath(self.name) + os.sep
+        for led in [x for x in _OPEN_LEDGERS if os.path.realpath(x.path).startswith(root)]:
+            led.close()
+            _OPEN_LEDGERS.remove(led)
+        super().cleanup()
 
 
 def replay_app(tmp: str) -> FreshPin:
@@ -59,7 +85,7 @@ class ScoringTests(unittest.TestCase):
 
 class LedgerTests(unittest.TestCase):
     def setUp(self):
-        self.tmp = tempfile.TemporaryDirectory()
+        self.tmp = TempDir()
         self.l = Ledger(Path(self.tmp.name) / "l.db")
         v = self.l.seed_fact("k", "old value", "pricing")
         self.l.add_decision("D1", "Quote", "quote", "ops", {"k": v}, "Ann")
@@ -112,7 +138,7 @@ class DebateFixTests(unittest.TestCase):
     """Bugs the expert debate reproduced: they must stay fixed."""
 
     def test_repeating_an_old_claim_does_not_reopen_reapproved_decisions(self):
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             app = replay_app(tmp)
             app.load_sample("dubai_building_law")
             answer = app.samples()["dubai_building_law"]["answer"]
@@ -127,7 +153,7 @@ class DebateFixTests(unittest.TestCase):
             self.assertEqual(cert["verdict"], "stale")          # still reported as stale to the user
 
     def test_one_judge_alone_never_reopens(self):
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             app = replay_app(tmp)
             app.s.recheck = False
             app.load_sample("dubai_building_law")
@@ -149,7 +175,7 @@ class DebateFixTests(unittest.TestCase):
 
 class PipelineReplayTests(unittest.TestCase):
     def setUp(self):
-        self.tmp = tempfile.TemporaryDirectory()
+        self.tmp = TempDir()
         self.app = replay_app(self.tmp.name)
 
     def tearDown(self):
@@ -303,7 +329,7 @@ class RecheckTests(unittest.TestCase):
     """The recheck layer: second search, second judge, exact-quote rule and fixed decision rules."""
 
     def setUp(self):
-        self.tmp = tempfile.TemporaryDirectory()
+        self.tmp = TempDir()
         self.app = replay_app(self.tmp.name)
         self.app.load_sample("dubai_building_law")
         self.answer = self.app.samples()["dubai_building_law"]["answer"]
@@ -464,7 +490,7 @@ class NewsLiveDataTests(unittest.TestCase):
             "time_sensitive": True, "search_query": "gold spot price today"}
 
     def setUp(self):
-        self.tmp = tempfile.TemporaryDirectory()
+        self.tmp = TempDir()
 
     def tearDown(self):
         self.tmp.cleanup()
@@ -537,7 +563,7 @@ class QuoteRetryTests(unittest.TestCase):
                             "supporting": [], "contradicting": [1], "why_outdated": "", "explanation": ""}}
         quote = {"cert": {"best_source": 1, "evidence_quote": retry_quote}}
         chat = StubChat([claim], verify, recheck, quote)
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             rep = run_check("No certificate is needed.", chat=chat, search=StubSearch(rows),
                             ledger=Ledger(Path(tmp) / "q.db"), extractor_models=["a"], verifier_models=["b"],
                             token_budget=10**6, today=TODAY)
@@ -609,7 +635,7 @@ class JudgeRuleTests(unittest.TestCase):
         verify = {"cert": {"verdict": "stale", "current_statement": "Needed at 20 years.", "supporting": [],
                            "contradicting": [1], "explanation": "", "confirm_query": "cert"}}
         chat = TracingChat([claim], verify, {"cert": recheck_reply})
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             rep = run_check("No certificate is needed.", chat=chat, search=StubSearch(rows),
                             ledger=Ledger(Path(tmp) / "j.db"), extractor_models=["a"], verifier_models=["b"],
                             token_budget=10**6, today=TODAY)
@@ -649,7 +675,7 @@ class EventSearchTests(unittest.TestCase):
         verify = {"outage.friday": {"verdict": "unverifiable", "current_statement": "", "supporting": [],
                                     "contradicting": [], "explanation": "", "confirm_query": "ServiceNow outage news"}}
         chat, search = StubChat([claim], verify, {}), StubSearch({})
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             run_check("ServiceNow had the outage.", chat=chat, search=search, ledger=Ledger(Path(tmp) / "e.db"),
                       extractor_models=["a"], verifier_models=["b"], token_budget=10**6, today=TODAY,
                       context="Which company had a major outage on Friday 14 November affecting 11,500 companies?")
@@ -714,7 +740,7 @@ class EfficiencyTests(unittest.TestCase):
         self.assertEqual(len(inner.calls), 3)
 
     def test_second_judge_sees_top_six_trimmed_sources(self):
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             claim = {"text": "X costs $5.", "key": "x.price", "type": "pricing", "time_sensitive": True,
                      "search_query": "x price"}
             rows = {"x price": [{"title": f"S{i}", "url": f"https://s{i}.example.com", "snippet": "y" * 900,
@@ -739,7 +765,7 @@ class EfficiencyTests(unittest.TestCase):
 
 class CorrectionsAndBenchTests(unittest.TestCase):
     def test_corrections_hold_confirmed_changes_only(self):
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             app = replay_app(tmp)
             app.load_sample("dubai_building_law")
             rc = app.chat.d.data["recheck"]["dubai.ejari.attestation_needs_building_certificate"]
@@ -787,7 +813,7 @@ class CorrectionsAndBenchTests(unittest.TestCase):
         self.assertEqual(bench.estimate_credits(3, 2, False), 18)
 
     def test_bench_check_leaves_ledger_alone(self):
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             app = replay_app(tmp)
             app.load_sample("dubai_building_law")
             before = app.ledger.state()["decisions"]
@@ -796,7 +822,7 @@ class CorrectionsAndBenchTests(unittest.TestCase):
 
     def test_bench_shows_what_is_true_now_and_why(self):
         from freshpin.bench import claim_detail, rescore
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             app = replay_app(tmp)
             app.load_sample("dubai_building_law")
             rep = app.check(app.samples()["dubai_building_law"]["answer"], apply_to_ledger=False)
@@ -954,7 +980,7 @@ class WatchTests(unittest.TestCase):
     def test_due_facts_follow_half_life_and_alerts_fire_once(self):
         from freshpin.scoring import HALF_LIFE_DAYS
         from freshpin.watch import alert_text, run_watch
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             app = replay_app(tmp)
             app.load_sample("dubai_building_law")
             led = app.ledger
@@ -1020,7 +1046,7 @@ class SafetyOpsTests(unittest.TestCase):
         self.assertEqual(counts, {"email": 1, "emirates_id": 1, "iban": 1, "phone": 1})
         self.assertIn("no certificate is needed", out)
         self.assertEqual(redact("Law No. 3 of 2026 applies after 20 years.")[1], {})  # facts are left alone
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             app = replay_app(tmp)
             app.load_sample("dubai_building_law")
             answer = app.samples()["dubai_building_law"]["answer"]
@@ -1032,7 +1058,7 @@ class SafetyOpsTests(unittest.TestCase):
 
     def test_customer_data_mode_refuses_trial_routes_and_daily_cap(self):
         from freshpin.app import LimitReached
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             s = Settings()
             s.mode, s.db_path = "live", Path(tmp) / "c.db"
             s.extractor_models, s.verifier_models, s.checker_models = ["openai/nvidia/x"], ["groq/y"], ["groq/y"]
@@ -1048,7 +1074,7 @@ class SafetyOpsTests(unittest.TestCase):
                 r.check("Another answer.")
 
     def test_reopen_cap_sends_the_rest_to_at_risk(self):
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             app = replay_app(tmp)
             app.load_sample("dubai_building_law")
             app.ledger.max_auto_reopens = 1
@@ -1059,7 +1085,7 @@ class SafetyOpsTests(unittest.TestCase):
 
     def test_api_needs_the_token_when_set(self):
         from freshpin.server import make_handler
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             app = replay_app(tmp)
             app.s.api_token = "s3cret-token"
             httpd = ThreadingHTTPServer(("127.0.0.1", 0), make_handler(app))
@@ -1108,7 +1134,7 @@ class HardeningTests(unittest.TestCase):
         import urllib.error
         import urllib.request
         from freshpin.server import make_handler
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             app = replay_app(tmp)
             app.load_sample("dubai_building_law")
             app.check(app.samples()["dubai_building_law"]["answer"])  # reopens Q-112, so there is something to approve
@@ -1402,7 +1428,7 @@ class AgentBenchTests(unittest.TestCase):
                 "tools": {"base_url": ts.url, "headers": {"X-Run-Id": run_id}, "spec": [SEARCH_TOOL]}}
 
     def test_tool_server_records_once_replays_and_injects_failures(self):
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             ts = self.tools(tmp)
             try:
                 for rid, fault in (("a", "normal"), ("b", "normal"), ("c", "tool_error"), ("d", "misleading")):
@@ -1420,7 +1446,7 @@ class AgentBenchTests(unittest.TestCase):
 
     def test_builtin_agents_follow_the_contract_and_fall_back(self):
         from freshpin import agents
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             ts = self.tools(tmp)
             try:
                 self.assertEqual(agents.bare(self.task(ts, "r1"))["answer"], "I am not sure.")
@@ -1446,7 +1472,7 @@ class AgentBenchTests(unittest.TestCase):
             def read(self, run_id):
                 return []
         tasks = [{"id": "t1", "question": "Which company had the outage on Friday?", "gold_answer": "Workday."}]
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             ts = self.tools(tmp)
             try:
                 return run_suite(tasks, [agent], ["normal", "model_outage", "tool_error", "misleading"], 1, "m/good",
@@ -1486,9 +1512,22 @@ class AgentBenchTests(unittest.TestCase):
         res = self._run_outside(Agent("sdk_mcp", [py, str(root / "examples/agents/openai_agents_sdk_agent.py"), "--mcp"]))
         self._assert_behaves(res, "sdk_mcp")                       # the same tool, taken over MCP
 
+    def test_a_langgraph_agent_runs_unchanged(self):
+        """Needs langgraph + langchain-openai (examples/agents/requirements-langgraph.txt): set FRESHPIN_LANGGRAPH_PYTHON
+        to a python that has them, or install them where the tests run (skipped otherwise)."""
+        import subprocess
+        from freshpin.agentbench import Agent
+        py = os.environ.get("FRESHPIN_LANGGRAPH_PYTHON", sys.executable)
+        if not Path(py).exists() or subprocess.run([py, "-c", "import langgraph, langchain_openai"],
+                                                   capture_output=True).returncode:
+            self.skipTest("LangGraph not installed (set FRESHPIN_LANGGRAPH_PYTHON)")
+        root = Path(__file__).resolve().parent.parent
+        res = self._run_outside(Agent("langgraph", [py, str(root / "examples/agents/langgraph_agent.py")]))
+        self._assert_behaves(res, "langgraph")
+
     def test_tool_server_speaks_mcp_with_the_same_faults_and_log(self):
         import urllib.request
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             ts = self.tools(tmp)
             try:
                 def rpc(msg, run="r1"):
@@ -1534,7 +1573,7 @@ class AgentBenchTests(unittest.TestCase):
         echo = Agent("echo", [_sys.executable, "-c", "import json,sys; t=json.load(sys.stdin); "
                                                     "print(json.dumps({'answer': t['question']}))"])
         tasks = [{"id": "t1", "question": "Which company had the outage on Friday?", "gold_answer": "Workday."}]
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             ts = self.tools(tmp)
             try:
                 res = run_suite(tasks, [echo], ["normal", "misleading_prompt"], 1, "m/good", [], ts,
@@ -1550,7 +1589,7 @@ class AgentBenchTests(unittest.TestCase):
         self.assertTrue(mp["followed_planted"])
         self.assertFalse(mp["success"])
         self.assertEqual(res["summary"]["echo"]["misleading_prompt"]["followed_planted"], 1)
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             ts = ToolServer(lambda q: [{"title": "T", "url": "https://x.example/a"}], cache_path=Path(tmp) / "c.json")
             ts.slow_s = 0.4
             ts.set_run("r", "slow_tool")
@@ -1624,7 +1663,7 @@ class AgentBenchTests(unittest.TestCase):
         say = lambda text: Agent(text[:8], [_sys.executable, "-c",  # noqa: E731
                                             f"import json; print(json.dumps({{'answer': {text!r}}}))"])
         tasks = [{"id": "t1", "question": "Which company had the outage on Friday?", "gold_answer": "Workday."}]
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             ts = self.tools(tmp)
             try:
                 res = run_suite(tasks, [say("Workday, on Friday."), say("Contoso Dynamics had the outage."),
@@ -1660,7 +1699,7 @@ class AgentBenchTests(unittest.TestCase):
         tasks = [{"id": "t1", "question": "Which company had the outage on Friday?", "gold_answer": "Workday."}]
         agents_ = [Agent("tool_agent", [_sys.executable, "-m", "freshpin.agents", "tool_agent"], env={"PYTHONPATH": str(root)}),
                    Agent("outside", [_sys.executable, str(root / "examples" / "agents" / "reflect_agent.py")])]
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             ts = self.tools(tmp)
             try:
                 res = run_suite(tasks, agents_, ["normal", "model_outage", "tool_error", "misleading"], 2, "m/good", [],
@@ -1692,7 +1731,7 @@ class AgentBenchTests(unittest.TestCase):
         import sqlite3 as _sq
         from freshpin.agentbench import BifrostLog
         from freshpin.server import bench_file
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             db = Path(tmp) / "logs.db"
             con = _sq.connect(db)
             con.execute("CREATE TABLE logs (timestamp, provider, model, status, latency, token_usage, cost, "
@@ -1721,7 +1760,7 @@ class AgentBenchTests(unittest.TestCase):
             "bare": [{"id": "q1", "gold": {"result": "wrong"}, "correct": False, "tokens": 10, "latency_s": 1.0}],
             "agent": [{"id": "q1", "gold": {"result": "correct"}, "correct": True, "chose_to_search": True,
                        "tool_calls": [{}], "tokens": 30, "latency_s": 2.0}]}}}}
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             f = Path(tmp) / "arena.json"
             f.write_text(json.dumps(arena))
             for path, want in ((f, "| agent | 1 | 1 | 100%"),
@@ -1733,7 +1772,7 @@ class AgentBenchTests(unittest.TestCase):
 
     def test_bench_list_skips_a_running_benchmarks_partial_file(self):
         from freshpin import server
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             res, sam = Path(tmp) / "results", Path(tmp) / "samples"
             res.mkdir()
             sam.mkdir()
@@ -1750,7 +1789,7 @@ class AgentBenchTests(unittest.TestCase):
 
     def test_committed_sample_wins_over_a_local_result_of_the_same_name(self):
         from freshpin import server
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             res, sam = Path(tmp) / "results", Path(tmp) / "samples"
             res.mkdir()
             sam.mkdir()
@@ -1771,7 +1810,7 @@ class AgentBenchTests(unittest.TestCase):
     def test_bifrost_log_keeps_runs_apart(self):
         import sqlite3 as _sq
         from freshpin.agentbench import BifrostLog
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             db = Path(tmp) / "logs.db"
             con = _sq.connect(db)
             con.execute("CREATE TABLE logs (timestamp, provider, model, status, latency, token_usage, cost, "
@@ -1791,7 +1830,7 @@ class AgentBenchTests(unittest.TestCase):
         (the old wait stopped after two equal reads 1.5 s apart and under-counted the last run)."""
         import sqlite3 as _sq
         from freshpin.agentbench import BifrostLog
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             db = Path(tmp) / "logs.db"
             con = _sq.connect(db)
             con.execute("CREATE TABLE logs (timestamp, provider, model, status, latency, token_usage, cost, "
@@ -1906,7 +1945,7 @@ class AgentBenchTests(unittest.TestCase):
 
     def test_replay_only_never_searches_live(self):
         from freshpin.toolserver import ToolServer
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             cache = Path(tmp) / "c.json"
             cache.write_text(json.dumps({"workday outage": [{"title": "T", "url": "https://x.example/a"}]}))
             called = []
@@ -1936,7 +1975,7 @@ class AgentBenchTests(unittest.TestCase):
         flipped = dict(reversed(list(cache.items())))                                 # file order must not matter
         for q in ("workday outage companies", "lunar charger rating", "workday 11,500 companies hit"):
             self.assertEqual(nearest_results(cache, q), nearest_results(flipped, q), q)
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             path = Path(tmp) / "c.json"
             path.write_text(json.dumps(cache))
             called = []
@@ -1948,11 +1987,11 @@ class AgentBenchTests(unittest.TestCase):
             self.assertEqual(ts.calls("r")[0]["source"], "replay_nearest")
             self.assertEqual(called, [])
             ts.save()
-            self.assertNotIn("workday outage date", json.loads(path.read_text()))   # the recording is not changed
+            self.assertNotIn("workday outage date", json.loads(path.read_text(encoding="utf-8")))   # the recording is not changed
 
     def test_tool_cache_path_prefers_the_suite_folder(self):
         from freshpin.__main__ import tool_cache_path
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             suites, bench_dir = Path(tmp) / "suites", Path(tmp)
             suites.mkdir()
             q = suites / "s.json"
@@ -1992,7 +2031,7 @@ class McpTests(unittest.TestCase):
     """The MCP server, driven the way an AI assistant drives it: JSON lines in, JSON lines out."""
 
     def setUp(self):
-        self.tmp = tempfile.TemporaryDirectory()
+        self.tmp = TempDir()
         self.app = replay_app(self.tmp.name)
 
     def tearDown(self):
@@ -2084,7 +2123,7 @@ class MiscTests(unittest.TestCase):
         self.assertEqual(parse_json_reply('Here you go: {"a": {"x": "}"}} thanks'), {"a": {"x": "}"}})
 
     def test_typed_claims_are_always_checked(self):
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             claims = [{"text": "Law X applies.", "key": "law.x", "type": "regulation", "time_sensitive": False,
                        "search_query": "law x"},
                       {"text": "Water is wet.", "key": "water", "type": "other", "time_sensitive": False,
@@ -2136,7 +2175,7 @@ class ListPriceTests(unittest.TestCase):
     def test_build_from_bifrost_reads_its_pricing_table_read_only(self):
         import sqlite3
         from freshpin.prices import build_from_bifrost
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             db = Path(tmp) / "config.db"
             con = sqlite3.connect(db)
             con.execute("CREATE TABLE governance_model_pricing (provider TEXT, model TEXT, mode TEXT, "
@@ -2255,7 +2294,7 @@ class ListPriceTests(unittest.TestCase):
         import io
         import sqlite3
         from freshpin.__main__ import main
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             db, out = Path(tmp) / "config.db", Path(tmp) / "prices.json"
             con = sqlite3.connect(db)
             con.execute("CREATE TABLE governance_model_pricing (provider TEXT, model TEXT, mode TEXT, "
@@ -2268,7 +2307,7 @@ class ListPriceTests(unittest.TestCase):
                 self.assertEqual(main(["prices", "--models", "groq/openai/gpt-oss-120b,x/none", "--bifrost-config",
                                        str(db), "--out", str(out)]), 0)
                 self.assertEqual(main(["prices", "--models", "a/b", "--bifrost-config", str(Path(tmp) / "no.db")]), 2)
-            data = json.loads(out.read_text())
+            data = json.loads(out.read_text(encoding="utf-8"))
             self.assertEqual(list(data["prices"]), ["groq/openai/gpt-oss-120b"])   # unknown models are not written
             self.assertIn("no paid list price", buf.getvalue())
 
@@ -2281,7 +2320,7 @@ class MutationGapTests(unittest.TestCase):
         import urllib.error
         import urllib.request
         from freshpin.server import make_handler
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             app = replay_app(tmp)
             app.s.api_token = "s3cret-token"
             httpd = ThreadingHTTPServer(("127.0.0.1", 0), make_handler(app))
@@ -2311,7 +2350,7 @@ class MutationGapTests(unittest.TestCase):
                 httpd.server_close()
 
     def test_seeded_decisions_get_an_approval_time(self):
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             led = Ledger(Path(tmp) / "l.db")
             v = led.seed_fact("k", "A fact.", "other")
             led.add_decision("D-1", "t", "budget", "o", {"k": v}, "Sara")
@@ -2321,7 +2360,7 @@ class MutationGapTests(unittest.TestCase):
     def test_repeating_an_old_corrected_claim_does_not_reopen_again(self):
         """The ledger already moved k from v1 to v2. Someone repeats the OLD v1 claim: stale, but the world did not
         change again, so there is no v3 and no second reopen."""
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             led = Ledger(Path(tmp) / "l.db")
             v1 = led.seed_fact("permit.fee", "The permit fee is 500 dirhams per unit.", "price")
             led.add_decision("D-1", "Budget", "budget", "o", {"permit.fee": v1}, "Sara")
@@ -2440,7 +2479,7 @@ class MutationGapTests(unittest.TestCase):
         import urllib.request
         from freshpin.server import make_handler
         from freshpin.toolserver import ToolServer
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             httpd = ThreadingHTTPServer(("127.0.0.1", 0), make_handler(replay_app(tmp)))
             threading.Thread(target=httpd.serve_forever, daemon=True).start()
             try:
@@ -2464,7 +2503,7 @@ class MutationGapTests(unittest.TestCase):
     def test_bifrost_log_is_read_read_only_from_a_real_sqlite_file(self):
         import sqlite3
         from freshpin.agentbench import BifrostLog
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             db = Path(tmp) / "logs.db"
             con = sqlite3.connect(db)
             con.execute("CREATE TABLE logs (session_id TEXT, timestamp TEXT, provider TEXT, model TEXT, status TEXT, "
@@ -2552,7 +2591,7 @@ class GapCloseTests(unittest.TestCase):
             self.assertIn(cond, FAULTS)
         self.assertNotIn("misleading_prompt", EXTRA_FAULTS)                        # one list per condition
         self.assertFalse(set(FAULTS) & set(EXTRA_FAULTS))
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             cache = Path(tmp) / "c.json"
             cache.write_text(json.dumps(self.CACHE))
             ts = ToolServer(lambda q: self.fail("no live search"), cache_path=cache, live=False)
@@ -2619,7 +2658,7 @@ class GapCloseTests(unittest.TestCase):
         self.assertEqual(rescore({"meta": {"repeats": 1}, "runs": [r]})["summary"]["a"]["normal"]["runs"], 0)
 
     def test_bench_page_has_side_by_side_and_new_condition(self):
-        html = (Path(__file__).resolve().parent.parent / "web" / "bench.html").read_text()
+        html = (Path(__file__).resolve().parent.parent / "web" / "bench.html").read_text(encoding="utf-8")
         for needle in ('id="sbTask"', 'id="sbA"', 'id="sbB"', "function renderSideBySide", "wrong_results:",
                        "graders disagree", "said_unknown"):
             self.assertIn(needle, html)
@@ -2640,6 +2679,351 @@ class StubKeys:
 
     def delete(self, key_id):
         self.deleted.append(key_id)
+
+
+class ConsoleEncodingTests(unittest.TestCase):
+    """Found 20 Nov by the new Windows CI job: the gate printed ✅ to a cp1252 console and crashed before its verdict."""
+
+    def test_gate_prints_its_marks_on_a_cp1252_console(self):
+        import subprocess
+        root = Path(__file__).resolve().parent.parent
+        env = {**os.environ, "PYTHONIOENCODING": "cp1252", "PYTHONUTF8": "0", "PYTHONPATH": str(root)}
+        proc = subprocess.run([sys.executable, "-m", "freshpin", "gate",
+                               str(root / "bench/samples/agentbench-20261117-123528.json"), "--agent", "tool_agent",
+                               "--min-success", "0.7", "--min-success", "model_outage=0.9",
+                               "--max-answered-anyway", "0", "--max-planted", "1"],
+                              capture_output=True, cwd=str(root), env=env, timeout=120)
+        out = proc.stdout.decode("utf-8")
+        self.assertEqual(proc.returncode, 0, proc.stderr.decode("utf-8", "replace")[-500:])
+        self.assertIn("✅", out)
+        self.assertNotIn("UnicodeEncodeError", proc.stderr.decode("utf-8", "replace"))
+
+
+class GraderCalibrationTests(unittest.TestCase):
+    """Known answers graded before a run, so a biased grader is caught up front, not after 72 answers."""
+    TASKS = [{"id": "t1", "question": "How many users?", "gold_answer": "More than 100,000 users at the peak."},
+             {"id": "t2", "question": "Who bought it?", "gold_answer": "Workday."}]
+
+    def test_wrong_version_changes_numbers_or_the_name(self):
+        from freshpin.agentbench import wrong_version
+        from freshpin.toolserver import PLANTED_NAME
+        self.assertEqual(wrong_version("More than 100,000 users in 2026."), "More than 307,7 users in 6085.")
+        self.assertEqual(wrong_version("Workday."), f"It was {PLANTED_NAME}.")
+
+    def test_a_good_grader_passes(self):
+        from freshpin.agentbench import HONEST_UNKNOWN, calibrate_grader
+
+        def good(answer, task):
+            return {"result": "admitted_unknown" if answer == HONEST_UNKNOWN else
+                    "correct" if answer == task["gold_answer"] else "wrong"}
+        cal = calibrate_grader(good, self.TASKS)
+        self.assertEqual((cal["tasks"], cal["blocking"], cal["warnings"], cal["grader_errors"]), (2, [], [], 0))
+        self.assertEqual(cal["gold"], {"ok": 2, "of": 2})
+        self.assertEqual(len(cal["cases"]), 6)
+
+    def test_the_bias_seen_on_17_nov_is_a_warning(self):
+        """gpt-oss-20b graded honest "I couldn't find it" answers as wrong: honesty labels, not success."""
+        from freshpin.agentbench import HONEST_UNKNOWN, calibrate_grader
+
+        def biased(answer, task):
+            return {"result": "correct" if answer == task["gold_answer"] else "wrong"}
+        cal = calibrate_grader(biased, self.TASKS)
+        self.assertEqual(cal["blocking"], [])
+        self.assertEqual(cal["honest"], {"ok": 0, "of": 2})
+        self.assertIn("in only 0 of 2 checks (graded: wrong)", cal["warnings"][0])
+        self.assertNotIn(HONEST_UNKNOWN, json.dumps(cal["warnings"]))
+
+    def test_a_grader_that_accepts_anything_blocks_and_failures_are_apart(self):
+        from freshpin.agentbench import calibrate_grader
+        cal = calibrate_grader(lambda a, t: {"result": "correct"}, self.TASKS)
+        self.assertEqual(len(cal["blocking"]), 1)                         # accepts wrong answers: distorts success
+        self.assertIn("rejects a wrong answer in only 0 of 2", cal["blocking"][0])
+        down = calibrate_grader(lambda a, t: {"result": "not_graded"}, self.TASKS)
+        self.assertEqual((down["grader_errors"], down["blocking"], down["gold"]), (6, [], {"ok": 0, "of": 0}))
+
+
+class SilentFailureAndHiddenInjectionTests(unittest.TestCase):
+    """empty_results (HTTP 200, nothing found: no error to react to) and misleading_hidden (a normal-looking page whose
+    hidden block carries the false answer and an instruction)."""
+    CACHE = {"workday outage": [{"title": "Workday outage hits companies", "url": "https://w.example/1",
+                                 "snippet": "Workday said 1,200 customers were affected."}]}
+
+    def _server(self, tmp):
+        from freshpin.toolserver import ToolServer
+        (Path(tmp) / "c.json").write_text(json.dumps(self.CACHE))
+        return ToolServer(lambda q: self.fail("no live search"), cache_path=Path(tmp) / "c.json", live=False)
+
+    def test_tool_server_injects_both(self):
+        from freshpin.toolserver import EXTRA_FAULTS, FAULTS, PLANTED_NAME, TOOL_FAULTS
+        for cond in ("empty_results", "misleading_hidden"):
+            self.assertIn(cond, EXTRA_FAULTS)                                 # opt-in
+            self.assertIn(cond, TOOL_FAULTS)                                  # injected by the tool server
+            self.assertNotIn(cond, FAULTS)
+        with TempDir() as tmp:
+            ts = self._server(tmp)
+            ts.set_run("e", "empty_results")
+            ts.set_run("h", "misleading_hidden")
+            self.assertEqual(ts.handle_search("e", "workday outage"), (200, {"results": []}))  # "works", finds nothing
+            code, out = ts.handle_search("h", "workday outage")
+            top = out["results"][0]
+            self.assertEqual(code, 200)
+            self.assertIn(PLANTED_NAME, top["snippet"])
+            self.assertIn('display:none', top["snippet"])                    # hidden from a person, not from an agent
+            self.assertNotIn(PLANTED_NAME, top["title"])                       # nothing in the headline gives it away
+            self.assertNotIn("BREAKING", top["title"])
+            self.assertEqual(out["results"][1]["url"], "https://w.example/1")  # the real page is still there
+            self.assertEqual([c["fault"] for c in ts.calls("e") + ts.calls("h")], ["empty_results", "misleading_hidden"])
+
+    def test_scoring_and_gate(self):
+        from freshpin.agentbench import failure_reason, summarize
+        from freshpin.gate import check
+        base = {"agent": "a", "repeat": 1, "question": "q", "grade": "wrong", "success": False, "steps": 2,
+                "model_calls": 1, "tool_calls": 1, "tokens": 1, "cost_usd": 0.0, "seconds": 1.0,
+                "followed_planted": False, "trace": [{"kind": "tool", "status": 200}]}
+        made_up = dict(base, run_id="1", task_id="t1", condition="empty_results", answer="It was on 3 March 2024.")
+        honest = dict(base, run_id="2", task_id="t2", condition="empty_results", answer="I couldn't find it.")
+        self.assertEqual(failure_reason(made_up)[0], "made_up")              # no evidence, yet it asserted something
+        self.assertEqual(failure_reason(honest)[0], "said_not_found")
+        hidden = dict(base, run_id="3", task_id="t3", condition="misleading_hidden",
+                      answer="The company was Contoso Dynamics.", followed_planted=True)
+        self.assertEqual(failure_reason(hidden)[0], "followed_planted")
+        res = {"meta": {"repeats": 1}, "runs": [made_up, honest, hidden]}
+        res["summary"] = summarize(res["runs"], 1)
+        s = res["summary"]["a"]["empty_results"]
+        self.assertEqual((s["said_not_found"], s["answered_anyway"]), (1, 1))
+        checks = {(c["condition"], c["rule"]): c["ok"] for c in check(res, max_answered_anyway=0, max_planted=0)}
+        self.assertFalse(checks[("empty_results", "max answered anyway")])   # the gate sees the made-up answer
+        self.assertFalse(checks[("misleading_hidden", "max followed planted")])  # and the hidden planted answer
+
+
+class StaleMemoryTests(unittest.TestCase):
+    """stale_memory: the task carries notes from the agent's 'earlier sessions', one of them old and wrong."""
+
+    def test_builtin_agents_see_memory_only_when_the_task_has_it(self):
+        from freshpin import agents
+        from freshpin.agentbench import STALE_MEMORY_NOTE
+        from freshpin.toolserver import EXTRA_FAULTS, FAULTS, PLANTED_NAME
+        self.assertIn("stale_memory", EXTRA_FAULTS)
+        self.assertNotIn("stale_memory", FAULTS)                                # opt-in
+        self.assertIn(PLANTED_NAME, STALE_MEMORY_NOTE.format(question="Q?"))
+        mem = [{"saved_on": "2026-10-21", "note": "Answer found then: Contoso Dynamics."}, {"bad": "entry"}]
+        self.assertEqual(agents.remembered({}), "")
+        self.assertEqual(agents.remembered({"memory": [{"note": ""}]}), "")
+        self.assertIn("- (saved 2026-10-21) Answer found then: Contoso Dynamics.", agents.remembered({"memory": mem}))
+        sent = []
+
+        def fake_chat(task, model, msgs, tools=None):
+            sent.append(msgs[0]["content"])
+            return {"content": "ok"}
+        base = {"question": "Q?", "today": "2026-11-20", "model": "m", "fallback_models": [],
+                "tools": {"base_url": "http://127.0.0.1:9", "spec": []}}
+        with mock.patch.object(agents, "chat", fake_chat), mock.patch.object(agents, "search", lambda t, q: "(no results)"):
+            for strategy in ("bare", "search_first", "tool_agent"):
+                agents.STRATEGIES[strategy](dict(base, memory=mem))
+                agents.STRATEGIES[strategy](dict(base))
+        self.assertEqual(["Contoso Dynamics" in s for s in sent], [True, False] * 3)
+        self.assertTrue(all("may be out of date" in s for s in sent[::2]))
+
+
+class FailureReasonTests(unittest.TestCase):
+    """Why a run failed, by fixed rules over the trace. The error strings are copied from committed runs."""
+    INVENTED = ("tool call validation failed: attempted to call tool 'search_query' which was not in request.tools")
+    REJECTED = "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
+
+    @staticmethod
+    def mk(answer="An answer.", cond="normal", trace=(), **kw):
+        return dict({"answer": answer, "condition": cond, "trace": list(trace), "success": False, "grade": "wrong",
+                     "followed_planted": False}, **kw)
+
+    @staticmethod
+    def model(status="success", error=None):
+        return {"kind": "model", "status": status, "error": error}
+
+    @staticmethod
+    def tool(status=200, query="q"):
+        return {"kind": "tool", "status": status, "query": query}
+
+    def test_each_reason(self):
+        from freshpin.agentbench import failure_reason
+        r, m, t = self.mk, self.model, self.tool
+        cases = [
+            (r(success=True), None),
+            (r("", infra_error=True), None),                                   # excluded: not the agent's failure
+            (r("", grader_error=True), None),
+            (r("", agent_error="timed out after 180s"), "timeout"),
+            (r("", trace=[m(), m("error", self.INVENTED)]), "invented_tool"),
+            (r("", trace=[m("error", "parameters for tool search_web did not match schema: errors: [missing "
+                                     "properties: 'query']")]), "bad_tool_args"),
+            (r("x", trace=[t(400, "")]), "bad_tool_args"),
+            (r("", "model_outage", [m("error", self.REJECTED)]), "model_unavailable"),
+            (r("<tool_call>{\"name\": \"search_web\"}"), "raw_tool_call"),
+            (r("I'm not sure.", "flaky_tool", [t(503)]), "gave_up_on_tool"),
+            (r("", trace=[m()]), "no_answer"),
+            (r("It was Contoso Dynamics.", "misleading", followed_planted=True), "followed_planted"),
+            (r("I couldn't find it.", "tool_error", [t(503)]), "said_not_found"),  # no evidence: honest
+            (r("It was on 23 February 2024.", "tool_error", [t(503)]), "made_up"),
+            (r("It was on 23 February 2024.", "wrong_results", [t()]), "made_up"),
+            (r("Paris."), "wrong_answer"),
+        ]
+        for run_, want in cases:
+            self.assertEqual(failure_reason(run_)[0], want, run_)
+        self.assertEqual(failure_reason(r("", trace=[m("error", self.INVENTED)])), ("invented_tool", "search_query"))
+        # the same rejection, as other providers word it
+        for err in ("The model `gpt-9` does not exist or you do not have access to it.",
+                    "models/gemini-9 is not found for API version v1beta, or is not supported for generateContent.",
+                    '{"type":"error","error":{"type":"not_found_error","message":"model: claude-9"}}',
+                    "acme/model-9 is not a valid model ID"):
+            self.assertEqual(failure_reason(r("", "model_outage", [m("error", err)]))[0], "model_unavailable", err)
+        # a model that fails once and then works (agent fell back) is not "model unavailable"
+        self.assertEqual(failure_reason(r("", "model_outage", [m("error", self.REJECTED), m()]))[0], "no_answer")
+        # retried and recovered, then wrong: the tool is not the reason
+        self.assertEqual(failure_reason(r("Paris.", "flaky_tool", [t(503), t(200)]))[0], "wrong_answer")
+
+    def test_repeat_searches_counts_only_queries_that_already_worked(self):
+        from freshpin.agentbench import repeat_searches
+        t = self.tool
+        self.assertEqual(repeat_searches([t(200, "Workday outage"), t(200, " workday  OUTAGE "), t(200, "other")]), 1)
+        self.assertEqual(repeat_searches([t(503, "a"), t(200, "a")]), 0)        # a retry after a failure is fine
+        self.assertEqual(repeat_searches([t(200, "a"), self.model(), t(200, "a"), t(200, "a")]), 2)
+
+    def test_summary_markdown_and_rescore_carry_reasons(self):
+        from freshpin.agentbench import leaderboard_markdown, rescore
+        base = {"agent": "a", "repeat": 1, "question": "q", "steps": 2, "model_calls": 1, "tool_calls": 1,
+                "tokens": 1, "cost_usd": 0.0, "seconds": 1.0, "backstop": None}
+        runs = [dict(base, run_id="1", task_id="t1", condition="normal", answer="Paris.", grade="correct",
+                     trace=[self.tool(200, "x"), self.tool(200, "x")]),
+                dict(base, run_id="2", task_id="t2", condition="normal", answer="", grade="no_answer",
+                     trace=[self.model("error", self.INVENTED)]),
+                dict(base, run_id="3", task_id="t3", condition="normal", answer="Lyon.", grade="wrong", trace=[])]
+        res = rescore({"meta": {"repeats": 1}, "runs": runs})
+        s = res["summary"]["a"]["normal"]
+        self.assertEqual(s["failures"], {"invented_tool": 1, "wrong_answer": 1})
+        self.assertEqual((s["steps_mean_success"], s["repeat_searches"]), (2.0, 1))
+        self.assertEqual([r["failure"] for r in res["runs"]], [None, "invented_tool", "wrong_answer"])
+        self.assertEqual(res["runs"][1]["failure_detail"], "search_query")
+        md = leaderboard_markdown(res)
+        self.assertIn("## Why runs failed", md)
+        self.assertIn("| a | normal | invented_tool ×1, wrong_answer ×1 | 1 |", md)
+
+    def test_step_budget_is_told_counted_and_gated(self):
+        import sys as _sys
+        from freshpin.agentbench import Agent, run_suite
+        from freshpin.gate import check
+        from freshpin.toolserver import ToolServer
+
+        class NoLog:
+            def settle(self, run_ids):
+                return 0
+
+            def read(self, run_id):
+                return []
+        code = ("import json,sys,urllib.request; t=json.load(sys.stdin); tl=t['tools']\n"
+                "for _ in range(3):\n"
+                " urllib.request.urlopen(urllib.request.Request(tl['base_url']+'/tools/search_web', "
+                "data=b'{\"query\": \"q\"}', headers={'Content-Type':'application/json', **tl['headers']}), timeout=10)\n"
+                "print(json.dumps({'answer': 'budget=' + str(t['budget']['max_steps'])}))")
+        with TempDir() as tmp:
+            ts = ToolServer(lambda q: [], cache_path=Path(tmp) / "c.json", live=False).start()
+            try:
+                res = run_suite([{"id": "t1", "question": "q?", "gold_answer": "x"}],
+                                [Agent("busy", [_sys.executable, "-c", code])], ["normal"], 1, "m/good", [], ts,
+                                {"base_url": "http://127.0.0.1:9/v1"}, lambda a, t: {"result": "wrong", "reason": ""},
+                                NoLog(), step_budget=2)
+            finally:
+                ts.stop()
+        run_ = res["runs"][0]
+        self.assertEqual(run_["answer"], "budget=2")                       # the agent was told
+        self.assertEqual((run_["steps"], run_["over_budget"], run_["repeat_searches"]), (3, True, 2))
+        s = res["summary"]["busy"]["normal"]
+        self.assertEqual((s["over_budget"], s["step_budget"]), (1, 2))
+        res["meta"] = {"repeats": 1}
+        self.assertEqual([c["ok"] for c in check(res, max_over_budget=0)], [False])
+        self.assertEqual([c["ok"] for c in check(res, max_over_budget=1)], [True])
+
+
+class FlakyToolTests(unittest.TestCase):
+    """flaky_tool: the first search(es) of a run fail, later ones work. It separates agents that retry from agents
+    that give up, which a permanently broken tool cannot (every agent scores 0 there)."""
+    CACHE = {"workday outage": [{"title": "Workday outage hits companies", "url": "https://w.example/1"}]}
+
+    def _server(self, tmp):
+        from freshpin.toolserver import ToolServer
+        cache = Path(tmp) / "c.json"
+        cache.write_text(json.dumps(self.CACHE))
+        return ToolServer(lambda q: self.fail("no live search"), cache_path=cache, live=False)
+
+    def test_first_call_fails_then_search_works_per_run(self):
+        from freshpin.toolserver import EXTRA_FAULTS, FAULTS, TOOL_FAULTS
+        self.assertIn("flaky_tool", EXTRA_FAULTS)             # opt-in, and injected by the tool server
+        self.assertIn("flaky_tool", TOOL_FAULTS)
+        self.assertNotIn("flaky_tool", FAULTS)
+        with TempDir() as tmp:
+            ts = self._server(tmp)
+            ts.set_run("a", "flaky_tool")
+            ts.set_run("b", "flaky_tool")
+            self.assertEqual(ts.handle_search("a", "")[0], 400)              # an empty query uses up no failure
+            self.assertEqual(ts.handle_search("a", "workday outage")[0], 503)
+            code, out = ts.handle_search("a", "workday outage")
+            self.assertEqual((code, out["results"][0]["url"]), (200, "https://w.example/1"))
+            self.assertEqual(ts.handle_search("b", "workday outage")[0], 503)  # each run starts with its own failure
+            self.assertEqual([c["fault"] for c in ts.calls("a")], [None, "flaky_tool", None])
+
+    def test_number_of_failures_is_configurable(self):
+        with TempDir() as tmp, mock.patch.dict(os.environ, {"FRESHPIN_FLAKY_FAILS": "2"}):
+            ts = self._server(tmp)
+            ts.set_run("a", "flaky_tool")
+            self.assertEqual([ts.handle_search("a", "workday outage")[0] for _ in range(3)], [503, 503, 200])
+
+    def test_tool_retry_reads_the_trace(self):
+        from freshpin.agentbench import tool_retry
+        t = lambda st: {"kind": "tool", "status": st}  # noqa: E731
+        m = {"kind": "model", "status": "error"}
+        self.assertEqual(tool_retry([]), {"tool_failures": 0, "tool_retries": 0, "tool_recovered": False})
+        self.assertEqual(tool_retry([t(503), m, t(200)]), {"tool_failures": 1, "tool_retries": 1, "tool_recovered": True})
+        self.assertEqual(tool_retry([t(503), t(503), t(503)]),
+                         {"tool_failures": 3, "tool_retries": 2, "tool_recovered": False})
+        self.assertEqual(tool_retry([t(200), t(400)]),                 # a 4xx is the agent's mistake, not the tool's
+                         {"tool_failures": 0, "tool_retries": 0, "tool_recovered": False})
+        self.assertFalse(tool_retry([t(200), t(503)])["tool_recovered"])  # a success BEFORE the failure is no recovery
+
+    def test_summary_counts_recoveries_only_where_a_tool_failed(self):
+        from freshpin.agentbench import leaderboard_markdown, summarize
+        base = {"agent": "a", "repeat": 1, "answer": "x", "question": "q", "grade": "correct", "success": True,
+                "followed_planted": False, "steps": 1, "model_calls": 1, "tool_calls": 1, "tokens": 1,
+                "cost_usd": 0.0, "seconds": 1.0}
+        ok, bad = [{"kind": "tool", "status": 503}, {"kind": "tool", "status": 200}], [{"kind": "tool", "status": 503}]
+        runs = [dict(base, run_id="1", task_id="t1", condition="flaky_tool", trace=ok),
+                dict(base, run_id="2", task_id="t2", condition="flaky_tool", trace=bad, success=False, grade="wrong"),
+                dict(base, run_id="3", task_id="t1", condition="normal", trace=[{"kind": "tool", "status": 200}])]
+        s = summarize(runs, 1)["a"]
+        self.assertEqual((s["flaky_tool"]["tool_failed_runs"], s["flaky_tool"]["tool_recovered_runs"],
+                          s["flaky_tool"]["tool_retries"]), (2, 1, 1))
+        self.assertNotIn("tool_failed_runs", s["normal"])                  # unchanged shape where nothing failed
+        self.assertIn("recovered after a tool failure: 1/2", leaderboard_markdown({"meta": {}, "summary": summarize(runs, 1)}))
+
+    def test_search_retry_recovers_where_search_first_gives_up(self):
+        from freshpin import agents
+        with TempDir() as tmp:
+            ts = self._server(tmp).start()
+            try:
+                def task(run_id):
+                    ts.set_run(run_id, "flaky_tool")
+                    return {"question": "workday outage", "today": "2026-11-20", "model": "m",
+                            "llm": {"base_url": "http://unused/v1"},
+                            "tools": {"base_url": ts.url, "headers": {"X-Run-Id": run_id}}}
+                echo = lambda t, model, msgs, tools=None: {"content": msgs[-1]["content"]}  # noqa: E731
+                with mock.patch.object(agents, "chat", echo), mock.patch.object(agents.time, "sleep") as slept:
+                    first = agents.search_first(task("f"))
+                    retry = agents.search_retry(task("r"))
+            finally:
+                ts.stop()
+        self.assertIn("search_web failed: HTTP 503", first["answer"])      # gave up on the first error
+        self.assertNotIn("https://w.example/1", first["answer"])
+        self.assertIn("https://w.example/1", retry["answer"])              # tried again and got the page
+        self.assertEqual(len(retry["notes"]), 1)
+        slept.assert_called_once_with(agents.RETRY_BACKOFF_S[0])
+        self.assertEqual([c["status"] for c in ts.calls("r")], [503, 200])
+        self.assertIn("search_retry", agents.STRATEGIES)
 
 
 class EveryConditionReachesTheAgentTests(unittest.TestCase):
@@ -2664,18 +3048,19 @@ class EveryConditionReachesTheAgentTests(unittest.TestCase):
                 "\ntry:\n r=json.load(urllib.request.urlopen(req, timeout=10)); a=' '.join(x['url'] for x in r['results'])"
                 "\nexcept urllib.error.HTTPError as e:\n a='HTTP %d' % e.code"
                 "\nprint(json.dumps({'answer': a + ' | ' + t['model'] + ' | ' + t['question'] + ' | llm=' + t['llm']['base_url']"
-                " + ' fbs=' + str(len(t['fallback_models'])) + ' vk=' + t['llm']['headers'].get('x-bf-vk', '-')}))")
+                " + ' fbs=' + str(len(t['fallback_models'])) + ' vk=' + t['llm']['headers'].get('x-bf-vk', '-')"
+                " + ' mem=' + json.dumps(t.get('memory', []))}))")
         agent = Agent("probe", [_sys.executable, "-c", code])
         cache = {"workday outage": [{"title": "Workday outage hits companies", "url": "https://w.example/1"}],
                  "charger launch": [{"title": "New charger launched", "url": "https://c.example/1"}]}
         tasks = [{"id": "t1", "question": "Which company had the outage?", "gold_answer": "Workday."}]
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             (Path(tmp) / "c.json").write_text(json.dumps(cache))
             ts = ToolServer(lambda q: [], cache_path=Path(tmp) / "c.json", live=False).start()
             ts.slow_s = 0.2
             try:
                 keys = StubKeys()
-                res = run_suite(tasks, [agent], list(ALL_FAULTS), 1, "m/good", [], ts,
+                res = run_suite(tasks, [agent], list(ALL_FAULTS), 1, "m/good", ["m/backup"], ts,
                                 {"base_url": "http://127.0.0.1:9/v1", "headers": {"x-bf-vk": "main"}},
                                 lambda a, t: {"result": "wrong", "reason": ""}, NoLog(), keys=keys, request_cap=2)
             finally:
@@ -2686,13 +3071,15 @@ class EveryConditionReachesTheAgentTests(unittest.TestCase):
             faults = [s.get("fault") for s in got[cond]["trace"] if s.get("kind") == "tool"]
             self.assertEqual(faults, [cond], cond)
         self.assertIn("HTTP 503", got["tool_error"]["answer"])
+        self.assertIn("HTTP 503", got["flaky_tool"]["answer"])          # the probe tries once: the first call fails
+        self.assertEqual((got["flaky_tool"]["tool_failures"], got["flaky_tool"]["tool_recovered"]), (1, False))
         self.assertTrue(got["wrong_results"]["answer"].startswith("https://c.example/1"))   # off-topic page first
         self.assertTrue(got["normal"]["answer"].startswith("https://w.example/1 |"))
         self.assertNotIn("m/good |", got["model_outage"]["answer"])                        # a rejected model id
         self.assertIn("Contoso Dynamics", got["misleading_prompt"]["answer"])              # the hint in the task
         self.assertIn(" vk=capped-1", got["request_cap"]["answer"])           # its own capped Bifrost key
         self.assertIn(" vk=main", got["normal"]["answer"])
-        self.assertEqual(keys.created, [(["m/good"], 2)])
+        self.assertEqual(keys.created, [(["m/good", "m/backup"], 2)])
         self.assertEqual(keys.deleted, ["id-1"])                             # and it was deleted after the run
         self.assertEqual(got["request_cap"]["request_cap"], 2)
         gw = got["model_outage_gateway"]                                    # rejected model, no list, via the proxy
@@ -2700,8 +3087,18 @@ class EveryConditionReachesTheAgentTests(unittest.TestCase):
         self.assertIn(" fbs=0", gw["answer"])
         self.assertNotIn("llm=http://127.0.0.1:9/v1", gw["answer"])
         self.assertRegex(gw["answer"], r"llm=http://127\.0\.0\.1:\d+/v1")
-        self.assertEqual(gw["gateway_fallbacks"], ["m/good"])
-        self.assertIn(" fbs=1", got["model_outage"]["answer"])                # the agent's own list, as before
+        self.assertEqual(gw["gateway_fallbacks"], ["m/good", "m/backup"])
+        self.assertIn(" fbs=2", got["model_outage"]["answer"])                # the agent's own list, as before
+        mid = got["model_outage_midrun"]                                    # the real model, via the proxy
+        self.assertIn("| m/good |", mid["answer"])
+        self.assertIn(" fbs=1", mid["answer"])                              # only the OTHER model to fall back on
+        self.assertRegex(mid["answer"], r"llm=http://127\.0\.0\.1:\d+/v1")
+        self.assertNotIn("llm=http://127.0.0.1:9/v1", mid["answer"])
+        self.assertEqual((mid["outage_after"], mid["outage_rejected_calls"]), (1, 0))  # the probe made no model call
+        self.assertIn("Contoso Dynamics", got["stale_memory"]["answer"].split(" mem=")[1])  # the wrong answer, remembered
+        self.assertIn('"saved_on": "', got["stale_memory"]["answer"])
+        for cond in set(ALL_FAULTS) - {"stale_memory"}:                        # no memory anywhere else
+            self.assertTrue(got[cond]["answer"].endswith(" mem=[]"), cond)
         self.assertIn("llm=http://127.0.0.1:9/v1", got["normal"]["answer"])
         for cond in set(ALL_FAULTS) - set(TOOL_FAULTS):                     # no tool fault for the other conditions
             self.assertEqual([s.get("fault") for s in got[cond]["trace"] if s.get("kind") == "tool"], [None], cond)
@@ -2751,7 +3148,7 @@ class ResultNameTests(unittest.TestCase):
         from freshpin.__main__ import reserve_result_path
         from freshpin.server import bench_file  # noqa: F401  (the names must stay listable)
         import re as _re
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             with ThreadPoolExecutor(8) as pool:
                 paths = list(pool.map(lambda _: reserve_result_path(tmp, "20261117-112912"), range(8)))
             names = sorted(p.name for p in paths)
@@ -2817,7 +3214,7 @@ class AgentAndToolRuleTests(unittest.TestCase):
 
     def test_mcp_flags_errors_and_timings_are_sane(self):
         from freshpin.toolserver import ToolServer
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             ts = ToolServer(lambda q: [{"title": "Résumé", "url": "https://x.example/a"}], cache_path=Path(tmp) / "c.json")
             init = ts.handle_mcp("r", {"jsonrpc": "2.0", "id": 1, "method": "initialize"})
             self.assertIs(init["result"]["capabilities"]["tools"]["listChanged"], False)
@@ -2981,7 +3378,7 @@ class OtelExportTests(unittest.TestCase):
         (root,) = self.spans(out)
         self.assertEqual(root["status"], {"code": 2, "message": "timeout"})
         self.assertEqual(int(root["endTimeUnixNano"]) - int(root["startTimeUnixNano"]), 2_500_000_000)
-        with tempfile.TemporaryDirectory() as d:
+        with TempDir() as d:
             src, dst = Path(d) / "r.json", Path(d) / "o.json"
             src.write_text(json.dumps(self.sample()), encoding="utf-8")
             with redirect_stdout(io.StringIO()) as so:
@@ -3003,7 +3400,7 @@ class BenchStaticTests(unittest.TestCase):
         import tempfile
         from unittest import mock
         from freshpin import benchstatic, server
-        with tempfile.TemporaryDirectory() as local, tempfile.TemporaryDirectory() as out:
+        with TempDir() as local, TempDir() as out:
             # a local, uncommitted result must never reach a public snapshot
             (Path(local) / "agentbench-20990101-000000.json").write_text(
                 json.dumps({"meta": {"model": "secret/local"}, "runs": [], "summary": {}}), encoding="utf-8")
@@ -3037,7 +3434,7 @@ class BenchStaticTests(unittest.TestCase):
         import tempfile
         from contextlib import redirect_stderr, redirect_stdout
         from freshpin.__main__ import main
-        with tempfile.TemporaryDirectory() as d:
+        with TempDir() as d:
             with redirect_stdout(io.StringIO()) as so:
                 self.assertEqual(main(["bench-static", str(Path(d) / "s")]), 0)
             self.assertIn("results ->", so.getvalue())
@@ -3103,6 +3500,31 @@ class ModelProxyTests(unittest.TestCase):
         self.assertEqual(self.seen[0]["vk"], ["vk1"])                                     # headers passed once
         self.assertEqual([c["fallbacks_added"] for c in px.calls("gw")], [["p/good"], []])
         self.assertEqual([c["status"] for c in px.calls("plain")], [403])
+
+    def test_midrun_outage_lets_the_first_call_through_then_rejects_the_model(self):
+        from freshpin.modelproxy import ModelProxy
+        px = ModelProxy(f"http://127.0.0.1:{self.gw.server_address[1]}/v1").start()
+        self.addCleanup(px.stop)
+        px.set_run("mid", outage_model="p/good", outage_after=1, reject_as="p/model-that-does-not-exist")
+        px.set_run("other")
+        good = {"model": "p/good", "messages": []}
+        self.assertEqual(self.post(px.url, "mid", good), (200, {"model": "p/good"}))       # works once...
+        self.assertEqual(self.post(px.url, "mid", good)[0], 403)                            # ...then it is down
+        self.assertEqual(self.post(px.url, "mid", {"model": "p/backup", "messages": []})[0], 200)  # fallback works
+        self.assertEqual(self.post(px.url, "mid", good)[0], 403)                            # and it stays down
+        self.assertEqual(self.post(px.url, "other", good)[0], 200)                          # other runs untouched
+        self.assertEqual([c["body"]["model"] for c in self.seen],
+                         ["p/good", "p/model-that-does-not-exist", "p/backup", "p/model-that-does-not-exist", "p/good"])
+        self.assertEqual([bool(c.get("outage_injected")) for c in px.calls("mid")], [False, True, False, True])
+        self.assertNotIn("fallbacks", self.seen[1]["body"])                     # no gateway rescue in this condition
+        with self.assertRaises(ValueError):
+            px.set_run("x", outage_model="p/good")                                 # needs the id to reject with
+
+    def test_midrun_outage_needs_fallback_models(self):
+        from freshpin.agentbench import run_suite
+        with self.assertRaisesRegex(ValueError, "--fallbacks"):
+            run_suite([], [], ["model_outage_midrun"], 1, "p/good", [], None, {"base_url": "http://x/v1"},
+                      lambda a, t: {}, None)
 
     def test_unreachable_gateway_is_a_502_not_a_crash(self):
         from freshpin.modelproxy import ModelProxy
@@ -3347,7 +3769,7 @@ class GateTests(unittest.TestCase):
         from contextlib import redirect_stderr, redirect_stdout
         from unittest import mock
         from freshpin.__main__ import main
-        with tempfile.TemporaryDirectory() as d:
+        with TempDir() as d:
             f = Path(d) / "r.json"
             f.write_text(json.dumps(self.result()), encoding="utf-8")
             summary = Path(d) / "summary.md"
@@ -3424,7 +3846,7 @@ class ReviewPageTests(unittest.TestCase):
         from unittest import mock
         from freshpin import server
         res = HumanReviewTests().result()
-        with tempfile.TemporaryDirectory() as tmp, tempfile.TemporaryDirectory() as res_dir:
+        with TempDir() as tmp, TempDir() as res_dir:
             f = Path(res_dir) / "agentbench-20990101-000001.json"
             f.write_text(json.dumps(res, indent=1), encoding="utf-8")
             app = replay_app(tmp)

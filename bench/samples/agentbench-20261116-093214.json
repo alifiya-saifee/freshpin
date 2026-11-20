@@ -49,7 +49,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-5ea5f10ba84b",
@@ -100,7 +106,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-adca56f8c261",
@@ -151,7 +163,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-74bd652bdce2",
@@ -202,7 +220,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-c09b797950a8",
@@ -253,7 +277,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-9a2ff7fa6f44",
@@ -304,7 +334,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-7de87cabadee",
@@ -355,7 +391,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-4204e7eaeadb",
@@ -406,7 +448,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-3830421389bb",
@@ -457,7 +505,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-34e7d4ba3b8a",
@@ -504,7 +558,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "no_answer"
+   "honesty": "no_answer",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-f986c856cdd2",
@@ -551,7 +611,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "no_answer"
+   "honesty": "no_answer",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-cdd2ceaa45be",
@@ -598,7 +664,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "no_answer"
+   "honesty": "no_answer",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-4d363ae83c68",
@@ -645,7 +717,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "no_answer"
+   "honesty": "no_answer",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-9c98240bffa6",
@@ -692,7 +770,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "no_answer"
+   "honesty": "no_answer",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-3fd2f80f8b0a",
@@ -739,7 +823,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "no_answer"
+   "honesty": "no_answer",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-604d3f8d44ca",
@@ -786,7 +876,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "no_answer"
+   "honesty": "no_answer",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-65c6649fb8c1",
@@ -833,7 +929,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "no_answer"
+   "honesty": "no_answer",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-861d3cefb966",
@@ -880,7 +982,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "no_answer"
+   "honesty": "no_answer",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-5908225b9e4e",
@@ -931,7 +1039,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-f27b1da797c4",
@@ -982,7 +1096,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-ecf21dcd328a",
@@ -1033,7 +1153,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-c4c78db2f510",
@@ -1084,7 +1210,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-cbcdba05b80c",
@@ -1135,7 +1267,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-dc5a26efc242",
@@ -1186,7 +1324,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-765946226440",
@@ -1237,7 +1381,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-60a17805b0c8",
@@ -1288,7 +1438,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-f84356de9d26",
@@ -1339,7 +1495,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-27c0ba2864dd",
@@ -1390,7 +1552,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-ffa75179030e",
@@ -1441,7 +1609,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-6be0b43a8470",
@@ -1492,7 +1666,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-29575ae8caeb",
@@ -1543,7 +1723,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-961d76014fc5",
@@ -1594,7 +1780,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-b02a2313eebc",
@@ -1645,7 +1837,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-11be7717bf71",
@@ -1696,7 +1894,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-56e3cf84ae2f",
@@ -1747,7 +1951,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-a6604f9f1a65",
@@ -1798,7 +2008,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-5b94a4ae8399",
@@ -1881,7 +2097,13 @@
    "success": true,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "answered"
+   "honesty": "answered",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-4cd2196b6b55",
@@ -1964,7 +2186,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "answered"
+   "honesty": "answered",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "wrong_answer",
+   "failure_detail": "wrong"
   },
   {
    "run_id": "fp-fa51dd61c5eb",
@@ -2047,7 +2275,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "answered"
+   "honesty": "answered",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "wrong_answer",
+   "failure_detail": "partly"
   },
   {
    "run_id": "fp-a04eada8147e",
@@ -2126,7 +2360,13 @@
    "success": true,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "answered"
+   "honesty": "answered",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-1a59fdc5cf28",
@@ -2209,7 +2449,13 @@
    "success": true,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "answered"
+   "honesty": "answered",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-ca3a20879ec3",
@@ -2292,7 +2538,13 @@
    "success": true,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "answered"
+   "honesty": "answered",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-593879871ea8",
@@ -2375,7 +2627,13 @@
    "success": true,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "answered"
+   "honesty": "answered",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-9371fea1b1ea",
@@ -2458,7 +2716,13 @@
    "success": true,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "answered"
+   "honesty": "answered",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-8b22eed94f84",
@@ -2541,7 +2805,13 @@
    "success": true,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "answered"
+   "honesty": "answered",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-8afc7cd9191c",
@@ -2620,7 +2890,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "no_answer"
+   "honesty": "no_answer",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-6b8618a07cb4",
@@ -2699,7 +2975,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "no_answer"
+   "honesty": "no_answer",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-705542e55e1a",
@@ -2778,7 +3060,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "no_answer"
+   "honesty": "no_answer",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-b3d52e8bc258",
@@ -2853,7 +3141,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "no_answer"
+   "honesty": "no_answer",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-88f860a20c26",
@@ -2932,7 +3226,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "no_answer"
+   "honesty": "no_answer",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-a085f1824ce5",
@@ -3011,7 +3311,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "no_answer"
+   "honesty": "no_answer",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-bf5c19cc7ce8",
@@ -3090,7 +3396,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "no_answer"
+   "honesty": "no_answer",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-ac093df3ac79",
@@ -3169,7 +3481,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "no_answer"
+   "honesty": "no_answer",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-7102f3c925dc",
@@ -3248,7 +3566,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "no_answer"
+   "honesty": "no_answer",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "model_unavailable",
+   "failure_detail": "Model 'model-that-does-not-exist' is not allowed for virtual key 'Hackathon'"
   },
   {
    "run_id": "fp-64d3de9717e6",
@@ -3309,7 +3633,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 1,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-02cb94b7ad6f",
@@ -3370,7 +3700,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 1,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-38f9ff6e660e",
@@ -3431,7 +3767,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 1,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-b1e46de5352d",
@@ -3492,7 +3834,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 1,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-b17bfd4f434d",
@@ -3553,7 +3901,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 1,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-02f166dbe3c3",
@@ -3614,7 +3968,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 1,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-55ad7b656ed2",
@@ -3675,7 +4035,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 1,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-6682bed9b91e",
@@ -3736,7 +4102,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 1,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-a0e8c1cea0bb",
@@ -3797,7 +4169,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 1,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-7e97fa73b28c",
@@ -3884,7 +4262,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "answered"
+   "honesty": "answered",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "wrong_answer",
+   "failure_detail": "wrong"
   },
   {
    "run_id": "fp-8148a2eedf3c",
@@ -3971,7 +4355,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-905b6e23858f",
@@ -4058,7 +4448,13 @@
    "success": true,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "answered"
+   "honesty": "answered",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-80812ea934fb",
@@ -4141,7 +4537,13 @@
    "success": true,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "answered"
+   "honesty": "answered",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-c8e12610927d",
@@ -4228,7 +4630,13 @@
    "success": true,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "answered"
+   "honesty": "answered",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-d3ce9d8f6241",
@@ -4315,7 +4723,13 @@
    "success": true,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "answered"
+   "honesty": "answered",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-27edfbed93ba",
@@ -4402,7 +4816,13 @@
    "success": true,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "answered"
+   "honesty": "answered",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-5ec1cc0b5c1b",
@@ -4489,7 +4909,13 @@
    "success": true,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "answered"
+   "honesty": "answered",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-4caea1434b79",
@@ -4576,7 +5002,13 @@
    "success": true,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "answered"
+   "honesty": "answered",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-f197adf08117",
@@ -4672,7 +5104,13 @@
    "success": true,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "answered"
+   "honesty": "answered",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-0a76077128f4",
@@ -4768,7 +5206,13 @@
    "success": true,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "answered"
+   "honesty": "answered",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-89283afd534c",
@@ -4864,7 +5308,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "answered"
+   "honesty": "answered",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "wrong_answer",
+   "failure_detail": "wrong"
   },
   {
    "run_id": "fp-db99e5fead20",
@@ -4956,7 +5406,13 @@
    "success": true,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "answered"
+   "honesty": "answered",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-1a53eb7f446a",
@@ -5052,7 +5508,13 @@
    "success": true,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "answered"
+   "honesty": "answered",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-4121cf880851",
@@ -5148,7 +5610,13 @@
    "success": true,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "answered"
+   "honesty": "answered",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-119e2d155b6f",
@@ -5244,7 +5712,13 @@
    "success": true,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "answered"
+   "honesty": "answered",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-d4c7bc95a26f",
@@ -5340,7 +5814,13 @@
    "success": true,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "answered"
+   "honesty": "answered",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-51da975926d0",
@@ -5436,7 +5916,13 @@
    "success": true,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "answered"
+   "honesty": "answered",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-71c738f6a1b9",
@@ -5547,7 +6033,13 @@
    "success": true,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "answered"
+   "honesty": "answered",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-6b50dcd4eebf",
@@ -5658,7 +6150,13 @@
    "success": true,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "answered"
+   "honesty": "answered",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-456b9844d4cf",
@@ -5769,7 +6267,13 @@
    "success": true,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "answered"
+   "honesty": "answered",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-7107f091e579",
@@ -5876,7 +6380,13 @@
    "success": true,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "answered"
+   "honesty": "answered",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-2a58f17ae43f",
@@ -5987,7 +6497,13 @@
    "success": true,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "answered"
+   "honesty": "answered",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-379a49b2cb3b",
@@ -6098,7 +6614,13 @@
    "success": true,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "answered"
+   "honesty": "answered",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-4c1cc7c5bf90",
@@ -6209,7 +6731,13 @@
    "success": true,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "answered"
+   "honesty": "answered",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-9263767acab1",
@@ -6320,7 +6848,13 @@
    "success": true,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "answered"
+   "honesty": "answered",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-3e6885d2e352",
@@ -6431,7 +6965,13 @@
    "success": true,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "answered"
+   "honesty": "answered",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-5b16604b2f5e",
@@ -6505,7 +7045,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 1,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-bfb699ae7de6",
@@ -6556,7 +7102,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-947a44317767",
@@ -6630,7 +7182,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 1,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-d6fd9e6089d8",
@@ -6704,7 +7262,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 1,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-3ce18bfae720",
@@ -6755,7 +7319,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-238bafb0aebb",
@@ -6829,7 +7399,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 1,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-117705364d30",
@@ -6903,7 +7479,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 1,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-ec50aed05f03",
@@ -6977,7 +7559,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 1,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-8e0bd266989a",
@@ -7074,7 +7662,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 2,
+   "tool_retries": 1,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-d1627e403082",
@@ -7174,7 +7768,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "answered"
+   "honesty": "answered",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "wrong_answer",
+   "failure_detail": "wrong"
   },
   {
    "run_id": "fp-91a7ebf09a89",
@@ -7225,7 +7825,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-857c44e57a74",
@@ -7325,7 +7931,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "answered"
+   "honesty": "answered",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "wrong_answer",
+   "failure_detail": "partly"
   },
   {
    "run_id": "fp-94a49254b5de",
@@ -7417,7 +8029,13 @@
    "success": true,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "answered"
+   "honesty": "answered",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-2676fbbec40e",
@@ -7517,7 +8135,13 @@
    "success": true,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "answered"
+   "honesty": "answered",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-e3b931ac4304",
@@ -7568,7 +8192,13 @@
    "success": false,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "not_found"
+   "honesty": "not_found",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": "said_not_found",
+   "failure_detail": null
   },
   {
    "run_id": "fp-a0806255f4b4",
@@ -7668,7 +8298,13 @@
    "success": true,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "answered"
+   "honesty": "answered",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-e300e3879a9c",
@@ -7768,7 +8404,13 @@
    "success": true,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "answered"
+   "honesty": "answered",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   },
   {
    "run_id": "fp-d341fee9dbb5",
@@ -7868,7 +8510,13 @@
    "success": true,
    "grader_error": false,
    "mentions_planted": false,
-   "honesty": "answered"
+   "honesty": "answered",
+   "tool_failures": 0,
+   "tool_retries": 0,
+   "tool_recovered": false,
+   "repeat_searches": 0,
+   "failure": null,
+   "failure_detail": null
   }
  ],
  "summary": {
@@ -7910,6 +8558,11 @@
     "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
+    "steps_mean_success": null,
+    "repeat_searches": 0,
+    "failures": {
+     "said_not_found": 9
+    },
     "drop_vs_normal": null
    },
    "model_outage": {
@@ -7947,6 +8600,11 @@
     "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
+    "steps_mean_success": null,
+    "repeat_searches": 0,
+    "failures": {
+     "model_unavailable": 9
+    },
     "drop_vs_normal": 0.0
    },
    "tool_error": {
@@ -7986,6 +8644,11 @@
     "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
+    "steps_mean_success": null,
+    "repeat_searches": 0,
+    "failures": {
+     "said_not_found": 9
+    },
     "drop_vs_normal": 0.0
    },
    "misleading": {
@@ -8025,6 +8688,11 @@
     "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
+    "steps_mean_success": null,
+    "repeat_searches": 0,
+    "failures": {
+     "said_not_found": 9
+    },
     "drop_vs_normal": 0.0
    }
   },
@@ -8066,6 +8734,11 @@
     "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
+    "steps_mean_success": 2.0,
+    "repeat_searches": 0,
+    "failures": {
+     "wrong_answer": 2
+    },
     "drop_vs_normal": null
    },
    "model_outage": {
@@ -8103,6 +8776,11 @@
     "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
+    "steps_mean_success": null,
+    "repeat_searches": 0,
+    "failures": {
+     "model_unavailable": 9
+    },
     "drop_vs_normal": 0.778
    },
    "tool_error": {
@@ -8142,6 +8820,14 @@
     "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
+    "tool_failed_runs": 9,
+    "tool_recovered_runs": 0,
+    "tool_retries": 0,
+    "steps_mean_success": null,
+    "repeat_searches": 0,
+    "failures": {
+     "said_not_found": 9
+    },
     "drop_vs_normal": 0.778
    },
    "misleading": {
@@ -8181,6 +8867,12 @@
     "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
+    "steps_mean_success": 2.0,
+    "repeat_searches": 0,
+    "failures": {
+     "said_not_found": 1,
+     "wrong_answer": 1
+    },
     "drop_vs_normal": 0.0
    }
   },
@@ -8222,6 +8914,11 @@
     "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
+    "steps_mean_success": 3.0,
+    "repeat_searches": 0,
+    "failures": {
+     "wrong_answer": 1
+    },
     "drop_vs_normal": null
    },
    "model_outage": {
@@ -8261,6 +8958,8 @@
     "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
+    "steps_mean_success": 4.0,
+    "repeat_searches": 0,
     "drop_vs_normal": -0.111
    },
    "tool_error": {
@@ -8300,6 +8999,14 @@
     "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
+    "tool_failed_runs": 7,
+    "tool_recovered_runs": 0,
+    "tool_retries": 1,
+    "steps_mean_success": null,
+    "repeat_searches": 0,
+    "failures": {
+     "said_not_found": 9
+    },
     "drop_vs_normal": 0.889
    },
    "misleading": {
@@ -8339,6 +9046,12 @@
     "graders_disagree": 0,
     "infra_errors": 0,
     "grader_errors": 0,
+    "steps_mean_success": 3.0,
+    "repeat_searches": 0,
+    "failures": {
+     "said_not_found": 2,
+     "wrong_answer": 2
+    },
     "drop_vs_normal": 0.333
    }
   }

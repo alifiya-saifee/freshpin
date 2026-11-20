@@ -231,13 +231,14 @@ New opt-in condition: the agent gets the rejected model and **no fallback list**
   - free-tier rate limits, and Groq's "over capacity" reply, were not recognised as provider limits.
 
 ## 6. Limits and what's next
-- **No hosted demo yet:** running it live needs Bifrost and your own model keys (the tests and saved results work offline).
+- **Hosted demo: built, not switched on yet.** `.github/workflows/pages.yml` publishes the read-only `/bench` snapshot to GitHub Pages on every push to `main`, once Pages is set to "GitHub Actions" in the repository settings. Running agents live still needs Bifrost and your own model keys.
 - The **demo video predates the agent benchmark**.
 - **Small samples** (9 tasks): treat differences of one or two runs as noise.
-- A **model outage** is tested at the start of a run, not halfway through.
+- **Built and tested offline (fake gateway, real tool server), not yet run on real models:** the **flaky tool** condition and the `search_retry` agent (retry strategies), the **mid-run model outage** (the model answers the first call, then goes down), **stale memory** (an old, wrong note in the agent's memory), **empty search results** (HTTP 200, nothing found), the **hidden injected instruction**, the **step budget**, the **grader check** (known answers graded before each run), and the **LangGraph** agent. A model outage in the published tables is still at the start of a run.
 - A few **gold answers are loose** and should be tightened; the two-grader check found exactly which ones.
 - **Wrong search results** has only been run on Qwen so far.
 - **The request-cap condition** (a Bifrost key per run capped at N requests) is built and tested but has not run on real models yet: it needs Bifrost’s admin login.
 - **The honesty word rule is simple and English-only.** It can miss unusual phrasings: a first version missed "the provided search results do not contain information", which the tests now cover. Borderline answers are still worth reading.
 - The misleading instruction is now **on by default** (it used to be opt-in). The published results above were run before that change; the tables list it where it was run.
-- No **LangGraph or CrewAI** agent has been tested yet.
+- No **CrewAI** agent has been tested yet (LangGraph has, offline: see above).
+- **Why a run failed** is a fixed rule set built from the provider errors seen so far (e.g. Groq's "attempted to call tool … which was not in request.tools"). Another provider's wording for the same failure may land in a broader label (no answer, wrong answer) until a pattern is added.
