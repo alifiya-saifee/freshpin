@@ -82,6 +82,17 @@ class Ledger:
         self.db.row_factory = sqlite3.Row
         self.db.executescript(SCHEMA)
 
+    def close(self) -> None:
+        """Close the database. Safe to call twice. Needed before deleting the file on Windows, which refuses to
+        delete a file that is still open."""
+        self.db.close()
+
+    def __enter__(self) -> "Ledger":
+        return self
+
+    def __exit__(self, *exc: object) -> None:
+        self.close()
+
     # ---------- facts ----------
     def current_fact(self, key: str) -> sqlite3.Row | None:
         return self.db.execute("SELECT * FROM facts WHERE key=? ORDER BY version DESC LIMIT 1", (key,)).fetchone()

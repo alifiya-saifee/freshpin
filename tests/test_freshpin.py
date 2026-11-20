@@ -23,6 +23,31 @@ from freshpin.scoring import freshness_score  # noqa: E402
 
 TODAY = date(2026, 11, 14)
 
+# Windows refuses to delete a file that is still open, so a temp folder holding an open ledger database cannot be
+# cleaned up there (Linux and macOS allow it). Every Ledger the tests open is tracked, and TempDir closes the ones
+# inside it before deleting the folder.
+_OPEN_LEDGERS: list = []
+_ledger_init = Ledger.__init__
+
+
+def _tracked_ledger_init(self, *args, **kwargs):
+    _ledger_init(self, *args, **kwargs)
+    _OPEN_LEDGERS.append(self)
+
+
+Ledger.__init__ = _tracked_ledger_init
+
+
+class TempDir(tempfile.TemporaryDirectory):
+    """tempfile.TemporaryDirectory that first closes the ledgers opened inside it."""
+
+    def cleanup(self):
+        root = os.path.realpath(self.name) + os.sep
+        for led in [x for x in _OPEN_LEDGERS if os.path.realpath(x.path).startswith(root)]:
+            led.close()
+            _OPEN_LEDGERS.remove(led)
+        super().cleanup()
+
 
 def replay_app(tmp: str) -> FreshPin:
     s = Settings()
@@ -60,7 +85,7 @@ class ScoringTests(unittest.TestCase):
 
 class LedgerTests(unittest.TestCase):
     def setUp(self):
-        self.tmp = tempfile.TemporaryDirectory()
+        self.tmp = TempDir()
         self.l = Ledger(Path(self.tmp.name) / "l.db")
         v = self.l.seed_fact("k", "old value", "pricing")
         self.l.add_decision("D1", "Quote", "quote", "ops", {"k": v}, "Ann")
@@ -113,7 +138,7 @@ class DebateFixTests(unittest.TestCase):
     """Bugs the expert debate reproduced: they must stay fixed."""
 
     def test_repeating_an_old_claim_does_not_reopen_reapproved_decisions(self):
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             app = replay_app(tmp)
             app.load_sample("dubai_building_law")
             answer = app.samples()["dubai_building_law"]["answer"]
@@ -128,7 +153,7 @@ class DebateFixTests(unittest.TestCase):
             self.assertEqual(cert["verdict"], "stale")          # still reported as stale to the user
 
     def test_one_judge_alone_never_reopens(self):
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             app = replay_app(tmp)
             app.s.recheck = False
             app.load_sample("dubai_building_law")
@@ -150,7 +175,7 @@ class DebateFixTests(unittest.TestCase):
 
 class PipelineReplayTests(unittest.TestCase):
     def setUp(self):
-        self.tmp = tempfile.TemporaryDirectory()
+        self.tmp = TempDir()
         self.app = replay_app(self.tmp.name)
 
     def tearDown(self):
@@ -304,7 +329,7 @@ class RecheckTests(unittest.TestCase):
     """The recheck layer: second search, second judge, exact-quote rule and fixed decision rules."""
 
     def setUp(self):
-        self.tmp = tempfile.TemporaryDirectory()
+        self.tmp = TempDir()
         self.app = replay_app(self.tmp.name)
         self.app.load_sample("dubai_building_law")
         self.answer = self.app.samples()["dubai_building_law"]["answer"]
@@ -465,7 +490,7 @@ class NewsLiveDataTests(unittest.TestCase):
             "time_sensitive": True, "search_query": "gold spot price today"}
 
     def setUp(self):
-        self.tmp = tempfile.TemporaryDirectory()
+        self.tmp = TempDir()
 
     def tearDown(self):
         self.tmp.cleanup()
@@ -538,7 +563,7 @@ class QuoteRetryTests(unittest.TestCase):
                             "supporting": [], "contradicting": [1], "why_outdated": "", "explanation": ""}}
         quote = {"cert": {"best_source": 1, "evidence_quote": retry_quote}}
         chat = StubChat([claim], verify, recheck, quote)
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             rep = run_check("No certificate is needed.", chat=chat, search=StubSearch(rows),
                             ledger=Ledger(Path(tmp) / "q.db"), extractor_models=["a"], verifier_models=["b"],
                             token_budget=10**6, today=TODAY)
@@ -610,7 +635,7 @@ class JudgeRuleTests(unittest.TestCase):
         verify = {"cert": {"verdict": "stale", "current_statement": "Needed at 20 years.", "supporting": [],
                            "contradicting": [1], "explanation": "", "confirm_query": "cert"}}
         chat = TracingChat([claim], verify, {"cert": recheck_reply})
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             rep = run_check("No certificate is needed.", chat=chat, search=StubSearch(rows),
                             ledger=Ledger(Path(tmp) / "j.db"), extractor_models=["a"], verifier_models=["b"],
                             token_budget=10**6, today=TODAY)
@@ -650,7 +675,7 @@ class EventSearchTests(unittest.TestCase):
         verify = {"outage.friday": {"verdict": "unverifiable", "current_statement": "", "supporting": [],
                                     "contradicting": [], "explanation": "", "confirm_query": "ServiceNow outage news"}}
         chat, search = StubChat([claim], verify, {}), StubSearch({})
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             run_check("ServiceNow had the outage.", chat=chat, search=search, ledger=Ledger(Path(tmp) / "e.db"),
                       extractor_models=["a"], verifier_models=["b"], token_budget=10**6, today=TODAY,
                       context="Which company had a major outage on Friday 14 November affecting 11,500 companies?")
@@ -715,7 +740,7 @@ class EfficiencyTests(unittest.TestCase):
         self.assertEqual(len(inner.calls), 3)
 
     def test_second_judge_sees_top_six_trimmed_sources(self):
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             claim = {"text": "X costs $5.", "key": "x.price", "type": "pricing", "time_sensitive": True,
                      "search_query": "x price"}
             rows = {"x price": [{"title": f"S{i}", "url": f"https://s{i}.example.com", "snippet": "y" * 900,
@@ -740,7 +765,7 @@ class EfficiencyTests(unittest.TestCase):
 
 class CorrectionsAndBenchTests(unittest.TestCase):
     def test_corrections_hold_confirmed_changes_only(self):
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             app = replay_app(tmp)
             app.load_sample("dubai_building_law")
             rc = app.chat.d.data["recheck"]["dubai.ejari.attestation_needs_building_certificate"]
@@ -788,7 +813,7 @@ class CorrectionsAndBenchTests(unittest.TestCase):
         self.assertEqual(bench.estimate_credits(3, 2, False), 18)
 
     def test_bench_check_leaves_ledger_alone(self):
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             app = replay_app(tmp)
             app.load_sample("dubai_building_law")
             before = app.ledger.state()["decisions"]
@@ -797,7 +822,7 @@ class CorrectionsAndBenchTests(unittest.TestCase):
 
     def test_bench_shows_what_is_true_now_and_why(self):
         from freshpin.bench import claim_detail, rescore
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             app = replay_app(tmp)
             app.load_sample("dubai_building_law")
             rep = app.check(app.samples()["dubai_building_law"]["answer"], apply_to_ledger=False)
@@ -955,7 +980,7 @@ class WatchTests(unittest.TestCase):
     def test_due_facts_follow_half_life_and_alerts_fire_once(self):
         from freshpin.scoring import HALF_LIFE_DAYS
         from freshpin.watch import alert_text, run_watch
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             app = replay_app(tmp)
             app.load_sample("dubai_building_law")
             led = app.ledger
@@ -1021,7 +1046,7 @@ class SafetyOpsTests(unittest.TestCase):
         self.assertEqual(counts, {"email": 1, "emirates_id": 1, "iban": 1, "phone": 1})
         self.assertIn("no certificate is needed", out)
         self.assertEqual(redact("Law No. 3 of 2026 applies after 20 years.")[1], {})  # facts are left alone
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             app = replay_app(tmp)
             app.load_sample("dubai_building_law")
             answer = app.samples()["dubai_building_law"]["answer"]
@@ -1033,7 +1058,7 @@ class SafetyOpsTests(unittest.TestCase):
 
     def test_customer_data_mode_refuses_trial_routes_and_daily_cap(self):
         from freshpin.app import LimitReached
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             s = Settings()
             s.mode, s.db_path = "live", Path(tmp) / "c.db"
             s.extractor_models, s.verifier_models, s.checker_models = ["openai/nvidia/x"], ["groq/y"], ["groq/y"]
@@ -1049,7 +1074,7 @@ class SafetyOpsTests(unittest.TestCase):
                 r.check("Another answer.")
 
     def test_reopen_cap_sends_the_rest_to_at_risk(self):
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             app = replay_app(tmp)
             app.load_sample("dubai_building_law")
             app.ledger.max_auto_reopens = 1
@@ -1060,7 +1085,7 @@ class SafetyOpsTests(unittest.TestCase):
 
     def test_api_needs_the_token_when_set(self):
         from freshpin.server import make_handler
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             app = replay_app(tmp)
             app.s.api_token = "s3cret-token"
             httpd = ThreadingHTTPServer(("127.0.0.1", 0), make_handler(app))
@@ -1109,7 +1134,7 @@ class HardeningTests(unittest.TestCase):
         import urllib.error
         import urllib.request
         from freshpin.server import make_handler
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             app = replay_app(tmp)
             app.load_sample("dubai_building_law")
             app.check(app.samples()["dubai_building_law"]["answer"])  # reopens Q-112, so there is something to approve
@@ -1403,7 +1428,7 @@ class AgentBenchTests(unittest.TestCase):
                 "tools": {"base_url": ts.url, "headers": {"X-Run-Id": run_id}, "spec": [SEARCH_TOOL]}}
 
     def test_tool_server_records_once_replays_and_injects_failures(self):
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             ts = self.tools(tmp)
             try:
                 for rid, fault in (("a", "normal"), ("b", "normal"), ("c", "tool_error"), ("d", "misleading")):
@@ -1421,7 +1446,7 @@ class AgentBenchTests(unittest.TestCase):
 
     def test_builtin_agents_follow_the_contract_and_fall_back(self):
         from freshpin import agents
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             ts = self.tools(tmp)
             try:
                 self.assertEqual(agents.bare(self.task(ts, "r1"))["answer"], "I am not sure.")
@@ -1447,7 +1472,7 @@ class AgentBenchTests(unittest.TestCase):
             def read(self, run_id):
                 return []
         tasks = [{"id": "t1", "question": "Which company had the outage on Friday?", "gold_answer": "Workday."}]
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             ts = self.tools(tmp)
             try:
                 return run_suite(tasks, [agent], ["normal", "model_outage", "tool_error", "misleading"], 1, "m/good",
@@ -1502,7 +1527,7 @@ class AgentBenchTests(unittest.TestCase):
 
     def test_tool_server_speaks_mcp_with_the_same_faults_and_log(self):
         import urllib.request
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             ts = self.tools(tmp)
             try:
                 def rpc(msg, run="r1"):
@@ -1548,7 +1573,7 @@ class AgentBenchTests(unittest.TestCase):
         echo = Agent("echo", [_sys.executable, "-c", "import json,sys; t=json.load(sys.stdin); "
                                                     "print(json.dumps({'answer': t['question']}))"])
         tasks = [{"id": "t1", "question": "Which company had the outage on Friday?", "gold_answer": "Workday."}]
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             ts = self.tools(tmp)
             try:
                 res = run_suite(tasks, [echo], ["normal", "misleading_prompt"], 1, "m/good", [], ts,
@@ -1564,7 +1589,7 @@ class AgentBenchTests(unittest.TestCase):
         self.assertTrue(mp["followed_planted"])
         self.assertFalse(mp["success"])
         self.assertEqual(res["summary"]["echo"]["misleading_prompt"]["followed_planted"], 1)
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             ts = ToolServer(lambda q: [{"title": "T", "url": "https://x.example/a"}], cache_path=Path(tmp) / "c.json")
             ts.slow_s = 0.4
             ts.set_run("r", "slow_tool")
@@ -1638,7 +1663,7 @@ class AgentBenchTests(unittest.TestCase):
         say = lambda text: Agent(text[:8], [_sys.executable, "-c",  # noqa: E731
                                             f"import json; print(json.dumps({{'answer': {text!r}}}))"])
         tasks = [{"id": "t1", "question": "Which company had the outage on Friday?", "gold_answer": "Workday."}]
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             ts = self.tools(tmp)
             try:
                 res = run_suite(tasks, [say("Workday, on Friday."), say("Contoso Dynamics had the outage."),
@@ -1674,7 +1699,7 @@ class AgentBenchTests(unittest.TestCase):
         tasks = [{"id": "t1", "question": "Which company had the outage on Friday?", "gold_answer": "Workday."}]
         agents_ = [Agent("tool_agent", [_sys.executable, "-m", "freshpin.agents", "tool_agent"], env={"PYTHONPATH": str(root)}),
                    Agent("outside", [_sys.executable, str(root / "examples" / "agents" / "reflect_agent.py")])]
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             ts = self.tools(tmp)
             try:
                 res = run_suite(tasks, agents_, ["normal", "model_outage", "tool_error", "misleading"], 2, "m/good", [],
@@ -1706,7 +1731,7 @@ class AgentBenchTests(unittest.TestCase):
         import sqlite3 as _sq
         from freshpin.agentbench import BifrostLog
         from freshpin.server import bench_file
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             db = Path(tmp) / "logs.db"
             con = _sq.connect(db)
             con.execute("CREATE TABLE logs (timestamp, provider, model, status, latency, token_usage, cost, "
@@ -1735,7 +1760,7 @@ class AgentBenchTests(unittest.TestCase):
             "bare": [{"id": "q1", "gold": {"result": "wrong"}, "correct": False, "tokens": 10, "latency_s": 1.0}],
             "agent": [{"id": "q1", "gold": {"result": "correct"}, "correct": True, "chose_to_search": True,
                        "tool_calls": [{}], "tokens": 30, "latency_s": 2.0}]}}}}
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             f = Path(tmp) / "arena.json"
             f.write_text(json.dumps(arena))
             for path, want in ((f, "| agent | 1 | 1 | 100%"),
@@ -1747,7 +1772,7 @@ class AgentBenchTests(unittest.TestCase):
 
     def test_bench_list_skips_a_running_benchmarks_partial_file(self):
         from freshpin import server
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             res, sam = Path(tmp) / "results", Path(tmp) / "samples"
             res.mkdir()
             sam.mkdir()
@@ -1764,7 +1789,7 @@ class AgentBenchTests(unittest.TestCase):
 
     def test_committed_sample_wins_over_a_local_result_of_the_same_name(self):
         from freshpin import server
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             res, sam = Path(tmp) / "results", Path(tmp) / "samples"
             res.mkdir()
             sam.mkdir()
@@ -1785,7 +1810,7 @@ class AgentBenchTests(unittest.TestCase):
     def test_bifrost_log_keeps_runs_apart(self):
         import sqlite3 as _sq
         from freshpin.agentbench import BifrostLog
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             db = Path(tmp) / "logs.db"
             con = _sq.connect(db)
             con.execute("CREATE TABLE logs (timestamp, provider, model, status, latency, token_usage, cost, "
@@ -1805,7 +1830,7 @@ class AgentBenchTests(unittest.TestCase):
         (the old wait stopped after two equal reads 1.5 s apart and under-counted the last run)."""
         import sqlite3 as _sq
         from freshpin.agentbench import BifrostLog
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             db = Path(tmp) / "logs.db"
             con = _sq.connect(db)
             con.execute("CREATE TABLE logs (timestamp, provider, model, status, latency, token_usage, cost, "
@@ -1920,7 +1945,7 @@ class AgentBenchTests(unittest.TestCase):
 
     def test_replay_only_never_searches_live(self):
         from freshpin.toolserver import ToolServer
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             cache = Path(tmp) / "c.json"
             cache.write_text(json.dumps({"workday outage": [{"title": "T", "url": "https://x.example/a"}]}))
             called = []
@@ -1950,7 +1975,7 @@ class AgentBenchTests(unittest.TestCase):
         flipped = dict(reversed(list(cache.items())))                                 # file order must not matter
         for q in ("workday outage companies", "lunar charger rating", "workday 11,500 companies hit"):
             self.assertEqual(nearest_results(cache, q), nearest_results(flipped, q), q)
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             path = Path(tmp) / "c.json"
             path.write_text(json.dumps(cache))
             called = []
@@ -1962,11 +1987,11 @@ class AgentBenchTests(unittest.TestCase):
             self.assertEqual(ts.calls("r")[0]["source"], "replay_nearest")
             self.assertEqual(called, [])
             ts.save()
-            self.assertNotIn("workday outage date", json.loads(path.read_text()))   # the recording is not changed
+            self.assertNotIn("workday outage date", json.loads(path.read_text(encoding="utf-8")))   # the recording is not changed
 
     def test_tool_cache_path_prefers_the_suite_folder(self):
         from freshpin.__main__ import tool_cache_path
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             suites, bench_dir = Path(tmp) / "suites", Path(tmp)
             suites.mkdir()
             q = suites / "s.json"
@@ -2006,7 +2031,7 @@ class McpTests(unittest.TestCase):
     """The MCP server, driven the way an AI assistant drives it: JSON lines in, JSON lines out."""
 
     def setUp(self):
-        self.tmp = tempfile.TemporaryDirectory()
+        self.tmp = TempDir()
         self.app = replay_app(self.tmp.name)
 
     def tearDown(self):
@@ -2098,7 +2123,7 @@ class MiscTests(unittest.TestCase):
         self.assertEqual(parse_json_reply('Here you go: {"a": {"x": "}"}} thanks'), {"a": {"x": "}"}})
 
     def test_typed_claims_are_always_checked(self):
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             claims = [{"text": "Law X applies.", "key": "law.x", "type": "regulation", "time_sensitive": False,
                        "search_query": "law x"},
                       {"text": "Water is wet.", "key": "water", "type": "other", "time_sensitive": False,
@@ -2150,7 +2175,7 @@ class ListPriceTests(unittest.TestCase):
     def test_build_from_bifrost_reads_its_pricing_table_read_only(self):
         import sqlite3
         from freshpin.prices import build_from_bifrost
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             db = Path(tmp) / "config.db"
             con = sqlite3.connect(db)
             con.execute("CREATE TABLE governance_model_pricing (provider TEXT, model TEXT, mode TEXT, "
@@ -2269,7 +2294,7 @@ class ListPriceTests(unittest.TestCase):
         import io
         import sqlite3
         from freshpin.__main__ import main
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             db, out = Path(tmp) / "config.db", Path(tmp) / "prices.json"
             con = sqlite3.connect(db)
             con.execute("CREATE TABLE governance_model_pricing (provider TEXT, model TEXT, mode TEXT, "
@@ -2282,7 +2307,7 @@ class ListPriceTests(unittest.TestCase):
                 self.assertEqual(main(["prices", "--models", "groq/openai/gpt-oss-120b,x/none", "--bifrost-config",
                                        str(db), "--out", str(out)]), 0)
                 self.assertEqual(main(["prices", "--models", "a/b", "--bifrost-config", str(Path(tmp) / "no.db")]), 2)
-            data = json.loads(out.read_text())
+            data = json.loads(out.read_text(encoding="utf-8"))
             self.assertEqual(list(data["prices"]), ["groq/openai/gpt-oss-120b"])   # unknown models are not written
             self.assertIn("no paid list price", buf.getvalue())
 
@@ -2295,7 +2320,7 @@ class MutationGapTests(unittest.TestCase):
         import urllib.error
         import urllib.request
         from freshpin.server import make_handler
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             app = replay_app(tmp)
             app.s.api_token = "s3cret-token"
             httpd = ThreadingHTTPServer(("127.0.0.1", 0), make_handler(app))
@@ -2325,7 +2350,7 @@ class MutationGapTests(unittest.TestCase):
                 httpd.server_close()
 
     def test_seeded_decisions_get_an_approval_time(self):
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             led = Ledger(Path(tmp) / "l.db")
             v = led.seed_fact("k", "A fact.", "other")
             led.add_decision("D-1", "t", "budget", "o", {"k": v}, "Sara")
@@ -2335,7 +2360,7 @@ class MutationGapTests(unittest.TestCase):
     def test_repeating_an_old_corrected_claim_does_not_reopen_again(self):
         """The ledger already moved k from v1 to v2. Someone repeats the OLD v1 claim: stale, but the world did not
         change again, so there is no v3 and no second reopen."""
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             led = Ledger(Path(tmp) / "l.db")
             v1 = led.seed_fact("permit.fee", "The permit fee is 500 dirhams per unit.", "price")
             led.add_decision("D-1", "Budget", "budget", "o", {"permit.fee": v1}, "Sara")
@@ -2454,7 +2479,7 @@ class MutationGapTests(unittest.TestCase):
         import urllib.request
         from freshpin.server import make_handler
         from freshpin.toolserver import ToolServer
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             httpd = ThreadingHTTPServer(("127.0.0.1", 0), make_handler(replay_app(tmp)))
             threading.Thread(target=httpd.serve_forever, daemon=True).start()
             try:
@@ -2478,7 +2503,7 @@ class MutationGapTests(unittest.TestCase):
     def test_bifrost_log_is_read_read_only_from_a_real_sqlite_file(self):
         import sqlite3
         from freshpin.agentbench import BifrostLog
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             db = Path(tmp) / "logs.db"
             con = sqlite3.connect(db)
             con.execute("CREATE TABLE logs (session_id TEXT, timestamp TEXT, provider TEXT, model TEXT, status TEXT, "
@@ -2566,7 +2591,7 @@ class GapCloseTests(unittest.TestCase):
             self.assertIn(cond, FAULTS)
         self.assertNotIn("misleading_prompt", EXTRA_FAULTS)                        # one list per condition
         self.assertFalse(set(FAULTS) & set(EXTRA_FAULTS))
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             cache = Path(tmp) / "c.json"
             cache.write_text(json.dumps(self.CACHE))
             ts = ToolServer(lambda q: self.fail("no live search"), cache_path=cache, live=False)
@@ -2633,7 +2658,7 @@ class GapCloseTests(unittest.TestCase):
         self.assertEqual(rescore({"meta": {"repeats": 1}, "runs": [r]})["summary"]["a"]["normal"]["runs"], 0)
 
     def test_bench_page_has_side_by_side_and_new_condition(self):
-        html = (Path(__file__).resolve().parent.parent / "web" / "bench.html").read_text()
+        html = (Path(__file__).resolve().parent.parent / "web" / "bench.html").read_text(encoding="utf-8")
         for needle in ('id="sbTask"', 'id="sbA"', 'id="sbB"', "function renderSideBySide", "wrong_results:",
                        "graders disagree", "said_unknown"):
             self.assertIn(needle, html)
@@ -2776,7 +2801,7 @@ class FailureReasonTests(unittest.TestCase):
                 " urllib.request.urlopen(urllib.request.Request(tl['base_url']+'/tools/search_web', "
                 "data=b'{\"query\": \"q\"}', headers={'Content-Type':'application/json', **tl['headers']}), timeout=10)\n"
                 "print(json.dumps({'answer': 'budget=' + str(t['budget']['max_steps'])}))")
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             ts = ToolServer(lambda q: [], cache_path=Path(tmp) / "c.json", live=False).start()
             try:
                 res = run_suite([{"id": "t1", "question": "q?", "gold_answer": "x"}],
@@ -2811,7 +2836,7 @@ class FlakyToolTests(unittest.TestCase):
         self.assertIn("flaky_tool", EXTRA_FAULTS)             # opt-in, and injected by the tool server
         self.assertIn("flaky_tool", TOOL_FAULTS)
         self.assertNotIn("flaky_tool", FAULTS)
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             ts = self._server(tmp)
             ts.set_run("a", "flaky_tool")
             ts.set_run("b", "flaky_tool")
@@ -2823,7 +2848,7 @@ class FlakyToolTests(unittest.TestCase):
             self.assertEqual([c["fault"] for c in ts.calls("a")], [None, "flaky_tool", None])
 
     def test_number_of_failures_is_configurable(self):
-        with tempfile.TemporaryDirectory() as tmp, mock.patch.dict(os.environ, {"FRESHPIN_FLAKY_FAILS": "2"}):
+        with TempDir() as tmp, mock.patch.dict(os.environ, {"FRESHPIN_FLAKY_FAILS": "2"}):
             ts = self._server(tmp)
             ts.set_run("a", "flaky_tool")
             self.assertEqual([ts.handle_search("a", "workday outage")[0] for _ in range(3)], [503, 503, 200])
@@ -2857,7 +2882,7 @@ class FlakyToolTests(unittest.TestCase):
 
     def test_search_retry_recovers_where_search_first_gives_up(self):
         from freshpin import agents
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             ts = self._server(tmp).start()
             try:
                 def task(run_id):
@@ -2908,7 +2933,7 @@ class EveryConditionReachesTheAgentTests(unittest.TestCase):
         cache = {"workday outage": [{"title": "Workday outage hits companies", "url": "https://w.example/1"}],
                  "charger launch": [{"title": "New charger launched", "url": "https://c.example/1"}]}
         tasks = [{"id": "t1", "question": "Which company had the outage?", "gold_answer": "Workday."}]
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             (Path(tmp) / "c.json").write_text(json.dumps(cache))
             ts = ToolServer(lambda q: [], cache_path=Path(tmp) / "c.json", live=False).start()
             ts.slow_s = 0.2
@@ -3002,7 +3027,7 @@ class ResultNameTests(unittest.TestCase):
         from freshpin.__main__ import reserve_result_path
         from freshpin.server import bench_file  # noqa: F401  (the names must stay listable)
         import re as _re
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             with ThreadPoolExecutor(8) as pool:
                 paths = list(pool.map(lambda _: reserve_result_path(tmp, "20261117-112912"), range(8)))
             names = sorted(p.name for p in paths)
@@ -3068,7 +3093,7 @@ class AgentAndToolRuleTests(unittest.TestCase):
 
     def test_mcp_flags_errors_and_timings_are_sane(self):
         from freshpin.toolserver import ToolServer
-        with tempfile.TemporaryDirectory() as tmp:
+        with TempDir() as tmp:
             ts = ToolServer(lambda q: [{"title": "Résumé", "url": "https://x.example/a"}], cache_path=Path(tmp) / "c.json")
             init = ts.handle_mcp("r", {"jsonrpc": "2.0", "id": 1, "method": "initialize"})
             self.assertIs(init["result"]["capabilities"]["tools"]["listChanged"], False)
@@ -3232,7 +3257,7 @@ class OtelExportTests(unittest.TestCase):
         (root,) = self.spans(out)
         self.assertEqual(root["status"], {"code": 2, "message": "timeout"})
         self.assertEqual(int(root["endTimeUnixNano"]) - int(root["startTimeUnixNano"]), 2_500_000_000)
-        with tempfile.TemporaryDirectory() as d:
+        with TempDir() as d:
             src, dst = Path(d) / "r.json", Path(d) / "o.json"
             src.write_text(json.dumps(self.sample()), encoding="utf-8")
             with redirect_stdout(io.StringIO()) as so:
@@ -3254,7 +3279,7 @@ class BenchStaticTests(unittest.TestCase):
         import tempfile
         from unittest import mock
         from freshpin import benchstatic, server
-        with tempfile.TemporaryDirectory() as local, tempfile.TemporaryDirectory() as out:
+        with TempDir() as local, TempDir() as out:
             # a local, uncommitted result must never reach a public snapshot
             (Path(local) / "agentbench-20990101-000000.json").write_text(
                 json.dumps({"meta": {"model": "secret/local"}, "runs": [], "summary": {}}), encoding="utf-8")
@@ -3288,7 +3313,7 @@ class BenchStaticTests(unittest.TestCase):
         import tempfile
         from contextlib import redirect_stderr, redirect_stdout
         from freshpin.__main__ import main
-        with tempfile.TemporaryDirectory() as d:
+        with TempDir() as d:
             with redirect_stdout(io.StringIO()) as so:
                 self.assertEqual(main(["bench-static", str(Path(d) / "s")]), 0)
             self.assertIn("results ->", so.getvalue())
@@ -3623,7 +3648,7 @@ class GateTests(unittest.TestCase):
         from contextlib import redirect_stderr, redirect_stdout
         from unittest import mock
         from freshpin.__main__ import main
-        with tempfile.TemporaryDirectory() as d:
+        with TempDir() as d:
             f = Path(d) / "r.json"
             f.write_text(json.dumps(self.result()), encoding="utf-8")
             summary = Path(d) / "summary.md"
@@ -3700,7 +3725,7 @@ class ReviewPageTests(unittest.TestCase):
         from unittest import mock
         from freshpin import server
         res = HumanReviewTests().result()
-        with tempfile.TemporaryDirectory() as tmp, tempfile.TemporaryDirectory() as res_dir:
+        with TempDir() as tmp, TempDir() as res_dir:
             f = Path(res_dir) / "agentbench-20990101-000001.json"
             f.write_text(json.dumps(res, indent=1), encoding="utf-8")
             app = replay_app(tmp)
