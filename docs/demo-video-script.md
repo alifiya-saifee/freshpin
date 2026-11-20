@@ -1,6 +1,6 @@
 # FreshPin demo video: 2-minute script
 
-For: hackathon judges. Record the screen of the read-only results site (`https://alifiya-saifee.github.io/freshpin/`) or a local `python -m freshpin serve` → `/bench`. Each `?file=` link below opens straight onto the result being shown.
+For: hackathon judges. Record the screen of the read-only results site (`https://freshpin.vercel.app/`) or a local `python -m freshpin serve` → `/bench`. Each `?file=` link below opens straight onto the result being shown.
 
 | Time | On screen | Say |
 |---|---|---|
