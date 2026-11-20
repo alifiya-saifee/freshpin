@@ -1,0 +1,6 @@
+{
+  "buildCommand": "python3 -m freshpin bench-static site",
+  "outputDirectory": "site",
+  "installCommand": "",
+  "framework": null
+}
